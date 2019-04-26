@@ -22,7 +22,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.model.endpoint.actions.EReceive;
+import org.scribble.core.model.endpoint.actions.ERecv;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.util.ScribException;
@@ -53,7 +53,7 @@ public class ActionIfaceGen extends IOIfaceGen
 		this.ib.addParameters("__Succ extends " + SuccessorIfaceGen.getSuccessorInterfaceName(this.a));
 		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
 		//AbstractMethodBuilder mb2 = null;
-		if (this.a instanceof EReceive)
+		if (this.a instanceof ERecv)
 		{
 			/*if (this.curr.getAcceptable().size() > 1)
 			{
@@ -107,7 +107,7 @@ public class ActionIfaceGen extends IOIfaceGen
 				: "Out";*/
 		String name;
 		//if (curr.getAcceptable().iterator().next() instanceof Receive)
-		if (a instanceof EReceive)
+		if (a instanceof ERecv)
 		{
 			/*if (curr.getAcceptable().size() > 1)
 			{

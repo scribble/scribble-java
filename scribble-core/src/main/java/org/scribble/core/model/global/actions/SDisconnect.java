@@ -25,7 +25,7 @@ public class SDisconnect extends SAction
 	}
 	
 	@Override
-	public boolean isConnect()
+	public boolean isRequest()
 	{
 		return true;
 	}
@@ -49,11 +49,11 @@ public class SDisconnect extends SAction
 		{
 			return false;
 		}
-		return ((SDisconnect) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof SDisconnect;
 	}

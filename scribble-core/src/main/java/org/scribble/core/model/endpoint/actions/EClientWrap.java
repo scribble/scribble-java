@@ -11,52 +11,47 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.model.endpoint;
+package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.model.global.actions.SAction;
+import org.scribble.core.model.global.actions.SClientWrap;
 import org.scribble.core.type.name.Op;
-import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-// FIXME rename better (it's an "external rec" continue edge)
-@Deprecated
-class IntermediateRecEdge extends EAction
+// Wrap at the client side
+// Duplicated from Disconnect
+public class EClientWrap extends EAction
 {
-	public final EAction action;
-	
-	public IntermediateRecEdge(ModelFactory ef, EAction a, RecVar rv)
+	public EClientWrap(ModelFactory ef, Role peer)
 	{
-		super(ef, Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
-		this.action = a;
+		super(ef, peer, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public EAction toDual(Role self)
+	public EServerWrap toDual(Role self)
 	{
-		throw new RuntimeException("Shouldn't get in here: " + this);
+		return this.mf.newEServerWrap(self);
 	}
 
 	@Override
-	public SAction toGlobal(ModelFactory sf, Role self)
+	public SClientWrap toGlobal(Role self)
 	{
-		throw new RuntimeException("Shouldn't get in here: " + this);
-	}
-
-	@Override
-	protected String getCommSymbol()
-	{
-		return "&";
+		return this.mf.newSClientWrap(self, this.peer);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 6037;
+		int hash = 1061;
 		hash = 31 * hash + super.hashCode();
 		return hash;
+	}
+	
+	@Override
+	public boolean isClientWrap()
+	{
+		return true;
 	}
 
 	@Override
@@ -66,16 +61,22 @@ class IntermediateRecEdge extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof IntermediateRecEdge))
+		if (!(o instanceof EClientWrap))
 		{
 			return false;
 		}
-		return ((IntermediateRecEdge) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof IntermediateRecEdge;
+		return o instanceof EClientWrap;
+	}
+
+	@Override
+	protected String getCommSymbol()
+	{
+		return "(!!)";
 	}
 }

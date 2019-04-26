@@ -16,28 +16,29 @@ package org.scribble.core.model;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.core.model.endpoint.EFSM;
+import org.scribble.core.model.endpoint.EFsm;
+import org.scribble.core.model.endpoint.EGraphBuilderUtil;
 import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.endpoint.actions.EAccept;
+import org.scribble.core.model.endpoint.actions.EAcc;
+import org.scribble.core.model.endpoint.actions.EClientWrap;
 import org.scribble.core.model.endpoint.actions.EDisconnect;
-import org.scribble.core.model.endpoint.actions.EReceive;
-import org.scribble.core.model.endpoint.actions.ERequest;
+import org.scribble.core.model.endpoint.actions.ERecv;
+import org.scribble.core.model.endpoint.actions.EReq;
 import org.scribble.core.model.endpoint.actions.ESend;
-import org.scribble.core.model.endpoint.actions.EWrapClient;
-import org.scribble.core.model.endpoint.actions.EWrapServer;
-import org.scribble.core.model.global.SBuffers;
+import org.scribble.core.model.endpoint.actions.EServerWrap;
 import org.scribble.core.model.global.SConfig;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.model.global.SGraphBuilderUtil;
 import org.scribble.core.model.global.SModel;
+import org.scribble.core.model.global.SingleBuffers;
 import org.scribble.core.model.global.SState;
-import org.scribble.core.model.global.actions.SAccept;
+import org.scribble.core.model.global.actions.SAcc;
+import org.scribble.core.model.global.actions.SClientWrap;
 import org.scribble.core.model.global.actions.SDisconnect;
-import org.scribble.core.model.global.actions.SReceive;
-import org.scribble.core.model.global.actions.SRequest;
+import org.scribble.core.model.global.actions.SRecv;
+import org.scribble.core.model.global.actions.SReq;
 import org.scribble.core.model.global.actions.SSend;
-import org.scribble.core.model.global.actions.SWrapClient;
-import org.scribble.core.model.global.actions.SWrapServer;
+import org.scribble.core.model.global.actions.SServerWrap;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.RecVar;
@@ -46,28 +47,30 @@ import org.scribble.core.type.session.Payload;
 
 public interface ModelFactory
 {
-	ESend newESend(Role peer, MsgId<?> mid, Payload payload);
-	EReceive newEReceive(Role peer, MsgId<?> mid, Payload payload);
-	ERequest newERequest(Role peer, MsgId<?> mid, Payload payload);
-	EAccept newEAccept(Role peer, MsgId<?> mid, Payload payload);
+	EGraphBuilderUtil newEGraphBuilderUtil();
+	SGraphBuilderUtil newSGraphBuilderUtil();
+
+	ESend newESend(Role peer, MsgId<?> mid, Payload pay);
+	ERecv newERecv(Role peer, MsgId<?> mid, Payload pay);
+	EReq newEReq(Role peer, MsgId<?> mid, Payload pay);
+	EAcc newEAcc(Role peer, MsgId<?> mid, Payload pay);
 	EDisconnect newEDisconnect(Role peer);
-	EWrapClient newEWrapClient(Role peer);
-	EWrapServer newEWrapServer(Role peer);
+	EClientWrap newEClientWrap(Role peer);
+	EServerWrap newEServerWrap(Role peer);
 
 	EState newEState(Set<RecVar> labs);
-
-	SGraphBuilderUtil newSGraphBuilderUtil();  // Directly created and used by Job.buildSGraph -- cf. EGraphBuilderUtil, encapsulated by EGraphBuilder AST visitor
+	//EFsm new EFsm(...)
 	
-	SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload payload);
-	SReceive newSReceive(Role subj, Role obj, MsgId<?> mid, Payload payload);
-	SRequest newSConnect(Role subj, Role obj, MsgId<?> mid, Payload payload);
-	SAccept newSAccept(Role subj, Role obj, MsgId<?> mid, Payload payload);
+	SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload pay);
+	SRecv newSRecv(Role subj, Role obj, MsgId<?> mid, Payload pay);
+	SReq newSReq(Role subj, Role obj, MsgId<?> mid, Payload pay);
+	SAcc newSAcc(Role subj, Role obj, MsgId<?> mid, Payload pay);
 	SDisconnect newSDisconnect(Role subj, Role obj);
-	SWrapClient newSWrapClient(Role subj, Role obj);
-	SWrapServer newSWrapServer(Role subj, Role obj);
+	SClientWrap newSClientWrap(Role subj, Role obj);
+	SServerWrap newSServerWrap(Role subj, Role obj);
 
 	SState newSState(SConfig config);
-	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);
-	SConfig newSConfig(Map<Role, EFSM> state, SBuffers buffs);
+	SConfig newSConfig(Map<Role, EFsm> state, SingleBuffers buffs);
+	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);  // states: s.id -> s
 	SModel newSModel(SGraph g);
 }

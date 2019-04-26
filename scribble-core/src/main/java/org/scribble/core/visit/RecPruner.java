@@ -20,14 +20,27 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-// Assumes no shadowing (e.g., use after inlining recvar disamb)
+// Assumes no shadowing, e.g., use after inlining recvar disamb (also used after projection)
 public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {
+	@Override
+	public SType<K, B> visitChoice(Choice<K, B> n)
+	{
+		List<B> blocks = n.blocks.stream().map(x -> visitSeq(x))
+				.filter(x -> !x.isEmpty()).collect(Collectors.toList());
+		if (blocks.isEmpty())
+		{
+			return n.blocks.get(0).reconstruct(null, blocks);  // N.B. returning a Seq -- handled by visitSeq (similar to LSkip for locals)
+		}
+		return n.reconstruct(n.getSource(), n.subj, blocks);
+	}
+
 	@Override
 	public SType<K, B> visitRecursion(Recursion<K, B> n)
 	{
@@ -35,7 +48,7 @@ public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>
 		Set<RecVar> rvs = n.body.gather(new RecVarGatherer<K, B>()::visit)
 				.collect(Collectors.toSet());
 		return rvs.contains(n.recvar)
-				? n
+				? n.reconstruct(n.getSource(), n.recvar, visitSeq(n.body))
 				: n.body;  // i.e., return a Seq, to be "inlined" by Seq.pruneRecs -- N.B. must handle empty Seq case
 	}
 
@@ -46,7 +59,7 @@ public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>
 		for (SType<K, B> e : n.elems)
 		{
 			SType<K, B> e1 = (SType<K, B>) e.visitWithNoThrow(this);
-			if (e1 instanceof Seq<?, ?>)  // cf. visitRecursion
+			if (e1 instanceof Seq<?, ?>)  // cf. visitRecursion  (also cf. LSkip)
 			{
 				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case
 			}

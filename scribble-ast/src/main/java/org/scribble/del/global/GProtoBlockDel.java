@@ -13,12 +13,19 @@
  */
 package org.scribble.del.global;
 
-import org.scribble.del.ProtocolDefDel;
+import org.scribble.ast.ScribNode;
+import org.scribble.ast.global.GProtoBlock;
+import org.scribble.core.type.session.global.GSeq;
+import org.scribble.del.ProtocolBlockDel;
+import org.scribble.util.ScribException;
+import org.scribble.visit.GTypeTranslator;
 
-public class GProtocolDefDel extends ProtocolDefDel
+public class GProtoBlockDel extends ProtocolBlockDel implements GDel
 {
-	public GProtocolDefDel()
+	@Override
+	public GSeq translate(ScribNode n, GTypeTranslator t)
+			throws ScribException
 	{
-
+		return (GSeq) ((GProtoBlock) n).getInteractSeqChild().visitWith(t);
 	}
 }

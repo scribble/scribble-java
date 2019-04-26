@@ -32,10 +32,8 @@ import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProjection;
-import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
@@ -44,9 +42,9 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.MsgId;
-import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
@@ -57,10 +55,12 @@ import org.scribble.core.visit.RoleGatherer;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
+import org.scribble.core.visit.global.ConnectionChecker;
 import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
 import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.core.visit.global.Projector;
 import org.scribble.core.visit.global.RoleEnablingChecker;
+import org.scribble.core.visit.local.InlinedExtChoiceSubjFixer;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
 
@@ -95,37 +95,47 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(rs);
 		this.def.visitWith(v);
 	}
+
+	public void checkConnectedness(boolean implicit) throws ScribException
+	{
+		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
+		ConnectionChecker v = new ConnectionChecker(rs, implicit);
+		this.def.visitWith(v);
+	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	public LProjection projectInlined(Core core, Role self)
 	{
-		LSeq body = (LSeq) this.def
-				.visitWithNoThrow(new InlinedProjector(core, self));
-		return projectAux(self, this.roles, body);
+		LSeq def = new InlinedProjector(core, self).visitSeq(this.def);
+		LSeq fixed = new InlinedExtChoiceSubjFixer().visitSeq(def);
+		return projectAux(self, this.roles, fixed);
 	}
 
 	public LProjection project(Core core, Role self)
 	{
-		LSeq body = (LSeq) this.def.visitWithNoThrow(new Projector(core, self))
-				.visitWithNoThrow(new RecPruner<>());
+		LSeq def = new Projector(core, self).visitSeq(this.def);
+			// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
 		return projectAux(self,
-				core.getContext().getInlined(this.fullname).roles,  // Used inlined decls, already pruned
-				body);
+				core.getContext().getInlined(this.fullname).roles,  
+						// Using inlined global, global role decls already pruned -- CHECKME: is this still relevant?
+						// Actual projection role decl pruning done by projectAux
+				def);
 	}
 	
 	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
 	{
+		LSeq pruned = new RecPruner<Local, LSeq>().visitSeq(body);
 		LProtoName fullname = InlinedProjector
 				.getFullProjectionName(this.fullname, self);
-		Set<Role> tmp = body.gather(new RoleGatherer<Local, LSeq>()::visit)
+		Set<Role> tmp = pruned.gather(new RoleGatherer<Local, LSeq>()::visit)
 				.collect(Collectors.toSet());
 		List<Role> roles = decls.stream()
-				.filter(x -> x.equals(self) || tmp.contains(x))  // Implicitly filters Role.SELF
+				.filter(x -> x.equals(self) || tmp.contains(x))
 				.collect(Collectors.toList());
 		List<MemberName<? extends NonRoleParamKind>> params =
 				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
 		return new LProjection(this.mods, fullname, roles, self, params,
-				this.fullname, body);
+				this.fullname, pruned);
 	}
 	
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)
@@ -136,7 +146,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	{
 		// TODO: factor out with LProtocol
 		List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
-		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
+		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs -- TODO: factor out
 		for (MemberName<? extends NonRoleParamKind> n : this.params)
 		{
 			if (n instanceof DataName)
@@ -157,19 +167,18 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 
 		Substitutor<Global, GSeq> subs = new Substitutor<>(this.roles, sig.roles,
 				this.params, sig.args);
-		/*GSeq body = (GSeq) this.def.visitWithNoEx(subs).visitWithNoEx(v)
-				.visitWithNoEx(new RecPruner<>());*/
-		GSeq body = new RecPruner<Global, GSeq>()
-				.visitSeq(v.visitSeq(subs.visitSeq(this.def)));
+		/*GSeq body = (GSeq) this.def.visitWithNoThrow(subs).visitWithNoThrow(v)
+				.visitWithNoThrow(new RecPruner<>());*/
+		GSeq inlined = v.visitSeq(subs.visitSeq(this.def));
 		RecVar rv = v.getInlinedRecVar(sig);
-		GRecursion rec = new GRecursion(null, rv, body);  // CHECKME: or protodecl source?
-		CommonTree source = getSource();
-		GSeq def = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
+		GRecursion rec = new GRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
+		GSeq seq = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
+		GSeq def = new RecPruner<Global, GSeq>().visitSeq(seq);
 		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
-		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
+		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls -- CHECKME: what is an example? was this from before unused role checking?
 				.collect(Collectors.toList());
-		return new GProtocol(source, this.mods, this.fullname, rs,
+		return new GProtocol(getSource(), this.mods, this.fullname, rs,
 				this.params, def);
 	}
 	
@@ -218,19 +227,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 
 	
 	
-	// TODO FIXME: refactor following methods (e.g., make non-static?)
-	
-	public static void validateByScribble(Core core, GProtoName fullname,
-			boolean fair) throws ScribException
-	{
-		CoreContext corec = core.getContext();
-		SGraph graph = (fair) 
-				? corec.getSGraph(fullname)
-				: corec.getUnfairSGraph(fullname);
-		//graph.toModel().validate(job);
-		core.config.mf.newSModel(graph).validate(core);
-	}
-
+	// TODO FIXME: refactor following methods (e.g., non-static?)
 	public static void validateBySpin(Core core, GProtoName fullname)
 			throws ScribException
 	{
@@ -307,7 +304,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 			Set<EState> tmp = new HashSet<>();
 			EGraph g = corec.getEGraph(fullname, r);
 			tmp.add(g.init);
-			tmp.addAll(MState.getReachableStates(g.init));
+			tmp.addAll(g.init.getReachableStates());
 			if (g.term != null)
 			{
 				tmp.remove(g.term);

@@ -11,17 +11,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast;
+package org.scribble.del;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.AuxMod;
 import org.scribble.ast.DataDecl;
+import org.scribble.ast.DataParamDecl;
 import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.SigDecl;
-import org.scribble.ast.SigLitNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleArg;
@@ -33,14 +30,15 @@ import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.ScribNode;
 import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.SigLitNode;
 import org.scribble.ast.SigParamDecl;
-import org.scribble.ast.DataParamDecl;
 import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
@@ -50,43 +48,35 @@ import org.scribble.ast.global.GProtoDecl;
 import org.scribble.ast.global.GProtoDef;
 import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
-import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.DataParamNode;
-import org.scribble.del.DefaultDel;
-import org.scribble.del.DelDecorator;
-import org.scribble.del.ImportModuleDel;
-import org.scribble.del.ModuleDel;
-import org.scribble.del.NonRoleArgListDel;
-import org.scribble.del.NonRoleParamDeclDel;
-import org.scribble.del.NonRoleParamDeclListDel;
-import org.scribble.del.RoleArgListDel;
-import org.scribble.del.RoleDeclDel;
-import org.scribble.del.RoleDeclListDel;
-import org.scribble.del.ScribDel;
 import org.scribble.del.global.GChoiceDel;
 import org.scribble.del.global.GConnectDel;
 import org.scribble.del.global.GContinueDel;
+import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.del.global.GDisconnectDel;
 import org.scribble.del.global.GDoDel;
 import org.scribble.del.global.GInteractionSeqDel;
 import org.scribble.del.global.GMessageTransferDel;
-import org.scribble.del.global.GProtocolBlockDel;
-import org.scribble.del.global.GProtocolDeclDel;
-import org.scribble.del.global.GProtocolDefDel;
+import org.scribble.del.global.GProtoBlockDel;
+import org.scribble.del.global.GProtoDeclDel;
+import org.scribble.del.global.GProtoDefDel;
 import org.scribble.del.global.GRecursionDel;
-import org.scribble.del.name.qualified.DataTypeNodeDel;
-import org.scribble.del.name.qualified.MessageSigNameNodeDel;
+import org.scribble.del.global.GWrapDel;
+import org.scribble.del.name.qualified.DataNameNodeDel;
+import org.scribble.del.name.qualified.SigNameNodeDel;
 import org.scribble.del.name.simple.AmbigNameNodeDel;
 import org.scribble.del.name.simple.NonRoleParamNodeDel;
 import org.scribble.del.name.simple.RecVarNodeDel;
@@ -95,72 +85,34 @@ import org.scribble.del.name.simple.RoleNodeDel;
 
 //CHECKME: refactor decoration methods into AST interface, to ensure they are implemented and called?
 //CHECKME: to what extent are del's still needed?
-public class DelDecoratorImpl implements DelDecorator
+public class DelFactoryImpl implements DelFactory
 {
-	public DelDecoratorImpl()
+	public DelFactoryImpl()
 	{
 		
 	}
-	
-	// Visitor enter/leave framework uses dels -- DelDecorator is a "protovisitor" (akin to parsing)
-	public void decorate(ScribNode n)
-	{
-		decorateNode(n);
-		decorateChildren(n);
-	}
 
-	protected void decorateNode(ScribNode n)
-	{
-		Class<DelDecorator> ddec = DelDecorator.class;
-		try
-		{
-			String cname = n.getClass().getName();
-			String mname = cname.substring(cname.lastIndexOf('.')+1, cname.length());
-			Class<?> param = Class.forName(cname);
-			Method m = ddec.getMethod(mname, param);
-			m.invoke(this, n);
-		}
-		catch (NoSuchMethodException | SecurityException | ClassNotFoundException
-				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected void decorateChildren(ScribNode n)
-	{
-		n.getChildren().stream().forEach(x -> decorate(x));
-	}
-
-	protected ScribDel createDefaultDelegate()
+	protected ScribDel createDefaultDel()
 	{
 		return new DefaultDel();
 	}
 	
-	// Non-defensive
-	//protected static <T extends ScribNodeBase> T setDel(T n, ScribDel del)
+	// Mutating setter
 	protected static void setDel(ScribNodeBase n, ScribDel del)
 	{
-		n.setDel(del);
-		//return n;
-		/*// Defensive helper with cast check
-		ScribNodeBase copy = ((ScribNodeBase) n).clone();  // Need deep clone, since children have parent field
-		//copy.del = del;
-		copy.setDel(del);
-		return ScribUtil.castNodeByClass(n, copy);*/
+		AstFactoryImpl.setDel(n, del);
 	}
 
 	@Override
 	public void IdNode(IdNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());  // Necessary?
 	}
 
 	@Override
 	public void ExtIdNode(ExtIdNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());  // Necessary?
 	}
 
 	@Override
@@ -178,7 +130,7 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void OpNode(OpNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -202,31 +154,31 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void DataNameNode(DataNameNode n)
 	{
-		setDel(n, new DataTypeNodeDel());
+		setDel(n, new DataNameNodeDel());
 	}
 
 	@Override
 	public void GProtoNameNode(GProtoNameNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void LProtoNameNode(LProtoNameNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void ModuleNameNode(ModuleNameNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void SigNameNode(SigNameNode n)
 	{
-		setDel(n, new MessageSigNameNodeDel());
+		setDel(n, new SigNameNodeDel());
 	}
 	
 	@Override
@@ -238,7 +190,7 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void ModuleDecl(ModuleDecl n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -250,43 +202,43 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void DataDecl(DataDecl n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 	
 	@Override
 	public void SigDecl(SigDecl n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void GProtoDecl(GProtoDecl n)
 	{
-		setDel(n, new GProtocolDeclDel());
+		setDel(n, new GProtoDeclDel());
 	}
 
 	@Override
 	public void ProtoModList(ProtoModList n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void AuxMod(AuxMod n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void ExplicitMod(ExplicitMod n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void GProtoHeader(GProtoHeader n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -322,13 +274,13 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void GProtoDef(GProtoDef n)
 	{
-		setDel(n, new GProtocolDefDel());
+		setDel(n, new GProtoDefDel());
 	}
 
 	@Override
 	public void GProtoBlock(GProtoBlock n)
 	{
-		setDel(n, new GProtocolBlockDel());
+		setDel(n, new GProtoBlockDel());
 	}
 
 	@Override
@@ -340,32 +292,30 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void SigLitNode(SigLitNode n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
 	public void PayElemList(PayElemList n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 		//setDel(pay, new PayloadElemListDel());
 	}
 
 	@Override
 	public void UnaryPayElem(UnaryPayElem<?> n)
 	{
-		setDel(n, createDefaultDelegate());
-	}
-
-	/*@Override
-	public GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode proto, RoleNode role)
-	{
-		GDelegationElem de = new GDelegationElem(source, proto, role);
-		//de = del(de, createDefaultDelegate());
-		de = setDel(de, new GDelegationElemDel());  // FIXME: GDelegationElemDel
-		return de;
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
+	public void GDelegPayElem(GDelegPayElem n)
+	{
+		//setDel(n, createDefaultDelegate());
+		setDel(n, new GDelegationElemDel());
+	}
+
+	/*@Override
 	public LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode proto)
 	{
 		LDelegationElem de = new LDelegationElem(source, proto);
@@ -391,13 +341,11 @@ public class DelDecoratorImpl implements DelDecorator
 		setDel(n, new GMessageTransferDel());
 	}
 
-	/*@Override
-	public GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest)
+	@Override
+	public void GWrap(GWrap n)
 	{
-		GWrap gw = new GWrap(source, UnitMessageSigNode(), src, dest);
-		gw = setDel(gw, new GWrapDel());
-		return gw;
-	}*/
+		setDel(n, new GWrapDel());
+	}
 
 	@Override
 	public void GContinue(GContinue n)
@@ -420,7 +368,7 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void RoleArg(RoleArg n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -432,7 +380,7 @@ public class DelDecoratorImpl implements DelDecorator
 	@Override
 	public void NonRoleArg(NonRoleArg n)
 	{
-		setDel(n, createDefaultDelegate());
+		setDel(n, createDefaultDel());
 	}
 
 	@Override
@@ -446,7 +394,6 @@ public class DelDecoratorImpl implements DelDecorator
 	{
 		setDel(n, new GRecursionDel());
 	}
-	
 }
 
 	

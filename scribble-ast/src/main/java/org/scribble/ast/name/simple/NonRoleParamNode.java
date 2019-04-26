@@ -61,7 +61,7 @@ public abstract class NonRoleParamNode<K extends NonRoleParamKind> extends
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof NonRoleParamNode;
 	}

@@ -59,7 +59,7 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof RecVarNode;
 	}

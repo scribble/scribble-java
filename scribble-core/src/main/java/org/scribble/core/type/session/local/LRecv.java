@@ -19,12 +19,12 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Msg;
 import org.scribble.core.type.session.MsgTransfer;
 
-public class LRcv extends MsgTransfer<Local, LSeq>
+public class LRecv extends MsgTransfer<Local, LSeq>
 		implements LType
 {
 
 	// this.dst == Role.SELF
-	public LRcv(CommonTree source,
+	public LRecv(CommonTree source,
 			Role src, Msg msg)
 	{
 		super(source, msg, src, Role.SELF);
@@ -32,11 +32,11 @@ public class LRcv extends MsgTransfer<Local, LSeq>
 
 	// FIXME: unnecessary dst 
 	@Override
-	public LRcv reconstruct(
+	public LRecv reconstruct(
 			CommonTree source, Msg msg, Role src,
 			Role dst)
 	{
-		return new LRcv(source, src, msg);
+		return new LRecv(source, src, msg);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class LRcv extends MsgTransfer<Local, LSeq>
 		{
 			return true;
 		}
-		if (!(o instanceof LRcv))
+		if (!(o instanceof LRecv))
 		{
 			return false;
 		}
@@ -70,7 +70,7 @@ public class LRcv extends MsgTransfer<Local, LSeq>
 	@Override
 	public boolean canEquals(Object o)
 	{
-		return o instanceof LRcv;
+		return o instanceof LRecv;
 	}
 
 }

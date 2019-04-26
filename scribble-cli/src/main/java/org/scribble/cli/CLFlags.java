@@ -149,17 +149,17 @@ public class CLFlags
 						"Missing protocol/role/file arguments: "));
 
 		flags.put(SGRAPH_FLAG, 
-				new CLFlag(SGRAPH_FLAG, 2, false, true, false,
+				new CLFlag(SGRAPH_FLAG, 1, false, true, false,
 						"Missing protocol argument: ", OLD_WF_FLAG));
 		flags.put(UNFAIR_SGRAPH_FLAG, 
-				new CLFlag(UNFAIR_SGRAPH_FLAG, 2, false, true, false,
+				new CLFlag(UNFAIR_SGRAPH_FLAG, 1, false, true, false,
 						"Missing protocol argument: ", OLD_WF_FLAG));
 		
 		flags.put(SGRAPH_PNG_FLAG, 
-				new CLFlag(SGRAPH_PNG_FLAG, 1, false, true, false,
+				new CLFlag(SGRAPH_PNG_FLAG, 2, false, true, false,
 						"Missing protocol/file arguments: ", OLD_WF_FLAG));
 		flags.put(UNFAIR_SGRAPH_PNG_FLAG, 
-				new CLFlag(UNFAIR_SGRAPH_PNG_FLAG, 1, false, true, false,
+				new CLFlag(UNFAIR_SGRAPH_PNG_FLAG, 2, false, true, false,
 						"Missing protocol/file arguments: ", OLD_WF_FLAG));
 
 		// // Non-unique, barrier

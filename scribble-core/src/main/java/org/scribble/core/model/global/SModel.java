@@ -13,24 +13,30 @@
  */
 package org.scribble.core.model.global;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
-import org.scribble.core.model.endpoint.EFSM;
 import org.scribble.core.model.endpoint.actions.ESend;
-import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 
+
+// For doing validation operations on an SGraph (cf. EFsm, use Graph as an FSM)
 public class SModel
 {
+	private Core core;  // CHECKME: refactor?  but avoiding in constructor to keep mf more independent/uniform
+
 	public final SGraph graph;
 
 	public SModel(SGraph graph)
@@ -38,236 +44,155 @@ public class SModel
 		this.graph = graph;
 	}
 
+	// CHECKME: let Core call check safety/progress directly? (to avoid passing core)
 	public void validate(Core core) throws ScribException
 	{
-		SState init = this.graph.init;
-		Map<Integer, SState> states = this.graph.states;
+		this.core = core;
 
-		String errorMsg = "";
-
-		int count = 0;
-		for (SState s : states.values())
-		{
-			if (core.config.args.get(CoreArgs.VERBOSE))
-			{
-				count++;
-				if (count % 50 == 0)
-				{
-					//job.debugPrintln("(" + this.graph.proto + ") Checking safety: " + count + " states");
-					core.verbosePrintln(
-							"(" + this.graph.proto + ") Checking states: " + count);
-				}
-			}
-			SStateErrors errors = s.getErrors();
-			if (!errors.isEmpty())
-			{
-				// FIXME: getTrace can get stuck when local choice subjects are disabled
-				List<SAction> trace = this.graph.getTrace(init, s);  // FIXME: getTrace broken on non-det self loops?
-				//errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
-				errorMsg += "\nSafety violation(s) at session state " + s.id
-						+ ":\n    Trace=" + trace;
-			}
-			errorMsg = appendSafetyErrorMessages(errorMsg, errors);
-		}
-		core.verbosePrintln("(" + this.graph.proto + ") Checked all states: " + count);  // May include unsafe states
-		//*/
-		
+		SortedMap<Integer, SStateErrors> sErrs = getSafetyErrors();
+		Map<Set<SState>, Pair<Set<Role>, Map<Role, Set<ESend>>>> pErrors
+				= Collections.emptyMap();
 		if (!core.config.args.get(CoreArgs.NO_PROGRESS))
 		{
-			//job.debugPrintln("(" + this.graph.proto + ") Checking progress: ");  // Incompatible with current errorMsg approach*/
+			 pErrors = getProgressErrors();
+		}
 
-			Set<Set<Integer>> termsets = this.graph.getTerminalSets();
-			for (Set<Integer> termset : termsets)
+		if (!sErrs.isEmpty() || !pErrors.isEmpty())
+		{
+			String msg = "";
+			if (!sErrs.isEmpty())
 			{
-				/*job.debugPrintln("(" + this.graph.proto + ") Checking terminal set: "
-							+ termset.stream().map((i) -> new Integer(all.get(i).id).toString()).collect(Collectors.joining(",")));  // Incompatible with current errorMsg approach*/
-
-				Set<Role> starved = checkRoleProgress(states, init, termset);
-				Map<Role, Set<ESend>> ignored = 
-						checkEventualReception(states, init, termset);
-				errorMsg = appendProgressErrorMessages(errorMsg, starved, ignored, core,
-						states, termset);
+				msg += getSafetyErrors().values().stream()
+						.map(x -> x.toErrorMessage(this.graph))
+						.collect(Collectors.joining(""));
 			}
-		}
-
-		if (!errorMsg.equals(""))
-		{
-			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
-			throw new ScribException(errorMsg);
-		}
-		//job.debugPrintln("(" + this.graph.proto + ") Progress satisfied.");  // Also safety... current errorMsg approach
-	}
-
-	protected String appendSafetyErrorMessages(String errorMsg,
-			SStateErrors errors)
-	{
-		if (!errors.stuck.isEmpty())
-		{
-			errorMsg += "\n    Stuck messages: " + errors.stuck;  // Deadlock from reception error
-		}
-		if (!errors.waitFor.isEmpty())
-		{
-			errorMsg += "\n    Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
-		}
-		if (!errors.orphans.isEmpty())
-		{
-			errorMsg += "\n    Orphan messages: " + errors.orphans;  // FIXME: add sender of orphan to error message 
-		}
-		if (!errors.unfinished.isEmpty())
-		{
-			errorMsg += "\n    Unfinished roles: " + errors.unfinished;
-		}
-		return errorMsg;
-	}
-
-	protected String appendProgressErrorMessages(String errorMsg,
-			Set<Role> starved, Map<Role, Set<ESend>> ignored, Core core,
-			Map<Integer, SState> states, Set<Integer> termset)
-	{
-		if (!starved.isEmpty())
-		{
-			errorMsg += "\nRole progress violation for " + starved
-					+ " in session state terminal set:\n    "
-					+ termSetToString(core, termset, states);
-		}
-		if (!ignored.isEmpty())
-		{
-			errorMsg += "\nEventual reception violation for " + ignored
-					+ " in session state terminal set:\n    "
-					+ termSetToString(core, termset, states);
-		}
-		return errorMsg;
-	}
-	
-	protected String termSetToString(Core core, Set<Integer> termset,
-			Map<Integer, SState> all)
-	{
-		return core.config.args.get(CoreArgs.VERBOSE)
-				? termset.stream().map((i) -> all.get(i).toString())
-						.collect(Collectors.joining(","))
-				: termset.stream().map((i) -> new Integer(all.get(i).id).toString())
-						.collect(Collectors.joining(","));
-	}
-
-	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
-	protected static Set<Role> checkRoleProgress(Map<Integer, SState> states,
-			SState init, Set<Integer> termset) throws ScribException
-	{
-		Set<Role> starved = new HashSet<>();
-		Iterator<Integer> i = termset.iterator();
-		SState s = states.get(i.next());
-		Map<Role, SState> ss = new HashMap<>();
-		s.config.efsms.keySet().forEach(r -> ss.put(r, s));
-		while (i.hasNext())
-		{
-			SState next = states.get(i.next());
-			Map<Role, EFSM> tmp = next.config.efsms;
-			for (Role r : tmp.keySet())
+			if (!pErrors.isEmpty())
 			{
-				if (ss.get(r) != null)
+				for (Entry<Set<SState>, Pair<Set<Role>, Map<Role, Set<ESend>>>> e :
+						pErrors.entrySet())
 				{
-					/*if (!ss.get(r).equals(tmp.get(r)))
-					{	
-						ss.put(r, null);
-					}
-					else*/
-					{
-						for (SAction a : next.getAllActions())
-						{
-							if (a.containsRole(r))
-							{
-								ss.put(r, null);
-								break;
-							}
-						}
-					}
+					msg += getProgressErrorMessages(e.getKey(), e.getValue());
 				}
 			}
+			throw new ScribException(msg);
 		}
-		for (Role r : ss.keySet())
-		{
-			SState foo = ss.get(r);
-			if (foo != null)
-			{
-				EFSM tmp = foo.config.efsms.get(r);
-				if (tmp != null)
-				{
-					if (!foo.config.canSafelyTerminate(r))
-					{
-						if (s.config.buffs.get(r).values().stream()
-								.allMatch((v) -> v == null))
-						{
-							starved.add(r);
-						}
-						/*
-						// Should be redundant given explicit reception error etc checking
-						else
-						{
-							safety.add(r);
-						}*/
-					}
-				}
-			}
-		}
-		return starved;
 	}
 
-	// (eventual reception)
-	protected static Map<Role, Set<ESend>> checkEventualReception(
-			Map<Integer, SState> states, SState init, Set<Integer> termset)
-			throws ScribException
+	protected SortedMap<Integer, SStateErrors> getSafetyErrors()  // s.id key lighter than full SConfig
 	{
-		Set<Role> roles = states.get(termset.iterator().next()).config.efsms
-				.keySet();
-
-		Iterator<Integer> i = termset.iterator();
-		Map<Role, Map<Role, ESend>> b0 = states.get(i.next()).config.buffs
-				.getBuffers();
-		while (i.hasNext())
+		SortedMap<Integer, SStateErrors> res = new TreeMap<>();
+		for (int id : this.graph.states.keySet())
 		{
-			SState s = states.get(i.next());
-			SBuffers b = s.config.buffs;
-			for (Role r1 : roles)
+			SStateErrors errs = this.graph.states.get(id).getErrors();
+			if (!errs.isEmpty())
 			{
-				for (Role r2 : roles)
-				{
-					ESend s0 = b0.get(r1).get(r2);
-					if (s0 != null)
-					{
-						ESend tmp = b.get(r1).get(r2);
-						if (tmp == null)
-						{
-							b0.get(r1).put(r2, null);
-						}
-					}
-				}
+				res.put(id, errs);
 			}
 		}
-	
-		Map<Role, Set<ESend>> ignored = new HashMap<>();
+		return res;
+	}
+
+	// These are checked only on termsets (cf. safety checked on all), and "overlap" with safety errors within there
+	// Could "skip" safety checks for termsets (probably better than coercing "progress" outside of termsets, as it would probably just amount to safety anyway)
+	// CHECKME: factor out a TermSet class?
+	protected Map<Set<SState>, Pair<Set<Role>, Map<Role, Set<ESend>>>>
+			getProgressErrors()
+	{
+		Map<Set<SState>, Pair<Set<Role>, Map<Role, Set<ESend>>>> res
+				= new HashMap<>();
+		for (Set<SState> termset: this.graph.getTermSets())
+		{
+			Set<Role> starved = checkRoleProgress(termset);
+			Map<Role, Set<ESend>> ignored = checkEventualReception(termset);
+			if (!starved.isEmpty() || !ignored.isEmpty())
+			{
+				res.put(termset, new Pair<>(starved, ignored));
+			}
+		}
+		return res;
+	}
+
+	// Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but not a good approach)
+	protected Set<Role> checkRoleProgress(Set<SState> termset)
+	{
+		SState s = termset.iterator().next();  // Pick any state to check canSafelyTerminate (later, if needed), if non progressing equivalent for all
+		Set<Role> todo = new HashSet<>(s.config.efsms.keySet());
+		for (Iterator<SState> i = termset.iterator(); 
+				i.hasNext() && !todo.isEmpty(); )
+		{
+			i.next().getActions().stream().map(x -> x.subj).distinct()
+					.forEach(x -> todo.remove(x));
+				// cf. a.containsRole(r) -- implies obj will be subj for the counterpart action somewhere in the termset?
+		}
+
+		// todo is now all roles that are not the subj of any action in the termset
+		return todo.stream()
+				.filter(x -> !s.config.canSafelyTerminate(x)
+						&& s.config.queues.getQueue(x).values().stream()
+								.allMatch(y -> y == null))  // Check empty queues for starved -- o/w, is a stuck-message
+				.collect(Collectors.toSet());
+	}
+
+	// cf. eventual stability (could also check within termsets)
+	protected Map<Role, Set<ESend>> checkEventualReception(Set<SState> termset)
+	{
+		SState s0 = termset.iterator().next();
+		Set<Role> roles = s0.config.efsms.keySet();
+		Map<Role, Map<Role, ESend>> q0 = s0.config.queues.getQueues();  // dest -> src -> msg -- dest.equals(msg.peer), msg is ESend to the dst
 		for (Role r1 : roles)
 		{
+			Map<Role, ESend> q0_r1 = q0.get(r1);
 			for (Role r2 : roles)
 			{
-				ESend m = b0.get(r1).get(r2);
-				if (m != null)
+				if (!r1.equals(r2) && q0_r1.get(r2) != null &&
+						termset.stream()
+								.anyMatch(x -> x.config.queues.getQueue(r1).get(r2) == null))
 				{
-					Set<ESend> tmp = ignored.get(r2);
-					if (tmp == null)
-					{
-						tmp = new HashSet<>();
-						ignored.put(r2, tmp);
-					}
-					tmp.add(m);
+					q0_r1.put(r2, null);
 				}
+			}
+		}
+	
+		// q0 now shows which buffers are never null at any state in the termset
+		Map<Role, Set<ESend>> ignored = new HashMap<>();
+		for (Role r : roles)
+		{
+			Set<ESend> msgs = q0.values().stream()
+					.flatMap(x -> x.entrySet().stream())  // For all input buffs at every role...
+					.filter(x -> x.getKey().equals(r) && x.getValue() != null)  // ...s.t. the buff is from "r" and is non-empty
+					.map(x -> x.getValue()).collect(Collectors.toSet());
+			if (!msgs.isEmpty())
+			{
+				ignored.put(r, msgs);
 			}
 		}
 		return ignored;
 	}
-	
-	@Override
-	public String toString()
+
+	// Cf. SStateErrors  // TODO: refactor to Core, if not to its own class?
+	protected String getProgressErrorMessages(Set<SState> termset,
+			Pair<Set<Role>, Map<Role, Set<ESend>>> perrors)
 	{
-		return this.graph.toString();
+		String msg = "";
+		if (!perrors.left.isEmpty())  // starved
+		{
+			msg += "\nRole progress violation for " + perrors.left
+					+ " in session state terminal set:\n    " + termSetToString(termset);
+		}
+		if (!perrors.right.isEmpty())  // ignored
+		{
+			msg += "\nEventual reception violation for " + perrors.right
+					+ " in session state terminal set:\n    " + termSetToString(termset);
+		}
+		return msg;
+	}
+	
+	protected String termSetToString(Set<SState> termset)
+	{
+		return this.core.config.args.get(CoreArgs.VERBOSE)
+				? termset.stream().map(x -> x.toString())
+						.collect(Collectors.joining(","))
+				: termset.stream().map(x -> Integer.toString(x.id))
+						.collect(Collectors.joining(","));
 	}
 }

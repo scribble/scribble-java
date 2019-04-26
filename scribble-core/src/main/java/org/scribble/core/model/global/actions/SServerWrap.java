@@ -13,19 +13,20 @@
  */
 package org.scribble.core.model.global.actions;
 
-import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SReceive extends SAction
+// Wrap at the server side
+public class SServerWrap extends SAction
 {
-	public SReceive(Role subj, Role obj, MsgId<?> mid, Payload payload)
+	public SServerWrap(Role subj, Role obj)
 	{
-		super(subj, obj, mid, payload);
+		super(subj, obj, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
-	public boolean isReceive()
+	public boolean isServerWrap()
 	{
 		return true;
 	}
@@ -33,7 +34,7 @@ public class SReceive extends SAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 977;
+		int hash = 1087;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -45,21 +46,22 @@ public class SReceive extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SReceive))
+		if (!(o instanceof SServerWrap))
 		{
 			return false;
 		}
-		return ((SReceive) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	@Override
+	public boolean canEquals(Object o)
 	{
-		return o instanceof SReceive;
+		return o instanceof SServerWrap;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "?";
+		return "(<<-)";
 	}
 }

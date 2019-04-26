@@ -14,19 +14,19 @@
 package org.scribble.del.name.qualified;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.ast.SigDecl;
+import org.scribble.ast.DataDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.name.qualified.SigNameNode;
+import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.DataName;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
 import org.scribble.visit.NameDisambiguator;
 
-public class MessageSigNameNodeDel extends ScribDelBase
+public class DataNameNodeDel extends ScribDelBase
 {
-	public MessageSigNameNodeDel()
+	public DataNameNodeDel()
 	{
 
 	}
@@ -37,17 +37,22 @@ public class MessageSigNameNodeDel extends ScribDelBase
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		ScribNode parent = child.getParent();
-		if (parent instanceof SigDecl)  // Hacky? don't want to do for decl simplenames (generally, don't do if parent is namedeclnode)
+		if (parent instanceof DataDecl)  // Hacky? don't want to do for decl simplenames (generally, don't do if parent is namedeclnode)
 		{
 			return visited;
 		}
 		ModuleContext mc = disamb.getModuleContext();
-		SigNameNode msnn = (SigNameNode) visited;
-		SigName fullname = 
-				mc.getVisibleMessageSigNameFullName(msnn.toName());
-		/*return (MessageSigNameNode) disamb.job.config.af.QualifiedNameNode(
-				msnn.getSource(), SigKind.KIND, fullname.getElements());*/
-		SigNameNode res = new SigNameNode(msnn.token);
+		DataNameNode dtn = (DataNameNode) visited;
+		DataName dt = dtn.toName();
+		if (!mc.isVisibleDataType(dt))
+		{
+			throw new ScribException(dtn.getSource(),
+					"Data type not visible: " + dt);
+		}
+		DataName fullname = mc.getVisibleDataTypeFullName(dt);
+		/*return (DataTypeNode) disamb.job.config.af.QualifiedNameNode(
+				dtn.getSource(), DataTypeKind.KIND, fullname.getElements());*/
+		DataNameNode res = new DataNameNode(dtn.token);
 		for (String e : fullname.getElements())
 		{
 			IdNode n = new IdNode(new CommonToken(23, e));  // FIXME TODO: refactor ast into parser module to access token type constants

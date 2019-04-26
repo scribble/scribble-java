@@ -21,11 +21,11 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-class IntermediateContinueEdge extends EAction
+class UnguardedContinueEdge extends EAction
 {
-	public IntermediateContinueEdge(ModelFactory ef, RecVar rv)
+	public UnguardedContinueEdge(ModelFactory mf, RecVar rv)
 	{
-		super(ef, Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
+		super(mf, Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // HACK
 	}
 	
 	@Override
@@ -35,7 +35,7 @@ class IntermediateContinueEdge extends EAction
 	}
 
 	@Override
-	public SAction toGlobal(ModelFactory sf, Role self)
+	public SAction toGlobal(Role self)
 	{
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
@@ -61,16 +61,16 @@ class IntermediateContinueEdge extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof IntermediateContinueEdge))
+		if (!(o instanceof UnguardedContinueEdge))
 		{
 			return false;
 		}
-		return ((IntermediateContinueEdge) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Checks canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof IntermediateContinueEdge;
+		return o instanceof UnguardedContinueEdge;
 	}
 }

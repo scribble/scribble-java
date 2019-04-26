@@ -32,7 +32,7 @@ public abstract class STReceiveStateBuilder extends STStateChanBuilder
 	{
 		String out = getPreamble(api, s);
 		
-		List<EAction> as = s.getActions();
+		List<EAction> as = s.getDetActions();
 		if (as.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + as);

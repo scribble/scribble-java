@@ -14,32 +14,28 @@
 package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.global.actions.SRequest;
+import org.scribble.core.model.global.actions.SReq;
 import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class ERequest extends EAction
+public class EReq extends EAction
 {
-	public ERequest(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
-	//public Connect(Role peer)
+	public EReq(ModelFactory ef, Role peer, MsgId<?> mid, Payload pay)
 	{
-		super(ef, peer, mid, payload);
-		//super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(ef, peer, mid, pay);
 	}
 	
 	@Override
-	public EAccept toDual(Role self)
+	public EAcc toDual(Role self)
 	{
-		//return new Accept(self);
-		return this.ef.newEAccept(self, this.mid, this.payload);
+		return this.mf.newEAcc(self, this.mid, this.payload);
 	}
 
 	@Override
-	public SRequest toGlobal(ModelFactory sf, Role self)
+	public SReq toGlobal(Role self)
 	{
-		//return new GConnect(self, this.peer);
-		return sf.newSConnect(self, this.peer, this.mid, this.payload);
+		return this.mf.newSReq(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override
@@ -63,17 +59,17 @@ public class ERequest extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof ERequest))
+		if (!(o instanceof EReq))
 		{
 			return false;
 		}
-		return ((ERequest) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof ERequest;
+		return o instanceof EReq;
 	}
 
 	@Override

@@ -36,6 +36,7 @@ import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
+// Relocate to util?
 public class AutGraphParser
 {
 	private final Core core;
@@ -116,7 +117,7 @@ public class AutGraphParser
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
 		//EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil2();
-		EGraphBuilderUtil util = this.core.newEGraphBuilderUtil();
+		EGraphBuilderUtil util = this.core.config.mf.newEGraphBuilderUtil();
 		//util.init(null);  // FIXME: arg is deprecated
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());
@@ -130,7 +131,7 @@ public class AutGraphParser
 		{
 			if (i != init && i != term)
 			{
-				map.put(i, util.ef.newEState(Collections.emptySet()));
+				map.put(i, util.mf.newEState(Collections.emptySet()));
 			}
 		}
 		//for (int i : succs)
@@ -138,7 +139,7 @@ public class AutGraphParser
 		{
 			if (!map.containsKey(i) && i != init && i != term)
 			{
-				map.put(i, util.ef.newEState(Collections.emptySet()));
+				map.put(i, util.mf.newEState(Collections.emptySet()));
 			}
 		}
 		//for (int i : edges.keySet())
@@ -251,27 +252,27 @@ public class AutGraphParser
 			case "?":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newEReceive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
+				return ef.newERecv(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
 			}
 			case "!!":
 			{
 				//return new Connect(new Role(peer));
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newERequest(new Role(peer), getMessageIdHack(msg), payload);
+				return ef.newEReq(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "??":
 			{
 				//return new Accept(new Role(peer));
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newEAccept(new Role(peer), getMessageIdHack(msg), payload);
+				return ef.newEAcc(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "(!!)":
 			{				
-				return ef.newEWrapClient(new Role(peer));
+				return ef.newEClientWrap(new Role(peer));
 			}
 			case "(??)":
 			{				
-				return ef.newEWrapServer(new Role(peer));
+				return ef.newEServerWrap(new Role(peer));
 			}
 			case "-/-":
 			{				

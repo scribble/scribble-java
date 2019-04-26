@@ -23,6 +23,7 @@ import org.scribble.core.visit.STypeAgg;
 import org.scribble.core.visit.STypeAggNoThrow;
 
 // Used only *during* projection -- filtered out by GSeq::projection
+// CHECKME: can use empty Seq, and do "seq injection" in visitSeq overrides?  (cf. RecPruner)
 public class LSkip extends STypeBase<Local, LSeq> implements LType
 {
 	public static final LSkip SKIP = new LSkip();

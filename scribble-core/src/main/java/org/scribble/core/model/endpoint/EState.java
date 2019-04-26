@@ -22,15 +22,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.model.visit.local.EStateVisitor;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
+import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
@@ -39,6 +42,203 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	public EState(Set<RecVar> labs)
 	{
 		super(labs);
+	}
+	
+	// To be overridden by subclasses, to obtain the subclass nodes
+  // CHECKME: remove labs arg, and modify the underlying Set if needed ?
+	protected EState cloneNode(ModelFactory mf, Set<RecVar> labs)
+	{
+		//return ef.newEState(this.labs);
+		return mf.newEState(labs);
+	}
+
+	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)
+	// N.B. cloning means the states, actions are immutable
+	protected EState clone(ModelFactory mf)
+	{
+		Map<Integer, EState> clones = new HashMap<>();  // Original s.id -> clone
+		Function<EState, EState> getClone = x ->
+		{
+			EState clone = clones.get(x.id);  // "clones" is effectively final
+			if (clone == null)
+			{
+				clone = x.cloneNode(mf, x.labs);
+				clones.put(x.id, clone);
+			}
+			return clone;
+		};
+		Set<EState> all = getReachableStates();
+		all.add(this);
+		for (EState s : all)  // Quadratic after getReachableStates, but simpler code for now
+		{
+			Iterator<EAction> as = s.getActions().iterator();
+			Iterator<EState> succs = s.getSuccs().iterator();
+			EState clone = getClone.apply(s);
+			while (as.hasNext())
+			{
+				clone.addEdge(as.next(), getClone.apply(succs.next()));
+			}
+		}
+		return clones.get(this.id);
+	}
+
+	// Pre: succ is the root of the subgraph, and succ is a successor of *"this"* (which is inside the subgraph)
+	// i.e., this-a->succ ("a" is possibly non-det)
+	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
+	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
+	// N.B. cloning means the states, actions are immutable
+	// Consider gproto annotations to specify which states to unfair-clone, i.e., choice-specific fairness
+	private EState unfairCloneSubgraph(ModelFactory mf, EState term, EAction a, EState succ) // Need succ param for non-det
+	{
+		Map<Integer, EState> clones = new HashMap<>();  // Original s.id -> clone
+		Function<EState, EState> getClone = x ->
+		{
+			EState clone = clones.get(x.id);  // "clones" is effectively final
+			if (clone == null)
+			{
+				clone = (term != null && x.id == term.id)
+						? term
+								// Special case: term not cloned, otherwise a mixture of exapanded (and non-expanded) cases may lead to the term being cloned...
+								// ...potentially multiple times and potentially while the original still remains
+						: x.cloneNode(mf, Collections.emptySet());  
+								// CHECKME: remove labs arg from cloneNode and just clear the lab set here ?
+								// Cf. clone, keeps x.labs
+				clones.put(x.id, clone);
+			}
+			return clone;
+		};
+		Set<EState> all = succ.getReachableStates();
+		all.add(succ);
+		for (EState s : all)  // Quadratic after getReachableStates, but simpler code for now
+		{
+			Iterator<EAction> as = s.getActions().iterator();
+			Iterator<EState> succs = s.getSuccs().iterator();
+			EState clone = getClone.apply(s);
+			boolean done = false;  
+					// Restricts adding of *at most* one "this-a->succ" edge out of potentially multiple non-det "a"
+					// i.e., unfair expansion prunes non-det "a" ("determinizes" entry) from "this" into the cloned subgraph
+					// Cf. MState.addEdge(A, S), previously implicitly pruned all non-det "this-a->s" for the same "s"
+			while (as.hasNext())
+			{
+				EAction na = as.next();
+				EState ns = succs.next();
+				if (s.id != this.id)
+				{
+					clone.addEdge(na, getClone.apply(ns));
+				}
+				else if (na.equals(a) && ns.equals(succ) && !done)  
+						// Non-det (to different succ) also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?...
+						// ...this is like non-fairness extended to defeat even non-determinism ?
+				{
+					// s.id == this.id, so "clone" is the clone of "this"
+					clone.addEdge(na, getClone.apply(ns));
+					done = true;
+				}
+			}
+		}
+		return clones.get(succ.id);
+	}
+	
+
+	/* Returns Pair<>(init, term)
+	 * 
+	.. use getallreachable to get subgraph, make a graph clone method
+	.. for each poly output, clone a (non-det) edge to clone of the reachable subgraph with the clone of the current node pruned to this single choice
+	..     be careful of original non-det edges, need to do each separately
+	.. do recursively on the subgraphs, will end up with a normal form with subgraphs without output choices
+	.. is it equiv to requiring all roles to see every choice path?  except initial accepting roles -- yes
+	.. easier to implement as a direct check on the standard global model, rather than model hacking -- i.e. liveness is not just about terminal sets, but about "branching condition", c.f. julien?
+	.. the issue is connect/accept -- makes direct check a bit more complicated, maybe value in doing it by model hacking to rely on standard liveness checking?
+	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles
+	*/
+	public Pair<EState, EState> unfairTransform(ModelFactory mf)
+	{
+		EState init = clone(mf);  // All state refs from here on are clones, original Graph unmodified
+		EState term = init.getTerminal();
+		Set<EState> seen = new HashSet<>();
+		Set<EState> todo = new LinkedHashSet<>();  // Linked unnecessary, but to follow the iteration pattern
+		todo.add(init);
+		while (!todo.isEmpty())
+		{
+			Iterator<EState> i = todo.iterator();
+			EState curr = i.next();
+			i.remove();
+			if (seen.contains(curr))  
+					// Convenient to check here (even though may get curr multiple times) to avoid doing the check before every todo.add
+					// N.B. todo is also aliased from expandUnfairCases
+			{
+				continue;
+			}
+			seen.add(curr);
+			
+			if (curr.getStateKind() == EStateKind.OUTPUT
+					&& curr.getActions().size() > 1)  // >1 makes this algorithm terminating -- in the expanded subgraph, the clone of curr will have all other edges pruned
+			{
+				expandUnfairCases(mf, term, todo, curr);
+			}
+			else
+			{
+				todo.addAll(curr.getSuccs());
+			}
+		}
+		return new Pair<>(init, term);
+	}
+
+	// N.B. todo alias from unfairTransform -- refactor as return? (slower)
+	// Pre: curr.getStateKind() == EStateKind.OUTPUT && curr.getActions().size() > 1
+	// All involved states are already clones
+	private void expandUnfairCases(ModelFactory mf, EState term, Set<EState> todo,
+			EState curr)
+	{
+		Iterator<EAction> as = curr.getActions().iterator();
+		Iterator<EState> succs = curr.getSuccs().iterator();
+		List<EAction> aclones = new LinkedList<>();  // Actions involved in clones (not actually cloned themselves, immutable)
+		List<EState> succClones = new LinkedList<>();
+		Map<EState, List<EAction>> toRemove = new HashMap<>();  // Original succ -> actions "a" where "curr-a->succ"
+				// List needed to handle removing multiple edges to the same state: e.g. mu X.(A->B:1 + A->B:2).X
+
+		while (as.hasNext())
+		{
+			EAction a = as.next();
+			EState succ = succs.next();
+			if (!succ.canReach(curr))  // Do unfairCloneSubgraph for each (potentially) "recursive" action
+			{
+				todo.add(succ);
+				continue;
+			}
+			EState succClone = curr.unfairCloneSubgraph(mf, term, a, succ);  // succ is a successor of curr
+			aclones.add(a);
+			succClones.add(succClone);
+			List<EAction> tmp = toRemove.get(succ);
+			if (tmp == null)
+			{
+				tmp = new LinkedList<>();
+				toRemove.put(succ, tmp);
+			}
+			tmp.add(a);  // To replace original edge with new edge into unfair-cloned subgraph
+		}
+
+		if (!aclones.isEmpty())  // Redundant (toRemove would also be empty), but more clear
+		{
+			for (EState succ : toRemove.keySet())
+			{
+				for (EAction a1 : toRemove.get(succ))
+				{
+					curr.removeEdge(a1, succ);  // First, remove original edge to original succ
+				}
+			}
+			Iterator<EAction> iaclones = aclones.iterator();
+			Iterator<EState> isuccClones = succClones.iterator();
+			while (iaclones.hasNext())
+			{
+				EAction a = iaclones.next();  // Same actions involved in toRemove loop above
+				EState succClone = isuccClones.next();  // Clones of the succs involved in toRemove loop above
+				curr.addEdge(a, succClone);  // Second, add edge to cloned succ (entry to the unfair-cloned subgraph)
+				todo.add(succClone);  // This will cause unfairTransform to "recursively" visit the nodes of the unfair-cloned subgraph
+						// Doesn't work if non-det preserved by the "unfairClone" aux (recursively, edges always >1 -- termination condition never met)
+						// Idea is to bypass succ clone (for non-det, edges>1) but in general this will be cloned again before returning to it, so bypass doesn't work -- to solve this more generally probably need to keep a record of all clones to bypass future clones
+			}
+		}
 	}
 	
 	public String toPml(Role r)
@@ -64,7 +264,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 
 		String res = lab + ":\n";
 		EStateKind kind = getStateKind();
-		List<EAction> as = getActions();
+		List<EAction> as = getDetActions();
 		if (kind == EStateKind.OUTPUT)
 		{
 			if (as.stream().anyMatch(a -> !a.isSend()))
@@ -78,12 +278,12 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 							  "::\n"
 							+ "skip ->\n"
 							+ "s_" + r + "_" + a.peer + "!" + a.mid + ";\n"
-							+ "goto " + getLabel(seen, getSuccessor(a), r) + "\n"
+							+ "goto " + getLabel(seen, getDetSuccessor(a), r) + "\n"
 						)
 						.collect(Collectors.joining(""))
 					+ "fi\n";
 		}
-		else if (kind == EStateKind.UNARY_INPUT || kind == EStateKind.POLY_INPUT)
+		else if (kind == EStateKind.UNARY_RECEIVE || kind == EStateKind.POLY_RECIEVE)
 		{
 			res +=
 					  "if\n"
@@ -91,7 +291,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 							  "::\n"
 							+ "r_" + a.peer + "_" + r + "?[" + a.mid + "] ->\n"
 							+ "r_" + a.peer + "_" + r + "?" + a.mid + ";\n"
-							+ "goto " + getLabel(seen, getSuccessor(a), r) + "\n"
+							+ "goto " + getLabel(seen, getDetSuccessor(a), r) + "\n"
 						)
 						.collect(Collectors.joining("")) 
 					+ "fi\n";
@@ -105,7 +305,8 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			throw new RuntimeException("TODO: " + kind);
 		}
 
-		res += as.stream().map(a -> "\n" + getSuccessor(a).toPml(tmp, r)).collect(Collectors.joining(""));
+		res += as.stream().map(x -> "\n" + getDetSuccessor(x).toPml(tmp, r))
+				.collect(Collectors.joining(""));
 
 		return res;
 	}
@@ -121,243 +322,67 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 		return lab;
 	}
 	
-	// To be overridden by subclasses, to obtain the subclass nodes
-  // FIXME: remove labs arg, and modify the underlying Set if needed?
-	protected EState cloneNode(ModelFactory ef, Set<RecVar> labs)
+	// CHECKME: make an isSync in IOAction ?
+  // This state is a *necessarily* "blocking" output sync-client (request, clientwrap) state
+	public boolean isSyncClientOnly()
 	{
-		//return ef.newEState(this.labs);
-		return ef.newEState(labs);
+		return getStateKind() == EStateKind.OUTPUT
+				&& getActions().stream()
+						.allMatch(x -> x.isRequest() || x.isClientWrap());
 	}
 	
-	// Helper factory method for deriving an EGraph from an arbitary EState (but not the primary way to construct EGraphs; cf., EGraphBuilderUtil)
-	public EGraph toGraph()
+	// CHECKME: return
+	public void traverse(EStateVisitor v) throws ScribException
 	{
-		return new EGraph(this, getTerminal(this));  // Throws exception if >1 terminal; null if no terminal
-	}
+		visitState(v);  // "visitNode"
 
-	/*.. move back to endpointstate
-	.. use getallreachable to get subgraph, make a graph clone method
-	.. for each poly output, clone a (non-det) edge to clone of the reachable subgraph with the clone of the current node pruned to this single choice
-	..     be careful of original non-det edges, need to do each separately
-	.. do recursively on the subgraphs, will end up with a normal form with subgraphs without output choices
-	.. is it equiv to requiring all roles to see every choice path?  except initial accepting roles -- yes
-	.. easier to implement as a direct check on the standard global model, rather than model hacking -- i.e. liveness is not just about terminal sets, but about "branching condition", c.f. julien?
-	.. the issue is connect/accept -- makes direct check a bit more complicated, maybe value in doing it by model hacking to rely on standard liveness checking?
-	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
-	public EState unfairTransform(ModelFactory ef)
-	{
-		EState init = clone(ef);
-		
-		EState term = MPrettyState.getTerminal(init);
-		Set<EState> seen = new HashSet<>();
-		Set<EState> todo = new LinkedHashSet<>();
-		todo.add(init);
-		while (!todo.isEmpty())
+		// "visitChildren"
+		Iterator<EAction> as = this.actions.iterator();
+		Iterator<EState> succs = this.succs.iterator();
+		while (as.hasNext())
 		{
-			Iterator<EState> i = todo.iterator();
-			EState curr = i.next();
-			i.remove();
-
-			if (seen.contains(curr))
+			EAction a = as.next();
+			EState succ = succs.next();
+			if (!v.hasSeen(succ))  // cf. EdgeVisitor
 			{
-				continue;
-			}
-			seen.add(curr);
-			
-			if (curr.getStateKind() == EStateKind.OUTPUT && curr.getAllActions().size() > 1)  // >1 is what makes this algorithm terminating
-			{
-				//if (curr.getAllTakeable().size() > 1)
-				{
-					Iterator<EAction> as = curr.getAllActions().iterator();
-					Iterator<EState> ss = curr.getAllSuccessors().iterator();
-					//Map<IOAction, EndpointState> clones = new HashMap<>();
-					List<EAction> cloneas = new LinkedList<>();
-					List<EState> cloness = new LinkedList<>();
-					//LinkedHashMap<EndpointState, EndpointState> cloness = new LinkedHashMap<>();  // clone -> original
-					Map<EState, List<EAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X . (A->B:1 + A->B:2).X
-					while (as.hasNext())
-					{
-						EAction a = as.next();
-						EState s = ss.next();
-						if (!s.canReach(curr))
-						{
-							todo.add(s);
-						}
-						else
-						{
-							EState clone = curr.unfairClone(ef, term, a, s);  // s is a succ of curr
-							//try { s.removeEdge(a, tmps); } catch (ScribbleException e) { throw new RuntimeException(e); }
-							//clones.put(a, clone);
-							cloneas.add(a);
-							cloness.add(clone);
-							//cloness.put(clone, s);
-							
-							//toRemove.put(s, a);
-							List<EAction> tmp = toRemove.get(s);
-							if (tmp == null)
-							{
-								tmp = new LinkedList<>();
-								toRemove.put(s, tmp);
-							}
-							tmp.add(a);
-						}
-					}
-					//if (!clones.isEmpty())  // Redundant, but more clear
-					if (!cloneas.isEmpty())  // Redundant, but more clear
-					{
-						/*as = new LinkedList<>(curr.getAllTakeable()).iterator();
-						//Iterator<EndpointState>
-						ss = new LinkedList<>(curr.getSuccessors()).iterator();
-						while (as.hasNext())
-						{
-							IOAction a = as.next();
-							EndpointState s = ss.next();
-							//if (clones.containsKey(a))  // Still OK for non-det edges?
-							//if (cloneas.contains(a))  // Still OK for non-det edges? -- no: removing *all* non-det a's for this a, so non-recursive cases are lost
-							if (cloneas.contains(a) && ...succ == orig...)
-							{
-								try { curr.removeEdge(a, s); } catch (ScribbleException e) { throw new RuntimeException(e); }
-							}
-						}*/
-						for (EState s : toRemove.keySet())
-						{
-							try
-							{
-								//curr.removeEdge(toRemove.get(s), s);
-								for (EAction tmp : toRemove.get(s))
-								{
-									curr.removeEdge(tmp, s);
-								}
-							}
-							catch (ScribException e) { throw new RuntimeException(e); }
-						}
-						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
-						Iterator<EAction> icloneas = cloneas.iterator();
-						Iterator<EState> icloness = cloness.iterator();
-						//Iterator<EndpointState> icloness = cloness.keySet().iterator();
-						while (icloneas.hasNext())
-						{
-							EAction a = icloneas.next();
-							EState s = icloness.next();
-							/*curr.addEdge(e.getKey(), e.getValue());
-							todo.add(e.getValue());
-							seen.add(e.getValue());*/
-							curr.addEdge(a, s);
-							todo.add(s);  // Doesn't work if non-det preserved by unfairClone aux (recursively edges>1)
-							/*seen.add(s);  // Idea is to bypass succ clone (for non-det, edges>1) but in general this will be cloned again before returning to it, so bypass doesn't work -- to solve this more generally probably need to keep a record of all clones to bypass future clones
-							todo.addAll(s.getSuccessors());*/
-						}
-						//continue;
-					}
-				}
-			}
-			else
-			{
-				todo.addAll(curr.getAllSuccessors());
+				succ.traverse(v.enter(this, a, succ));
 			}
 		}
-
-		return init;
-	}
-
-	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)
-	protected EState clone(ModelFactory ef)
-	{
-		Set<EState> all = new HashSet<>();
-		all.add(this);
-		all.addAll(MPrettyState.getReachableStates(this));
-		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
-		for (EState s : all)
-		{
-			map.put(s.id, s.cloneNode(ef, s.labs));
-		}
-		for (EState s : all)
-		{
-			Iterator<EAction> as = s.getAllActions().iterator();
-			Iterator<EState> ss = s.getAllSuccessors().iterator();
-			EState clone = map.get(s.id);
-			while (as.hasNext())
-			{
-				EAction a = as.next();
-				EState succ = ss.next();
-				clone.addEdge(a, map.get(succ.id));
-			}
-		}
-		return map.get(this.id);
 	}
 	
-	// Pre: succ is the root of the subgraph, and succ is a successor of "this" (which is inside the subgraph)
-	// i.e., this -a-> succ (maybe non-det)
-	// Returns the clone of the subgraph rooted at succ, with all non- "this-a->succ" actions pruned from the clone of "this" state
-	// i.e., we took "a" from "this" to get to succ (the subgraph root); if we enter "this" again (inside the subgraph), then always take "a" again
-	protected EState unfairClone(ModelFactory ef, EState term, EAction a, EState succ) // Need succ param for non-det
+	protected void visitState(EStateVisitor v) throws ScribException
 	{
-		//EndpointState succ = take(a);
-		Set<EState> all = new HashSet<>();
-		all.add(succ);
-		all.addAll(MPrettyState.getReachableStates(succ));
-		Map<Integer, EState> map = new HashMap<>();  // original s.id -> clones
-		for (EState s : all)
+		// "visitNode"
+		EStateKind kind = getStateKind();  // CHECKME: explicitly cache kind in EState?  this lookup is slow?
+		switch (kind)
 		{
-			if (term != null && s.id == term.id)
-			{
-				map.put(term.id, term);
-			}
-			else
-			{
-				//map.put(s.id, newState(s.labs));
-				map.put(s.id, s.cloneNode(ef, Collections.emptySet()));  // FIXME: remove labs arg from cloneNode and just clear the lab set here?
-			}
+			case ACCEPT: v.visitAccept(this); break;
+			case OUTPUT: v.visitOutput(this); break;
+			case POLY_RECIEVE: v.visitPolyInput(this); break;
+			case SERVER_WRAP: v.visitServerWrap(this); break;
+			case TERMINAL: v.visitTerminal(this); break;
+			case UNARY_RECEIVE: v.visitUnaryInput(this); break;
+			default: throw new RuntimeException("Unknown state kind: " + kind);
 		}
-		for (EState s : all)
-		{
-			Iterator<EAction> as = s.getAllActions().iterator();
-			Iterator<EState> ss = s.getAllSuccessors().iterator();
-			EState clone = map.get(s.id);
-			while (as.hasNext())
-			{
-				EAction tmpa = as.next();
-				EState tmps = ss.next();
-				if (s.id != this.id
-						|| (tmpa.equals(a) && tmps.equals(succ)))  // Non-det also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?
-					                                             // ^ Currently, this is like non-fairness is extended to even defeat non-determinism
-				{
-					clone.addEdge(tmpa, map.get(tmps.id));
-				}
-			}
-		}
-		return map.get(succ.id);
-	}
-	
-	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
-	public boolean isConnectOrWrapClientOnly()
-	{
-		return getStateKind() == EStateKind.OUTPUT && getAllActions().stream().allMatch((a) -> a.isRequest() || a.isWrapClient());
 	}
 	
 	public EStateKind getStateKind()
 	{
-		List<EAction> as = this.getAllActions();
+		List<EAction> as = this.getActions();
 		if (as.size() == 0)
 		{
 			return EStateKind.TERMINAL;
 		}
 		else
 		{
-			/*EAction a = as.iterator().next();
-			return (a.isSend() || a.isConnect() || a.isDisconnect() || a.isWrapClient() ) ? EStateKind.OUTPUT
-						//: (a.isConnect() || a.isAccept()) ? Kind.CONNECTION  // FIXME: states can have mixed connects and sends
-						//: (a.isConnect()) ? Kind.CONNECT
-						: (a.isAccept()) ? EStateKind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)  // No: not any more, connect-with-message
-						: (a.isWrapServer()) ? EStateKind.WRAP_SERVER   // WrapServer is always unary, guaranteed by treating as a unit message id (wrt. branching)
-						: (as.size() > 1) ? EStateKind.POLY_INPUT : EStateKind.UNARY_INPUT;*/
-			if (as.stream().allMatch(a -> a.isSend() || a.isRequest() || a.isWrapClient()))  // wrapClient should be unary?
+			if (as.stream()
+					.allMatch(a -> a.isSend() || a.isRequest() || a.isClientWrap()))  // ClientWrap should be unary?
 			{
 				return EStateKind.OUTPUT;
 			}
 			else if (as.stream().allMatch(EAction::isReceive))
 			{
-				return (as.size() == 1) ? EStateKind.UNARY_INPUT : EStateKind.POLY_INPUT;
+				return (as.size() == 1) ? EStateKind.UNARY_RECEIVE : EStateKind.POLY_RECIEVE;
 			}
 			else if (as.stream().allMatch(EAction::isAccept))
 			{
@@ -367,9 +392,9 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			{
 				return EStateKind.OUTPUT;
 			}
-			else if (as.size() == 1 && as.get(0).isWrapServer())
+			else if (as.size() == 1 && as.get(0).isServerWrap())
 			{
-				return EStateKind.WRAP_SERVER;
+				return EStateKind.SERVER_WRAP;
 			}
 			else
 			{
@@ -377,31 +402,24 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 			}
 		}
 	}
+	
+	/*// Helper factory method for deriving an EGraph from an arbitary EState (but not the primary way to construct EGraphs; cf., EGraphBuilderUtil)
+	public EGraph toGraph()
+	{
+		return new EGraph(this, getTerminal());  // Throws exception if >1 terminal; null if no terminal
+	}*/
 
 	@Override
-	public EState getTerminal()
+	public Set<EState> getReachableStates()  // CHECKME: consider a "lazy" version?  Maybe as an Iterator or Stream
 	{
-		return MState.getTerminal(this);
-	}
-
-	@Override
-	public Set<EState> getReachableStates()
-	{
-		
-		return MState.getReachableStates(this);
-	}
-
-	@Override
-	public Set<EAction> getReachableActions()
-	{
-		return MState.getReachableActions(this);
+		return getReachableStatesAux(this);
 	}
 
 	@Override
 	public int hashCode()
 	{
 		int hash = 83;
-		hash = 31 * hash + super.hashCode();  // N.B. uses state ID only
+		hash = 31 * hash + super.hashCode();  // N.B. ultimately uses state ID only
 		return hash;
 	}
 

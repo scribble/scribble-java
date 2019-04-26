@@ -14,44 +14,42 @@
 package org.scribble.core.model.endpoint.actions;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.global.actions.SAccept;
-import org.scribble.core.type.name.MsgId;
+import org.scribble.core.model.global.actions.SServerWrap;
+import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class EAccept extends EAction
+// Wrap at the server side
+// Duplicated from Disconnect
+public class EServerWrap extends EAction
 {
-	public EAccept(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
-	//public Accept(Role peer)
+	public EServerWrap(ModelFactory ef, Role peer)
 	{
-		super(ef, peer, mid, payload);
-		//super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(ef, peer, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public ERequest toDual(Role self)
+	public EClientWrap toDual(Role self)
 	{
-		//return new Connect(self);
-		return this.ef.newERequest(self, this.mid, this.payload);
+		return this.mf.newEClientWrap(self);
 	}
 
 	@Override
-	public SAccept toGlobal(ModelFactory sf, Role self)
+	public SServerWrap toGlobal(Role self)
 	{
-		return sf.newSAccept(self, this.peer, this.mid, this.payload);
-		//return new GAccept(self, this.peer);
+		return this.mf.newSServerWrap(self, this.peer);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		int hash = 937;
+		int hash = 1063;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
 	
 	@Override
-	public boolean isAccept()
+	public boolean isServerWrap()
 	{
 		return true;
 	}
@@ -63,21 +61,22 @@ public class EAccept extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof EAccept))
+		if (!(o instanceof EServerWrap))
 		{
 			return false;
 		}
-		return ((EAccept) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	@Override
+	public boolean canEquals(Object o)
 	{
-		return o instanceof EAccept;
+		return o instanceof EServerWrap;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "??";
+		return "(??)";
 	}
 }

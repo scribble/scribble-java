@@ -55,10 +55,10 @@ public class LProtoName extends ProtoName<Local>
 			return false;
 		}
 		LProtoName n = (LProtoName) o;
-		return n.canEqual(this) && super.equals(o);
+		return n.canEquals(this) && super.equals(o);
 	}
 	
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof LProtoName;
 	}

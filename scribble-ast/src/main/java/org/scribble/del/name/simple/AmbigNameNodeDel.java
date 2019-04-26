@@ -13,21 +13,17 @@
  */
 package org.scribble.del.name.simple;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.MsgTransfer;
 import org.scribble.ast.PayElem;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.name.qualified.DataNameNode;
-import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.name.simple.IdNode;
-import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.AmbigName;
 import org.scribble.del.ScribDelBase;
 import org.scribble.util.ScribException;
@@ -40,89 +36,51 @@ public class AmbigNameNodeDel extends ScribDelBase
 
 	}
 
-	// Currently only in "message positions (see Scribble.g, ambiguousname)
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode child,
 			NameDisambiguator disamb, ScribNode visited) throws ScribException
 	{
 		ScribNode parent = child.getParent();
-		ModuleContext mcontext = disamb.getModuleContext();
-		AmbigNameNode ann = (AmbigNameNode) visited;
-		AmbigName name = ann.toName();
+		ModuleContext modc = disamb.getModuleContext();
+		AmbigNameNode a = (AmbigNameNode) visited;
+		AmbigName name = a.toName();
 		// By well-formedness (checked later), payload type and parameter names are distinct
-		// FIXME: are conflicts checked elsewhere?
-		if (mcontext.isDataTypeVisible(name.toDataName()))
+		// CHECKME: are conflicts checked elsewhere? -- ?
+		if (modc.isDataTypeVisible(name.toDataName()))
 		{
-			if (parent instanceof MsgTransfer<?>)  // FIXME HACK: MessageTransfer assumes MessageNode (cast in visitChildren), so this needs to be caught here  // FIXME: other similar cases?
+			// CHECKME HACK: MsgTransfer assumes MessageNode (cast in visitChildren), so this needs to be caught here  
+			// CHECKME: any other similar cases?
+			if (parent instanceof MsgTransfer<?>)
 			{
-				throw new ScribException(ann.getSource(),
+				throw new ScribException(a.getSource(),
 						"Invalid occurrence of data type: " + parent);
 			}
-			/*return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
-					DataTypeKind.KIND, name.getElements());*/
-
-			//DataTypeNode res = new DataTypeNode(ann.token);  // CHECKME: what should the Token be?
-			//DataTypeNode res = new DataTypeNode(new CommonToken(73, "TYPENAME"));  // FIXME: use af
-			DataNameNode res = (DataNameNode) disamb.job.config.af
-					.DataNameNode(ann.token, ann.getElements().stream()
-							.map(x -> disamb.job.config.af.IdNode(null, x))
-							.collect(Collectors.toList()));
-
-			//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
-			res.addChild(new IdNode(ann.token));
-
-			return res;
+			List<IdNode> elems = a.getElements().stream()
+					.map(x -> disamb.job.config.af.IdNode(null, x))
+					.collect(Collectors.toList());
+			return disamb.job.config.af.DataNameNode(a.token, elems);
 		}
-		else if (mcontext.isMessageSigNameVisible(name.toSigName()))
+		else if (modc.isMessageSigNameVisible(name.toSigName()))
 		{
 			if (parent instanceof PayElem) // FIXME HACK
 			{
-				throw new ScribException(ann.getSource(),
+				throw new ScribException(a.getSource(),
 						"Invalid occurrence of message signature name: " + parent);
 			}
-			/*return disamb.job.config.af.QualifiedNameNode(ann.getSource(),
-					SigKind.KIND, name.getElements());*/
-
-			//MessageSigNameNode res = new MessageSigNameNode(ann.token);  // CHECME: what should the Token be?
-			//MessageSigNameNode res = new MessageSigNameNode(new CommonToken(67, "SIGNAME"));  // FIXME: use af
-			SigNameNode res = (SigNameNode) disamb.job.config.af
-					.SigNameNode(ann.token, ann.getElements().stream()
-							.map(x -> disamb.job.config.af.IdNode(null, x))
-							.collect(Collectors.toList()));
-
-			//res.addChildren(ann.getChildren());
-			res.addChild(new IdNode(ann.token));
-
-			return res;
+			List<IdNode> elems = a.getElements().stream()
+					.map(x -> disamb.job.config.af.IdNode(null, x))
+					.collect(Collectors.toList());
+			return disamb.job.config.af.SigNameNode(a.token, elems);
 		}
-		else if (disamb.isBoundParameter(name))
+		else if (disamb.isBoundParam(name))
 		{
-			/*return disamb.job.config.af.NonRoleParamNode(ann.getSource(),
-					disamb.getParameterKind(name), name.toString());*/
-			NonRoleParamKind kind = disamb.getParameterKind(name);
-			if (kind.equals(DataKind.KIND))
-			{
-				//TypeParamNode res = new TypeParamNode(ann.token);  // CHECKME: what should the Token be?
-				//TypeParamNode res = new TypeParamNode(75, ann.token);  // CHECKME: what should the Token be?
-				DataParamNode res = disamb.job.config.af.DataParamNode(ann.token,
-						ann.getText());
-
-				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
-
-				return res;
-			}
-			else if (kind.equals(SigKind.KIND))
-			{
-				//SigParamNode res = new SigParamNode(69, ann.token);  // CHECKME: what should the Token be?
-				SigParamNode res = disamb.job.config.af.SigParamNode(ann.token,
-						ann.getText());
-
-				//res.addChildren(ann.getChildren());  // CHECKME: refactor factory for new ast, and do inside there?
-
-				return res;
-			}
+			NonRoleParamKind kind = disamb.getParamKind(name);
+			return kind.equals(DataKind.KIND) 
+					? disamb.job.config.af.DataParamNode(a.token, a.getText())
+					// else if(kind.equals(SigKind.KIND))
+					: disamb.job.config.af.SigParamNode(a.token, a.getText());
 		}
-		throw new ScribException(ann.getSource(),
+		throw new ScribException(a.getSource(),
 				"Cannot disambiguate name: " + name);
 	}
 }

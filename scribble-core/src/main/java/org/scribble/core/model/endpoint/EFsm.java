@@ -19,61 +19,34 @@ import java.util.stream.Collectors;
 import org.scribble.core.model.endpoint.actions.EAction;
 
 // Factor out with SModel?
-public class EFSM
+public class EFsm
 {
 	public final EGraph graph;
 	public final EState curr;
 	
-	protected EFSM(EGraph graph)
+	protected EFsm(EGraph graph)
 	{
 		this(graph, graph.init);
 	}
 
-	protected EFSM(EGraph graph, EState curr)
+	protected EFsm(EGraph graph, EState curr)
 	{
-		this.graph = graph;//new EGraph(init, term);
+		this.graph = graph;
 		this.curr = curr;
 	}
-	
-	/*public EndpointState getCurrent()
+
+	// CHECKME: Set? List is for non-det actions, but is that relevant to EFsm's?
+	// N.B. this just means "follow an edge", it is agnostic to an "actual semantics" (e.g., queues, queue sizes, etc.), cf. "fire"
+	public List<EFsm> getSuccs(EAction a)
 	{
-		return this.curr;
-	}*/
+		return this.curr.getSuccs(a).stream().map(x -> new EFsm(this.graph, x))
+				.collect(Collectors.toList());
+	}
 
 	// CHECKME: check if unfolded initial accept is possible, and if it breaks anything
 	public boolean isInitial()
 	{
-		return this.curr.equals(this.graph.init);
-	}
-	
-	public boolean isTerminated()
-	{
-		return this.curr.isTerminal();
-	}
-
-	public EStateKind getStateKind()
-	{
-		return this.curr.getStateKind();
-	}
-
-	public List<EFSM> fireAll(EAction a)
-	{
-		return this.curr.getSuccessors(a).stream().map((s) -> new EFSM(this.graph, s)).collect(Collectors.toList());
-	}
-
-	public List<EAction> getAllFireable()
-	{
-		return this.curr.getAllActions();
-	}
-	
-	public boolean hasFireable(EAction a)
-	{
-		return this.curr.hasAction(a);
-	}
-	
-	public boolean isConnectOrWrapClientOnly()
-	{
-		return this.curr.isConnectOrWrapClientOnly();
+		return this.curr.equals(this.graph.init);  // i.e., "literally" in the initial state (not "semantically")
 	}
 
 	@Override
@@ -92,11 +65,11 @@ public class EFSM
 		{
 			return true;
 		}
-		if (!(o instanceof EFSM))
+		if (!(o instanceof EFsm))
 		{
 			return false;
 		}
-		EFSM them = (EFSM) o;
+		EFsm them = (EFsm) o;
 		return this.graph.equals(them.graph) && this.curr.equals(them.curr);
 	}
 	
@@ -106,3 +79,43 @@ public class EFSM
 		return Integer.toString(this.curr.id);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	/*public boolean isTerminated()
+	{
+		return this.curr.isTerminal();
+	}
+
+	public EStateKind getStateKind()
+	{
+		return this.curr.getStateKind();
+	}
+
+	public List<EAction> getActions()
+	{
+		return this.curr.getActions();
+	}
+	
+	public boolean hasAction(EAction a)
+	{
+		return this.curr.hasAction(a);
+	}
+	
+	public boolean isRequesttOrClientWrapOnly()
+	{
+		return this.curr.isRequestOrClientWrapOnly();
+	}*/

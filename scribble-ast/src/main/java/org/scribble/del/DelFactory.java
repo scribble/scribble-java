@@ -15,10 +15,9 @@ package org.scribble.del;
 
 import org.scribble.ast.AuxMod;
 import org.scribble.ast.DataDecl;
+import org.scribble.ast.DataParamDecl;
 import org.scribble.ast.ExplicitMod;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.SigDecl;
-import org.scribble.ast.SigLitNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonRoleArg;
@@ -30,13 +29,14 @@ import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.ScribNode;
+import org.scribble.ast.SigDecl;
+import org.scribble.ast.SigLitNode;
 import org.scribble.ast.SigParamDecl;
-import org.scribble.ast.DataParamDecl;
 import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
@@ -46,19 +46,20 @@ import org.scribble.ast.global.GProtoDecl;
 import org.scribble.ast.global.GProtoDef;
 import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
-import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.ast.name.simple.DataParamNode;
 
 
 // Use after ANTLR parsing (specifically, ScribTreeAdaptor) -- not needed for AstFactory constructions
@@ -66,10 +67,9 @@ import org.scribble.ast.name.simple.DataParamNode;
 // A dec method for each AST class -- method name must be the same as target class name
 // Implementations (DelDecoratorImpl) in scribble-parser, can depend on parser implementation
 // E.g., DelDecoratorImpl: each method named after the class name -- currently dispatched by reflection
-public interface DelDecorator
+public interface DelFactory
 {
-	void decorate(ScribNode n);
-
+	// Currently a bit more than plain factory, calls setDel
 	void IdNode(IdNode n);
 	void ExtIdNode(ExtIdNode n);
 
@@ -112,13 +112,13 @@ public interface DelDecorator
 	void SigLitNode(SigLitNode n);
 	void PayElemList(PayElemList n);
 	void UnaryPayElem(UnaryPayElem<?> n);
-	/*GDelegationElem GDelegationElem(CommonTree source, GProtocolNameNode name, RoleNode role);
-	LDelegationElem LDelegationElem(CommonTree source, LProtocolNameNode name);*/
+	void GDelegPayElem(GDelegPayElem n);
+	//void LDelegationElem(CommonTree source, LProtocolNameNode name);
 
 	void GConnect(GConnect n);
 	void GDisconnect(GDisconnect n);
 	void GMsgTransfer(GMsgTransfer n);
-	/*GWrap GWrap(CommonTree source, RoleNode src, RoleNode dest);*/
+	void GWrap(GWrap n);
 
 	void GContinue(GContinue n);
 	void GDo(GDo n);

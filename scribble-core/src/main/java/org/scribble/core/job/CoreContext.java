@@ -14,24 +14,24 @@
 package org.scribble.core.job;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.lang.global.GProtocol;
-import org.scribble.core.lang.local.LProtocol;
+import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.model.endpoint.AutGraphParser;
 import org.scribble.core.model.endpoint.EGraph;
+import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.global.SGraph;
+import org.scribble.core.model.global.SGraphBuilder;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
-import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.visit.global.GTypeInliner;
 import org.scribble.core.visit.global.InlinedProjector;
+import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 import org.scribble.util.ScribUtil;
 
@@ -39,7 +39,7 @@ import org.scribble.util.ScribUtil;
 // Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter -- "users" get this from the Job and expect to setter mutate "in place"
 public class CoreContext
 {
-	public final Core core;
+	private final Core core;
 
 	// Keys are full names
 	// CHECKME: not currently used by core? -- core fully independent of modules, etc., because full disamb already done? (by imed translation)
@@ -47,22 +47,22 @@ public class CoreContext
 
 	// "Directly" translated global protos, i.e., separate proto decls without any inlining/unfolding/etc
 	// Protos retain original decl role list (and args)
-  // Keys are full names (though GProtocol already includes full name)
-	private final Map<GProtoName, GProtocol> imeds;
+	private final Map<GProtoName, GProtocol> imeds;  // Keys are full names (though GProtocol already includes full name)
 
-	// Protos have pruned role decls -- CHECKME: prune args?
-  // Keys are full names (though GProtocol already includes full name)
-	private final Map<GProtoName, GProtocol> inlined = new HashMap<>();
+	// N.B. protos have pruned role decls -- CHECKME: prune args?
+	private final Map<GProtoName, GProtocol> inlined = new HashMap<>();  // Keys are full names (though GProtocol already includes full name)
 
-  // Projected from inlined; keys are full names
-	private final Map<LProtoName, LProtocol> iprojs = new HashMap<>();
+	// CHECKME: rename projis?
+	private final Map<LProtoName, LProjection> iprojs = new HashMap<>();  // Projected from inlined; keys are full names
 	
+	// CHECKME: refactor to Job ?
 	// Projected from intermediates
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	// LProtocolName key is LProtocol value fullname (i.e., redundant)
-	private final Map<LProtoName, LProtocol> projs = new HashMap<>();
+	private final Map<LProtoName, LProjection> projs = new HashMap<>();
+			// FIXME: choice-subj fixing, do-pruning -- factor out to Job and do there via AstVisitor? -- make testing compare the two sides 
 
-	// Built from inlined
+	// Built from projected inlined
 	private final Map<LProtoName, EGraph> fEGraphs = new HashMap<>();
 	private final Map<LProtoName, EGraph> uEGraphs = new HashMap<>();
 	private final Map<LProtoName, EGraph> mEGraphs = new HashMap<>();  
@@ -81,106 +81,132 @@ public class CoreContext
 				.collect(Collectors.toMap(x -> x.fullname, x -> x));
 	}
 	
-	// Used by Job for pass running, includes projections (e.g. for reachability checking)
-	// Safer to get module names and require user to re-fetch the module by the getter each time (after replacing), to make sure the latest is used
-	public Set<ModuleName> getFullModuleNames()
+	// Used by Core for pass running
+	// Safer to return names and require user to get the target value by name, to make sure the value is created
+	public Set<GProtoName> getParsedFullnames()
 	{
-		Set<ModuleName> modnames = new HashSet<>();
-		modnames.addAll(getParsedFullModuleNames());
-		modnames.addAll(getProjectedFullModuleNames());
-		return modnames;
+		return this.imeds.keySet().stream().collect(Collectors.toSet());
 	}
 
-	public Set<ModuleName> getParsedFullModuleNames()
+	/*// Pre: getProjectedInlined done for all... -- or directly derive these from the global names?
+	// N.B. uses this.*i*projs (more "important" than this.projs?)
+	public Set<LProtoName> getProjectedFullnames()
 	{
-		//return Collections.unmodifiableSet(this.parsed.keySet());
-		return this.imeds.keySet().stream().map(x -> x.getPrefix())
-				.collect(Collectors.toSet());
-	}
-
-	public Set<ModuleName> getProjectedFullModuleNames()
-	{
-		return this.projs.keySet().stream().map(x -> x.getPrefix())
-				.collect(Collectors.toSet());
-	}
+		return this.iprojs.keySet().stream().collect(Collectors.toSet());
+	}*/
 	
 	public GProtocol getIntermediate(GProtoName fullname)
 	{
 		return this.imeds.get(fullname);
 	}
 
-	public Collection<GProtocol> getIntermediates()
+	/*// OK for prevoius CoreContext with more basic getters/setters -- now values created on-demand by individual getters, so a collective getter is less suitable
+	public Set<GProtocol> getIntermediates()
 	{
 		return this.imeds.values().stream().collect(Collectors.toSet());
-	}
-	
-	public void addInlined(GProtoName fullname, GProtocol g)
-	{
-		this.inlined.put(fullname, g);
-	}
+	}*/
 	
 	public GProtocol getInlined(GProtoName fullname)
 	{
-		return this.inlined.get(fullname);
+		GProtocol inlined = this.inlined.get(fullname);
+		if (inlined == null)
+		{
+			GTypeInliner v = new GTypeInliner(this.core);  // Factor out?
+			inlined = this.imeds.get(fullname).getInlined(v);  // Protocol.getInlined does pruneRecs
+			addInlined(fullname, inlined);
+		}
+		return inlined;
+	}
+	
+	protected void addInlined(GProtoName fullname, GProtocol g)
+	{
+		this.inlined.put(fullname, g);
 	}
 
-	public Set<GProtocol> getInlined()
+	/*// OK for prevoius CoreContext with more basic getters/setters -- now values created on-demand by individual getters, so a collective getter is less suitable
+	public Set<GProtocol> getInlineds()
 	{
 		return this.inlined.values().stream().collect(Collectors.toSet());
-	}
-	
-	public void addInlinedProjection(LProtoName fullname, LProtocol l)
-	{
-		this.iprojs.put(fullname, l);
-	}
+	}*/
 	
   // Projected from inlined
-	public LProtocol getInlinedProjection(GProtoName fullname, Role self)
+	public LProjection getProjectedInlined(GProtoName fullname, Role self)
 	{
-		LProtoName p = InlinedProjector.getFullProjectionName(fullname, self);
-		return getInlinedProjection(p);
+		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname, self);
+		LProjection iproj = this.iprojs.get(projFullname);
+		if (iproj == null)
+		{
+			iproj = getInlined(fullname).projectInlined(this.core, self);
+			addProjectedInlined(iproj);
+		}
+		return iproj;
 	}
 
-	public LProtocol getInlinedProjection(LProtoName fullname)
+	/*public LProjection getProjectedInlined(LProtoName fullname)
 	{
-		return this.iprojs.get(fullname);
-	}
+		LProjection iproj = this.iprojs.get(fullname);
+		if (iproj == null)
+		{
+			// FIXME: need global inlined to build (reverse derive from fullname?)
+			throw new RuntimeException("[TODO]: " + fullname);
+		}
+		return iproj;
+	}*/
 	
-	public Map<LProtoName, LProtocol> getInlinedProjections()
+	/*// OK for prevoius CoreContext with more basic getters/setters -- now values created on-demand by individual getters, so a collective getter is less suitable
+	public Map<LProtoName, LProtocol> getProjectedInlineds()
 	{
 		return Collections.unmodifiableMap(this.iprojs);
 	}
+	//*/
 	
-	// Projected from intermediate
-	public void addProjection(LProtocol p)
+	protected void addProjectedInlined(LProjection iproj)
 	{
-		/*LProtocolName lpn = (LProtocolName) mod.getProtoDeclChildren().get(0)
-				.getFullMemberName(mod);
-		this.projected.put(lpn, mod);*/
-		this.projs.put(p.fullname, p);
-	}
-	
-	public //Module 
-			LProtocol getProjection(GProtoName fullname, Role role)
-			throws ScribException
-	{
-		return getProjection(InlinedProjector.getFullProjectionName(fullname, role));
+		this.iprojs.put(iproj.fullname, iproj);
 	}
 
-	public //Module 
-			LProtocol getProjection(LProtoName fullname)
-			//throws ScribbleException
+	// Projected from intermediate
+	// Core gives LProjection -- projection Modules should be by Job
+	public LProjection getProjection(GProtoName fullname, Role self)
 	{
-		/*Module proj = this.projected.get(fullname);
-		if (proj == null)*/
-		/*if (!this.projected.containsKey(fullname))
+		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname,
+				self);
+		LProjection proj = this.projs.get(projFullname);
+		if (proj == null)
 		{
-			throw new ScribbleException(
-					"Projection not found: " + fullname);
-					// E.g. disamb/enabling error before projection passes (e.g. CommandLine -fsm arg)
-					//CHECKME: should not occur any more?
-		}*/
-		return this.projs.get(fullname);
+			proj = getIntermediate(fullname).project(this.core, self);
+			addProjection(proj);
+		}
+		return proj;
+	}
+
+	public LProjection getProjection(LProtoName fullname)
+	{
+		LProjection proj = this.projs.get(fullname);
+		if (proj == null)
+		{
+			// FIXME: need global imed to build (reverse derive from fullname?)
+			throw new RuntimeException("[TODO]: " + fullname);
+		}
+		return proj;
+	}
+	
+	protected void addProjection(LProjection proj)
+	{
+		this.projs.put(proj.fullname, proj);
+	}
+	
+	// N.B. graphs built from inlined (not unfolded)
+	public EGraph getEGraph(GProtoName fullname, Role self)
+	{
+		EGraph graph = this.fEGraphs.get(fullname);
+		if (graph == null)
+		{
+			LProjection inlined = getProjectedInlined(fullname, self);
+			graph = inlined.toEGraph(this.core);
+			addEGraph(inlined.fullname, graph);
+		}
+		return graph;
 	}
 	
 	protected void addEGraph(LProtoName fullname, EGraph graph)
@@ -188,24 +214,32 @@ public class CoreContext
 		this.fEGraphs.put(fullname, graph);
 	}
 	
-	// N.B. graphs built from inlined (not unfolded)
-	public EGraph getEGraph(GProtoName fullname, Role role)
-			throws ScribException
+	// Pre: Core.runSyntacticWfPasses
+	public EGraph getUnfairEGraph(GProtoName fullname, Role role)
 	{
-		LProtoName fulllpn = InlinedProjector.getFullProjectionName(fullname,
-				role);
-		// Moved form LProtocolDecl
-		EGraph graph = this.fEGraphs.get(fulllpn);
-		if (graph == null)
+		return getUnfairEGraph(
+				InlinedProjector.getFullProjectionName(fullname, role));
+	}
+
+	// Pre: Core.runSyntacticWfPasses
+	// Pre: getEGraph(Global, Role) -- currently (CHECKME: revise ?)
+	public EGraph getUnfairEGraph(LProtoName fullname)
+	{
+		EGraph unfair = this.uEGraphs.get(fullname);
+		if (unfair == null)
 		{
-			/*Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
-			EGraphBuilder builder = new EGraphBuilder(this.job);  // Obtains an EGraphBuilderUtil from Job
-			proj.accept(builder);
-			graph = builder.util.finalise();
-			addEGraph(fulllpn, graph);*/
-			throw new RuntimeException("Shouldn't get in here: ");
+			EGraph fair = this.fEGraphs.get(fullname);  // Getting fair EGraph directly by projected fullname (cf. getEGraph(GProtoName, Role))
+			if (fair == null)
+			{
+				throw new RuntimeException(
+						"Call getEGraph(Global, Role) before getUnfairEGraph: " + fullname);
+						// CHECKME: refactor ?
+			}
+			Pair<EState, EState> p = fair.init.unfairTransform(this.core.config.mf); //.toGraph();
+			unfair = new EGraph(p.left, p.right);
+			addUnfairEGraph(fullname, unfair);
 		}
-		return graph;
+		return unfair;
 	}
 	
 	protected void addUnfairEGraph(LProtoName fullname, EGraph graph)
@@ -213,52 +247,23 @@ public class CoreContext
 		this.uEGraphs.put(fullname, graph);
 	}
 	
-	public EGraph getUnfairEGraph(GProtoName fullname, Role role)
-			throws ScribException
-	{
-		LProtoName fulllpn = InlinedProjector.getFullProjectionName(fullname,
-				role);
-
-		EGraph unfair = this.uEGraphs.get(fulllpn);
-		if (unfair == null)
-		{
-			unfair = getEGraph(fullname, role).init
-					.unfairTransform(this.core.config.mf).toGraph();
-			addUnfairEGraph(fulllpn, unfair);
-		}
-		return unfair;
-	}
-
-	protected void addSGraph(GProtoName fullname, SGraph graph)
-	{
-		this.fSGraphs.put(fullname, graph);
-	}
-	
 	public SGraph getSGraph(GProtoName fullname) throws ScribException
 	{
 		SGraph graph = this.fSGraphs.get(fullname);
 		if (graph == null)
 		{
-			/*GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
-					.getProtocolDeclChild(fullname.getSimpleName());*/
-			Map<Role, EGraph> egraphs = 
-					getEGraphsForSGraphBuilding(fullname, //gpd,
-							true);
-			boolean explicit = //gpd.isExplicit();
-					this.imeds.get(fullname).isExplicit();
-					//graph = SGraph.buildSGraph(egraphs, explicit, this.job, fullname);
-			graph = this.core.buildSGraph(fullname, egraphs, explicit);
+			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, true);
+			boolean explicit = this.imeds.get(fullname).isExplicit();
+			graph = new SGraphBuilder(this.core).build(fullname, egraphs, explicit);
 			addSGraph(fullname, graph);
 		}
 		return graph;
 	}
 
 	private Map<Role, EGraph> getEGraphsForSGraphBuilding(GProtoName fullname,
-			//GProtocolDecl gpd, 
 			boolean fair) throws ScribException
 	{
 		Map<Role, EGraph> egraphs = new HashMap<>();
-		//for (Role self : gpd.getHeaderChild().getRoleDeclListChild().getRoles())
 		for (Role self : this.imeds.get(fullname).roles)
 		{
 			egraphs.put(self, fair 
@@ -268,9 +273,9 @@ public class CoreContext
 		return egraphs;
 	}
 
-	protected void addUnfairSGraph(GProtoName fullname, SGraph graph)
+	protected void addSGraph(GProtoName fullname, SGraph graph)
 	{
-		this.uSGraphs.put(fullname, graph);
+		this.fSGraphs.put(fullname, graph);
 	}
 
 	public SGraph getUnfairSGraph(GProtoName fullname) throws ScribException
@@ -278,22 +283,17 @@ public class CoreContext
 		SGraph graph = this.uSGraphs.get(fullname);
 		if (graph == null)
 		{
-			/*GProtocolDecl gpd = (GProtocolDecl) getModule(fullname.getPrefix())
-					.getProtocolDeclChild(fullname.getSimpleName());*/
-			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, //gpd, 
-					false);
-			boolean explicit = //gpd.isExplicit();
-					this.imeds.get(fullname).isExplicit();
-			//graph = SGraph.buildSGraph(this.job, fullname, this.job.createInitialSConfig(job, egraphs, explicit));
-			graph = this.core.buildSGraph(fullname, egraphs, explicit);
+			Map<Role, EGraph> egraphs = getEGraphsForSGraphBuilding(fullname, false);
+			boolean explicit = this.imeds.get(fullname).isExplicit();
+			graph = new SGraphBuilder(this.core).build(fullname, egraphs, explicit);
 			addUnfairSGraph(fullname, graph);
 		}
 		return graph;
 	}
-	
-	protected void addMinimisedEGraph(LProtoName fullname, EGraph graph)
+
+	protected void addUnfairSGraph(GProtoName fullname, SGraph graph)
 	{
-		this.mEGraphs.put(fullname, graph);
+		this.uSGraphs.put(fullname, graph);
 	}
 	
 	public EGraph getMinimisedEGraph(GProtoName fullname, Role role)
@@ -313,13 +313,13 @@ public class CoreContext
 		return minimised;
 	}
 	
-	/*public ModuleContext getModuleContext(ModuleName fullname)
+	protected void addMinimisedEGraph(LProtoName fullname, EGraph graph)
 	{
-		return this.modcs.get(fullname);
-	}*/
+		this.mEGraphs.put(fullname, graph);
+	}
 
 	// TODO: relocate
-	// Duplicated from CommandLine.runDot
+	// Duplicated from CommandLine.runDot -- TODO: update to use createTmpFile (cf. runDot)
 	// Minimises the FSM up to bisimulation
 	// N.B. ltsconvert will typically re-number the states
 	private static String runAut(String fsm, String aut) throws ScribException

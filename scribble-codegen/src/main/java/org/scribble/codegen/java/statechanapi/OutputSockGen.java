@@ -61,9 +61,9 @@ public class OutputSockGen extends ScribSockGen
 		// Mixed sends and connects
 		boolean hasConnect = false;
 		boolean hasWrap = false;
-		for (EAction a : curr.getActions())  // (Scribble ensures all "a" are input or all are output)
+		for (EAction a : curr.getDetActions())  // (Scribble ensures all "a" are input or all are output)
 		{
-			EState succ = curr.getSuccessor(a);
+			EState succ = curr.getDetSuccessor(a);
 			
 			MethodBuilder mb = this.cb.newMethod();
 			if (a.isSend())
@@ -79,7 +79,7 @@ public class OutputSockGen extends ScribSockGen
 			{
 				setDisconnectHeaderWithoutReturnType(apigen, a, mb);
 			}
-			else if (a.isWrapClient())
+			else if (a.isClientWrap())
 			{
 				hasWrap = true;
 				setWrapClientHeaderWithoutReturnType(apigen, a, mb);
@@ -124,7 +124,7 @@ public class OutputSockGen extends ScribSockGen
 			{
 				mb.addBodyLine(JavaBuilder.SUPER + ".disconnect(" + ROLE_PARAM + ");\n");
 			}
-			else if (a.isWrapClient())
+			else if (a.isClientWrap())
 			{
 				mb.addBodyLine(JavaBuilder.SUPER + ".wrapClient(" + ROLE_PARAM + ", wrapper);\n");
 			}

@@ -88,7 +88,7 @@ public class DataParamNode extends NonRoleParamNode<DataKind>
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof DataParamNode;
 	}

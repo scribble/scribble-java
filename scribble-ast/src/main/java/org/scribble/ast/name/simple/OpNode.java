@@ -73,7 +73,7 @@ public class OpNode extends SimpleNameNode<OpKind>
 	}
 	
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof OpNode;
 	}

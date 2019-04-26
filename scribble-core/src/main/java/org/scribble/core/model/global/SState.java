@@ -14,98 +14,63 @@
 package org.scribble.core.model.global;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
-import org.scribble.core.model.endpoint.EState;
-import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.model.endpoint.actions.EReceive;
-import org.scribble.core.model.endpoint.actions.ESend;
 import org.scribble.core.model.global.actions.SAction;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.Role;
 
-// FIXME? make a WFModel front-end class? (cf. EGraph)
-// Only uses MState.id cosmetically, cf. MState equals/hash -- overrides equals/hash based on this.config (maybe extending MState is a bit misleading)
+// CHECKME: make a WFModel front-end class? (cf. EGraph)
+// N.B. only uses MState.id cosmetically, cf. MState equals/hashCode -- overrides equals/hashCode based on this.config (maybe extending MState is a bit misleading)
 public class SState extends MPrettyState<Void, SAction, SState, Global>
 {
 	public final SConfig config;
 	
-	//protected SState(SConfig config)
-	public SState(SConfig config)  // FIXME: now publically mutable
+	//protected
+	public SState(SConfig config)  // FIXME? now publically mutable (for mf imple), same for EState
 	{
 		super(Collections.emptySet());
 		this.config = config;
 	}
 	
+  // For access from SGraphBuilderUtil
 	@Override
-	protected void addEdge(SAction a, SState s)  // For access from SGraphBuilderUtil
+	protected void addEdge(SAction a, SState s)
 	{
 		super.addEdge(a, s);
 	}
 	
-	// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
-	public Map<Role, List<EAction>> getFireable()
+	public SStateErrors getErrors()  // Means safety (i.e., individual state) errors
 	{
-		return this.config.getFireable();
-	}
-	
-	public List<SConfig> fire(Role r, EAction a)
-	{
-		return this.config.fire(r, a);
-	}
-
-	// "Synchronous version" of fire
-	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
-	{
-		return this.config.sync(r1, a1, r2, a2);
-	}
-	
-	public SStateErrors getErrors()
-	{
-		Map<Role, EReceive> stuck = this.config.getStuckMessages();
-		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
-		//Set<Set<Role>> waitfor = Collections.emptySet();
-		Map<Role, Set<ESend>> orphs = this.config.getOrphanMessages();
-		Map<Role, EState> unfinished = this.config.getUnfinishedRoles();
-		return new SStateErrors(stuck, waitfor, orphs, unfinished);
+		return new SStateErrors(this);
 	}
 	
 	@Override
 	protected String getNodeLabel()
 	{
 		String labs = this.config.toString();
-		return "label=\"" + this.id + ":" + labs.substring(1, labs.length() - 1) + "\"";
-	}
-
-	@Override
-	public SState getTerminal()
-	{
-		return MState.getTerminal(this);
+		return "label=\"" + this.id + ":" + labs.substring(1, labs.length() - 1)
+				+ "\"";
 	}
 
 	@Override
 	public Set<SState> getReachableStates()
 	{
-		
-		return MState.getReachableStates(this);
-	}
-
-	@Override
-	public Set<SAction> getReachableActions()
-	{
-		return MState.getReachableActions(this);
+		return getReachableStatesAux(this);
 	}
 	
-	// FIXME? doesn't use super.hashCode (cf., equals)
+	@Override
+	public String toString()
+	{
+		return this.id + ":" + this.config.toString();
+	}
+	
+	// N.B. does not use super.hashCode, need "semantic" equality of configs for model construction
 	@Override
 	public int hashCode()
 	{
 		int hash = 79;
-		//int hash = super.hashCode();
 		hash = 31 * hash + this.config.hashCode();
 		return hash;
 	}
@@ -124,7 +89,8 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 		{
 			return false;
 		}
-		return ((SState) o).canEquals(this) && this.config.equals(((SState) o).config);
+		SState them = (SState) o;
+		return them.canEquals(this) && this.config.equals(them.config);  // N.B. does not do super.equals (cf. hashCode)
 	}
 
 	@Override
@@ -132,10 +98,32 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 	{
 		return s instanceof SState;
 	}
-	
-	@Override
-	public String toString()
-	{
-		return this.id + ":" + this.config.toString();
-	}
 }
+
+
+
+
+
+
+
+
+
+
+
+	
+	/*// Based on config semantics, not "static" graph edges (cf., super.getAllActions) -- used to build global model graph
+	public Map<Role, List<EAction>> getFireable()
+	{
+		return this.config.getFireable();
+	}
+	
+	public List<SConfig> fire(Role r, EAction a)
+	{
+		return this.config.fire(r, a);
+	}
+
+	// "Synchronous version" of fire
+	public List<SConfig> sync(Role r1, EAction a1, Role r2, EAction a2)
+	{
+		return this.config.sync(r1, a1, r2, a2);
+	}*/

@@ -20,12 +20,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.AstFactory;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.del.DelFactory;
+import org.scribble.del.DelFactoryImpl;
 import org.scribble.job.Job;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.loader.ScribModuleLoader;
@@ -83,7 +86,7 @@ public class Main
 	private Main(Pair<ResourceLocator, String> hack, Path mainpath,
 			Map<CoreArgs, Boolean> args) throws ScribException, ScribParserException
 	{
-		this.antlr = new ScribAntlrWrapper();
+		this.antlr = newAntlr();
 
 		// Set this.loader and load main
 		Pair<Resource, Module> main;
@@ -117,14 +120,24 @@ public class Main
 	{
 		return new ScribAntlrWrapper();
 	}
+	
+	protected AstFactory newAstFactory(ScribAntlrWrapper antlr, DelFactory df)
+	{
+		return new AstFactoryImpl(antlr, df);
+	}
+	
+	protected DelFactory newDelFactory()
+	{
+		return new DelFactoryImpl();
+	}
 
 	// A Scribble extension should override newAntlr/Job as appropriate
 	protected Job newJob(Map<ModuleName, Module> parsed,
-			Map<CoreArgs, Boolean> args, ModuleName mainFullname) throws ScribException
+			Map<CoreArgs, Boolean> args, ModuleName mainFullname, AstFactory af,
+			DelFactory df) throws ScribException
 	{
-		AstFactoryImpl af = new AstFactoryImpl(this.antlr);  
 				// Was previously made inside Job, but AstFactoryImpl now lives in scribble-parser, to access ScribbleParser constants
-		return new Job(mainFullname, args, parsed, af);
+		return new Job(mainFullname, args, parsed, af, df);
 	}
 	
 	// Pre: main Module loaded by this.loader
@@ -155,10 +168,12 @@ public class Main
 		}
 	}
 	
-	// For a Scribble extension, override newJob(parsed, args, mainFullname)
+	// For a Scribble extension, override newJob(parsed, args, mainFullname, AstFactory)
 	public final Job newJob() throws ScribException
 	{
-		return newJob(getParsedModules(), this.args, this.main);
+		DelFactory df = newDelFactory();  
+		AstFactory af = newAstFactory(this.antlr, df);  
+		return newJob(getParsedModules(), this.args, this.main, af, df);
 	}
 	
 	public Map<ModuleName, Module> getParsedModules()

@@ -29,13 +29,13 @@ public class EDisconnect extends EAction
 	@Override
 	public EDisconnect toDual(Role self)
 	{
-		return this.ef.newEDisconnect(self);  // return this?
+		return this;
 	}
 
 	@Override
-	public SDisconnect toGlobal(ModelFactory sf, Role self)
+	public SDisconnect toGlobal(Role self)
 	{
-		return sf.newSDisconnect(self, this.peer);
+		return this.mf.newSDisconnect(self, this.peer);
 	}
 	
 	@Override
@@ -63,11 +63,11 @@ public class EDisconnect extends EAction
 		{
 			return false;
 		}
-		return ((EDisconnect) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof EDisconnect;
 	}

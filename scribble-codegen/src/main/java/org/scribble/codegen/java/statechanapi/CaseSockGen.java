@@ -92,9 +92,9 @@ public class CaseSockGen extends ScribSockGen
 		fb2.addModifiers(JavaBuilder.PRIVATE, JavaBuilder.FINAL);
 		fb2.setType(StateChannelApiGenerator.SCRIBMESSAGE_CLASS);
 
-		for (EAction a : this.curr.getActions())
+		for (EAction a : this.curr.getDetActions())
 		{
-			EState succ = this.curr.getSuccessor(a);
+			EState succ = this.curr.getDetSuccessor(a);
 			addReceiveMethod(this.cb, a, succ);
 			addCaseReceiveMethod(this.cb, a, succ);
 			if (!a.payload.isEmpty() || a.mid.isSigName())

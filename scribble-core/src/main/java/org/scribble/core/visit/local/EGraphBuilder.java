@@ -32,21 +32,20 @@ import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.SigLit;
 import org.scribble.core.type.session.Payload;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
+import org.scribble.core.type.session.SigLit;
 import org.scribble.core.type.session.local.LAcc;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.type.session.local.LDisconnect;
-import org.scribble.core.type.session.local.LRcv;
 import org.scribble.core.type.session.local.LRecursion;
+import org.scribble.core.type.session.local.LRecv;
 import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSend;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeVisitorNoThrow;
-import org.scribble.util.ScribException;
 
 // Pre: use on inlined or later (unsupported for Do, also Protocol)
 // Uses EGraphBuilderUtil2 to build graph "progressively" (working graph is mutable)
@@ -60,8 +59,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public EGraphBuilder(Core core)
 	{
 		this.core = core;
-		this.util = core.newEGraphBuilderUtil();
-		this.util.init(null);
+		this.util = core.config.mf.newEGraphBuilderUtil();
 	}
 	
 	public EGraph finalise()
@@ -78,87 +76,82 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 		{
 			List<LType> elems = block.getElements();
 			LType first = elems.get(0);
-			if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
+			if (first instanceof LContinue)
 			{
-				EState entry = util.getEntry();
-				EState exit = util.getExit();
-
-				EState nestedEntry = util.newState(Collections.emptySet());
-				util.setEntry(nestedEntry);
-				if (elems.size() == 1)
-				{
-					first.visitWithNoThrow(this);
-				}	
-				else
-				{
-					// Reuse existing b, to directly add continue-edges back to the "outer" graph
-					EState nestedExit = util.newState(Collections.emptySet());
-					util.setExit(nestedExit);
-					first.visitWithNoThrow(this);
-
-					util.setEntry(nestedExit);  // Must be non null
-					util.setExit(exit);
-					LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
-					tail.visitWithNoThrow(this);
-				}
-				EState init = nestedEntry;
-				for (EAction a : (Iterable<EAction>) 
-						init.getAllActions().stream().distinct()::iterator)
-						// Enabling actions
-				{
-					for (EState s : init.getSuccessors(a))
-					{
-						util.addEdge(entry, a, s);
-					}
-				}
-				
-				util.setEntry(entry);
-				util.setExit(exit);
-			}
-			else if (first instanceof LContinue)
-			{
-				// Cannot treat choice-unguarded-continue in "a single pass" because may not have built all recursion enacting edges yet 
+				// Cannot treat choice-unguarded-continue in "a single pass", because may not have built all recursion enacting edges yet 
 				// (Single-pass building would be sensitive to order of choice block visiting)
 				LContinue cont = (LContinue) first;  // First and only element
-				util.addContinueEdge(util.getEntry(), cont.recvar); 
+				util.addUnguardedContinueEdge(util.getEntry(), cont.recvar); 
+			}
+			else if (first instanceof LRecursion)  // CHECKME: do this here?  refactor into builderutil?
+			{
+				buildUnguardedRecursion(util, elems);
 			}
 			else
 			{
-				util.pushChoiceBlock();  // CHECKME: still needed?  LContinue doesn't check isUnguardedInChoice any more
+				util.enterChoiceBlock();
 				block.visitWithNoThrow(this);
-				util.popChoiceBlock();
+				util.leaveChoiceBlock();
 			}
 		}
 		util.leaveChoice();
 		return n;
 	}
 
+	// Recursion is first element of choice case
+	private void buildUnguardedRecursion(EGraphBuilderUtil util,
+			List<LType> elems)
+	{
+		LRecursion first = (LRecursion) elems.get(0);
+		EState entry = util.getEntry();
+
+		EState nestedEntry = util.newState(Collections.emptySet());
+		util.setEntry(nestedEntry);
+		if (elems.size() == 1)  // Cf. visitSeq last element or not
+		{
+			first.visitWithNoThrow(this);
+		}	
+		else
+		{
+			EState exit = util.getExit();
+			EState nestedExit = util.newState(Collections.emptySet());
+			util.setExit(nestedExit);
+			first.visitWithNoThrow(this);  // entry to nestedExit -- reuse existing builder, to directly add continue-edges back to the "outer" graph
+
+			util.setEntry(nestedExit);  // Must be non null
+			util.setExit(exit);
+			LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
+			tail.visitWithNoThrow(this);  // nestedExit to exit
+		}
+
+		Iterator<EAction> as = nestedEntry.getActions().iterator();  // "Enacting" actions
+		Iterator<EState> succs = nestedEntry.getSuccs().iterator();
+		while (as.hasNext())
+		{
+			EAction a = as.next();
+			EState succ = succs.next();
+			util.addEdge(entry, a, succ);  // Add edges from original entry into "nested" graph, offset by enacting to nestedEntry succs
+		}
+		
+		util.setEntry(entry);  // EGraphBuilderUtil contract, entry on leaving a node should be the same as on entering
+	}
+
 	@Override
 	public SType<Local, LSeq> visitContinue(Continue<Local, LSeq> n)
 	{
-		// CHECKME: identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
-		// Choice-guarded continue -- choice-unguarded continue detected and handled in LChoice
+		// Choice-guarded continue -- choice-unguarded continue detected and handled above in visitChoice
 		EState curr = this.util.getEntry();
-		for (EState pred : this.util.getAllPredecessors(curr))  // Does getAllSuccessors
+		for (EState pred : this.util.getPreds(curr))  // Does getSuccs (i.e., gets all), e.g., choice sequenced to continue
 		{
-			for (EAction a : new LinkedList<>(pred.getAllActions()))
+			// CHECKME: identical edges? i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  
+			for (EAction a : new LinkedList<>(pred.getActions()))
 			{
-				// Following is because pred.getSuccessor doesn't support non-det edges
-				// FIXME: refactor actions/successor Lists in MState to list of edges?
-				for (EState succ : pred.getSuccessors(a))
+				// Following caters for non-det edges (to different succs)
+				for (EState succ : pred.getSuccs(a))
 				{
 					if (succ.equals(curr))
 					{
-						try
-						{
-							this.util.removeEdge(pred, a, curr);  //b.removeEdgeFromPredecessor(pred, prev);
-							//b.addEdge(pred, a, entry);   //b.addRecursionEdge(pred, prev, b.getRecursionEntry(this.recvar));
-							this.util.addRecursionEdge(pred, a, n.recvar);
-						}
-						catch (ScribException e)  // CHECKME: necessary for removeEdge to have throws?
-						{
-							throw new RuntimeException(e);
-						}
+						this.util.fixContinueEdge(pred, a, curr, n.recvar);
 					}
 				}
 			}
@@ -167,25 +160,26 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	}
 
 	@Override
-	public SType<Local, LSeq> visitDirectedInteraction(DirectedInteraction<Local, LSeq> n)
+	public SType<Local, LSeq> visitDirectedInteraction(
+			DirectedInteraction<Local, LSeq> n)
 	{
 		Role peer = ((n instanceof LSend) || (n instanceof LReq)) ? n.dst
-				: ((n instanceof LRcv) || (n instanceof LAcc)) ? n.src
+				: ((n instanceof LRecv) || (n instanceof LAcc)) ? n.src
 				: null;
 		if (peer == null)
 		{
 			throw new RuntimeException("Unknown action type: " + n);
 		}
 		MsgId<?> mid = n.msg.getId();
-		Payload payload = n.msg.isSigLit()  // CHECKME: generalise? (e.g., hasPayload)
+		Payload pay = n.msg.isSigLit()  // CHECKME: generalise? (e.g., hasPayload)
 				? ((SigLit) n.msg).payload
 				: Payload.EMPTY_PAYLOAD;
-		// TODO: add toAction method to base Interaction
-		EAction a = (n instanceof LSend) ? this.util.ef.newESend(peer, mid, payload)
-				: (n instanceof LRcv)  ? this.util.ef.newEReceive(peer, mid, payload)
-				: (n instanceof LReq)  ? this.util.ef.newERequest(peer, mid, payload)
-				: //(n instanceof LAcc)  ? 
-					this.util.ef.newEAccept(peer, mid, payload);  // Action type already checked above
+		// TODO: add toAction method to BasicInteraction (cf. toName methods of NameNodes)
+		EAction a = (n instanceof LSend) ? this.util.mf.newESend(peer, mid, pay)
+				: (n instanceof LRecv) ? this.util.mf.newERecv(peer, mid, pay)
+				: (n instanceof LReq) ? this.util.mf.newEReq(peer, mid, pay)
+				: //(n instanceof LAcc) ? 
+					this.util.mf.newEAcc(peer, mid, pay);  // Action type already checked above
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
 	}
@@ -193,14 +187,15 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	@Override
 	public SType<Local, LSeq> visitDisconnect(DisconnectAction<Local, LSeq> n)
 	{
-		Role peer = ((LDisconnect) n).getPeer();  // CHECKME
-		EAction a = this.util.ef.newEDisconnect(peer);  // TODO: add toAction method to base Interaction
+		Role peer = ((LDisconnect) n).getPeer();  // CHECKME -- ?
+		EAction a = this.util.mf.newEDisconnect(peer);  // TODO: add toAction method to BasicInteraction
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
 	}
 
 	@Override
-	public final <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(Do<Local, LSeq, N> n)
+	public final <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(
+			Do<Local, LSeq, N> n)
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}
@@ -209,9 +204,9 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public SType<Local, LSeq> visitRecursion(Recursion<Local, LSeq> n)
 	{
 		this.util.addEntryLabel(n.recvar);
-		this.util.pushRecursionEntry(n.recvar, this.util.getEntry());
+		this.util.enterRecursion(n.recvar, this.util.getEntry());
 		n.body.visitWithNoThrow(this);
-		this.util.popRecursionEntry(n.recvar);
+		this.util.leaveRecursion(n.recvar);
 		return n;
 	}
 
@@ -243,7 +238,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 						// CHECKME: exit may not be tmp, entry/exit can be modified, e.g. continue
 			}
 		}
-		util.setEntry(entry);
+		util.setEntry(entry);  // EGraphBuilderUtil contract, entry on leaving a node should be the same as on entering
 		return n;
 	}
 }

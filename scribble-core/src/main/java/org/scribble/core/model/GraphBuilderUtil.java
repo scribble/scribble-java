@@ -14,39 +14,29 @@
 package org.scribble.core.model;
 
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.util.ScribException;
 
-// Helper class for EndpointGraphBuilder -- can access the protected setters of S
-// N.B. must call init before every "new visit", including first
+// Helper class for (Endpoint)GraphBuilder -- can access the protected setters of S
 public abstract class GraphBuilderUtil
 		<L,                             // Labels on states (cosmetic)
 		 A extends MAction<K>,          // Action type: labels on edges
 		 S extends MState<L, A, S, K>,  // State type
-		 K extends ProtoKind>        // Global/local actions/states -- Need to quantify K explicitly
+		 K extends ProtoKind>           // Global/local actions/states -- Need to quantify K explicitly
 {
-	protected S entry;
-	protected S exit;   // Tracking exit is convenient for merges (otherwise have to generate dummy merge nodes)
+	public final ModelFactory mf;  // N.B. new states should be made by this.newState, not this.ef.newEState
 	
-	protected GraphBuilderUtil()
+	// Doesn't call reset
+	protected GraphBuilderUtil(ModelFactory mf)
 	{
-
+		this.mf = mf;
 	}
 	
-	//public abstract S newState(Set<RecVar> labs);
+	protected abstract void reset();
 	
-	// N.B. must be called before every "new visit", including first
-	// Separated from constructor in order to use newState
-	public abstract void init(S init);
+	//public abstract S newState(L labs);  // Doesn't factor out well with SState, doesn't use L and takes an SConfig
 	
-	protected void reset(S entry, S exit)  // Should be used by init
+	protected void addEntryLabAux(S s, L lab)
 	{
-		this.entry = entry;//newState(Collections.emptySet());
-		this.exit = exit;//newState(Collections.emptySet());
-	}
-	
-	public void addEntryLabel(L lab)
-	{
-		this.entry.addLabel(lab);
+		s.addLabel(lab);
 	}
 
 	public void addEdge(S s, A a, S succ)
@@ -60,28 +50,8 @@ public abstract class GraphBuilderUtil
 		s.addEdge(a, succ);
 	}
 	
-	protected void removeEdgeAux(S s, A a, S succ) throws ScribException  // Exception necessary?
+	protected void removeEdgeAux(S s, A a, S succ) //throws ScribException  // Exception necessary?
 	{
 		s.removeEdge(a, succ);
-	}
-
-	public S getEntry()
-	{
-		return this.entry;
-	}
-
-	public void setEntry(S entry)
-	{
-		this.entry = entry;
-	}
-
-	public S getExit()
-	{
-		return this.exit;
-	}
-
-	public void setExit(S exit)
-	{
-		this.exit = exit;
 	}
 }

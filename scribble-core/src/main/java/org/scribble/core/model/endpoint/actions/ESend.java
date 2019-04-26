@@ -21,47 +21,22 @@ import org.scribble.core.type.session.Payload;
 
 public class ESend extends EAction
 {
-	/*protected static final Set<Send> SENDS = new HashSet<>();
-	
-	public static Send get(Role peer, MessageId<?> mid, Payload payload)
-	{
-		Send send = new Send(peer, mid, payload, true);
-		for (Send s : Send.SENDS)  // FIXME: hashmap
-		{
-			if (s.equiv(send))
-			{
-				return s;
-			}
-		}
-		Send.SENDS.add(send);
-		return send;
-	}
-	
-	public Send(Role peer, MessageId<?> mid, Payload payload, boolean hack)
-	{
-		super(peer, mid, payload);
-	}*/
 
-	public ESend(ModelFactory ef, Role peer, MsgId<?> mid, Payload payload)
+	public ESend(ModelFactory ef, Role peer, MsgId<?> mid, Payload pay)
 	{
-		super(ef, peer, mid, payload);
-		//Send.SENDS.add(this);
+		super(ef, peer, mid, pay);
 	}
 	
 	@Override
-	public EReceive toDual(Role self)
+	public ERecv toDual(Role self)
 	{
-		return this.ef.newEReceive(self, this.mid, this.payload);
-		//return Receive.get(self, this.mid, this.payload);
+		return this.mf.newERecv(self, this.mid, this.payload);
 	}
 
 	@Override
-	//public GModelAction toGlobal(Role self)
-	public SSend toGlobal(ModelFactory sf, Role self)
+	public SSend toGlobal(Role self)
 	{
-		//return new GModelAction(self, this.peer, this.mid, this.payload);
-		////return GModelAction.get(self, this.peer, this.mid, this.payload);
-		return sf.newSSend(self, this.peer, this.mid, this.payload);
+		return this.mf.newSSend(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override
@@ -89,11 +64,11 @@ public class ESend extends EAction
 		{
 			return false;
 		}
-		return ((ESend) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof ESend;
 	}

@@ -24,13 +24,16 @@ import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 import org.scribble.util.ScribException;
 
-// "Instantiates" Agg by implicitly treating Stream as always a singleton Stream of the *reconstructed* node
+// "Instantiates" STypeAgg by implicitly treating Stream as always a singleton Stream of the *reconstructed* node.
+// The main benefit is to reuse the SType.visitWith(STypeAgg) methods for STypeVisitors.
+//
 // Alternative characterisations of STypeVisitor as STypeAgg?
 // T = SType, unit = empty, agg = reconstruct, ns = "structural" (i.e, B) children -- issues with generic cast to B inside agg
 // T = SType, unit = n.getChildren(), agg = reconstruct, ns = all children -- all children require dynamic casts
 // T = B ... ? Considering Stream like a Seq, and elems as singleton Seqs -- cf. Stream<B>, for Choice/etc reconstruct
+// The sticking issue is that the "compound" nodes are not quite uniform w.r.t. agg: Choice/Recursion have Seq children, Seq has SType (but not Seq) children
 public abstract class STypeVisitor<K extends ProtoKind, B extends Seq<K, B>>
-		extends STypeAgg<K, B, SType<K, B>>  // T = SType gives reconstruction flexibility/extensibility
+		extends STypeAgg<K, B, SType<K, B>>  // T = SType gives more flexibile/extensibile reconstruction patterns
 {
 	@Override
 	protected final SType<K, B> unit(SType<K, B> n) throws ScribException
@@ -38,36 +41,12 @@ public abstract class STypeVisitor<K extends ProtoKind, B extends Seq<K, B>>
 		return n;
 	}
 
-	// Should generally disregard agg for STypeVisitors -- pattern is now to manually do reconstruct within visit dispatches
+	// Should disregard agg for STypeVisitors -- the STypeVisitor pattern is instead to manually reconstruct within each visit[Node]
 	@Override
 	protected final SType<K, B> agg(SType<K, B> n, Stream<SType<K, B>> ns)
 			throws ScribException
 	{
-		//return ns.iterator().next();
 		throw new RuntimeException("Disregarded for STypeVisitor: " + n + " ,, " + ns);
-		
-		/*// agg = reconstruct, ns = "structural" (i.e, B) children -- problem with generic casts
-		if (n instanceof Continue<?, ?> || n instanceof DirectedInteraction<?, ?>
-				|| n instanceof DisconnectAction<?, ?> || n instanceof Do<?, ?, ?>)
-		{
-			return ns.iterator().next();
-		}
-		else if (n instanceof Choice<?, ?>)
-		{
-			Choice<K, B> c = (Choice<K, B>) n;
-			return c.reconstruct(c.getSource(), c.subj,
-					ns.map(x -> (B) x).collect(Collectors.toList()));
-		}
-		else if (n instanceof Recursion<?, ?>)
-		{
-			Recursion<K, B> r = (Recursion<K, B>) n;
-			return r.reconstruct(r.getSource(), r.recvar, (B) ns.iterator().next());
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + n + " ,, " + ns);
-					// agg should only be called from internal visit dispatch methods, so n's type has already been cased
-		}*/
 	}
 
 	@Override
@@ -79,20 +58,20 @@ public abstract class STypeVisitor<K extends ProtoKind, B extends Seq<K, B>>
 			blocks.add(visitSeq(b));
 			
 		}
-		return n.reconstruct(n.getSource(), n.subj, blocks);  // Skipping agg (reconstruction done here)
+		return n.reconstruct(n.getSource(), n.subj, blocks);  // Disregarding agg (reconstruction done here)
 	}
 
 	@Override
 	public SType<K, B> visitRecursion(Recursion<K, B> n) throws ScribException
 	{
 		B body = visitSeq(n.body);
-		return n.reconstruct(n.getSource(), n.recvar, body);  // Skipping agg (reconstruction done here)
+		return n.reconstruct(n.getSource(), n.recvar, body);  // Disregarding agg (reconstruction done here)
 	}
 
 	// "Hardcoded" to B (cf. Seq, or SType return) -- this visitor pattern depends on B for Choice/Recursion/etc reconstruction
 	// This means a Visitor that needs to restructure a Seq should handle this within visitSeq
-	// E.g., Seq "injection" by inlining and unfolding
-	// For this purpose, visited children passed "directly" instead of via a reconstruction (cf. above methods)
+	// E.g., Seq "injection" by inlining and unfolding (i.e., when a visited elem is a Seq)
+	// For this purpose, visited children passed "directly" instead of via a reconstruction (cf. above methods) -- ?
 	@Override
 	public B visitSeq(B n) throws ScribException
 	{
@@ -101,7 +80,7 @@ public abstract class STypeVisitor<K extends ProtoKind, B extends Seq<K, B>>
 		{
 			elems.add(e.visitWith(this));
 		}
-		return n.reconstruct(n.getSource(), elems);  // N.B. skipping agg (reconstruction done here)
+		return n.reconstruct(n.getSource(), elems);  // Disregarding agg (reconstruction done here)
 	}
 }
 
@@ -125,6 +104,37 @@ public abstract class STypeVisitor<K extends ProtoKind, B extends Seq<K, B>>
 
 
 
+
+	/*// Should generally disregard agg for STypeVisitors -- pattern is now to manually do reconstruct within visit dispatches
+	@Override
+	protected final SType<K, B> agg(SType<K, B> n, Stream<SType<K, B>> ns)
+			throws ScribException
+	{
+		return ns.iterator().next();
+		
+		// agg = reconstruct, ns = "structural" (i.e, B) children -- problem with generic casts
+		if (n instanceof Continue<?, ?> || n instanceof DirectedInteraction<?, ?>
+				|| n instanceof DisconnectAction<?, ?> || n instanceof Do<?, ?, ?>)
+		{
+			return ns.iterator().next();
+		}
+		else if (n instanceof Choice<?, ?>)
+		{
+			Choice<K, B> c = (Choice<K, B>) n;
+			return c.reconstruct(c.getSource(), c.subj,
+					ns.map(x -> (B) x).collect(Collectors.toList()));
+		}
+		else if (n instanceof Recursion<?, ?>)
+		{
+			Recursion<K, B> r = (Recursion<K, B>) n;
+			return r.reconstruct(r.getSource(), r.recvar, (B) ns.iterator().next());
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + n + " ,, " + ns);
+					// agg should only be called from internal visit dispatch methods, so n's type has already been cased
+		}
+	}*/
 
 
 /*

@@ -164,33 +164,37 @@ public class CommandLine
 			case CLFlags.EFSM_FLAG:
 				outputEGraph(job, task.right, true, true, false);
 				break;
-			case CLFlags.VALIDATION_EFSM_FLAG:
-				outputEGraph(job, task.right, false, true, false);
-				break;
-			case CLFlags.UNFAIR_EFSM_FLAG:
-				outputEGraph(job, task.right, false, false, false);
-				break;
 			case CLFlags.EFSM_PNG_FLAG:
 				outputEGraph(job, task.right, true, true, true);
-				break;
-			case CLFlags.VALIDATION_EFSM_PNG_FLAG:
-				outputEGraph(job, task.right, false, true, true);
-				break;
-			case CLFlags.UNFAIR_EFSM_PNG_FLAG:
-				outputEGraph(job, task.right, false, false, true);
 				break;
 			case CLFlags.SGRAPH_FLAG:
 				outputSGraph(job, task.right, true, false);
 				break;
-			case CLFlags.UNFAIR_SGRAPH_FLAG:
-				outputSGraph(job, task.right, false, false);
-				break;
 			case CLFlags.SGRAPH_PNG_FLAG:
 				outputSGraph(job, task.right, true, true);
+				break;
+				
+			// CHECKME: -unfair needs to be barrier-ed on syntactic WF? (unfair-transform graph building may crash, e.g., bad.wfchoice.enabling.threeparty.Test02)
+			// Currently, "construction-on-demand" CoreContext getters will still cause these to be attempted even if syntactic WF fails
+			case CLFlags.VALIDATION_EFSM_FLAG:
+				outputEGraph(job, task.right, false, true, false);
+				break;
+			case CLFlags.VALIDATION_EFSM_PNG_FLAG:
+				outputEGraph(job, task.right, false, true, true);
+				break;
+			case CLFlags.UNFAIR_EFSM_FLAG:
+				outputEGraph(job, task.right, false, false, false);
+				break;
+			case CLFlags.UNFAIR_EFSM_PNG_FLAG:
+				outputEGraph(job, task.right, false, false, true);
+				break;
+			case CLFlags.UNFAIR_SGRAPH_FLAG:
+				outputSGraph(job, task.right, false, false);
 				break;
 			case CLFlags.UNFAIR_SGRAPH_PNG_FLAG:
 				outputSGraph(job, task.right, false, true);
 				break;
+
 			default:
 				throw new RuntimeException("Shouldn't get here: " + task.left);
 				// Bad flag should be caught by CLArgParser

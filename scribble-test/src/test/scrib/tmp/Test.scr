@@ -12,8 +12,8 @@
 
 module tmp.Test;
 
-// replace a lot of FACTORY name calls by clone
-// -minlts states IDs don't match validation output
+// TODO: replace a lot of FACTORY name calls by clone
+// FIXME: -minlts states IDs don't match validation output
 
 // CHECKME: playing multiple roles in the same session instance (but what is the concrete notion of "process id"? -- if actually try to use, e.g., ThreadID, then have to track ownership of endpoints)
 
@@ -76,49 +76,309 @@ module tmp.Test;
 		//...fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- separate af methods
 
 
-// Outstanding:
-	//...disallow/check for reserved __ -- do in gtype translation?
-	// FIXME: qualifed sig name as non-role do-arg
-	// TODO: rename addChildren1
-	// CHECKME: duplicate proto mods
-
-
 // For model build/check refactoring:
-	// add exp conn checks to model validation
+
+// TODO: fix imed-projection choice subjects -- inlined-projection is a single proto with all roles
+
+		// Outstanding:
+			// ...disallow/check for reserved __ -- do in gtype translation?
+			// FIXME: qualifed sig name as non-role do-arg
+			// TODO: rename addChildren1
+			// CHECKME: duplicate proto mods
+			// ...check ad hoc ScribNode constructions go through af properly
+			// ...refactor -spin as an ext
+			
+	// add exp conn checks to model validation -- maybe just as estatevisitor?  (cf. prev syntactic connection checks)
+			//HERE	^^^
+	
 	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 			// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 	// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
 		// -- otoh, ast errors give source feedback -- maybe implement both
-	// use stypefactory in core -- also make a visitorfactory (core and ast)
+	// use stypefactory in core -- also make visitorfactorys (both core and ast)
+	
+// Job/codegen refactoring:
+	// old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
+	// also do-arg pruning, for role-pruned projection decls
+	// choice-specific fairness annotations
+	// fix codegen when -fair
+	// CHECKME: accept branching on messages (and safety properties) -- connection should not be established if message stuck? (cf. reception error) -- issue is implementation: what is a realistic semantics for sync-connect-branching (i.e., prevent client from async progressing after messaging) -- consider reversing client/server branching side? i.e. client requests, but then receives? (and consider serverside-branching a sugar?)
 
-// codegen refactoring:
+// parser/ast refactoring
+	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
+	// refactor Set<SState> to Map<Integer, SState>
 
 // Test refactoring:
 	// refactor test to use main instead of cli
 
 
-sig <java> "..." from "..." as T;
+data <java> "..." from "..." as T;
 
 
 /*
-global protocol Proto1<sig M>(role A, role B)
+global protocol Proto1(role A, role B, role C, role D)
 {
-	M from A to B;
-	do Proto1<Test.T>(A, B);  // TODO: add unit test, testing qualified sig name as nonrole arg
+	rec X
+	{
+		5() from C to D;
+		continue X;
+	}
+
+	choice at A
+	{
+		1() from A to B;
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;  // Testing wait-for cycle detection  // Also tests eventual reception
+	}
 }
 //*/
 
-//*
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;  // Testing global model building, non-det edges (identical configs collapsed)
+		2() from A to B;  // Un/comment, test combinations
+	}
+	or
+	{
+		1() from A to B;
+		//3() from B to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	connect A to B;  // Testing SGraph.getTraceFromInit, error in init state (empty trace)
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+	}	
+	or
+	{
+		1() from A to C;  // Same message OK
+	}
+	do Proto1(A, B, C);
+}
+//*/
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		connect A to B;
+		1() from A to B;
+		disconnect A and B;
+	}	
+	or
+	{
+		connect A to C;
+		1() from A to C;  // Same message OK
+		disconnect A and C;
+	}
+	do Proto1(A, B, C);
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;  // TODO: junit tests for explicit
+	rec X
+	{	
+		choice at A
+		{
+			1() from A to B;	
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			connect A to C;
+			3() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X 
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
+	}
+	choice at B  // Testing this.collections remove in EGraphBuilderUtil
+	{
+		2() from B to A;
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		2() from B to C;
+		choice at A
+		{
+			continue X;  // TODO: add junit test, testing inlined choice subj fixing
+		}
+		or
+		{
+			continue X;
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		rec X 
+		{
+			1() from A to B;
+		}
+	}
+	or
+	{
+		2() from A to B;
+		3() from A to C;
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C) -- already exists?
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;
+	}
+}
+//*/
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;  // TODO: add junit, testing -project C [-fair] -- basically, Travel Agent
+		do Proto1(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		2() from A to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		//2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		//3() from A to B;
+	}
+	//4() from B to A;
+	do Proto1(A, B);
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+	}  // CHECKME: gives a non-det global model, correct/intended?
+	//4() from B to A;
+	do Proto1(A, B);
+}
+//*/
+
+
+/*
+global protocol Proto1<>(role A, role B)  // TODO: add unit test, testing empty paramdecls
+{
+	() from A to B;
+	do Proto1<>(A, B);  // TODO: add unit test, testing empty nonroleargs
+}
+//*/
+
+/*
+sig <java> "..." from "..." as M;
+
+global protocol Proto1<sig MM>(role A, role B)
+{
+	MM from A to B;
+	do Proto1<Test.M>(A, B);  // TODO: add unit test, testing qualified sig name as nonrole arg
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A__, role B)
 {
 	() connect A__ to B;
 	rec X
 	{
-		() from A__ to B;
+		() from A__ to B;  // TODO: add double underscore check (e.g., translation)
 		continue X;
 	}
 }
 //*/
+
+
 /*
 global protocol Proto1<sig M>(role A, role B)
 {
@@ -510,6 +770,62 @@ global protocol Proto1(role A, role B)
 
 
 
+
+
+/*
+type <dotnet> "System.UInt32" from "..." as int;
+
+global protocol SH(role P, role R, role C)
+{
+	plane(int, int, int, int) from P to R;
+	do Loop(P, R, C);
+}
+
+aux global protocol Loop(role P, role R, role C)
+{
+	choice at P
+	{
+		Above(int) from P to R;   
+		Res(int) from R to P;
+		Above(int) from P to R;   
+		Res(int) from R to P;
+		choice at P
+		{
+			BothIn() from P to R;
+			BothIn(int) from P to C;
+			do Loop(P, R, C);
+		}
+		or
+		{
+			BothOut() from P to R;
+			BothOut() from P to C;
+			do Loop(P, R, C);
+		}
+		or
+		{
+			Intersect() from P to R;
+			Res(int) from R to P;
+			choice at P
+			{
+				One(int) from P to C;
+				do Loop(P, R, C);
+			}
+			or
+			{
+				Two(int, int) from P to C;
+				do Loop(P, R, C);
+			}
+		}
+		//do Loop(P, R, C);  // FIXME: -spin fail if commented
+	}
+	or
+	{
+		Close() from P to R;   
+		Close() from P to C;
+	}
+}
+//*/
+
 /*
 global protocol SH2(role P, role R, role C)
 {
@@ -561,62 +877,6 @@ aux global protocol Loop2(role P, role R, role C)
 }
 //*/
 
-
-
-
-/*
-type <dotnet> "System.UInt32" from "..." as int;
-
-global protocol SH(role P, role R, role C)
-{
-	plane(int, int, int, int) from P to R;
-	do Loop(P, R, C);
-}
-
-aux global protocol Loop(role P, role R, role C)
-{
-	choice at P
-	{
-		Above(int) from P to R;   
-		Res(int) from R to P;
-		Above(int) from P to R;   
-		Res(int) from R to P;
-		choice at P
-		{
-			BothIn() from P to R;
-			BothIn(int) from P to C;
-			//do Loop(P, R, C);
-		}
-		or
-		{
-			BothOut() from P to R;
-			BothOut() from P to C;
-			//do Loop(P, R, C);
-		}
-		or
-		{
-			Intersect() from P to R;
-			Res(int) from R to P;
-			choice at P
-			{
-				One(int) from P to C;
-				//do Loop(P, R, C);
-			}
-			or
-			{
-				Two(int, int) from P to C;
-				//do Loop(P, R, C);
-			}
-		}
-		do Loop(P, R, C);  // FIXME: -spin fail if commented
-	}
-	or
-	{
-		Close() from P to R;   
-		Close() from P to C;
-	}
-}
-//*/
 
 
 

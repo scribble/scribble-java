@@ -19,9 +19,9 @@ import org.scribble.core.type.session.Payload;
 
 public class SSend extends SAction
 {
-	public SSend(Role subj, Role obj, MsgId<?> mid, Payload payload)
+	public SSend(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		super(subj, obj, mid, payload);
+		super(subj, obj, mid, pay);
 	}
 	
 	@Override
@@ -49,11 +49,11 @@ public class SSend extends SAction
 		{
 			return false;
 		}
-		return ((SSend) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
 	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
 		return o instanceof SSend;
 	}

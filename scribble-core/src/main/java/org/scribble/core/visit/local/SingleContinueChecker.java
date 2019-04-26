@@ -26,11 +26,11 @@ import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeAggNoThrow;
 
 // Return true iff this LType is "equivalent" to a single "continue X", where X is in rvs
 // Would be an "InlinedAgg"
+@Deprecated
 public class SingleContinueChecker extends STypeAggNoThrow<Local, LSeq, Boolean>
 {
 	private Set<RecVar> rvs;
@@ -71,13 +71,17 @@ public class SingleContinueChecker extends STypeAggNoThrow<Local, LSeq, Boolean>
 	{
 		Set<RecVar> tmp = new HashSet<>(this.rvs);
 		tmp.add(n.recvar);
-		//return n.body.aggregateNoEx(new SingleContinueChecker(tmp));
+		//return n.body.visitWithNoThrow(new SingleContinueChecker(tmp));
 		return new SingleContinueChecker(tmp).visitSeq(n.body);
 	}
 
 	@Override
 	public Boolean visitSeq(LSeq n)
 	{
-		return n.elems.size() == 1 && ((LType) n.elems.get(0)).visitWithNoThrow(this);
+		return n.elems.size() == 1
+				&& (n.elems.get(0)).visitWithNoThrow(this);  // No: doesn't support "empty" choices ahead of single continue ? 
+		//return n.elems.stream().allMatch(x -> x.visitWithNoThrow(this));
+				// elems except the last must be "empty" (e.g., empty choice), not actually "single continues",  but bad sequenced "single continues" are caught by reachability
+				// i.e., "single-continue" check on every elem a bit overkill here, but OK
 	}
 }

@@ -11,46 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.model.endpoint.actions;
+package org.scribble.core.model.global.actions;
 
-import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.global.actions.SWrapServer;
-import org.scribble.core.type.name.Op;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-// Duplicated from Disconnect
-public class EWrapServer extends EAction
+public class SAcc extends SAction
 {
-	public EWrapServer(ModelFactory ef, Role peer)
+	public SAcc(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		super(ef, peer, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
+		super(subj, obj, mid, pay);
 	}
 	
 	@Override
-	public EWrapClient toDual(Role self)
+	public boolean isAccept()
 	{
-		return this.ef.newEWrapClient(self);
+		return true;
 	}
 
 	@Override
-	public SWrapServer toGlobal(ModelFactory sf, Role self)
-	{
-		return sf.newSWrapServer(self, this.peer);
-	}
-	
-	@Override
 	public int hashCode()
 	{
-		int hash = 1063;
+		int hash = 967;
 		hash = 31 * hash + super.hashCode();
 		return hash;
-	}
-	
-	@Override
-	public boolean isWrapServer()
-	{
-		return true;
 	}
 
 	@Override
@@ -60,21 +45,22 @@ public class EWrapServer extends EAction
 		{
 			return true;
 		}
-		if (!(o instanceof EWrapServer))
+		if (!(o instanceof SAcc))
 		{
 			return false;
 		}
-		return ((EWrapServer) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof EWrapServer;
+		return o instanceof SAcc;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "(??)";
+		//return "??";
+		return "<<-";
 	}
 }

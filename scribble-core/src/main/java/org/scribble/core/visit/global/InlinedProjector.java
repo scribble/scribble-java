@@ -14,6 +14,7 @@
 package org.scribble.core.visit.global;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
@@ -40,19 +42,25 @@ import org.scribble.core.type.session.local.LAcc;
 import org.scribble.core.type.session.local.LChoice;
 import org.scribble.core.type.session.local.LContinue;
 import org.scribble.core.type.session.local.LDisconnect;
-import org.scribble.core.type.session.local.LRcv;
 import org.scribble.core.type.session.local.LRecursion;
+import org.scribble.core.type.session.local.LRecv;
 import org.scribble.core.type.session.local.LReq;
 import org.scribble.core.type.session.local.LSend;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeAggNoThrow;
-import org.scribble.core.visit.local.SingleContinueChecker;
 
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
 public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
+	//protected final Set<RecVar> unguarded;  
+	protected final Set<RecVar> unguarded;  
+			// Projection "prunes" unguarded continues from choice cases, e.g., mu X.(A->B:1.X + A->B:2.A->C:2) for C, i.e., travel agent
+			// ...this can be followed by RecPruner to remove recs that are "orphaned" by continue pruning
+			// N.B. projection does not "merge" choice cases in , e.g., rec X { 1() from A; choice at A { continue X; } or { continue X; } }...
+			// ...that is a non-det branch, same as rec X { choice at A { 1() from A; } or { 1() from A; } }
+	
 	public final Core core;
 	public final Role self;
 
@@ -60,32 +68,55 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	{
 		this.core = core;
 		this.self = self;
+		this.unguarded = new HashSet<>();
 	}
 
-	@Override
-	protected LType unit(SType<Global, GSeq> n)
+	// Copy constructor for dup
+	protected InlinedProjector(InlinedProjector v)
 	{
-		throw new RuntimeException("Disregarded for Projector: " + n);
+		this.core = v.core;
+		this.self = v.self;
+		this.unguarded = new HashSet<>(v.unguarded);
 	}
-
-	@Override
-	protected LType agg(SType<Global, GSeq> n, Stream<LType> ts)
+	
+	// Use to visit a node with a copy of the current context (this.unguarded), e.g., for "nested" context visiting (Choice)
+	// N.B. subclasses should override
+	protected InlinedProjector dup()
 	{
-		throw new RuntimeException("Disregarded for Projector: " + n + " ,, " + ts);
+		return new InlinedProjector(this);
 	}
 
 	@Override
 	public LType visitChoice(Choice<Global, GSeq> n)
 	{
-		Role subj = n.subj.equals(self) ? Role.SELF : n.subj;
-				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
-		List<LSeq> tmp = n.blocks.stream().map(x -> visitSeq(x))
-				.filter(x -> !x.isEmpty()).collect(Collectors.toList());
-		if (tmp.isEmpty())
+		List<LSeq> blocks = n.blocks.stream()
+				.map(x -> dup().visitSeq(x))
+				.filter(x -> !x.isEmpty() && !isUnguardedSingleContinue(x))
+				.collect(Collectors.toList());
+		if (blocks.isEmpty())
 		{
 			return LSkip.SKIP; // CHECKME: OK, or "empty" choice at subj still important?
 		}
-		return new LChoice(null, subj, tmp);
+		//this.unguarded.clear();  // At least one block is non-empty, consider continues guarded -- done in Seq
+		
+		//InlinedEnablerInferer v = new InlinedEnablerInferer(this.unguarded);
+		Role subj = n.subj.equals(this.self) 
+				? Role.SELF  // i.e., internal choice
+				: n.subj;//v.visitSeq(blocks.get(0)).get();  // CHECKME: consistent ext choice means can infer from any one seq?
+				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
+		return new LChoice(null, subj, blocks);
+	}
+	
+	// N.B. won't prune unguarded continues that have a bad sequence, will be caught later by reachability checking (e.g., bad.reach.globals.gdo.Test04)
+	private boolean isUnguardedSingleContinue(LSeq block)
+	{
+		if (block.elems.size() != 1)
+		{
+			return false;
+		}
+		SType<Local, LSeq> e = block.elems.get(0);
+		return (e instanceof LContinue)
+				&& this.unguarded.contains(((LContinue) e).recvar);  // Bound recvars already checked
 	}
 	
 	@Override
@@ -110,7 +141,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		else //if (n instanceof GMessageTransfer)
 		{
 			return n.src.equals(self) ? new LSend(null, n.msg, n.dst)
-					: n.dst.equals(self)  ? new LRcv(null, n.src, n.msg)
+					: n.dst.equals(self)  ? new LRecv(null, n.src, n.msg)
 					: LSkip.SKIP;
 		}
 	}
@@ -130,23 +161,31 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	@Override
 	public <N extends ProtoName<Global>> LType visitDo(Do<Global, GSeq, N> n)
 	{
-		throw new RuntimeException("Unsupported for Do: " + n);
+		throw new RuntimeException("Unsupported for Do: " + n + " ,, " + this.getClass());
 	}
 
 	@Override
 	public LType visitRecursion(Recursion<Global, GSeq> n)
 	{
-		LSeq body = visitSeq(n.body);
-		if (body.isEmpty())  // N.B. projection is doing empty-rec pruning
+		this.unguarded.add(n.recvar);
+		LSeq body = visitSeq(n.body);  // Single "nested" Seq, don't need to copy visitor
+		if (body.isEmpty())  // A simple special case of empty-rec pruning -- leave it to "official" rec pruning?
 		{
 			return LSkip.SKIP;
 		}
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(n.recvar);
-		if (body.visitWithNoThrow(new SingleContinueChecker(rvs)))
-		{
-			return LSkip.SKIP;
+		//if (body.visitWithNoThrow(new SingleContinueChecker(rvs)))  
+				// "Generalised" single-continue checked now unnecessary, single-continues pruned in choice visiting above
+		if (body.elems.size() == 1)
+		{	
+			SType<Local, LSeq> e = body.elems.get(0);
+			if(e instanceof LContinue && ((LContinue) e).recvar.equals(n.recvar))
+			{
+				return LSkip.SKIP;
+			}
 		}
+		this.unguarded.remove(n.recvar);
 		return new LRecursion(null, n.recvar, body);
 	}
 
@@ -154,14 +193,25 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	@Override
 	public LSeq visitSeq(GSeq n)
 	{
-		List<LType> elems = n.elems.stream().map(x -> x.visitWithNoThrow(this))
-				.filter(x -> !x.equals(LSkip.SKIP)).collect(Collectors.toList());
-		return new LSeq(null, elems);  
+		List<LType> elems = new LinkedList<>();
+		for (SType<Global, GSeq> e : n.elems)
+		{
+			LType e1 = e.visitWithNoThrow(this);
+			elems.add(e1);
+			if (!(e1 instanceof LSkip))
+			{
+				this.unguarded.clear();
+			}
+		}
+		elems = elems.stream().filter(x -> !x.equals(LSkip.SKIP))
+				.collect(Collectors.toList());
+		return new LSeq(null, elems);
 				// Empty seqs converted to LSkip by GChoice/Recursion projection
 				// And a WF top-level protocol cannot produce empty LSeq
 				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
 	}
 
+	// CHECKME: relocate?
 	public static LProtoName getSimpledProjectionName(GProtoName simpname,
 			Role role)
 	{
@@ -174,7 +224,8 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	{
 		LProtoName simplename = InlinedProjector.getSimpledProjectionName(
 				fullname.getSimpleName(), role);
-		ModuleName modname = getProjectionModuleName(fullname.getPrefix(), simplename);
+		ModuleName modname = getProjectionModuleName(fullname.getPrefix(),
+				simplename);
 		return new LProtoName(modname, simplename);
 	}
 
@@ -185,5 +236,18 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		ModuleName simpname = new ModuleName(
 				fullname.getSimpleName().toString() + "_" + localname.toString());
 		return new ModuleName(fullname.getPrefix(), simpname); // Supports unary fullname
+	}
+
+	@Override
+	protected LType unit(SType<Global, GSeq> n)
+	{
+		throw new RuntimeException("Unsupported for InlinedProjector: " + n);
+	}
+
+	@Override
+	protected LType agg(SType<Global, GSeq> n, Stream<LType> ts)
+	{
+		throw new RuntimeException(
+				"Unsupported for InlinedProjector: " + n + " ,, " + ts);
 	}
 }

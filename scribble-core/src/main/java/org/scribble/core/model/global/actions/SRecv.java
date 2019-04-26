@@ -17,17 +17,15 @@ import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SAccept extends SAction
+public class SRecv extends SAction
 {
-	public SAccept(Role subj, Role obj, MsgId<?> mid, Payload payload)
-	//public GAccept(Role subj, Role obj)
+	public SRecv(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
-		super(subj, obj, mid, payload);
-		//super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(subj, obj, mid, pay);
 	}
 	
 	@Override
-	public boolean isAccept()
+	public boolean isReceive()
 	{
 		return true;
 	}
@@ -35,7 +33,7 @@ public class SAccept extends SAction
 	@Override
 	public int hashCode()
 	{
-		int hash = 967;
+		int hash = 977;
 		hash = 31 * hash + super.hashCode();
 		return hash;
 	}
@@ -47,22 +45,21 @@ public class SAccept extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SAccept))
+		if (!(o instanceof SRecv))
 		{
 			return false;
 		}
-		return ((SAccept) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof SAccept;
+		return o instanceof SRecv;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		//return "??";
-		return "<<-";
+		return "?";
 	}
 }

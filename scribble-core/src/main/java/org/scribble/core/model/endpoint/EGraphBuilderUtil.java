@@ -13,7 +13,6 @@
  */
 package org.scribble.core.model.endpoint;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -24,94 +23,74 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.scribble.core.model.GraphBuilderUtil;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.util.ScribException;
 
-	// N.B. init must be called before every "new visit", including first -- no: now init implicit on construction, and finalise also does init
-// FIXME TODO replace EGraphBuilderUtil
-// Helper class for EGraphBuilder -- can access the protected setters of EState (via superclass helper methods)
+// EGraphBuilderUtil usage contract (1): all states must be made via newState
+// EGraphBuilderUtil usage contract (2): this.entry on leaving a node is the same as on entering
 // Tailored to support graph building from syntactic local protocol choice and recursion
 public class EGraphBuilderUtil
 		extends GraphBuilderUtil<RecVar, EAction, EState, Local>
 {
-	public final ModelFactory ef;  // N.B. new states should be made by this.newState, not this.ef.newEState
+	protected EState entry;	// GraphBuilderUtil usage contract: entry on leaving a node is the same as on entering -- cf., EGraphBuilderUtil.visitSeq restores the original entry on leaving
+	protected EState exit;  // Tracking exit is convenient for merges (otherwise have to generate dummy merge nodes)
 
-	private final Map<RecVar, EState> outerRecvars = new HashMap<>();  // FIXME: deprecate
-	private final Map<RecVar, Deque<EState>> recvars = new HashMap<>();  // CHECKME: Deque is for shadowing?
+  // N.B. new states should be made by this.newState, not this.mf.newEState
+	private final Set<EState> states = new HashSet<>();
 
+	// Entry state for each recursion
+	private final Map<RecVar, Deque<EState>> recEntries = new HashMap<>();  // CHECKME: Deque is for shadowing?
+
+	// Record enacting per-recvar, since a state could have multi-recvars -- CHECKME: caters for shadowing? (cf. recording only per unique recvar)
+	// CHECKME: for a given state, the enacting list is the same for each recvar?
+	private final Map<EState, List<EAction>> enacting = new HashMap<>();
+
+	// Temporary storage of enacting while collecting in progress
 	// First action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
-	//private final Map<RecVar, Deque<Set<EAction>>> enacting = new HashMap<>();  
-	private final Map<RecVar, Deque<List<EAction>>> enacting = new HashMap<>();
-		// CHECKME: Set sufficient? or List? (consider non-determinism -- does it matter?)
+	// These are collected by:
+	// - On each recursion entry, push a new list for its entry state -- list pushing/popping mainly for handling choices (see below)
+	// - (N.B. only need to do per state, not per rec(var) -- all recvars of a given state equivalently identify that state)
+	// - General idea: via addEdge, record the first action encountered for all "*open*" rec states, i.e., add the action to all current lists that are *still empty*
+	// - For choice: 
+	// -- On choice entry, first push a new list for *all* rec states for recording the choice cases (all, including "non-open", because inconvenient to distinguish open/non-open from nested contexts)
+	// -- On block entry, push another new list for *all* rec states for recording the current block
+	// -- (Record, via addEdge, the first action of the current block for all open rec states)
+	// -- On block exit, pop the block list into the parent choice list for *all* rec states
+	// - On choice exit, pop the choice list into the parent (recursion/choice-block) list for all *open* rec states, i.e., if the parent list is *still empty*
+	// - On recursion exit, pop the list into the enacting map for the rec entry state
+	private final Map<EState, Deque<List<EAction>>> collecting = new HashMap<>();
 
-	//private final Map<EState, Map<RecVar, Set<EAction>>> enactingMap = new HashMap<>();  // Record enacting per-recvar, since a state could have multi-recvars
-	private final Map<EState, Map<RecVar, List<EAction>>> enactingMap = new HashMap<>();
-
-	private final Deque<List<EState>> pred = new LinkedList<>();
-	private final Deque<List<EAction>> prev = new LinkedList<>();
-
-	public EGraphBuilderUtil(ModelFactory ef)
+	public EGraphBuilderUtil(ModelFactory mf)
 	{
-		this.ef = ef;
-		////clear();
-		//reset();
-		init(null);
+		super(mf);
+		reset();
+	}
+	
+	// N.B. called before every "new visit", including first (so util is reusable) -- called by constructor and finalise
+	@Override
+	protected void reset()  
+	{
+		//clear();
+		this.entry = newState(Collections.emptySet());
+		this.exit = newState(Collections.emptySet());
 	}
 
-	/*// FIXME: cannot be reused for different protos, because of recvars and clear/reset
-	// CHECKME: refactor as factory method?  (e.g., push?)
-	public EGraphBuilderUtil2(EGraphBuilderUtil2 b)
+	/*protected void clear()  // CHECKME: redundant? -- ideally builder should be implemented so that it is redundant?
 	{
-		this.ef = b.ef;
-		init(null);  // FIXME: init param not used
-		b.outerRecvars.entrySet().forEach(x ->
-				this.outerRecvars.put(x.getKey(), x.getValue()));
-		b.recvars.entrySet().forEach(x ->
-				this.outerRecvars.put(x.getKey(), x.getValue().peek()));
+		this.states.clear();
+		this.recEntries.clear();
+		this.enacting.clear();
+		this.collecting.clear();
 	}*/
 	
-	// N.B. must be called before every "new visit", including first
-	// FIXME: now cannot be reused for different protos, because of recvars and clear/reset
-	@Override
-	public void init(EState init)  // FIXME: init not used (but inherited from super)
-	{
-		clear();
-		/*reset(this.ef.newEState(Collections.emptySet()),
-				this.ef.newEState(Collections.emptySet()));*/
-		reset(newState(Collections.emptySet()), newState(Collections.emptySet()));
-	}
-
-	protected void clear()
-	{
-		this.recvars.clear();
-		this.enacting.clear();
-
-		this.pred.clear();
-		this.pred.push(new LinkedList<>());
-
-		this.prev.clear();
-		this.prev.push(new LinkedList<>());
-		
-		this.enactingMap.clear();
-		
-		this.states.clear();
-	}
-	
-	private final Set<EState> states = new HashSet<>();
-	
-	// For the util to additionally record states 
-	// CHECKME: make interface less messy w.r.t. this.ef.newEState
-	//@Override
+	// For the util to additionally record states -- use this, don't use this.mf.newEState
 	public EState newState(Set<RecVar> labs)
 	{
-		//return new EState(labs);
-		EState s = this.ef.newEState(labs);
+		EState s = this.mf.newEState(labs);
 		this.states.add(s);
 		return s;
 	}
@@ -120,68 +99,35 @@ public class EGraphBuilderUtil
 	@Override
 	public void addEdge(EState s, EAction a, EState succ)
 	{
-		addEdgeAux(s, a, succ);
-
-		//if (!this.pred.isEmpty())
+		super.addEdge(s, a, succ);
+		for (Deque<List<EAction>> ens : this.collecting.values())
 		{
-			this.pred.pop();
-			this.prev.pop();
-		}
-		this.pred.push(new LinkedList<>(Arrays.asList(s)));
-		this.prev.push(new LinkedList<>(Arrays.asList(a)));
-		
-		//for (Deque<Set<EAction>> ens : this.enacting.values())
-		for (Deque<List<EAction>> ens : this.enacting.values())
-		{
-			if (!ens.isEmpty())  // Unnecessary?
+			List<EAction> tmp = ens.peek();  // enterRecursion always adds an initial List to the Deque 
+			if (tmp.isEmpty())
 			{
-				//Set<EAction> tmp = ens.peek();
-				List<EAction> tmp = ens.peek();
-				if (tmp.isEmpty())
-				{
-					tmp.add(a);
-				}
+				tmp.add(a);
 			}
 		}
 	}
-	
 
 	/*
 	 * Dealing with Choice contexts
 	 */
 	public void enterChoice()
 	{
-		this.pred.push(new LinkedList<>());
-		this.prev.push(new LinkedList<>());
-		
-		for (RecVar rv : this.enacting.keySet())
+		for (EState entry : this.collecting.keySet())
 		{
-			////Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			Deque<List<EAction>> tmp = this.enacting.get(rv);
-			////tmp.push(new HashSet<>(tmp.peek()));
-			//tmp.push(new HashSet<>());  // Initially empty to record nested enablings in choice blocks
-			tmp.push(new LinkedList<>());  // Initially empty to record nested enablings in choice blocks
+			Deque<List<EAction>> deq = this.collecting.get(entry);
+			deq.push(new LinkedList<>());  // Initially empty to record nested enablings in choice blocks
 		}
 	}
 
 	public void leaveChoice()
 	{
-		List<EState> pred = this.pred.pop();
-		List<EAction> prev = this.prev.pop();
-		if (!pred.isEmpty())
+		for (EState entry : this.collecting.keySet())
 		{
-			this.pred.pop();
-			this.prev.pop();
-			this.pred.push(pred);
-			this.prev.push(prev);
-		}
-		
-		for (RecVar rv : this.enacting.keySet())
-		{
-			/*Set<EAction> pop = this.enacting.get(rv).pop();
-			Set<EAction> peek = this.enacting.get(rv).peek();*/
-			List<EAction> pop = this.enacting.get(rv).pop();
-			List<EAction> peek = this.enacting.get(rv).peek();
+			List<EAction> pop = this.collecting.get(entry).pop();
+			List<EAction> peek = this.collecting.get(entry).peek();
 			if (peek.isEmpty())  // Cf. addEdge
 			{
 				peek.addAll(pop);
@@ -189,313 +135,178 @@ public class EGraphBuilderUtil
 		}
 	}
 
-	public void pushChoiceBlock()
+	public void enterChoiceBlock()
 	{
-		this.pred.push(null);  // Signifies following statement is "unguarded" in this choice block
-		this.prev.push(null);
-		
-		for (RecVar rv : this.enacting.keySet())
+		for (EState entry : this.collecting.keySet())
 		{
-			//Deque<Set<EAction>> tmp = this.enacting.get(rv);
-			Deque<List<EAction>> tmp = this.enacting.get(rv);
-			//tmp.push(new HashSet<>());  // Must be empty for addEdge to record (nested) enabling
-			tmp.push(new LinkedList<>());
+			Deque<List<EAction>> deq = this.collecting.get(entry);
+			deq.push(new LinkedList<>());
 		}
 	}
 
-	public void popChoiceBlock()
+	public void leaveChoiceBlock()
 	{
-		List<EState> pred = this.pred.pop();
-		List<EAction> prev = this.prev.pop();
-
-		if (pred != null)  // Unguarded choice-continue?
+		for (EState entry : this.collecting.keySet())
 		{
-			List<EState> peek1 = this.pred.peek();
-			if (peek1 == null)
-			{
-				this.pred.pop();
-				peek1 = new LinkedList<>();
-				this.pred.push(peek1);
-			}
-			peek1.addAll(pred);
-		}
-
-		if (prev != null)
-		{
-			List<EAction> peek2 = this.prev.peek();
-			if (peek2 == null)
-			{
-				this.prev.pop();
-				peek2 = new LinkedList<>();
-				this.prev.push(peek2);
-			}
-			peek2.addAll(prev);
-		}
-
-		for (RecVar rv : this.enacting.keySet())
-		{
-			/*Set<EAction> pop = this.enacting.get(rv).pop();
-			Set<EAction> peek = this.enacting.get(rv).peek();*/
-			List<EAction> pop = this.enacting.get(rv).pop();
-			List<EAction> peek = this.enacting.get(rv).peek();
-			//if (peek.isEmpty())
-			{
-				peek.addAll(pop);
-			}
+			List<EAction> block = this.collecting.get(entry).pop();
+			List<EAction> blocks = this.collecting.get(entry).peek();  // Parent choice List
+			blocks.addAll(block);
 		}
 	}
 	
-
 	/*
 	 * Dealing with Recursion contexts
 	 */
-	public void pushRecursionEntry(RecVar rv, EState entry)
+	public void enterRecursion(RecVar rv, EState entry)
 	{
-		/*if (!isUnguardedInChoice())  // Don't record rec entry if it is an unguarded choice-rec
+		// Update this.recEntries
+		Deque<EState> recdeq = this.recEntries.get(rv);
+		if (recdeq == null)
 		{
-			this.entry.addLabel(recvar);
-		}*/
-		//this.recvars.put(recvar, this.entry);
-		Deque<EState> tmp = this.recvars.get(rv);
-		if (tmp == null)
-		{
-			tmp = new LinkedList<>();
-			this.recvars.put(rv, tmp);
+			recdeq = new LinkedList<>();
+			this.recEntries.put(rv, recdeq);
 		}
-		/*if (isUnguardedInChoice())
-		{
-			tmp.push(tmp.peek());  // Works because unguarded recs unfolded (including nested recvar shadowing -- if unguarded choice-rec, it will be unfolded and rec entry recorded for guarded unfolding)
-		}
-		else
-		{
-			tmp.push(this.entry);
-		}*/
-		tmp.push(entry);
+		recdeq.push(entry);  // Same as this.entry
 		
-		//Deque<Set<EAction>> tmp2 = this.enacting.get(recvar);
-		Deque<List<EAction>> tmp2 = this.enacting.get(rv);
-		if (tmp2 == null)
+		// Udpate this.collecting, if necessary
+		if (this.collecting.containsKey(entry) || this.enacting.containsKey(entry))  
+				// Already doing/done this rec state for another of its recvar
+				// Does checking this.enacting do anything?
 		{
-			tmp2 = new LinkedList<>();  // New Stack for this recvar
-			this.enacting.put(rv, tmp2);
+			return;
 		}
-		//tmp2.push(new HashSet<>());  // Push new Set element onto stack
-		tmp2.push(new LinkedList<>());  // Push new Set element onto stack
+		Deque<List<EAction>> coldeq = new LinkedList<>();  // New Deque for this recvar
+		this.collecting.put(entry, coldeq);  // !this.collecting.containsKey(entry), leaveRecursion does remove -- necessary for addEdge/Choice to correctly add to this.collecting
+		coldeq.push(new LinkedList<>());  // Push new List onto deq
 	}	
 	
-	public void popRecursionEntry(RecVar rv)
+	public void leaveRecursion(RecVar rv)
 	{
-		this.recvars.get(rv).pop();  // Pop the entry of this rec
-
-		//Set<EAction> pop = this.enacting.get(recvar).pop();
-		List<EAction> pop = this.enacting.get(rv).pop();
-		if (this.enacting.get(rv).isEmpty())  // All Sets popped from the stack of this recvar
+		// Update this.recEntries
+		EState entry = this.recEntries.get(rv).pop();  // Pop the entry of this rec
+				// Same as this.entry
+				// Because contract for GraphBuilderUtil is entry on leaving a node is the same as on entry, cf., EGraphBuilder.visitSeq restores original entry on leaving
+				// (And visitRecursion just does visitSeq for the recursion body, with the current entry/exit)
+		if (this.recEntries.get(rv).isEmpty())
 		{
-			this.enacting.remove(rv);
+			this.recEntries.remove(rv);  // To keep util clean, e.g., for reuse
 		}
-
-		EState curr = getEntry();
-		//Map<RecVar, Set<EAction>> tmp = this.enactingMap.get(curr);
-		Map<RecVar, List<EAction>> tmp = this.enactingMap.get(curr);
-		if (tmp == null)
+		
+		// Udpate this.collecting, if necessary
+		if (!this.collecting.containsKey(entry))
 		{
-			tmp = new HashMap<>();
-			this.enactingMap.put(curr, tmp);
+			// This state already done -- i.e., already popped another recvar for this same state, e.g., good.efsm.gcontinue.choiceunguarded.Test05b
+			// (For a given state, the enacting for all associated recvars is the same (the recvars are "equivalently" identify the state) -- so only need to record per state)
+			return;
 		}
-		tmp.put(rv, pop);
+		List<EAction> coll = this.collecting.get(entry).pop();
+		if (this.collecting.get(entry).isEmpty())  // All Lists popped from the stack of this recvar -- could just clear instead
+		{
+			this.collecting.remove(entry);  
+					// N.B. we pushed on entry of *outermost rec*, but above popped on exit of *innermost* rec (due to checking entry in this.collecting)
+					// This remove is necessary to prevent above containsKey check also succeeding  when leaving the outer rec, e.g., good.efsm.gcontinue.choiceunguarded.Test05b
+					// Also necessary to prevent continued updating of this.collecting after leaving a rec (because this.collecting still has entry), e.g., good.efsm.gchoice.Test10
+		}
+		this.enacting.put(entry, coll);
+				// !this.enacting.containsKey(entry) -- if it did contain (remove enacting check from enterRecursion), this.enacting.get(entry).equals(coll)
 	}	
 	
-
 	/*
 	 * Edge construction for Continues
 	 */
-	public boolean isUnguardedInChoice()
-	//public boolean isUnguardedInChoice(RecVar rv)
+	public void fixContinueEdge(EState pred, EAction a, EState curr, RecVar rv)
 	{
-		return
-				////!this.entry.equals(this.root) && // Hacky? for protocols that start with unguarded choice-rec, e.g. choice at A { rec X { ... at root
-				//!this.pred.isEmpty() &&  // This and above fixed by initialising non-null pred/prev?
-				this.pred.peek() == null;
-	}
-	
-	// Choice-unguarded continues -- fixed in finalise pass
-	// Now currently used for all continues, cf. LContinue::buildGraph
-	public void addContinueEdge(EState s, RecVar rv)
-	{
-		/*this.contStates.add(s);
-		this.contRecVars.add(rv);*/
+		removeEdgeAux(pred, a, curr);  // N.B. "a" could be an enacting, that's fine (removeEdgeAux doesn't change that)
 		EState entry = getRecursionEntry(rv);
-		addEdgeAux(s, new IntermediateContinueEdge(this.ef, rv), entry);
-		//addEdge(s, new IntermediateContinueEdge(rv), entry); // **FIXME: broken on purpose for testing
+		addEdge(pred, a, entry);
 	}
 
-	// Doesn't set predecessor, cf. addEdge (and cf. addEdgeAux)
-	// Choice-guarded continues (can be done in one pass)
-	public void addRecursionEdge(EState s, EAction a, EState succ)  // Cf. LGraphBuilder.addContinueEdge, for choice-unguarded cases -- addRecursionEdge, for guarded cases, should also be in LGraphBuilder, but here for convenience (private state)
+	// Choice-unguarded continues -- fixed in finalise pass
+	public void addUnguardedContinueEdge(EState s, RecVar rv)  // Intermed continue edge makes its own dummy action
 	{
-		addEdgeAux(s, a, succ);
-		
-		// Still needed here?
-		//for (Deque<Set<EAction>> ens : this.enacting.values())
-		for (Deque<List<EAction>> ens : this.enacting.values())
-		{
-			if (!ens.isEmpty())
-			{
-				//Set<EAction> tmp = ens.peek();
-				List<EAction> tmp = ens.peek();
-				if (tmp.isEmpty())
-				{
-					tmp.add(a);
-				}
-			}
-		}
+		EState entry = getRecursionEntry(rv);
+		addEdgeAux(s, new UnguardedContinueEdge(this.mf, rv), entry);
 	}
 
-	// Cf. add ContinueEdge
-	public void addRecursionEdge(EState s, EAction a, RecVar rv)
-	{
-		if (this.recvars.containsKey(rv))
-		{
-			EState entry = getRecursionEntry(rv);
-			addEdge(s, a, entry);
-		}
-		else  // FIXME: should now be obsolete
-		{
-			addEdgeAux(s, new IntermediateRecEdge(this.ef, a, rv),
-					newState(Stream.of(rv).collect(Collectors.toSet())));
-		}
-	}
-	
-	// succ assumed to be this.getEntry()
-	public void removeEdgeFromPredecessor(EState s, EAction a)
-			throws ScribException
-			// Removing prev edge, to be replaced by addRecursionEdge
-	{
-		//s.removeEdge(a, this.getEntry());
-		removeEdgeAux(s, a, this.getEntry());
-		//this.pred.peek().remove(s);  // Need to update both preds and prevs accordingly (consider non-det)
-		Iterator<EState> preds = this.pred.peek().iterator();
-		Iterator<EAction> prevs = this.prev.peek().iterator();
-		while (preds.hasNext())
-		{
-			EState nexts = preds.next();
-			EAction nexta = prevs.next();
-			if (nexts.equals(s) && nexta.equals(a))
-			{
-				preds.remove();
-				prevs.remove();
-				return;
-			}
-		}
-		throw new RuntimeException("Shouldn't get in here: " + s + ", " + a);
-	}
-
-	// CHECKME handle preds/prevs like above (cf. this.addEdge)
+	/*// CHECKME: update enacting? (cf. this.addEdge)
 	public void removeEdge(EState s, EAction a, EState succ)
 			throws ScribException
 	{
 		removeEdgeAux(s, a, succ);
-	}
-	
-	public List<EState> getPredecessors()
-	{
-		//return this.pred.peek();
-		return new LinkedList<>(this.pred.peek());  // Cf. removeEdgeFromPredecessor
-	}
-	
-	public List<EAction> getPreviousActions()
-	{
-		//return this.prev.peek();
-		return new LinkedList<>(this.prev.peek());
-	}
+	}*/
 
 	public EState getRecursionEntry(RecVar recvar)
 	{
-		return this.recvars.get(recvar).peek();
+		return this.recEntries.get(recvar).peek();
 	}	
 	
-	// Returns List, cf. getAllSucessors/Actions
-	public List<EState> getAllPredecessors(EState s)
+	// Returns List (not Set), cf. getSuccs/Actions
+	public List<EState> getPreds(EState s)
 	{
-		return this.states.stream().filter(x -> x.getAllSuccessors().contains(s))
+		// Easier to recompute than "cache" (this.preds), due to removeEdge(Aux)? Cf. addEdge (Or due to maintaining this.collecting/enacting)
+		// (Only currently used by visitContinue, so cost OK)
+		return this.states.stream().filter(x -> x.getSuccs().contains(s))
 				.collect(Collectors.toList());
 	}
-	
 
 	/*
-	 * Finalise graph by treating IntermediateContinueEdges
+	 * Finalise graph by treating IntermediateContinueEdges.
+	 * Calls reset() on completion.
 	 */
 	public EGraph finalise()
 	{
-		/*EState res = new EState(this.entry.getLabels());
-		EState resTerm = new EState(this.exit.getLabels());*/
-		EState entry = this.entry.cloneNode(this.ef, this.entry.getLabels()); //this.ef.newEState(this.entry.getLabels());
-		EState exit = this.exit.cloneNode(this.ef, this.exit.getLabels()); //this.ef.newEState(this.exit.getLabels());
-
-		Map<EState, EState> map = new HashMap<>();
-		map.put(this.entry, entry);
-		map.put(this.exit, exit);
-		Set<EState> seen = new HashSet<>();
-		fixContinueEdges(seen, map, this.entry, entry);
-		if (!seen.contains(this.exit))
+		EState entryClone = this.entry.cloneNode(this.mf, this.entry.getLabels());
+		EState exitClone = this.exit.cloneNode(this.mf, this.exit.getLabels());
+		Map<EState, EState> clones = new HashMap<>();  // Will be mostly populated by fixUnguardedContinueEdges
+		clones.put(this.entry, entryClone);
+		clones.put(this.exit, exitClone);
+		Set<EState> seenOrig = new HashSet<>();
+		fixUnguardedContinueEdges(seenOrig, clones, this.entry, entryClone);
+		if (!seenOrig.contains(this.exit))
 		{
-			exit = null;
+			exitClone = null;
 		}
-		
-		/*Map<Integer, EndpointState> all = getAllStates(res);
-		EndpointState dfa = determinise(all, res, resTerm);
-		System.out.println("111: " + dfa.toDot());*/
-		
-		init(null);
-		
-		return new EGraph(entry, exit);
+		reset();
+		return new EGraph(entryClone, exitClone);
 	}
 	
-	// FIXME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
-	protected void fixContinueEdges(Set<EState> seen, Map<EState, EState> clones,
-			EState orig, EState clone)
+	protected void fixUnguardedContinueEdges(Set<EState> seenOrig,
+			Map<EState, EState> clones, EState currOrig, EState currClone)
 	{
-		if (seen.contains(orig))
+		if (seenOrig.contains(currOrig))
 		{
 			return;
 		}
-		seen.add(orig);
-		Iterator<EAction> as = orig.getAllActions().iterator();
-		Iterator<EState> ss = orig.getAllSuccessors().iterator();
+		seenOrig.add(currOrig);
+		Iterator<EAction> as = currOrig.getActions().iterator();  // Actions are immutable (no orig/clone)
+		Iterator<EState> succsOrig = currOrig.getSuccs().iterator();
 		while (as.hasNext())
 		{
 			EAction a = as.next();
-			EState origSucc = ss.next();
-			EState cloneSucc = getClone(clones, origSucc);
-			
-			if (!(a instanceof IntermediateContinueEdge) && !(a instanceof IntermediateRecEdge))
+			EState succOrig = succsOrig.next();
+			if (!(a instanceof UnguardedContinueEdge))
 			{
-				addEdgeAux(clone, a, cloneSucc);
-			
-				fixContinueEdges(seen, clones, origSucc, cloneSucc);
+				EState succClone = getClone(clones, succOrig);
+				addEdgeAux(currClone, a, succClone);
+				fixUnguardedContinueEdges(seenOrig, clones, succOrig, succClone);
 			}
-			else if (a instanceof IntermediateRecEdge)
+			else  // Choice--unguardedcontedge-->succOrig, i.e., curr is a Choice, succOrig is a rec entry state
 			{
-				// TODO FIXME: won't handle deeper nesting of int-rev-edges -- need to keep int-rec-edge if succ is from futher out than parent level
-				// So need to record recvars as a stack of Maps
-				
-				addEdgeAux(clone, ((IntermediateRecEdge) a).action,
-						this.outerRecvars.get(origSucc.getLabels().iterator().next()));
-						// N.B. no recursive call, i.e., don't follow intermediate rec edge successors
-			}
-			else
-			{
-				IntermediateContinueEdge ice = (IntermediateContinueEdge) a;
-				//for (IOAction e : this.enactingMap.get(succ))
-				RecVar rv = new RecVar(ice.mid.toString());
-				for (EAction e : this.enactingMap.get(origSucc).get(rv))
+				EState recEntry = succOrig;
+				for (EAction e : this.enacting.get(recEntry)) // recEntry--enacting-->succEntry
 				{
-					for (EState n : origSucc.getSuccessors(e))
+					for (EState succEntry : recEntry.getSuccs(e))
 					{
-						cloneSucc = getClone(clones, n);
-						addEdgeAux(clone, e, cloneSucc);
-
-						fixContinueEdges(seen, clones, origSucc, cloneSucc);
+						EState succEntryClone = getClone(clones, succEntry);  // succEntryClone is a (cloned) successor of recEntry
+						addEdgeAux(currClone, e, succEntryClone);  
+								// Choice--enacting-->succSuccClone, where succSuccClone is succ(rec-entry, enacting) (rec-entry is SuccOrig)
+								// i.e., skip recEntry
+						fixUnguardedContinueEdges(seenOrig, clones, recEntry,  // Carry on from recEntry, that's where this edge was going "morally"
+								getClone(clones, recEntry));
+						
+						// CHECKME: "transitive" (nested?) unguarded-continue-edge rewriting possible?  supported?
+						// ...CHECKME: incomplete -- won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
+						
 					}
 				}
 			}
@@ -504,18 +315,38 @@ public class EGraphBuilderUtil
 
 	private EState getClone(Map<EState, EState> clones, EState orig)
 	{
-		EState res;
 		if (clones.containsKey(orig))
 		{
-			 res = clones.get(orig);
+			 return clones.get(orig);
 		}
-		else
-		{
-			//next = this.ef.newEState(succ.getLabels());
-			res = orig.cloneNode(this.ef, orig.getLabels());
-			clones.put(orig, res);
-		}
+		EState res = orig.cloneNode(this.mf, orig.getLabels());
+		clones.put(orig, res);
 		return res;
+	}
+	
+	public void addEntryLabel(RecVar lab)
+	{
+		addEntryLabAux(this.entry, lab);
+	}
+
+	public EState getEntry()
+	{
+		return this.entry;
+	}
+
+	public void setEntry(EState entry)
+	{
+		this.entry = entry;
+	}
+
+	public EState getExit()
+	{
+		return this.exit;
+	}
+
+	public void setExit(EState exit)
+	{
+		this.exit = exit;
 	}
 }
 

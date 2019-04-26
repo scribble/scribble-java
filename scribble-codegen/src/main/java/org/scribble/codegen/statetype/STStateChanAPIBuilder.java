@@ -18,7 +18,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.core.model.MState;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
@@ -66,27 +65,27 @@ public abstract class STStateChanAPIBuilder
 		Map<String, String> api = new HashMap<>();
 		Set<EState> states = new LinkedHashSet<>();
 		states.add(this.graph.init);
-		states.addAll(MState.getReachableStates(this.graph.init));
+		states.addAll(this.graph.init.getReachableStates());
 		for (EState s : states)
 		{
 			switch (s.getStateKind())
 			{
 				case ACCEPT:      throw new RuntimeException("TODO");
 				case OUTPUT:      api.put(getFilePath(getStateChanName(s)), this.ob.build(this, s)); break;
-				case POLY_INPUT: 
+				case POLY_RECIEVE: 
 				{
 					api.put(getFilePath(getStateChanName(s)), this.bb.build(this, s));
 					api.put(getFilePath(this.cb.getCaseStateChanName(this, s)), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
 				case TERMINAL:    api.put(getFilePath(getStateChanName(s)), this.eb.build(this, s)); break;  // FIXME: without subpackages, all roles share same EndSocket
-				case UNARY_INPUT:
+				case UNARY_RECEIVE:
 				{
 					api.put(getFilePath(getStateChanName(s)), this.rb.build(this, s));
 					//api.put(getFilePath(getStateChanName(s) + "_Cases"), this.cb.build(this, s));  // FIXME: factor out
 					break;
 				}
-				case WRAP_SERVER: throw new RuntimeException("TODO");
+				case SERVER_WRAP: throw new RuntimeException("TODO");
 				default:          throw new RuntimeException("Shouldn't get in here: " + s);
 			}
 		}

@@ -88,7 +88,7 @@ public class IOInterfacesGenerator extends ApiGen
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
 			// FIXME: factor out with skipIOInterfacesGeneration
-			Set<EAction> as = EState.getReachableActions(init);
+			Set<EAction> as = init.getReachableActions();
 			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 			{
 				throw new RuntimeScribException(
@@ -103,7 +103,7 @@ public class IOInterfacesGenerator extends ApiGen
 		collectPreds();
 		
 		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), init);
-		EState term = EState.getTerminal(init);
+		EState term = init.getTerminal();
 		ClassBuilder endsock = null;
 		if (term != null)
 		{
@@ -209,7 +209,7 @@ public class IOInterfacesGenerator extends ApiGen
 		visited.add(s);
 
 		//Set<EAction> as = s.getActions();
-		List<EAction> as = s.getActions();
+		List<EAction> as = s.getDetActions();
 		for (EAction a : as.stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (!a.isSend() && !a.isReceive())  // TODO (connect/disconnect)
@@ -222,7 +222,7 @@ public class IOInterfacesGenerator extends ApiGen
 				this.actions.put(a, new ActionIfaceGen(this.apigen, s, a).generateType());
 				this.succs.put(a, new SuccessorIfaceGen(this.apigen, s, a).generateType());
 
-				if (s.getStateKind() == EStateKind.POLY_INPUT)
+				if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 				{
 					// Duplicated from ActionInterfaceGenerator
 					InterfaceBuilder ib = new InterfaceBuilder();
@@ -243,10 +243,10 @@ public class IOInterfacesGenerator extends ApiGen
 				}
 			}
 			
-			EState succ = s.getSuccessor(a);
+			EState succ = s.getDetSuccessor(a);
 			putPreAction(succ, a);
 
-			if (s.getStateKind() == EStateKind.POLY_INPUT)
+			if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 			{
 				/*for (IOAction b : s.accept(a).getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 				{
@@ -280,10 +280,10 @@ public class IOInterfacesGenerator extends ApiGen
 				case OUTPUT:  // Send, connect, disconnect
 					ifgen = new SelectIfaceGen(this.apigen, this.actions, s);
 					break;
-				case UNARY_INPUT:
+				case UNARY_RECEIVE:
 					ifgen = new ReceiveIfaceGen(this.apigen, this.actions, s);
 					break;
-				case POLY_INPUT:
+				case POLY_RECIEVE:
 					InterfaceBuilder cases = new CaseIfaceGen(this.apigen, this.actions, s).generateType();
 					this.iostates.put(cases.getName(), cases);
 					ifgen = new BranchIfaceGen(this.apigen, this.actions, s);
@@ -296,9 +296,9 @@ public class IOInterfacesGenerator extends ApiGen
 		}
 		
 		visited.add(s);
-		for (EAction a : s.getActions())
+		for (EAction a : s.getDetActions())
 		{
-			generateIOStateInterfacesFirstPass(visited, s.getSuccessor(a));
+			generateIOStateInterfacesFirstPass(visited, s.getDetSuccessor(a));
 		}
 	}
 
@@ -350,9 +350,9 @@ public class IOInterfacesGenerator extends ApiGen
 		}
 
 		visited.add(s);
-		for (EAction a : s.getActions())
+		for (EAction a : s.getDetActions())
 		{
-			generateIOStateInterfacesSecondPass(visited, s.getSuccessor(a));
+			generateIOStateInterfacesSecondPass(visited, s.getDetSuccessor(a));
 		}
 	}
 
@@ -363,7 +363,7 @@ public class IOInterfacesGenerator extends ApiGen
 			return;
 		}
 
-		if (s.getStateKind() == EStateKind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 		{
 			//Set<InterfaceBuilder> succifs = this.preds.get(s);
 			String key = HandleIfaceGen.getHandleInterfaceName(getSelf(), s);
@@ -375,9 +375,9 @@ public class IOInterfacesGenerator extends ApiGen
 		}
 		
 		visited.add(s);
-		for (EAction a : s.getActions())
+		for (EAction a : s.getDetActions())
 		{
-			generateHandleInterfaces(visited, s.getSuccessor(a));
+			generateHandleInterfaces(visited, s.getDetSuccessor(a));
 		}
 	}
 
@@ -388,7 +388,7 @@ public class IOInterfacesGenerator extends ApiGen
 			return;
 		}
 
-		if (s.getStateKind() == EStateKind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 		{
 			//GProtocolName gpn = this.apigen.getGProtocolName();
 			Role self = this.apigen.getSelf();
@@ -449,9 +449,9 @@ public class IOInterfacesGenerator extends ApiGen
 		}
 				
 		visited.add(s);
-		for (EAction a : s.getActions())
+		for (EAction a : s.getDetActions())
 		{
-			generateHandleInterfacesSecondPass(visited, s.getSuccessor(a));
+			generateHandleInterfacesSecondPass(visited, s.getDetSuccessor(a));
 		}
 	}
 	
@@ -481,7 +481,7 @@ public class IOInterfacesGenerator extends ApiGen
 			iostate.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".*");
 		}
 
-		if (s.getStateKind() == EStateKind.POLY_INPUT)
+		if (s.getStateKind() == EStateKind.POLY_RECIEVE)
 		{
 			// Add CaseInterface to each CaseSocket
 			TypeBuilder cases = this.apigen.getType(CaseSockGen.getCaseSocketName(this.apigen.getSocketClassName(s)));
@@ -525,7 +525,7 @@ public class IOInterfacesGenerator extends ApiGen
 			System.out.println("BBB: " + handle);*/
 			//for (IOAction a : this.branchSuccs.get(handle))
 			// FIXME: move back into HandlerInterfaceGenerator
-			for (EAction a : s.getActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			for (EAction a : s.getDetActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				if (first)
 				{
@@ -546,7 +546,7 @@ public class IOInterfacesGenerator extends ApiGen
 				{
 					tmp += SuccessorInterfaceGenerator.getSuccessorInterfaceName(a);
 				}*/
-				EState succ = s.getSuccessor(a);
+				EState succ = s.getDetSuccessor(a);
 				if (succ.isTerminal())
 				{
 					tmp += ScribSockGen.GENERATED_ENDSOCKET_NAME;
@@ -635,9 +635,9 @@ public class IOInterfacesGenerator extends ApiGen
 		}
 		
 		visited.add(s);
-		for (EAction a : s.getActions())
+		for (EAction a : s.getDetActions())
 		{
-			addIOStateInterfacesToStateChannels(visited, s.getSuccessor(a));
+			addIOStateInterfacesToStateChannels(visited, s.getDetSuccessor(a));
 		}
 	}
 	
@@ -932,8 +932,8 @@ public class IOInterfacesGenerator extends ApiGen
 	private String getConcreteSuccessorParameters(EState s)
 	{
 		return "<" +
-				s.getActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR)
-						.map((a) -> this.getSuccName.apply(s.getSuccessor(a))).collect(Collectors.joining(", "))
+				s.getDetActions().stream().sorted(IOStateIfaceGen.IOACTION_COMPARATOR)
+						.map((a) -> this.getSuccName.apply(s.getDetSuccessor(a))).collect(Collectors.joining(", "))
 				+ ">";
 	}
 	
@@ -985,7 +985,7 @@ public class IOInterfacesGenerator extends ApiGen
 			String key = HandleIfaceGen.getHandleInterfaceName(self, s);  // HandleInterface name
 
 			List<EAction> curr1 = new LinkedList<>();
-			this.branchPostActions.get(s).forEach((a) -> curr1.addAll(s.getSuccessor(a).getActions()));  // TODO: flatmap
+			this.branchPostActions.get(s).forEach((a) -> curr1.addAll(s.getDetSuccessor(a).getDetActions()));  // TODO: flatmap
 			//List<IOAction> curr2 = curr1.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList());
 			
 			List<EAction> tmp = this.branchSuccs.get(key);

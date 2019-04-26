@@ -45,13 +45,13 @@ public class AcceptSockGen extends ScribSockGen
 	protected void addMethods()
 	{
 		//Set<EAction> as = curr.getActions();
-		List<EAction> as = curr.getActions();
+		List<EAction> as = curr.getDetActions();
 		if (as.size() > 1)
 		{
 			throw new RuntimeException("AcceptSocket generation not yet supported for accept-branches: " + as);
 		}
 		EAction a = as.iterator().next();
-		EState succ = curr.getSuccessor(a);
+		EState succ = curr.getDetSuccessor(a);
 		makeAcceptMethod(a, succ);
 	}
 

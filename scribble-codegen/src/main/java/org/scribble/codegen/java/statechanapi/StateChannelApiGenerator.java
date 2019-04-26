@@ -77,7 +77,7 @@ public class StateChannelApiGenerator extends ApiGen
 		constructClasses(this.init);
 
 		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
-		EState term = EState.getTerminal(this.init);
+		EState term = this.init.getTerminal();
 		if (term != null)
 		{
 			ClassBuilder cb = new EndSockGen(this, term).generateType();
@@ -88,7 +88,7 @@ public class StateChannelApiGenerator extends ApiGen
 	// Cf. IOInterfacesGenerator constructor
 	private static boolean skipIOInterfacesGeneration(EState init)
 	{
-		Set<EAction> as = EState.getReachableActions(init);
+		Set<EAction> as = init.getReachableActions();
 		if (as.stream().anyMatch(a -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 		{
 			return true;
@@ -124,7 +124,7 @@ public class StateChannelApiGenerator extends ApiGen
 			return;
 		}
 		this.classNames.put(ps, newSocketClassName());
-		for (EState succ : ps.getAllSuccessors())
+		for (EState succ : ps.getSuccs())
 		{
 			generateClassNames(succ);
 		}
@@ -147,7 +147,7 @@ public class StateChannelApiGenerator extends ApiGen
 			return;
 		}
 		this.types.put(className, constructClass(curr));
-		for (EState succ : curr.getAllSuccessors())
+		for (EState succ : curr.getSuccs())
 		{
 			constructClasses(succ);
 		}
@@ -175,11 +175,11 @@ public class StateChannelApiGenerator extends ApiGen
 			{
 				return new AcceptSockGen(this, curr).generateType();
 			}
-			case UNARY_INPUT:
+			case UNARY_RECEIVE:
 			{
 				return new ReceiveSockGen(this, curr).generateType();
 			}
-			case POLY_INPUT:
+			case POLY_RECIEVE:
 			{
 				// Receive only
 				return new BranchSockGen(this, curr).generateType();
@@ -188,7 +188,7 @@ public class StateChannelApiGenerator extends ApiGen
 			{
 				throw new RuntimeException(
 						"[TODO] State Channel API generation not supported for: "
-								+ curr.getStateKind() + ", " + curr.toLongString());
+								+ curr.getStateKind() + ", " + curr.toVerboseString());
 			}
 		}
 	}

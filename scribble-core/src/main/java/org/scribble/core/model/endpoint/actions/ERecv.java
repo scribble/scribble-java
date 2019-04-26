@@ -11,31 +11,47 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.model.global.actions;
+package org.scribble.core.model.endpoint.actions;
 
-import org.scribble.core.type.name.Op;
+import org.scribble.core.model.ModelFactory;
+import org.scribble.core.model.global.actions.SRecv;
+import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SWrapServer extends SAction
+public class ERecv extends EAction
 {
-	public SWrapServer(Role subj, Role obj)
+
+	public ERecv(ModelFactory ef, Role peer, MsgId<?> mid, Payload pay)
 	{
-		super(subj, obj, Op.EMPTY_OP, Payload.EMPTY_PAYLOAD);
+		super(ef, peer, mid, pay);
 	}
 	
 	@Override
-	public boolean isAccept()
+	public ESend toDual(Role self)
 	{
-		return true;
+		return this.mf.newESend(self, this.mid, this.payload);
 	}
 
 	@Override
+	public SRecv toGlobal(Role self)
+	{
+		return this.mf.newSRecv(self, this.peer, this.mid, this.payload);
+
+	}
+	
+	@Override
 	public int hashCode()
 	{
-		int hash = 1087;
+		int hash = 947;
 		hash = 31 * hash + super.hashCode();
 		return hash;
+	}
+	
+	@Override
+	public boolean isReceive()
+	{
+		return true;
 	}
 
 	@Override
@@ -45,21 +61,22 @@ public class SWrapServer extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SWrapServer))
+		if (!(o instanceof ERecv))
 		{
 			return false;
 		}
-		return ((SWrapServer) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	public boolean canEqual(Object o)
+	@Override
+	public boolean canEquals(Object o)
 	{
-		return o instanceof SWrapServer;
+		return o instanceof ERecv;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		return "(<<-)";
+		return "?";
 	}
 }

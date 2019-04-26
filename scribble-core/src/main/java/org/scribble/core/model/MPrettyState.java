@@ -30,11 +30,12 @@ public abstract class MPrettyState
 		super(labs);
 	}
 	
-	public String toLongString()
+	public String toVerboseString()
 	{
 		String s = "\"" + this.id + "\":[";
 		Iterator<S> ss = this.succs.iterator();
-		s += this.actions.stream().map(a -> a + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
+		s += this.actions.stream().map(x -> x + "=\"" + ss.next().id + "\"")
+				.collect(Collectors.joining(", "));
 		return s + "]";
 	}
 	
@@ -42,36 +43,30 @@ public abstract class MPrettyState
 	@Override
 	public final String toDot()
 	{
-		String s = "digraph G {\n" // rankdir=LR;\n
-				+ "compound = true;\n";
-		s += toDot(new HashSet<>());
-		return s + "\n}";
+		StringBuilder b = new StringBuilder();
+		b.append("digraph G {\n"); // rankdir=LR;\n
+		b.append("compound = true;\n");
+		b.append(toStateDot() + "\n");
+		Set<S> ss = getReachableStates();
+		ss.remove(this);  // Avoids generic cast of alternative, ss.add((S) this) -- or else do Set<MPrettyState<L, A, S, K>>
+		ss.forEach(x -> b.append(x.toStateDot() + "\n"));
+		b.append("}");
+		return b.toString();
 	}
 
-	//protected final String toDot(Set<S> seen)
-	protected final String toDot(Set<MPrettyState<L, A, S, K>> seen)
+	protected final String toStateDot()
 	{
-		seen.add(this);
-		String dot = toNodeDot();
-		//for (Entry<A, S> e : this.edges.entrySet())
-		for (int i = 0; i < this.actions.size(); i ++)
+		StringBuilder b = new StringBuilder();
+		b.append(toNodeDot());
+		Iterator<A> as = getActions().iterator();
+		Iterator<S> ss = getSuccs().iterator();
+		while (as.hasNext())
 		{
-			/*A msg = e.getKey();
-			S p = e.getValue();*/
-			A a = this.actions.get(i);
-			S s = this.succs.get(i);
-			dot += "\n" + toEdgeDot(a, s);
-			if (!seen.contains(s))
-			{
-				dot += "\n" + s.toDot(seen);
-			}
+			A na = as.next();
+			S ns = ss.next();
+			b.append("\n" + toEdgeDot(na, ns));
 		}
-		return dot;
-	}
-
-	protected final String toEdgeDot(String src, String dest, String lab)
-	{
-		return src + " -> " + dest + " [ " + lab + " ];";
+		return b.toString();
 	}
 
 	// dot node declaration
@@ -81,22 +76,24 @@ public abstract class MPrettyState
 		return getDotNodeId() + " [ " + getNodeLabel() + " ];";
 	}
 	
-	protected String getNodeLabel()
-	{
-		String labs = this.labs.toString();
-		//return "label=\"" + labs.substring(1, labs.length() - 1) + "\"";
-		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1) + "\"";  // FIXME
-	}
-	
 	protected String getDotNodeId()
 	{
 		return "\"" + this.id + "\"";
+	}
+	
+	protected String getNodeLabel()
+	{
+		String labs = this.labs.toString();
+		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1)
+				+ "\"";
+				// TODO: revise ?
 	}
 
 	// Override to change edge drawing from "this" as src
 	protected String toEdgeDot(A msg, S next)
 	{
-		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));  // CHECKME: next.getEdgeLabel or this.?
+		return toEdgeDot(getDotNodeId(), next.getDotNodeId(),
+				next.getEdgeLabel(msg));  // CHECKME: next.getEdgeLabel or this.?
 	}
 	
 	// "this" is the dest node of the edge
@@ -105,6 +102,11 @@ public abstract class MPrettyState
 	{
 		return "label=\"" + msg + "\"";
 	}
+
+	protected String toEdgeDot(String src, String dest, String lab)
+	{
+		return src + " -> " + dest + " [ " + lab + " ];";
+	}
 	
 	// Move up to MState?
 	@Override
@@ -112,28 +114,23 @@ public abstract class MPrettyState
 	{
 		Set<MPrettyState<L, A, S, K>> all = new HashSet<>();
 		all.add(this);
-		all.addAll(getReachableStates(this));
+		all.addAll(getReachableStates());  // The only way to avoid generic cast?  not ideal though
 		String aut = "";
 		int edges = 0;
-		Set<Integer> seen = new HashSet<>();
 		for (MPrettyState<L, A, S, K> s : all)
 		{
-			if (seen.contains(s.id))
-			{
-				continue;
-			}
-			seen.add(s.id);
-			Iterator<A> as = s.getAllActions().iterator();
-			Iterator<S> ss = s.getAllSuccessors().iterator();
+			Iterator<A> as = s.getActions().iterator();
+			Iterator<S> succs = s.getSuccs().iterator();
 			for (; as.hasNext(); edges++)
 			{
 				A a = as.next();
-				S succ = ss.next();
-				String msg = a.toStringWithMessageIdHack();  // HACK
+				S succ = succs.next();
+				String msg = a.toStringWithMsgIdHack();  // HACK
 				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";
 			}
 		}
-		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut + "\n";
+		return "des (" + this.id + "," + edges + "," + all.size() + ")"
+				+ aut + "\n";
 	}
 
 	@Override
@@ -156,11 +153,5 @@ public abstract class MPrettyState
 			return false;
 		}
 		return super.equals(o);  // Checks canEquals
-	}
-
-	@Override
-	public String toString()
-	{
-		return Integer.toString(this.id);  // FIXME -- ?
 	}
 }

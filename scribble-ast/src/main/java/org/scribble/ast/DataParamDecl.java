@@ -54,6 +54,6 @@ public class DataParamDecl extends NonRoleParamDecl<DataKind>
 	@Override
 	public String getKeyword()
 	{
-		return Constants.TYPE_KW;
+		return Constants.DATA_KW;
 	}
 }

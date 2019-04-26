@@ -11,33 +11,45 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.model.global.actions;
+package org.scribble.core.model.endpoint.actions;
 
+import org.scribble.core.model.ModelFactory;
+import org.scribble.core.model.global.actions.SAcc;
 import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
-public class SConnect extends SAction
+public class EAcc extends EAction
 {
-	public SConnect(Role subj, Role obj, MsgId<?> mid, Payload payload)
-	//public GConnect(Role subj, Role obj)
+	public EAcc(ModelFactory mf, Role peer, MsgId<?> mid, Payload pay)
 	{
-		super(subj, obj, mid, payload);
-		//super(subj, obj, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(mf, peer, mid, pay);
 	}
 	
 	@Override
-	public boolean isConnect()
+	public EReq toDual(Role self)
 	{
-		return true;
+		return this.mf.newEReq(self, this.mid, this.payload);
 	}
 
 	@Override
+	public SAcc toGlobal(Role self)
+	{
+		return this.mf.newSAcc(self, this.peer, this.mid, this.payload);
+	}
+	
+	@Override
 	public int hashCode()
 	{
-		int hash = 971;
+		int hash = 937;
 		hash = 31 * hash + super.hashCode();
 		return hash;
+	}
+	
+	@Override
+	public boolean isAccept()
+	{
+		return true;
 	}
 
 	@Override
@@ -47,23 +59,21 @@ public class SConnect extends SAction
 		{
 			return true;
 		}
-		if (!(o instanceof SConnect))
+		if (!(o instanceof EAcc))
 		{
 			return false;
 		}
-		return ((SConnect) o).canEqual(this) && super.equals(o);
+		return super.equals(o);  // Does canEquals
 	}
 
-	@Override
-	public boolean canEqual(Object o)
+	public boolean canEquals(Object o)
 	{
-		return o instanceof SConnect;
+		return o instanceof EAcc;
 	}
 
 	@Override
 	protected String getCommSymbol()
 	{
-		//return "!!";
-		return "->>";
+		return "??";
 	}
 }
