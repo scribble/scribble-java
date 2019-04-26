@@ -19,6 +19,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.ConnectAction;
 import org.scribble.core.type.session.Msg;
 
+// CHECKME: factor out LConnect?
 public class LAcc extends ConnectAction<Local, LSeq> implements LType
 {
 

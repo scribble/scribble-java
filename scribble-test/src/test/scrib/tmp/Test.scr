@@ -164,6 +164,39 @@ global protocol Proto1(role A, role B)
 
 
 /*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+	}	
+	or
+	{
+		1() from A to C;  // Same message OK
+	}
+	do Proto1(A, B, C);
+}
+/*/
+explicit global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		connect A to B;
+		1() from A to B;
+		disconnect A and B;
+	}	
+	or
+	{
+		connect A to C;
+		1() from A to C;  // Same message OK
+		disconnect A and C;
+	}
+	do Proto1(A, B, C);
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;  // TODO: junit tests for explicit
@@ -738,7 +771,7 @@ global protocol Proto1(role A, role B)
 
 
 
-//*
+/*
 type <dotnet> "System.UInt32" from "..." as int;
 
 global protocol SH(role P, role R, role C)

@@ -226,6 +226,18 @@ public class Core
 			}
 			inlined.checkExtChoiceConsistency();
 		}
+
+		verbosePrintPass(
+				"Checking connectedness on all inlined globals...");
+		for (GProtoName fullname : this.context.getParsedFullnames())
+		{
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())
+			{
+				continue;
+			}
+			inlined.checkConnectedness(!inlined.isExplicit());
+		}
 	}
 		
 	// Pre: runGlobalSyntaxWfPasses

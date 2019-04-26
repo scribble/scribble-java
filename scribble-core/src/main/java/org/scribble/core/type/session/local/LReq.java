@@ -19,8 +19,8 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.ConnectAction;
 import org.scribble.core.type.session.Msg;
 
-public class LReq extends ConnectAction<Local, LSeq>
-		implements LType
+// CHECKME: factor out LConnect?
+public class LReq extends ConnectAction<Local, LSeq> implements LType
 {
 
 	// this.src == Role.SELF

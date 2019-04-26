@@ -55,6 +55,7 @@ import org.scribble.core.visit.RoleGatherer;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
+import org.scribble.core.visit.global.ConnectionChecker;
 import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
 import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.core.visit.global.Projector;
@@ -92,6 +93,13 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		Map<Role, Role> rs = this.roles.stream()
 				.collect(Collectors.toMap(x -> x, x -> x));
 		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(rs);
+		this.def.visitWith(v);
+	}
+
+	public void checkConnectedness(boolean implicit) throws ScribException
+	{
+		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
+		ConnectionChecker v = new ConnectionChecker(rs, implicit);
 		this.def.visitWith(v);
 	}
 	

@@ -13,43 +13,68 @@
  */
 package org.scribble.core.model.visit.local;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
-import org.scribble.core.model.visit.StateVisitor;
-import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.RecVar;
+import org.scribble.core.type.name.Role;
 import org.scribble.util.ScribException;
 
-public abstract class EStateVisitor
-		extends StateVisitor<RecVar, EAction, EState, Local>
+// Not reusable
+@Deprecated
+public class ConnectionChecker extends EStateVisitor
 {
+	private static final int CONNECTED = 1;
+	private static final int UNCONNECTED = -1;
+	private static final int AMBIG = 0;
 	
-	// Allows to visit branch succs with fresh visitors, but limited usefulness? because pattern doesn't support merge...
-	// (...but could try too? e.g., by using EGraph to join visitors? -- issue is recursion, may need to precompute/integrate traversal paths and join points, e.f., b/dfs)
-	// CHECKME: take "self" generic param, use as return?  or just override
-	public EStateVisitor enter(EState s, EAction a, EState succ)
+	private final Map<Role, Integer> conns;
+	
+	public ConnectionChecker(Set<Role> roles, Role self, boolean implicit)
 	{
-		return this;
+		this.conns = roles.stream().collect(Collectors.toMap(
+				x -> x, 
+				x -> implicit ? CONNECTED : UNCONNECTED
+		));
 	}
 	
+	protected ConnectionChecker(ConnectionChecker parent)
+	{
+		this.conns = new HashMap<>(parent.conns);
+	}
+
+	@Override
 	public void visitAccept(EState s) throws ScribException
 	{
-		setSeen(s);
+		super.visitOutput(s);  // Does setSeen
+		List<EAction> as = s.getActions();
+		Role peer = as.get(0).peer;  // Pre: consistent ext choice subjs
+		if (this.conns.get(peer) != UNCONNECTED)
+		{
+			throw new ScribException("");
+		}
 	}
 
+	@Override
 	public void visitOutput(EState s) throws ScribException
 	{
-		setSeen(s);
+		super.visitOutput(s);  // Does setSeen
 	}
 
+	@Override
 	public void visitPolyInput(EState s) throws ScribException
 	{
-		setSeen(s);
+		super.visitOutput(s);  // Does setSeen
 	}
 
+	@Override
 	public void visitServerWrap(EState s) throws ScribException
 	{
-		setSeen(s);
+		super.visitOutput(s);  // Does setSeen
 	}
 
 	public void visitTerminal(EState s) throws ScribException
@@ -61,5 +86,4 @@ public abstract class EStateVisitor
 	{
 		setSeen(s);
 	}
-}
-	
+}	
