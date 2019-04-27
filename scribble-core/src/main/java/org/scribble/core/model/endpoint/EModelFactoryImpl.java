@@ -32,55 +32,55 @@ import org.scribble.core.type.session.Payload;
 public class EModelFactoryImpl extends ModelFactoryImpl implements EModelFactory
 {
 	@Override
-	public EGraphBuilderUtil newEGraphBuilderUtil()
+	public EGraphBuilderUtil EGraphBuilderUtil()
 	{
 		return new EGraphBuilderUtil(this.mf);
 	}
 
 	@Override
-	public EState newEState(Set<RecVar> labs)
+	public EState EState(Set<RecVar> labs)
 	{
 		return new EState(labs);
 	}
 
 	@Override
-	public ESend newESend(Role peer, MsgId<?> mid, Payload pay)
+	public ESend ESend(Role peer, MsgId<?> mid, Payload pay)
 	{
 		return new ESend(this.mf, peer, mid, pay);
 	}
 
 	@Override
-	public ERecv newERecv(Role peer, MsgId<?> mid, Payload pay)
+	public ERecv ERecv(Role peer, MsgId<?> mid, Payload pay)
 	{
 		return new ERecv(this.mf, peer, mid, pay);
 	}
 
 	@Override
-	public EReq newEReq(Role peer, MsgId<?> mid, Payload pay)
+	public EReq EReq(Role peer, MsgId<?> mid, Payload pay)
 	{
 		return new EReq(this.mf, peer, mid, pay);
 	}
 
 	@Override
-	public EAcc newEAcc(Role peer, MsgId<?> mid, Payload pay)
+	public EAcc EAcc(Role peer, MsgId<?> mid, Payload pay)
 	{
 		return new EAcc(this.mf, peer, mid, pay);
 	}
 
 	@Override
-	public EDisconnect newEDisconnect(Role peer)
+	public EDisconnect EDisconnect(Role peer)
 	{
 		return new EDisconnect(this.mf, peer);
 	}
 
 	@Override
-	public EClientWrap newEClientWrap(Role peer)
+	public EClientWrap EClientWrap(Role peer)
 	{
 		return new EClientWrap(this.mf, peer);
 	}
 
 	@Override
-	public EServerWrap newEServerWrap(Role peer)
+	public EServerWrap EServerWrap(Role peer)
 	{
 		return new EServerWrap(this.mf, peer);
 	}

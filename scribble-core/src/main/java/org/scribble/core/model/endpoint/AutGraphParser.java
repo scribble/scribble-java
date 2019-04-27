@@ -117,7 +117,7 @@ public class AutGraphParser
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
 		//EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil2();
-		EGraphBuilderUtil util = this.core.config.mf.local.newEGraphBuilderUtil();
+		EGraphBuilderUtil util = this.core.config.mf.local.EGraphBuilderUtil();
 		//util.init(null);  // FIXME: arg is deprecated
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());
@@ -131,7 +131,7 @@ public class AutGraphParser
 		{
 			if (i != init && i != term)
 			{
-				map.put(i, util.mf.local.newEState(Collections.emptySet()));
+				map.put(i, util.mf.local.EState(Collections.emptySet()));
 			}
 		}
 		//for (int i : succs)
@@ -139,7 +139,7 @@ public class AutGraphParser
 		{
 			if (!map.containsKey(i) && i != init && i != term)
 			{
-				map.put(i, util.mf.local.newEState(Collections.emptySet()));
+				map.put(i, util.mf.local.EState(Collections.emptySet()));
 			}
 		}
 		//for (int i : edges.keySet())
@@ -250,7 +250,7 @@ public class AutGraphParser
 						? new Payload(Arrays.asList(paySplit).stream()
 								.map((pe) -> new DataName(pe)).collect(Collectors.toList()))
 						: Payload.EMPTY_PAYLOAD;
-				return ef.local.newESend(new Role(peer), getMessageIdHack(msg), pay);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
+				return ef.local.ESend(new Role(peer), getMessageIdHack(msg), pay);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
 			}
 			case "?":
 			{
@@ -258,7 +258,7 @@ public class AutGraphParser
 						? new Payload(Arrays.asList(paySplit).stream()
 								.map((pe) -> new DataName(pe)).collect(Collectors.toList()))
 						: Payload.EMPTY_PAYLOAD;
-				return ef.local.newERecv(new Role(peer), getMessageIdHack(msg), pay);  // FIXME: how about MessageSigNames?)
+				return ef.local.ERecv(new Role(peer), getMessageIdHack(msg), pay);  // FIXME: how about MessageSigNames?)
 			}
 			case "!!":
 			{
@@ -267,7 +267,7 @@ public class AutGraphParser
 						? new Payload(Arrays.asList(paySplit).stream()
 								.map((pe) -> new DataName(pe)).collect(Collectors.toList()))
 						: Payload.EMPTY_PAYLOAD;
-				return ef.local.newEReq(new Role(peer), getMessageIdHack(msg), pay);
+				return ef.local.EReq(new Role(peer), getMessageIdHack(msg), pay);
 			}
 			case "??":
 			{
@@ -276,19 +276,19 @@ public class AutGraphParser
 						? new Payload(Arrays.asList(paySplit).stream()
 								.map((pe) -> new DataName(pe)).collect(Collectors.toList()))
 						: Payload.EMPTY_PAYLOAD;
-				return ef.local.newEAcc(new Role(peer), getMessageIdHack(msg), pay);
+				return ef.local.EAcc(new Role(peer), getMessageIdHack(msg), pay);
 			}
 			case "(!!)":
 			{				
-				return ef.local.newEClientWrap(new Role(peer));
+				return ef.local.EClientWrap(new Role(peer));
 			}
 			case "(??)":
 			{				
-				return ef.local.newEServerWrap(new Role(peer));
+				return ef.local.EServerWrap(new Role(peer));
 			}
 			case "-/-":
 			{				
-				return ef.local.newEDisconnect(new Role(peer));
+				return ef.local.EDisconnect(new Role(peer));
 			}
 			default:
 			{

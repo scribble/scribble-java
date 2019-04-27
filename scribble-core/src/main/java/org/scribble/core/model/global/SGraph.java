@@ -38,7 +38,7 @@ public class SGraph implements MPrettyPrint
 	private final Set<Set<SState>> termSets;
 
 	// Unlike EState, SGraph is not just a "simple wrapper" for an existing graph of nodes -- it is a computed structure, so no lightweight "toGraph" wrapper method; cf., EState
-	public SGraph(GProtoName proto, Map<Integer, SState> states, SState init)
+	protected SGraph(GProtoName proto, Map<Integer, SState> states, SState init)
 	{
 		this.proto = proto;
 		this.init = init;

@@ -29,13 +29,13 @@ public class EAcc extends EAction
 	@Override
 	public EReq toDual(Role self)
 	{
-		return this.mf.local.newEReq(self, this.mid, this.payload);
+		return this.mf.local.EReq(self, this.mid, this.payload);
 	}
 
 	@Override
 	public SAcc toGlobal(Role self)
 	{
-		return this.mf.global.newSAcc(self, this.peer, this.mid, this.payload);
+		return this.mf.global.SAcc(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override

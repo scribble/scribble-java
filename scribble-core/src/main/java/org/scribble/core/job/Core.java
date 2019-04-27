@@ -327,7 +327,7 @@ public class Core
 
 		verbosePrintPass("Checking " + (!fair ? "\"unfair\" " : "")
 				+ "global model: " + fullname);
-		this.config.mf.global.newSModel(graph).validate(this);
+		this.config.mf.global.SModel(graph).validate(this);
 	}
 
 	// Pre: checkWellFormedness 

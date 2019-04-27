@@ -48,7 +48,7 @@ public class SConfig
 	public final Map<Role, EFsm> efsms;
 	public final SingleBuffers queues;  // N.B. currently hardcoded to capacity one
 	
-	public SConfig(ModelFactory mf, Map<Role, EFsm> state, SingleBuffers queues)
+	protected SConfig(ModelFactory mf, Map<Role, EFsm> state, SingleBuffers queues)
 	{
 		this.mf = mf;
 		this.efsms = Collections.unmodifiableMap(state);
@@ -183,7 +183,7 @@ public class SConfig
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
-			res.add(this.mf.global.newSConfig(efsms, queues));
+			res.add(this.mf.global.SConfig(efsms, queues));
 		}
 		return res;
 	}
@@ -222,7 +222,7 @@ public class SConfig
 				{
 					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
 				}
-				res.add(this.mf.global.newSConfig(efsms, queues));
+				res.add(this.mf.global.SConfig(efsms, queues));
 			}
 		}
 		return res;

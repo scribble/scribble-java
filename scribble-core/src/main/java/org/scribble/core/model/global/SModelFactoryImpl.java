@@ -33,75 +33,75 @@ import org.scribble.core.type.session.Payload;
 public class SModelFactoryImpl extends ModelFactoryImpl implements SModelFactory
 {
 	@Override
-	public SGraphBuilderUtil newSGraphBuilderUtil()
+	public SGraphBuilderUtil SGraphBuilderUtil()
 	{
 		return new SGraphBuilderUtil(this.mf);
 	}
 
 	@Override
-	public SState newSState(SConfig config)
+	public SState SState(SConfig config)
 	{
 		return new SState(config);
 	}
 
 	// states: s.id -> s
 	@Override
-	public SGraph newSGraph(GProtoName proto, Map<Integer, SState> states,
+	public SGraph SGraph(GProtoName proto, Map<Integer, SState> states,
 			SState init)
 	{
 		return new SGraph(proto, states, init);
 	}
 
 	@Override
-	public SConfig newSConfig(Map<Role, EFsm> state, SingleBuffers buffs)
+	public SConfig SConfig(Map<Role, EFsm> state, SingleBuffers buffs)
 	{
 		return new SConfig(this.mf, state, buffs);
 	}
 	
 	@Override
-	public SModel newSModel(SGraph g)
+	public SModel SModel(SGraph g)
 	{
 		return new SModel(g);
 	}
 
 	@Override
-	public SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload pay)
+	public SSend SSend(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
 		return new SSend(subj, obj, mid, pay);
 	}
 
 	@Override
-	public SRecv newSRecv(Role subj, Role obj, MsgId<?> mid, Payload pay)
+	public SRecv SRecv(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
 		return new SRecv(subj, obj, mid, pay);
 	}
 
 	@Override
-	public SReq newSReq(Role subj, Role obj, MsgId<?> mid, Payload pay)
+	public SReq SReq(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
 		return new SReq(subj, obj, mid, pay);
 	}
 	
 	@Override
-	public SAcc newSAcc(Role subj, Role obj, MsgId<?> mid, Payload pay)
+	public SAcc SAcc(Role subj, Role obj, MsgId<?> mid, Payload pay)
 	{
 		return new SAcc(subj, obj, mid, pay);
 	}
 
 	@Override
-	public SDisconnect newSDisconnect(Role subj, Role obj)
+	public SDisconnect SDisconnect(Role subj, Role obj)
 	{
 		return new SDisconnect(subj, obj);
 	}
 
 	@Override
-	public SClientWrap newSClientWrap(Role subj, Role obj)
+	public SClientWrap SClientWrap(Role subj, Role obj)
 	{
 		return new SClientWrap(subj, obj);
 	}
 
 	@Override
-	public SServerWrap newSServerWrap(Role subj, Role obj)
+	public SServerWrap SServerWrap(Role subj, Role obj)
 	{
 		return new SServerWrap(subj, obj);
 	}

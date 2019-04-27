@@ -29,16 +29,18 @@ import org.scribble.core.type.session.Payload;
 
 public interface EModelFactory
 {
-	EGraphBuilderUtil newEGraphBuilderUtil();
+	EGraphBuilderUtil EGraphBuilderUtil();
 
-	EState newEState(Set<RecVar> labs);
+	// protected constructors (MState mutable)
+	EState EState(Set<RecVar> labs);
 	//EFsm new EFsm(...)
 
-	ESend newESend(Role peer, MsgId<?> mid, Payload pay);
-	ERecv newERecv(Role peer, MsgId<?> mid, Payload pay);
-	EReq newEReq(Role peer, MsgId<?> mid, Payload pay);
-	EAcc newEAcc(Role peer, MsgId<?> mid, Payload pay);
-	EDisconnect newEDisconnect(Role peer);
-	EClientWrap newEClientWrap(Role peer);
-	EServerWrap newEServerWrap(Role peer);
+	// public constructors (subpackage, immutable)
+	ESend ESend(Role peer, MsgId<?> mid, Payload pay);
+	ERecv ERecv(Role peer, MsgId<?> mid, Payload pay);
+	EReq EReq(Role peer, MsgId<?> mid, Payload pay);
+	EAcc EAcc(Role peer, MsgId<?> mid, Payload pay);
+	EDisconnect EDisconnect(Role peer);
+	EClientWrap EClientWrap(Role peer);
+	EServerWrap EServerWrap(Role peer);
 }

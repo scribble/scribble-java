@@ -29,7 +29,7 @@ public class SGraphBuilderUtil
 {
 	private Map<SConfig, SState> states = new HashMap<>();
 	
-	public SGraphBuilderUtil(ModelFactory mf)
+	protected SGraphBuilderUtil(ModelFactory mf)
 	{
 		super(mf);
 		reset();
@@ -43,7 +43,7 @@ public class SGraphBuilderUtil
 	
 	public SState newState(SConfig c)
 	{
-		SState s = this.mf.global.newSState(c);
+		SState s = this.mf.global.SState(c);
 		this.states.put(c, s);
 		return s;
 	}

@@ -30,13 +30,13 @@ public class ESend extends EAction
 	@Override
 	public ERecv toDual(Role self)
 	{
-		return this.mf.local.newERecv(self, this.mid, this.payload);
+		return this.mf.local.ERecv(self, this.mid, this.payload);
 	}
 
 	@Override
 	public SSend toGlobal(Role self)
 	{
-		return this.mf.global.newSSend(self, this.peer, this.mid, this.payload);
+		return this.mf.global.SSend(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override

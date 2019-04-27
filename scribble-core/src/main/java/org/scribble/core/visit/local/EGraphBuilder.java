@@ -59,7 +59,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public EGraphBuilder(Core core)
 	{
 		this.core = core;
-		this.util = core.config.mf.local.newEGraphBuilderUtil();
+		this.util = core.config.mf.local.EGraphBuilderUtil();
 	}
 	
 	public EGraph finalise()
@@ -176,11 +176,11 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 				? ((SigLit) n.msg).payload
 				: Payload.EMPTY_PAYLOAD;
 		// TODO: add toAction method to BasicInteraction (cf. toName methods of NameNodes)
-		EAction a = (n instanceof LSend) ? this.util.mf.local.newESend(peer, mid, pay)
-				: (n instanceof LRecv) ? this.util.mf.local.newERecv(peer, mid, pay)
-				: (n instanceof LReq) ? this.util.mf.local.newEReq(peer, mid, pay)
+		EAction a = (n instanceof LSend) ? this.util.mf.local.ESend(peer, mid, pay)
+				: (n instanceof LRecv) ? this.util.mf.local.ERecv(peer, mid, pay)
+				: (n instanceof LReq) ? this.util.mf.local.EReq(peer, mid, pay)
 				: //(n instanceof LAcc) ? 
-					this.util.mf.local.newEAcc(peer, mid, pay);  // Action type already checked above
+					this.util.mf.local.EAcc(peer, mid, pay);  // Action type already checked above
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
 	}
@@ -189,7 +189,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public SType<Local, LSeq> visitDisconnect(DisconnectAction<Local, LSeq> n)
 	{
 		Role peer = ((LDisconnect) n).getPeer();  // CHECKME -- ?
-		EAction a = this.util.mf.local.newEDisconnect(peer);  // TODO: add toAction method to BasicInteraction
+		EAction a = this.util.mf.local.EDisconnect(peer);  // TODO: add toAction method to BasicInteraction
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
 	}

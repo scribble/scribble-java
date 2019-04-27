@@ -27,8 +27,7 @@ public class SState extends MPrettyState<Void, SAction, SState, Global>
 {
 	public final SConfig config;
 	
-	//protected
-	public SState(SConfig config)  // FIXME? now publically mutable (for mf imple), same for EState
+	protected SState(SConfig config)  // CHECKME? now publically mutable (for mf imple), same for EState
 	{
 		super(Collections.emptySet());
 		this.config = config;

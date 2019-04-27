@@ -35,7 +35,7 @@ public class EDisconnect extends EAction
 	@Override
 	public SDisconnect toGlobal(Role self)
 	{
-		return this.mf.global.newSDisconnect(self, this.peer);
+		return this.mf.global.SDisconnect(self, this.peer);
 	}
 	
 	@Override

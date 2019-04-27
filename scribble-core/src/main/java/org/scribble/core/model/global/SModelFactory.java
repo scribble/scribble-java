@@ -30,18 +30,20 @@ import org.scribble.core.type.session.Payload;
 
 public interface SModelFactory
 {
-	SGraphBuilderUtil newSGraphBuilderUtil();
+	SGraphBuilderUtil SGraphBuilderUtil();
 
-	SState newSState(SConfig config);
-	SConfig newSConfig(Map<Role, EFsm> state, SingleBuffers buffs);
-	SGraph newSGraph(GProtoName proto, Map<Integer, SState> states, SState init);  // states: s.id -> s
-	SModel newSModel(SGraph g);
+	// protected constructors (MState mutable)
+	SState SState(SConfig config);
+	SConfig SConfig(Map<Role, EFsm> state, SingleBuffers buffs);
+	SGraph SGraph(GProtoName proto, Map<Integer, SState> states, SState init);  // states: s.id -> s
+	SModel SModel(SGraph g);
 	
-	SSend newSSend(Role subj, Role obj, MsgId<?> mid, Payload pay);
-	SRecv newSRecv(Role subj, Role obj, MsgId<?> mid, Payload pay);
-	SReq newSReq(Role subj, Role obj, MsgId<?> mid, Payload pay);
-	SAcc newSAcc(Role subj, Role obj, MsgId<?> mid, Payload pay);
-	SDisconnect newSDisconnect(Role subj, Role obj);
-	SClientWrap newSClientWrap(Role subj, Role obj);
-	SServerWrap newSServerWrap(Role subj, Role obj);
+	// public constructors (subpackage, immutable)
+	SSend SSend(Role subj, Role obj, MsgId<?> mid, Payload pay);
+	SRecv SRecv(Role subj, Role obj, MsgId<?> mid, Payload pay);
+	SReq SReq(Role subj, Role obj, MsgId<?> mid, Payload pay);
+	SAcc SAcc(Role subj, Role obj, MsgId<?> mid, Payload pay);
+	SDisconnect SDisconnect(Role subj, Role obj);
+	SClientWrap SClientWrap(Role subj, Role obj);
+	SServerWrap SServerWrap(Role subj, Role obj);
 }
