@@ -74,10 +74,8 @@ module tmp.Test;
 	//...remove Token args from af constructors -- removed, and re-added
 	//refactor reconstructs to use af? -- refactored af and reconstruct to use addChildren1 -- FIXME
 		//...fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- separate af methods
+// done: For model build/check refactoring:
 	// add exp conn checks to model validation, maybe just as estatevisitor?  (cf. prev syntactic connection checks) -- now done as global syntax visitor
-
-
-// For model build/check refactoring:
 
 		// Outstanding:
 			// ...disallow/check for reserved __ -- do in gtype translation?
@@ -85,13 +83,14 @@ module tmp.Test;
 			// TODO: rename addChildren1
 			// CHECKME: duplicate proto mods
 			// ...check ad hoc ScribNode constructions go through af properly
-			// ...refactor -spin as an ext
+			// ...refactor -spin as an ext -- drop -spin from master
 			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles
 
 // parser/ast re-refactoring
 	// use stypefactory in core -- also make visitorfactorys (both core and ast)
 	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
 	// refactor Set<SState> to Map<Integer, SState>
+	// Job Module projection
 	
 // Job/codegen refactoring:
 	// old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?

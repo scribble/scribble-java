@@ -42,7 +42,6 @@ public class CLFlags
 	public static final String AUT_FLAG = "-aut";
 	public static final String NO_VALIDATION_FLAG = "-novalid";
 	public static final String INLINE_MAIN_MOD_FLAG = "-inline";
-	public static final String SPIN_FLAG = "-spin";
 
 	// Non-unique flags
 	public static final String PROJECT_FLAG = "-project";
@@ -113,8 +112,6 @@ public class CLFlags
 		flags.put(NO_VALIDATION_FLAG, 
 				new CLFlag(NO_VALIDATION_FLAG, 0, true, false, false,
 						"Duplicate flag: "));
-		flags.put(SPIN_FLAG, 
-				new CLFlag(SPIN_FLAG, 0, true, false, false, "Duplicate flag: "));
 
 		// These two are mutually exclusive
 		flags.put(DOT_FLAG, 

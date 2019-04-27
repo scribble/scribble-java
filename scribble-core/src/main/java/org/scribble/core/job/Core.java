@@ -289,25 +289,11 @@ public class Core
 			{
 				continue;
 			}
-			if (this.config.args.get(CoreArgs.SPIN))
+			validateByScribble(fullname, true);
+			if (!this.config.args.get(CoreArgs.FAIR))
 			{
-				if (this.config.args.get(CoreArgs.FAIR))
-				{
-					throw new RuntimeException(
-							"[TODO]: -spin currently does not support fair ouput choices.");
-				}
-				//verbosePrintPass("Validating by Spin: " + fullname);
-				GProtocol.validateBySpin(this, fullname);
-			}
-			else
-			{
-				//verbosePrintPass("Validating by Scribble: " + fullname);
-				validateByScribble(fullname, true);
-				if (!this.config.args.get(CoreArgs.FAIR))
-				{
-					//verbosePrintPass("Validating by Scribble with \"unfair\" output choices: " + fullname);
-					validateByScribble(fullname, false);  // TODO: only need to check progress, not "full" validation
-				}
+				//verbosePrintPass("Validating by Scribble with \"unfair\" output choices: " + fullname);
+				validateByScribble(fullname, false);  // TODO: only need to check progress, not "full" validation
 			}
 		}
 	}
@@ -467,4 +453,204 @@ public class Core
 			api.putAll(iogen.generateApi());
 		}
 		return api;
-	}*/
+	}
+	//*/
+	
+	/* // TODO FIXME: refactor following methods (e.g., non-static?)
+	public static void validateBySpin(Core core, GProtoName fullname)
+			throws ScribException
+	{
+		CoreContext corec = core.getContext();
+		GProtocol gpd = corec.getInlined(fullname);
+		
+		List<Role> rs = gpd.roles.stream()
+				.sorted(Comparator.comparing(Role::toString))
+				.collect(Collectors.toList());
+	
+		Set<MsgId<?>> mids = gpd.def.//getMessageIds();
+				gather(new MessageIdGatherer<Global, GSeq>()::visit)
+				.collect(Collectors.toSet());
+		
+		//..........FIXME: get mids from SType, instead of old AST Collector
+		
+		String pml = "";
+		pml += "mtype {" + mids.stream().map(mid -> mid.toString())
+				.collect(Collectors.joining(", ")) + "};\n";
+	
+		// TODO CHECKME: explicit ?
+	
+		pml += "\n";
+		List<Role[]> pairs = new LinkedList<>();
+		for (Role r1 : rs)
+		{
+			for (Role r2 : rs)
+			{
+				if (!r1.equals(r2))
+				{
+					pairs.add(new Role[] {r1, r2});
+				}
+			}
+		}
+		//for (Role[] p : (Iterable<Role[]>) () -> pairs.stream().sorted().iterator())
+		for (Role[] p : pairs)
+		{
+			pml += "chan s_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
+					+ "chan r_" + p[0] + "_" + p[1] + " = [1] of { mtype };\n"
+					+ "bool empty_" + p[0] + "_" + p[1] + " = true;\n"
+					+ "active proctype chan_" + p[0] + "_" + p[1] + "() {\n"
+					+ "mtype m;\n"
+					+ "end_chan_" + p[0] + "_" + p[1] + ":\n"
+					+ "do\n"
+					+ "::\n"
+					+ "atomic { s_" + p[0] + "_" + p[1] + "?m; empty_" + p[0] + "_" + p[1]
+							+ " = false }\n"
+					+ "atomic { r_" + p[0] + "_" + p[1] + "!m; empty_" + p[0] + "_" + p[1]
+							+ " = true }\n"
+					+ "od\n"
+					+ "}\n";
+		}
+		
+		for (Role r : rs)
+		{
+			pml += "\n\n" + corec.getEGraph(fullname, r).toPml(r);
+		}
+		if (core.config.args.get(CoreArgs.VERBOSE))
+		{
+			System.out.println("[-spin]: Promela processes\n" + pml + "\n");
+		}
+		
+		List<String> clauses = new LinkedList<>();
+		for (Role r : rs)
+		{
+			Set<EState> tmp = new HashSet<>();
+			EGraph g = corec.getEGraph(fullname, r);
+			tmp.add(g.init);
+			tmp.addAll(g.init.getReachableStates());
+			if (g.term != null)
+			{
+				tmp.remove(g.term);
+			}
+			tmp.forEach(  // Throws exception, cannot use flatMap
+					s -> clauses.add("!<>[]" + r + "@label" + r + s.id)  // FIXME: factor out
+			);
+		}
+		// * /
+		/*String roleProgress = "";  // This way is not faster
+		for (Role r : rs)
+		{
+			Set<EState> tmp = new HashSet<>();
+			EGraph g = jc.getEGraph(fullname, r);
+			tmp.add(g.init);
+			tmp.addAll(MState.getReachableStates(g.init));
+			if (g.term != null)
+			{
+				tmp.remove(g.term);
+			}
+			roleProgress += (((roleProgress.isEmpty()) ? "" : " || ")
+					+ tmp.stream().map(s -> r + "@label" + r + s.id).collect(Collectors.joining(" || ")));
+		}
+		roleProgress = "!<>[](" + roleProgress + ")";
+		clauses.add(roleProgress);* /
+		String eventualStability = "";
+		for (Role[] p : pairs)
+		{
+			//eventualStability += (((eventualStability.isEmpty()) ? "" : " && ") + "empty_" + p[0] + "_" + p[1]);
+			eventualStability += (((eventualStability.isEmpty()) ? "" : " && ") + "<>empty_" + p[0] + "_" + p[1]);
+		}
+		//eventualStability = "[]<>(" + eventualStability + ")";
+		eventualStability = "[](" + eventualStability + ")";  // FIXME: current "eventual reception", not eventual stability
+		clauses.add(eventualStability);
+	
+		//int batchSize = 10;  // FIXME: factor out
+		int batchSize = 6;  // FIXME: factor out  // FIXME: dynamic batch sizing based on previous batch duration?
+		for (int i = 0; i < clauses.size(); )
+		{
+			int j = (i+batchSize < clauses.size()) ? i+batchSize : clauses.size();
+			String batch = clauses.subList(i, j).stream().collect(Collectors.joining(" && "));
+			String ltl = "ltl {\n" + batch + "\n" + "}";
+			if (core.config.args.get(CoreArgs.VERBOSE))
+			{
+				System.out.println("[-spin] Batched ltl:\n" + ltl + "\n");
+			}
+			if (!GProtocol.runSpin(fullname.toString(), pml + "\n\n" + ltl))
+			{
+				throw new ScribException("Protocol not valid:\n" + gpd);
+			}
+			i += batchSize;
+		}
+	}
+
+	public static boolean runSpin(String prefix, String pml) //throws ScribbleException
+	{
+		File tmp;
+		try
+		{
+			tmp = File.createTempFile(prefix, ".pml.tmp");
+			try
+			{
+				String tmpName = tmp.getAbsolutePath();				
+				ScribUtil.writeToFile(tmpName, pml);
+				String[] res = ScribUtil.runProcess("spin", "-a", tmpName);
+				res[0] = res[0].replaceAll("(?m)^ltl.*$", "");
+				res[1] = res[1].replace(
+						"'gcc-4' is not recognized as an internal or external command,\noperable program or batch file.",
+						"");
+				res[1] = res[1].replace(
+						"'gcc-3' is not recognized as an internal or external command,\noperable program or batch file.",
+						"");
+				res[0] = res[0].trim();
+				res[1] = res[1].trim();
+				if (!res[0].trim().isEmpty() || !res[1].trim().isEmpty())
+				{
+					//throw new RuntimeException("[scrib] : " + Arrays.toString(res[0].getBytes()) + "\n" + Arrays.toString(res[1].getBytes()));
+					throw new RuntimeException("[-spin] [spin]: " + res[0] + "\n" + res[1]);
+				}
+				int procs = 0;
+				for (int i = 0; i < pml.length(); procs++)
+				{
+					i = pml.indexOf("proctype", i);
+					if (i == -1)
+					{
+						break;
+					}
+					i++;
+				}
+				int dnfair = (procs <= 6) ? 2 : 3;  // FIXME
+				res = ScribUtil.runProcess("gcc", "-o", "pan", "pan.c", "-DNFAIR=" + dnfair);
+				res[0] = res[0].trim();
+				res[1] = res[1].trim();
+				if (!res[0].isEmpty() || !res[1].isEmpty())
+				{
+					throw new RuntimeException("[-spin] [gcc]: " + res[0] + "\n" + res[1]);
+				}
+				res = ScribUtil.runProcess("pan", "-a", "-f");
+				res[1] = res[1].replace("warning: no accept labels are defined, so option -a has no effect (ignored)", "");
+				res[0] = res[0].trim();
+				res[1] = res[1].trim();
+				if (res[0].contains("error,") || !res[1].isEmpty())
+				{
+					throw new RuntimeException("[-spin] [pan]: " + res[0] + "\n" + res[1]);
+				}
+				int err = res[0].indexOf("errors: ");
+				boolean valid = (res[0].charAt(err + 8) == '0');
+				if (!valid)
+				{
+					System.err.println("[-spin] [pan] " + res[0] + "\n" + res[1]);
+				}
+				return valid;
+			}
+			catch (ScribException e)
+			{
+				throw new RuntimeException(e);
+			}
+			finally
+			{
+				tmp.delete();
+			}
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	//*/
