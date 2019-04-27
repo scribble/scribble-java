@@ -26,8 +26,7 @@ public class JobConfig
 {
 	public final ModuleName main;  // Full name
 
-	public final Map<CoreArgs, Boolean> args;
-			// CHECKME: verbose/debug printing parameter?
+	public final Map<CoreArgs, Boolean> args;  // CHECKME: Set<CoreArgs> ?
 
 	public final AstFactory af;
 	public final DelFactory df;

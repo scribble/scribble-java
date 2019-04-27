@@ -104,7 +104,7 @@ public class CommandLine
 	// A Scribble extension should override as appropriate
 	protected Main newMain() throws ScribParserException, ScribException
 	{
-		Map<CoreArgs, Boolean> args = Collections.unmodifiableMap(parseJobArgs());
+		Map<CoreArgs, Boolean> args = Collections.unmodifiableMap(parseCoreArgs());
 		if (hasFlag(CLFlags.INLINE_MAIN_MOD_FLAG))
 		{
 			String inline = getUniqueFlagArgs(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
@@ -124,7 +124,7 @@ public class CommandLine
 	}
 	
 	// A Scribble extension should override as appropriate
-	protected Map<CoreArgs, Boolean> parseJobArgs()
+	protected Map<CoreArgs, Boolean> parseCoreArgs()
 	{
 		Map<CoreArgs, Boolean> args = new HashMap<>();
 		args.put(CoreArgs.VERBOSE, hasFlag(CLFlags.VERBOSE_FLAG));
@@ -137,7 +137,6 @@ public class CommandLine
 		args.put(CoreArgs.NO_ACC_CORRELATION_CHECK,
 				hasFlag(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG));
 		args.put(CoreArgs.NO_VALIDATION, hasFlag(CLFlags.NO_VALIDATION_FLAG));
-		args.put(CoreArgs.SPIN, hasFlag(CLFlags.SPIN_FLAG));
 		return args;
 	}
 

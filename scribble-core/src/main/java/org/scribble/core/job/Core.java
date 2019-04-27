@@ -580,6 +580,7 @@ public class Core
 		}
 	}
 
+	// TODO:: relocate (also Context.runAut)
 	public static boolean runSpin(String prefix, String pml) //throws ScribbleException
 	{
 		File tmp;
