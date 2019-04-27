@@ -21,8 +21,8 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Do;
+import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.core.type.session.global.GType;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.Substitutor;
 
@@ -34,7 +34,8 @@ public class GTypeInliner extends STypeInliner<Global, GSeq>
 	}
 
 	@Override
-	public <N extends ProtoName<Global>> GType visitDo(Do<Global, GSeq, N> n)
+	public <N extends ProtoName<Global>> SType<Global, GSeq> visitDo(
+			Do<Global, GSeq, N> n)
 	{
 		GProtoName fullname = (GProtoName) n.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, n.roles, n.args);
