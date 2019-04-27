@@ -21,7 +21,7 @@ import org.scribble.core.type.session.Continue;
 public class LContinue extends Continue<Local, LSeq> implements LType
 {
 	// N.B. source changes from do to continue after inlining
-	public LContinue(CommonTree source, RecVar recvar)
+	protected LContinue(CommonTree source, RecVar recvar)
 	{
 		super(source, recvar);
 	}

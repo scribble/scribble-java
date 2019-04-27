@@ -23,7 +23,7 @@ public class LDisconnect extends DisconnectAction<Local, LSeq>
 {
 
 	// this.src == Role.SELF
-	public LDisconnect(CommonTree source,
+	protected LDisconnect(CommonTree source,
 			Role peer)
 	{
 		super(source, Role.SELF, peer);

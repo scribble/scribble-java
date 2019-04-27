@@ -25,7 +25,7 @@ import org.scribble.core.type.session.Do;
 
 public class LDo extends Do<Local, LSeq, LProtoName> implements LType
 {
-	public LDo(CommonTree source, LProtoName proto,
+	protected LDo(CommonTree source, LProtoName proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);

@@ -19,14 +19,17 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.PackageName;
 import org.scribble.core.type.session.global.GTypeFactory;
+import org.scribble.core.type.session.local.LTypeFactory;
 
 public class STypeFactory
 {
 	public final GTypeFactory global;
+	public final LTypeFactory local;
 
-	public STypeFactory(GTypeFactory global)
+	public STypeFactory(GTypeFactory global, LTypeFactory local)
 	{
 		this.global = global;
+		this.local = local;
 	}
 	
 	

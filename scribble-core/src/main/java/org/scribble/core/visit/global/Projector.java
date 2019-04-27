@@ -81,7 +81,7 @@ public class Projector extends InlinedProjector  // CHECKME: this way, or the ot
 				.map(x -> x.equals(this.self) ? Role.SELF : x)
 						// CHECKME: "self" also explcitily used for Choice, but implicitly for MessageTransfer, inconsistent?
 				.collect(Collectors.toList());
-		return new LDo(null, fullname, rs, n.args);  // TODO CHECKME: prune args?
+		return this.core.config.tf.local.LDo(null, fullname, rs, n.args);  // TODO CHECKME: prune args?
 	}
 }
 

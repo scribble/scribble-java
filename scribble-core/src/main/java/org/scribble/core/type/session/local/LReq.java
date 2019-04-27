@@ -24,7 +24,7 @@ public class LReq extends ConnectAction<Local, LSeq> implements LType
 {
 
 	// this.src == Role.SELF
-	public LReq(CommonTree source,
+	protected LReq(CommonTree source,
 			Msg msg, Role dst)
 	{
 		super(source, msg, Role.SELF, dst);

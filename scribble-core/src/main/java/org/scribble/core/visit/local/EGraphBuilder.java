@@ -120,7 +120,8 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 
 			util.setEntry(nestedExit);  // Must be non null
 			util.setExit(exit);
-			LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
+			LSeq tail = this.core.config.tf.local.LSeq(null,
+					elems.subList(1, elems.size()));
 			tail.visitWithNoThrow(this);  // nestedExit to exit
 		}
 

@@ -71,7 +71,7 @@ public class Job
 	// CHECKME: factor out STypeTranslator, for future local parsing
 	protected GTypeTranslator newGTypeTranslator(ModuleName rootFullname)
 	{
-		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl());  // TODO: factor out factory
+		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl(), null);  // TODO: factor out factory
 		return new GTypeTranslator(this, rootFullname, tf);
 	}
 	

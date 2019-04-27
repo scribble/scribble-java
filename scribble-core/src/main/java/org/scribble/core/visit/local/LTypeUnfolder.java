@@ -32,6 +32,7 @@ public class LTypeUnfolder extends STypeUnfolder<Local, LSeq>
 	@Override
 	public LType visitContinue(Continue<Local, LSeq> n)
 	{
-		return new LRecursion(n.getSource(), n.recvar, (LSeq) getRec(n.recvar));
+		return this.core.config.tf.local.LRecursion(n.getSource(), n.recvar,
+				(LSeq) getRec(n.recvar));
 	}
 }

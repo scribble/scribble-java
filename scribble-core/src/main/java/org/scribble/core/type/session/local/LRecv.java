@@ -24,7 +24,7 @@ public class LRecv extends MsgTransfer<Local, LSeq>
 {
 
 	// this.dst == Role.SELF
-	public LRecv(CommonTree source,
+	protected LRecv(CommonTree source,
 			Role src, Msg msg)
 	{
 		super(source, msg, src, Role.SELF);

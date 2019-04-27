@@ -104,8 +104,9 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 				.visitWithNoEx(new RecPruner<>());*/
 		LSeq inlined = v.visitSeq(subs.visitSeq(this.def));
 		RecVar rv = v.getInlinedRecVar(sig);
-		LRecursion rec = new LRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
-		LSeq seq = new LSeq(null, Stream.of(rec).collect(Collectors.toList()));
+		LRecursion rec = v.core.config.tf.local.LRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
+		LSeq seq = v.core.config.tf.local.LSeq(null,
+				Stream.of(rec).collect(Collectors.toList()));
 		LSeq def = new RecPruner<Local, LSeq>().visitSeq(seq);
 		/*//CHECKME: necessary for LProtocol/Projection? cf. global
 		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)

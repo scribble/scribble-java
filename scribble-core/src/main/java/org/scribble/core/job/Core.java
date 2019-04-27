@@ -40,6 +40,7 @@ import org.scribble.core.type.session.STypeFactory;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.global.GTypeFactoryImpl;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.type.session.local.LTypeFactoryImpl;
 import org.scribble.core.visit.NonProtoDepsGatherer;
 import org.scribble.core.visit.ProtoDepsCollector;
 import org.scribble.core.visit.RoleGatherer;
@@ -67,7 +68,8 @@ public class Core
 			Map<CoreArgs, Boolean> args)
 	{
 		// TODO: factor out factory methods
-		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl());
+		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl(),
+				new LTypeFactoryImpl());
 		ModelFactory mf = new ModelFactoryImpl();
 		return new CoreConfig(mainFullname, args, tf, mf); 
 				// CHECKME: combine E/SModelFactory?

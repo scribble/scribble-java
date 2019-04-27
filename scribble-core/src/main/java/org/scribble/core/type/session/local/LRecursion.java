@@ -20,7 +20,7 @@ import org.scribble.core.type.session.Recursion;
 
 public class LRecursion extends Recursion<Local, LSeq> implements LType
 {
-	public LRecursion(//org.scribble.ast.Recursion<Local> source, 
+	protected LRecursion(//org.scribble.ast.Recursion<Local> source, 
 			CommonTree source,  // Due to inlining, protocoldecl -> rec
 			RecVar recvar, LSeq body)
 	{

@@ -22,7 +22,7 @@ import org.scribble.core.type.session.Choice;
 
 public class LChoice extends Choice<Local, LSeq> implements LType
 {
-	public LChoice(CommonTree source, Role subj,
+	protected LChoice(CommonTree source, Role subj,
 			List<LSeq> blocks)
 	{
 		super(source, subj, blocks);

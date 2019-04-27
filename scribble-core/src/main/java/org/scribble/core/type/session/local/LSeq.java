@@ -27,7 +27,7 @@ import org.scribble.util.ScribException;
 public class LSeq extends Seq<Local, LSeq> implements LType
 {
 	// GInteractionSeq or GBlock better as source?
-	public LSeq(CommonTree source, List<? extends SType<Local, LSeq>> elems)
+	protected LSeq(CommonTree source, List<? extends SType<Local, LSeq>> elems)
 	{
 		super(source, elems);
 	}

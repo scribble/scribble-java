@@ -21,8 +21,6 @@ import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.local.LContinue;
-import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeInliner;
@@ -43,7 +41,7 @@ public class LTypeInliner extends STypeInliner<Local, LSeq>
 		RecVar rv = getInlinedRecVar(sig);
 		if (hasSig(sig))
 		{
-			return new LContinue(n.getSource(), rv);
+			return this.core.config.tf.local.LContinue(n.getSource(), rv);
 		}
 		pushSig(sig);
 		LProtocol p = this.core.getContext().getProjection(fullname);  // This line differs from GDo version
@@ -53,6 +51,6 @@ public class LTypeInliner extends STypeInliner<Local, LSeq>
 		LSeq inlined = visitSeq(subs.visitSeq(p.def));
 				// i.e. returning a Seq -- rely on parent Seq to inline
 		popSig();
-		return new LRecursion(null, rv, inlined);
+		return this.core.config.tf.local.LRecursion(null, rv, inlined);
 	}
 }
