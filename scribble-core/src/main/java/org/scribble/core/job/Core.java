@@ -71,8 +71,8 @@ public class Core
 		// TODO: factor out factory methods
 		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl(),
 				new LTypeFactoryImpl());
-		ModelFactory mf = new ModelFactory(new EModelFactoryImpl(),
-				new SModelFactoryImpl());
+		ModelFactory mf = new ModelFactory(EModelFactoryImpl::new,
+				SModelFactoryImpl::new);
 		return new CoreConfig(mainFullname, args, tf, mf); 
 				// CHECKME: combine E/SModelFactory?
 	}

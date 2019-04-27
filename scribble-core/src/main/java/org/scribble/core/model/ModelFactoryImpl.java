@@ -19,14 +19,8 @@ public abstract class ModelFactoryImpl
 {
 	protected ModelFactory mf = null;
 
-	// Only for use from ModelFactory constructor
-	// Pre: mf.local/global == this
-	protected void setParent(ModelFactory mf)
+	public ModelFactoryImpl(ModelFactory mf)
 	{
-		if (this.mf != null)
-		{
-			throw new RuntimeException("Incorrect usage: ");
-		}
 		this.mf = mf;
 	}
 }

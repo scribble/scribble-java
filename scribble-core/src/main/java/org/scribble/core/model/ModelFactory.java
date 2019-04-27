@@ -13,6 +13,8 @@
  */
 package org.scribble.core.model;
 
+import java.util.function.Function;
+
 import org.scribble.core.model.endpoint.EModelFactory;
 import org.scribble.core.model.global.SModelFactory;
 
@@ -21,11 +23,12 @@ public class ModelFactory
 	public final EModelFactory local;
 	public final SModelFactory global;
 	
-	public ModelFactory(EModelFactory ef, SModelFactory sf)
+	// Args should be constructor refs that that ModelFactory single arg
+	// (Workaround to set mutually referential ModelFactory and E/SModelFactory final fields)
+	public ModelFactory(Function<ModelFactory, EModelFactory> ef,
+			Function<ModelFactory, SModelFactory> sf)
 	{
-		this.local = ef;
-		((ModelFactoryImpl) ef).setParent(this);  // Must assign this.local first
-		this.global = sf;
-		((ModelFactoryImpl) sf).setParent(this);  // Must assign this.global first
+		this.local = ef.apply(this);
+		this.global = sf.apply(this);
 	}
 }
