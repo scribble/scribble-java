@@ -37,42 +37,6 @@ public abstract class Seq<K extends ProtoKind, B extends Seq<K, B>>
 	public abstract B reconstruct(CommonTree source,
 			List<? extends SType<K, B>> elems);
 	
-	/*@Override
-	public <T> T aggregate(STypeAgg<K, B, T> v) throws ScribException
-	{
-		@SuppressWarnings("unchecked")
-		B cast = (B) this;
-		return v.visitSeq(cast);
-	}
-	
-	@Override
-	public <T> T aggregateNoEx(STypeAggNoEx<K, B, T> v)
-	{
-		@SuppressWarnings("unchecked")
-		B cast = (B) this;
-		return v.visitSeq(cast);
-	}
-
-	// Override STypeBase.visitWith for B return
-	// Alternatively: call v.visitSeq directly, bypasses generic cast
-	@Override
-	public B visitWith(STypeVisitor<K, B> v) throws ScribException
-	{
-		@SuppressWarnings("unchecked")
-		B cast = (B) this;  // CHECKME: OK as long as G/LSeq specify themselves as B param
-		return v.visitSeq(cast);
-	}
-
-	// Override STypeBase.visitWithNoEx for B return
-	@Override
-	public B visitWithNoEx(STypeVisitorNoEx<K, B> v)
-	{
-		@SuppressWarnings("unchecked")
-		B cast = (B) this;
-		return v.visitSeq(cast);
-	}
-	*/
-	
 	@Override
 	public <T> Stream<T> gather(Function<SType<K, B>, Stream<T>> f)
 	{
@@ -233,6 +197,42 @@ public abstract class Seq<K extends ProtoKind, B extends Seq<K, B>>
 			}
 		}
 		return reconstruct(getSource(), elems);
+	}
+	*/
+	
+	/*@Override
+	public <T> T aggregate(STypeAgg<K, B, T> v) throws ScribException
+	{
+		@SuppressWarnings("unchecked")
+		B cast = (B) this;
+		return v.visitSeq(cast);
+	}
+	
+	@Override
+	public <T> T aggregateNoEx(STypeAggNoEx<K, B, T> v)
+	{
+		@SuppressWarnings("unchecked")
+		B cast = (B) this;
+		return v.visitSeq(cast);
+	}
+
+	// Override STypeBase.visitWith for B return
+	// Alternatively: call v.visitSeq directly, bypasses generic cast
+	@Override
+	public B visitWith(STypeVisitor<K, B> v) throws ScribException
+	{
+		@SuppressWarnings("unchecked")
+		B cast = (B) this;  // CHECKME: OK as long as G/LSeq specify themselves as B param
+		return v.visitSeq(cast);
+	}
+
+	// Override STypeBase.visitWithNoEx for B return
+	@Override
+	public B visitWithNoEx(STypeVisitorNoEx<K, B> v)
+	{
+		@SuppressWarnings("unchecked")
+		B cast = (B) this;
+		return v.visitSeq(cast);
 	}
 	*/
 }

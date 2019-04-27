@@ -61,7 +61,7 @@ public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>
 			SType<K, B> e1 = (SType<K, B>) e.visitWithNoThrow(this);
 			if (e1 instanceof Seq<?, ?>)  // cf. visitRecursion  (also cf. LSkip)
 			{
-				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case
+				elems.addAll(((Seq<K, B>) e1).elems);//getElements());  // Handles empty Seq case
 			}
 			else
 			{
