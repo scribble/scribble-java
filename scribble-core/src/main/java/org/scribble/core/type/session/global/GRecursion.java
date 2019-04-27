@@ -20,8 +20,7 @@ import org.scribble.core.type.session.Recursion;
 
 public class GRecursion extends Recursion<Global, GSeq> implements GType
 {
-	public GRecursion(//org.scribble.ast.Recursion<Global> source, 
-			CommonTree source,  // Due to inlining, protocoldecl -> rec
+	protected GRecursion(CommonTree source,  // Due to inlining, protocoldecl -> rec
 			RecVar recvar, GSeq body)
 	{
 		super(source, recvar, body);

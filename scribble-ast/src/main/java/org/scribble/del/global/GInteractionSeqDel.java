@@ -38,6 +38,6 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 		{
 			elems.add((GType) c.visitWith(t));  // throws ScribbleException
 		}
-		return new GSeq(source, elems);
+		return t.tf.global.GSeq(source, elems);
 	}
 }

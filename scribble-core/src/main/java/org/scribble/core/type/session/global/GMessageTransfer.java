@@ -23,7 +23,7 @@ public class GMessageTransfer extends MsgTransfer<Global, GSeq>
 		implements GType
 {
 
-	public GMessageTransfer(CommonTree source,
+	protected GMessageTransfer(CommonTree source,
 			Role src, Msg msg, Role dst)
 	{
 		super(source, msg, src, dst);

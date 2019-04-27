@@ -47,7 +47,6 @@ public class GDoDel extends DoDel implements GSimpleSessionNodeDel
 		List<Role> roles = source.getRoleListChild().getRoles();
 		List<Arg<? extends NonRoleParamKind>> params = source.getNonRoleListChild()
 				.getParamKindArgs();		
-		return new org.scribble.core.type.session.global.GDo(source, fullname,
-				roles, params);
+		return t.tf.global.GDo(source, fullname, roles, params);
 	}
 }

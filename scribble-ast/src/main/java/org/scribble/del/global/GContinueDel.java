@@ -30,6 +30,6 @@ public class GContinueDel extends ContinueDel
 	{
 		GContinue source = (GContinue) n;
 		RecVar recvar = source.getRecVarChild().toName();
-		return new org.scribble.core.type.session.global.GContinue(source, recvar);
+		return t.tf.global.GContinue(source, recvar);
 	}
 }

@@ -32,6 +32,6 @@ public class GRecursionDel extends RecursionDel
 		GRecursion source = (GRecursion) n;
 		RecVar recvar = source.getRecVarChild().toName();
 		GSeq block = (GSeq) source.getBlockChild().visitWith(t);
-		return new org.scribble.core.type.session.global.GRecursion(source, recvar, block);
+		return t.tf.global.GRecursion(source, recvar, block);
 	}
 }

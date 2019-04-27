@@ -36,7 +36,9 @@ import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.session.STypeFactory;
 import org.scribble.core.type.session.global.GSeq;
+import org.scribble.core.type.session.global.GTypeFactoryImpl;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.NonProtoDepsGatherer;
 import org.scribble.core.visit.ProtoDepsCollector;
@@ -64,8 +66,10 @@ public class Core
 	protected CoreConfig newCoreConfig(ModuleName mainFullname,
 			Map<CoreArgs, Boolean> args)
 	{
+		// TODO: factor out factory methods
+		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl());
 		ModelFactory mf = new ModelFactoryImpl();
-		return new CoreConfig(mainFullname, args, mf); 
+		return new CoreConfig(mainFullname, args, tf, mf); 
 				// CHECKME: combine E/SModelFactory?
 	}
 
@@ -105,7 +109,7 @@ public class Core
 		{
 			// TODO: currently, unfolded not actually stored by Context -- unfoldAllOnce repeated manually when needed, e.g., runSyntaxWfPasses
 			GProtocol inlined = this.context.getInlined(fullname);
-			GTypeUnfolder v = new GTypeUnfolder();
+			GTypeUnfolder v = new GTypeUnfolder(this);
 			GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 			verbosePrintPass(
 					"Unfolded all recursions once: " + inlined.fullname + "\n" + unf);
@@ -209,7 +213,7 @@ public class Core
 			{
 				continue;
 			}
-			GTypeUnfolder v = new GTypeUnfolder();
+			GTypeUnfolder v = new GTypeUnfolder(this);
 					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
 			inlined.unfoldAllOnce(v).checkRoleEnabling();
 					// TODO: get unfolded from Context
@@ -236,7 +240,7 @@ public class Core
 			{
 				continue;
 			}
-			GTypeUnfolder v = new GTypeUnfolder();  // FIXME: record unfoldings in Context (factor out with role enabling)
+			GTypeUnfolder v = new GTypeUnfolder(this);  // FIXME: record unfoldings in Context (factor out with role enabling)
 					//e.g., rec X { connect A to B; continue X; }
 			inlined.unfoldAllOnce(v).checkConnectedness(!inlined.isExplicit());
 		}

@@ -39,7 +39,6 @@ public class GChoiceDel extends ChoiceDel implements GCompoundSessionNodeDel
 		{
 			blocks.add((GSeq) b.visitWith(t));
 		}
-		return new org.scribble.core.type.session.global.GChoice(source, subj,
-				blocks);
+		return t.tf.global.GChoice(source, subj, blocks);
 	}
 }

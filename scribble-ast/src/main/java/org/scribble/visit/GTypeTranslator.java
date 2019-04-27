@@ -16,6 +16,7 @@ package org.scribble.visit;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.global.GNode;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.core.type.session.STypeFactory;
 import org.scribble.del.global.GDel;
 import org.scribble.job.Job;
 import org.scribble.util.ScribException;
@@ -23,9 +24,12 @@ import org.scribble.util.ScribException;
 // CHECKME: move to visit package?
 public class GTypeTranslator extends SimpleAstVisitor<GNode>
 {
-	public GTypeTranslator(Job job, ModuleName rootFullname)
+	public final STypeFactory tf;
+
+	public GTypeTranslator(Job job, ModuleName rootFullname, STypeFactory tf)
 	{
 		super(job, rootFullname);
+		this.tf = tf;
 	}
 
 	@Override

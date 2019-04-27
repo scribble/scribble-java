@@ -18,20 +18,24 @@ import java.util.Map;
 
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.core.type.session.STypeFactory;
 
 // The "static" (constant) info for Jobs -- cf. JobContext "dynamic" state
 public class CoreConfig
 {
 	public final ModuleName main;  // Full name 
 	public final Map<CoreArgs, Boolean> args;  // CHECKME: verbose/debug printing parameter ?
+
+	public final STypeFactory tf;
 	public final ModelFactory mf;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
 	public CoreConfig(ModuleName main, Map<CoreArgs, Boolean> args,
-			ModelFactory ef)
+			STypeFactory tf, ModelFactory mf)
 	{
 		this.main = main;
 		this.args = Collections.unmodifiableMap(args);
-		this.mf = ef;
+		this.tf = tf;
+		this.mf = mf;
 	}
 }

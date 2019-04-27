@@ -84,11 +84,14 @@ module tmp.Test;
 			// TODO: rename addChildren1
 			// CHECKME: duplicate proto mods
 			// ...check ad hoc ScribNode constructions go through af properly
+			// ...store unfoldings in Context
 
 // parser/ast re-refactoring
+	// split mf to global/local subcomps, make protected constrs
 	// use stypefactory in core -- also make visitorfactorys (both core and ast)
 	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
+	// factor out all config factory methods more centrally?
 	// Job Module projection
 			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles
 			// old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?

@@ -25,7 +25,7 @@ import org.scribble.core.type.session.Do;
 
 public class GDo extends Do<Global, GSeq, GProtoName> implements GType
 {
-	public GDo(CommonTree source, GProtoName proto,
+	protected GDo(CommonTree source, GProtoName proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);

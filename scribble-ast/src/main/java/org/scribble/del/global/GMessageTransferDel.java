@@ -62,7 +62,6 @@ public class GMessageTransferDel extends MessageTransferDel
 		}
 		Role dst = ds.get(0).toName();
 		Msg msg = source.getMessageNodeChild().toMsg();
-		return new org.scribble.core.type.session.global.GMessageTransfer(source,
-				src, msg, dst);
+		return t.tf.global.GMessageTransfer(source, src, msg, dst);
 	}
 }

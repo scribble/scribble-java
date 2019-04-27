@@ -23,7 +23,7 @@ public class GConnect extends ConnectAction<Global, GSeq>
 		implements GType
 {
 
-	public GConnect(CommonTree source,  // DirectedInteraction not ideal (imprecise)
+	protected GConnect(CommonTree source,  // DirectedInteraction not ideal (imprecise)
 			Role src, Msg msg, Role dst)
 	{
 		super(source, msg, src, dst);

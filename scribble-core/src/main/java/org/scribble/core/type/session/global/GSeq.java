@@ -26,8 +26,7 @@ import org.scribble.util.ScribException;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
 {
-	public GSeq(CommonTree source,
-			List<? extends SType<Global, GSeq>> elems)
+	protected GSeq(CommonTree source, List<? extends SType<Global, GSeq>> elems)
 	{
 		super(source, elems);
 	}

@@ -22,7 +22,7 @@ public class GDisconnect extends DisconnectAction<Global, GSeq>
 		implements GType
 {
 
-	public GDisconnect(CommonTree source,
+	protected GDisconnect(CommonTree source,
 			Role left, Role right)
 	{
 		super(source, left, right);

@@ -24,6 +24,8 @@ import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.core.type.session.STypeFactory;
+import org.scribble.core.type.session.global.GTypeFactoryImpl;
 import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -66,10 +68,11 @@ public class Job
 	}
 
 	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
-	// CHECKME: STypeTranslator, for future locals
+	// CHECKME: factor out STypeTranslator, for future local parsing
 	protected GTypeTranslator newGTypeTranslator(ModuleName rootFullname)
 	{
-		return new GTypeTranslator(this, rootFullname);
+		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl());  // TODO: factor out factory
+		return new GTypeTranslator(this, rootFullname, tf);
 	}
 	
 	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate

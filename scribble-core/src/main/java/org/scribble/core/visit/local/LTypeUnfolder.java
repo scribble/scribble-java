@@ -13,6 +13,7 @@
  */
 package org.scribble.core.visit.local;
 
+import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.local.LRecursion;
@@ -22,6 +23,12 @@ import org.scribble.core.visit.STypeUnfolder;
 
 public class LTypeUnfolder extends STypeUnfolder<Local, LSeq>
 {
+	
+	public LTypeUnfolder(Core core)
+	{
+		super(core);
+	}
+
 	@Override
 	public LType visitContinue(Continue<Local, LSeq> n)
 	{

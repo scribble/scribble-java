@@ -54,6 +54,6 @@ public class GConnectDel extends ConnectionActionDel
 		}
 		Role dst = ds.get(0).toName();
 		Msg msg = source.getMessageNodeChild().toMsg();
-		return new org.scribble.core.type.session.global.GConnect(source, src, msg, dst);
+		return t.tf.global.GConnect(source, src, msg, dst);
 	}
 }

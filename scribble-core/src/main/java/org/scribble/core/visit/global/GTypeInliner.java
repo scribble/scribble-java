@@ -21,8 +21,6 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.global.GContinue;
-import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.global.GType;
 import org.scribble.core.visit.STypeInliner;
@@ -43,7 +41,7 @@ public class GTypeInliner extends STypeInliner<Global, GSeq>
 		RecVar rv = getInlinedRecVar(sig);
 		if (hasSig(sig))
 		{
-			return new GContinue(n.getSource(), rv);
+			return this.core.config.tf.global.GContinue(n.getSource(), rv);
 		}
 		pushSig(sig);
 		GProtocol g = this.core.getContext().getIntermediate(fullname);
@@ -53,6 +51,6 @@ public class GTypeInliner extends STypeInliner<Global, GSeq>
 		GSeq inlined = visitSeq(subs.visitSeq(g.def));
 				// i.e. returning a GSeq -- rely on parent GSeq to inline
 		popSig();
-		return new GRecursion(null, rv, inlined);
+		return this.core.config.tf.global.GRecursion(null, rv, inlined);
 	}
 }

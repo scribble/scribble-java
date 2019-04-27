@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
@@ -30,7 +31,14 @@ import org.scribble.core.type.session.Seq;
 public abstract class STypeUnfolder<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {
+	public final Core core;
+
 	private final Map<RecVar, Seq<K, ?>> recs = new HashMap<>(); 
+	
+	public STypeUnfolder(Core core)
+	{
+		this.core = core;
+	}
 
 	@Override
 	public final <N extends ProtoName<K>> SType<K, B> visitDo(Do<K, B, N> n)

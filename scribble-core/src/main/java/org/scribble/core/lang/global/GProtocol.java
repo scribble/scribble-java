@@ -160,8 +160,9 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 				.visitWithNoThrow(new RecPruner<>());*/
 		GSeq inlined = v.visitSeq(subs.visitSeq(this.def));
 		RecVar rv = v.getInlinedRecVar(sig);
-		GRecursion rec = new GRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
-		GSeq seq = new GSeq(null, Stream.of(rec).collect(Collectors.toList()));
+		GRecursion rec = v.core.config.tf.global.GRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
+		GSeq seq = v.core.config.tf.global.GSeq(null,
+				Stream.of(rec).collect(Collectors.toList()));
 		GSeq def = new RecPruner<Global, GSeq>().visitSeq(seq);
 		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
