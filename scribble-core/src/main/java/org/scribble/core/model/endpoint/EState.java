@@ -49,7 +49,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	protected EState cloneNode(ModelFactory mf, Set<RecVar> labs)
 	{
 		//return ef.newEState(this.labs);
-		return mf.newEState(labs);
+		return mf.local.newEState(labs);
 	}
 
 	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)

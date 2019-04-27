@@ -90,7 +90,7 @@ public class EGraphBuilderUtil
 	// For the util to additionally record states -- use this, don't use this.mf.newEState
 	public EState newState(Set<RecVar> labs)
 	{
-		EState s = this.mf.newEState(labs);
+		EState s = this.mf.local.newEState(labs);
 		this.states.add(s);
 		return s;
 	}

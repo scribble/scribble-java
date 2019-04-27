@@ -28,7 +28,6 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.core.type.session.local.LDo;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 

@@ -43,7 +43,7 @@ public class SGraphBuilderUtil
 	
 	public SState newState(SConfig c)
 	{
-		SState s = this.mf.newSState(c);
+		SState s = this.mf.global.newSState(c);
 		this.states.put(c, s);
 		return s;
 	}

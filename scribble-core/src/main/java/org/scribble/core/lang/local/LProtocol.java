@@ -132,7 +132,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		if (this.def.isEmpty())  // Empty Seq special case for top-level -- in general, Seq must be non-empty, cf. LSeq::buildGraph entry/exit
 		{
 			//EState s = b.getEntry();
-			EState s = core.config.mf.newEState(Collections.emptySet());
+			EState s = core.config.mf.local.newEState(Collections.emptySet());
 			return new EGraph(s, s);  // TODO: refactor constructor inside mf
 		}
 		EGraphBuilder b = new EGraphBuilder(core);

@@ -23,10 +23,11 @@ import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.ModelFactoryImpl;
 import org.scribble.core.model.endpoint.EGraph;
+import org.scribble.core.model.endpoint.EModelFactoryImpl;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.global.SGraph;
+import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.model.visit.local.NonDetPayChecker;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
@@ -70,7 +71,8 @@ public class Core
 		// TODO: factor out factory methods
 		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl(),
 				new LTypeFactoryImpl());
-		ModelFactory mf = new ModelFactoryImpl();
+		ModelFactory mf = new ModelFactory(new EModelFactoryImpl(),
+				new SModelFactoryImpl());
 		return new CoreConfig(mainFullname, args, tf, mf); 
 				// CHECKME: combine E/SModelFactory?
 	}
@@ -325,7 +327,7 @@ public class Core
 
 		verbosePrintPass("Checking " + (!fair ? "\"unfair\" " : "")
 				+ "global model: " + fullname);
-		this.config.mf.newSModel(graph).validate(this);
+		this.config.mf.global.newSModel(graph).validate(this);
 	}
 
 	// Pre: checkWellFormedness 

@@ -183,7 +183,7 @@ public class SConfig
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
-			res.add(this.mf.newSConfig(efsms, queues));
+			res.add(this.mf.global.newSConfig(efsms, queues));
 		}
 		return res;
 	}
@@ -222,7 +222,7 @@ public class SConfig
 				{
 					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
 				}
-				res.add(this.mf.newSConfig(efsms, queues));
+				res.add(this.mf.global.newSConfig(efsms, queues));
 			}
 		}
 		return res;
