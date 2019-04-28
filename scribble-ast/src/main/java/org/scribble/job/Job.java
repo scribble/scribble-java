@@ -30,8 +30,8 @@ import org.scribble.core.type.session.local.LTypeFactoryImpl;
 import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
-import org.scribble.visit.AstVisitorFactory;
-import org.scribble.visit.AstVisitorFactoryImpl;
+import org.scribble.visit.VisitorFactory;
+import org.scribble.visit.VisitorFactoryImpl;
 import org.scribble.visit.GTypeTranslator;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
@@ -48,15 +48,15 @@ public class Job
 			throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
-		AstVisitorFactory vf = newAstVisitorFactory();
+		VisitorFactory vf = newAstVisitorFactory();
 		STypeFactory tf = newSTypeFactory();
 		this.config = newJobConfig(mainFullname, args, af, df, vf, tf);
 		this.context = newJobContext(this, parsed);  // Single instance per Job, should not be shared between Jobs
 	}
 
-	protected AstVisitorFactory newAstVisitorFactory()
+	protected VisitorFactory newAstVisitorFactory()
 	{
-		return new AstVisitorFactoryImpl();
+		return new VisitorFactoryImpl();
 	}
 	
 	// Used by GTypeTranslator (cf. getCore)
@@ -69,7 +69,7 @@ public class Job
 	// A Scribble extension should override newJobConfig/Context/Core as appropriate
 	protected JobConfig newJobConfig(ModuleName mainFullname,
 			Map<CoreArgs, Boolean> args, AstFactory af, DelFactory df,
-			AstVisitorFactory vf, STypeFactory tf)
+			VisitorFactory vf, STypeFactory tf)
 	{
 		return new JobConfig(mainFullname, args, af, df, vf, tf);
 	}

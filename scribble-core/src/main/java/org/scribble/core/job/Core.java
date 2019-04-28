@@ -41,8 +41,8 @@ import org.scribble.core.type.session.STypeFactory;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.ProtoDepsCollector;
-import org.scribble.core.visit.VisitorFactory;
-import org.scribble.core.visit.VisitorFactoryImpl;
+import org.scribble.core.visit.STypeVisitorFactory;
+import org.scribble.core.visit.STypeVisitorFactoryImpl;
 import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.util.ScribException;
@@ -63,9 +63,9 @@ public class Core
 				imeds);  // Single instance per Core and should never be shared
 	}
 	
-	protected VisitorFactory newVisitorFactory()
+	protected STypeVisitorFactory newVisitorFactory()
 	{
-		return new VisitorFactoryImpl();
+		return new STypeVisitorFactoryImpl();
 	}
 	
 	protected ModelFactory newModelFactory()
@@ -78,7 +78,7 @@ public class Core
 	protected CoreConfig newCoreConfig(ModuleName mainFullname,
 			Map<CoreArgs, Boolean> args, STypeFactory tf)
 	{
-		VisitorFactory vf = newVisitorFactory();
+		STypeVisitorFactory vf = newVisitorFactory();
 		ModelFactory mf = newModelFactory();
 		return new CoreConfig(mainFullname, args, tf, vf, mf); 
 				// CHECKME: combine E/SModelFactory?
@@ -233,7 +233,7 @@ public class Core
 			for (Role self : inlined.roles)
 			{
 				LProjection iproj = this.context.getProjectedInlined(fullname, self);
-				iproj.checkReachability();
+				iproj.checkReachability(this);
 			}
 		}
 	}

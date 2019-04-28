@@ -28,63 +28,27 @@ import org.scribble.core.visit.global.RoleEnablingChecker;
 import org.scribble.core.visit.local.InlinedExtChoiceSubjFixer;
 import org.scribble.core.visit.local.ReachabilityChecker;
 
-public class VisitorFactoryImpl implements VisitorFactory
+public interface STypeVisitorFactory
 {
 
-	@Override
-	public GTypeInliner GTypeInliner(Core core)
-	{
-		return new GTypeInliner(core);
-	}
+	GTypeInliner GTypeInliner(Core core);
 
-	@Override
-	public GTypeUnfolder GTypeUnfolder(Core core)
-	{
-		return new GTypeUnfolder(core);
-	}
+	GTypeUnfolder GTypeUnfolder(Core core);
 
-	@Override
-	public RoleEnablingChecker RoleEnablingChecker(Set<Role> rs)
-	{
-		return new RoleEnablingChecker(rs);
-	}
+	RoleEnablingChecker RoleEnablingChecker(Set<Role> rs);
 
-	@Override
-	public ExtChoiceConsistencyChecker ExtChoiceConsistencyChecker(
-			Map<Role, Role> enabled)
-	{
-		return new ExtChoiceConsistencyChecker(enabled);
-	}
+	ExtChoiceConsistencyChecker ExtChoiceConsistencyChecker(
+			Map<Role, Role> enabled);
 
-	@Override
-	public ConnectionChecker ConnectionChecker(Set<Role> roles, boolean implicit)
-	{
-		return new ConnectionChecker(roles, implicit);
-	}
+	ConnectionChecker ConnectionChecker(Set<Role> rs, boolean implicit);
 
-	@Override
-	public InlinedProjector InlinedProjector(Core core, Role self)
-	{
-		return new InlinedProjector(core, self);
-	}
+	InlinedProjector InlinedProjector(Core core, Role self);
 
-	@Override
-	public InlinedExtChoiceSubjFixer InlinedExtChoiceSubjFixer()
-	{
-		return new InlinedExtChoiceSubjFixer();
-	}
+	InlinedExtChoiceSubjFixer InlinedExtChoiceSubjFixer();
 
-	@Override
-	public ReachabilityChecker ReachabilityChecker()
-	{
-		return new ReachabilityChecker();
-	}
+	ReachabilityChecker ReachabilityChecker();
 
 	// CHECKME: deprecate?
-	@Override
-	public Projector Projector(Core core, Role self)
-	{
-		return new Projector(core, self);
-	}
+	Projector Projector(Core core, Role self);
 
 }

@@ -21,7 +21,7 @@ import org.scribble.core.job.CoreArgs;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.session.STypeFactory;
 import org.scribble.del.DelFactory;
-import org.scribble.visit.AstVisitorFactory;
+import org.scribble.visit.VisitorFactory;
 
 // The "static" (constant) info for Lang -- cf. LangContext "dynamic" state
 public class JobConfig
@@ -32,12 +32,12 @@ public class JobConfig
 
 	public final AstFactory af;
 	public final DelFactory df;
-	public final AstVisitorFactory vf;
+	public final VisitorFactory vf;
 	public final STypeFactory tf;
 	
 	// N.B. MainContext is in a different non-visible (by Maven) package
 	public JobConfig(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
-			AstFactory af, DelFactory df, AstVisitorFactory vf, STypeFactory tf)
+			AstFactory af, DelFactory df, VisitorFactory vf, STypeFactory tf)
 	{
 		this.main = mainFullname;
 		this.args = Collections.unmodifiableMap(args);

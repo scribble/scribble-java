@@ -19,6 +19,7 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.util.ScribException;
 
+// CHECKME: should make via factory method?  cf. VisitorFactory
 public class NonDetPayChecker extends EStateVisitor
 {
 

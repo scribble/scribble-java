@@ -31,9 +31,9 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LSeq;
@@ -42,7 +42,6 @@ import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
 import org.scribble.core.visit.local.EGraphBuilder;
-import org.scribble.core.visit.local.ReachabilityChecker;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 
@@ -66,9 +65,9 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		return new LProtocol(source, mods, fullname, roles, self, params, def);
 	}
 
-	public void checkReachability() throws ScribException
+	public void checkReachability(Core core) throws ScribException
 	{
-		this.def.visitWith(new ReachabilityChecker());
+		this.def.visitWith(core.config.vf.ReachabilityChecker());
 	}
 	
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)
