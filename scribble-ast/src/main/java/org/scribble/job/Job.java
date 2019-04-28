@@ -88,12 +88,12 @@ public class Job
 	{
 		if (this.core == null)
 		{
-			STypeFactory tf = newSTypeFactory();
 			Map<ModuleName, Module> parsed = this.context.getParsed();
 			Set<GProtocol> imeds = new HashSet<>();
 			for (ModuleName fullname : parsed.keySet())
 			{
-				GTypeTranslator t = this.config.vf.GTypeTranslator(this, fullname, tf);
+				GTypeTranslator t = this.config.vf.GTypeTranslator(this, fullname,
+						this.config.tf);
 						// CHECKME: factor out STypeTranslator, for future local parsing
 				Module m = parsed.get(fullname);
 				for (GProtoDecl ast : m.getGProtoDeclChildren())
@@ -108,7 +108,7 @@ public class Job
 			}
 			this.core = newCore(this.config.main, this.config.args,
 					//this.context.getModuleContexts(), 
-					imeds, tf);
+					imeds, this.config.tf);
 		}
 		return this.core;
 	}

@@ -129,7 +129,7 @@ public class Main
 		return new AstFactoryImpl(antlr);
 	}
 	
-	// Here (cf. Job) because used by this.antlr and this.af (and lives in scribble-parser)
+	// Here (cf. Job) because df used by this.antlr and this.af (and lives in scribble-parser)
 	protected DelFactory newDelFactory()
 	{
 		return new DelFactoryImpl();
