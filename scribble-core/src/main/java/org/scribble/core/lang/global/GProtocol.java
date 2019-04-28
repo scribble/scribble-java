@@ -40,7 +40,6 @@ import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
@@ -98,23 +97,24 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	{
 		LSeq def = core.config.vf.InlinedProjector(core, self).visitSeq(this.def);
 		LSeq fixed = core.config.vf.InlinedExtChoiceSubjFixer().visitSeq(def);
-		return projectAux(self, this.roles, fixed);
+		return projectAux(core, self, this.roles, fixed);
 	}
 
 	public LProjection project(Core core, Role self)
 	{
 		LSeq def = core.config.vf.Projector(core, self).visitSeq(this.def);
 			// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
-		return projectAux(self,
+		return projectAux(core, self,
 				core.getContext().getInlined(this.fullname).roles,  
 						// Using inlined global, global role decls already pruned -- CHECKME: is this still relevant?
 						// Actual projection role decl pruning done by projectAux
 				def);
 	}
 	
-	private LProjection projectAux(Role self, List<Role> decls, LSeq body)
+	private LProjection projectAux(Core core, Role self, List<Role> decls,
+			LSeq body)
 	{
-		LSeq pruned = new RecPruner<Local, LSeq>().visitSeq(body);
+		LSeq pruned = core.config.vf.<Local, LSeq>RecPruner().visitSeq(body);
 		LProtoName fullname = InlinedProjector
 				.getFullProjectionName(this.fullname, self);
 		Set<Role> tmp = pruned.gather(new RoleGatherer<Local, LSeq>()::visit)
@@ -155,7 +155,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		SubprotoSig sig = new SubprotoSig(this.fullname, this.roles, params);
 		v.pushSig(sig);
 
-		Substitutor<Global, GSeq> subs = new Substitutor<>(this.roles, sig.roles,
+		Substitutor<Global, GSeq> subs = v.core.config.vf.Substitutor(this.roles, sig.roles,
 				this.params, sig.args);
 		/*GSeq body = (GSeq) this.def.visitWithNoThrow(subs).visitWithNoThrow(v)
 				.visitWithNoThrow(new RecPruner<>());*/
@@ -164,7 +164,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		GRecursion rec = v.core.config.tf.global.GRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
 		GSeq seq = v.core.config.tf.global.GSeq(null,
 				Stream.of(rec).collect(Collectors.toList()));
-		GSeq def = new RecPruner<Global, GSeq>().visitSeq(seq);
+		GSeq def = v.core.config.vf.<Global, GSeq>RecPruner().visitSeq(seq);
 		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls -- CHECKME: what is an example? was this from before unused role checking?

@@ -13,11 +13,17 @@
  */
 package org.scribble.core.visit;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble.core.job.Core;
+import org.scribble.core.type.kind.NonRoleParamKind;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.session.Arg;
+import org.scribble.core.type.session.Seq;
 import org.scribble.core.visit.global.ConnectionChecker;
 import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
 import org.scribble.core.visit.global.GTypeInliner;
@@ -32,6 +38,15 @@ public class STypeVisitorFactoryImpl implements STypeVisitorFactory
 {
 
 	@Override
+	public <K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> Substitutor(
+			List<Role> rold, List<Role> rnew,
+			List<MemberName<? extends NonRoleParamKind>> aold,
+			List<Arg<? extends NonRoleParamKind>> anew)
+	{
+		return new Substitutor<>(rold, rnew, aold, anew);
+	}
+
+	@Override
 	public GTypeInliner GTypeInliner(Core core)
 	{
 		return new GTypeInliner(core);
@@ -41,6 +56,12 @@ public class STypeVisitorFactoryImpl implements STypeVisitorFactory
 	public GTypeUnfolder GTypeUnfolder(Core core)
 	{
 		return new GTypeUnfolder(core);
+	}
+
+	@Override
+	public <K extends ProtoKind, B extends Seq<K, B>> RecPruner<K, B> RecPruner()
+	{
+		return new RecPruner<>();
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public class DelDecorator extends AstVisitor
 {
 	protected final DelFactory df;
 
-	public DelDecorator(Job job)
+	protected DelDecorator(Job job)
 	{
 		super(job);
 		this.df = job.config.df;

@@ -30,6 +30,11 @@ import org.scribble.core.visit.gather.RecVarGatherer;
 public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {
+	protected RecPruner()
+	{
+		
+	}
+
 	@Override
 	public SType<K, B> visitChoice(Choice<K, B> n)
 	{

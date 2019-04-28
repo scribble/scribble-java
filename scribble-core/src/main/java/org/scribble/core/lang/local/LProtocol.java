@@ -37,7 +37,6 @@ import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.visit.RecPruner;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
@@ -97,7 +96,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		SubprotoSig sig = new SubprotoSig(this.fullname, this.roles, params);
 		v.pushSig(sig);
 
-		Substitutor<Local, LSeq> subs = new Substitutor<>(this.roles, sig.roles,
+		Substitutor<Local, LSeq> subs = v.core.config.vf.Substitutor(this.roles, sig.roles,
 				this.params, sig.args);
 		/*LSeq body = (LSeq) this.def.visitWithNoEx(subs).visitWithNoEx(v)
 				.visitWithNoEx(new RecPruner<>());*/
@@ -106,7 +105,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		LRecursion rec = v.core.config.tf.local.LRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
 		LSeq seq = v.core.config.tf.local.LSeq(null,
 				Stream.of(rec).collect(Collectors.toList()));
-		LSeq def = new RecPruner<Local, LSeq>().visitSeq(seq);
+		LSeq def = v.core.config.vf.<Local, LSeq>RecPruner().visitSeq(seq);
 		/*//CHECKME: necessary for LProtocol/Projection? cf. global
 		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());

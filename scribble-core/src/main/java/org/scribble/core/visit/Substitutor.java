@@ -38,7 +38,7 @@ public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 {
 	private Substitutions subs;
 
-	public Substitutor(List<Role> rold, List<Role> rnew,
+	protected Substitutor(List<Role> rold, List<Role> rnew,
 			List<MemberName<? extends NonRoleParamKind>> aold,
 			List<Arg<? extends NonRoleParamKind>> anew)
 	{

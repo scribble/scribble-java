@@ -44,8 +44,8 @@ public class LTypeInliner extends STypeInliner<Local, LSeq>
 		}
 		pushSig(sig);
 		LProtocol p = this.core.getContext().getProjection(fullname);  // This line differs from GDo version
-		Substitutor<Local, LSeq> subs = 
-				new Substitutor<>(p.roles, n.roles, p.params, n.args);
+		Substitutor<Local, LSeq> subs = this.core.config.vf.Substitutor(p.roles,
+				n.roles, p.params, n.args);
 		//LSeq inlined = (LSeq) p.def.visitWithNoThrow(subs).visitWithNoThrow(this);
 		LSeq inlined = visitSeq(subs.visitSeq(p.def));
 				// i.e. returning a Seq -- rely on parent Seq to inline
