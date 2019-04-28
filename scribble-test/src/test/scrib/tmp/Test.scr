@@ -88,8 +88,9 @@ module tmp.Test;
 
 // parser/ast re-refactoring
 	// split mf to global/local subcomps, make protected constrs
-	// use stypefactory in core -- also make visitorfactorys (both core and ast)
 	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
+
+	// use stypefactory in core -- also make visitorfactorys (both core and ast)
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
 	// factor out all config factory methods more centrally?
 	// Job Module projection

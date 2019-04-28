@@ -42,10 +42,9 @@ import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.global.GTypeFactoryImpl;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LTypeFactoryImpl;
-import org.scribble.core.visit.NonProtoDepsGatherer;
 import org.scribble.core.visit.ProtoDepsCollector;
-import org.scribble.core.visit.RoleGatherer;
-import org.scribble.core.visit.global.GTypeUnfolder;
+import org.scribble.core.visit.gather.NonProtoDepsGatherer;
+import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.util.ScribException;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
@@ -112,11 +111,9 @@ public class Core
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			// TODO: currently, unfolded not actually stored by Context -- unfoldAllOnce repeated manually when needed, e.g., runSyntaxWfPasses
-			GProtocol inlined = this.context.getInlined(fullname);
-			GTypeUnfolder v = new GTypeUnfolder(this);
-			GProtocol unf = (GProtocol) inlined.unfoldAllOnce(v);//.unfoldAllOnce(unf2);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
+			GProtocol unf = this.context.getOnceUnfolded(fullname);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 			verbosePrintPass(
-					"Unfolded all recursions once: " + inlined.fullname + "\n" + unf);
+					"Unfolded all recursions once: " + unf.fullname + "\n" + unf);
 		}
 	}
 
@@ -212,14 +209,13 @@ public class Core
 		verbosePrintPass("Checking role enabling on all inlined globals...");
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
-			GProtocol inlined = this.context.getInlined(fullname);
-			if (inlined.isAux())
+			GProtocol unf = this.context.getOnceUnfolded(fullname);
+			if (unf.isAux())
 			{
 				continue;
 			}
-			GTypeUnfolder v = new GTypeUnfolder(this);
+			unf.checkRoleEnabling();
 					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
-			inlined.unfoldAllOnce(v).checkRoleEnabling();
 					// TODO: get unfolded from Context
 		}
 
@@ -239,14 +235,13 @@ public class Core
 				"Checking connectedness on all inlined globals...");
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
-			GProtocol inlined = this.context.getInlined(fullname);
-			if (inlined.isAux())
+			GProtocol unf = this.context.getOnceUnfolded(fullname);
+			if (unf.isAux())
 			{
 				continue;
 			}
-			GTypeUnfolder v = new GTypeUnfolder(this);  // FIXME: record unfoldings in Context (factor out with role enabling)
+			unf.checkConnectedness(!unf.isExplicit());
 					//e.g., rec X { connect A to B; continue X; }
-			inlined.unfoldAllOnce(v).checkConnectedness(!inlined.isExplicit());
 		}
 	}
 		

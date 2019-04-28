@@ -24,6 +24,7 @@ import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
+import org.scribble.core.visit.gather.RecVarGatherer;
 
 // Assumes no shadowing, e.g., use after inlining recvar disamb (also used after projection)
 public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>

@@ -11,21 +11,23 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.visit;
+package org.scribble.core.visit.gather;
 
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.session.Continue;
+import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.Seq;
 
-public class RecVarGatherer<K extends ProtoKind, B extends Seq<K, B>>
-		extends STypeGatherer<K, B, RecVar>
+public class MessageIdGatherer<K extends ProtoKind, B extends Seq<K, B>>
+		extends STypeGatherer<K, B, MsgId<?>>
 {
+
 	@Override
-	public Stream<RecVar> visitContinue(Continue<K, B> n)
+	public Stream<MsgId<?>> visitDirectedInteraction(
+			DirectedInteraction<K, B> n)
 	{
-		return Stream.of(n.recvar);
+		return Stream.of(n.msg.getId());
 	}
 }

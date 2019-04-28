@@ -33,7 +33,7 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.MsgId;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.core.visit.MessageIdGatherer;
+import org.scribble.core.visit.gather.MessageIdGatherer;
 import org.scribble.job.Job;
 import org.scribble.util.ScribException;
 

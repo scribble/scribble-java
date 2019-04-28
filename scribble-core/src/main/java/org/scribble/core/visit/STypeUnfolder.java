@@ -26,7 +26,7 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
 
-// Not supported for Do
+// Pre: use on inlined -- not supported for Do
 public abstract class STypeUnfolder<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {

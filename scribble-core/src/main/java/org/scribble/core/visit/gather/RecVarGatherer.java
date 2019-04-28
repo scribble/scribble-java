@@ -11,36 +11,21 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.visit;
+package org.scribble.core.visit.gather;
 
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.Role;
-import org.scribble.core.type.session.Choice;
-import org.scribble.core.type.session.DirectedInteraction;
-import org.scribble.core.type.session.DisconnectAction;
+import org.scribble.core.type.name.RecVar;
+import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.Seq;
 
-public class RoleGatherer<K extends ProtoKind, B extends Seq<K, B>>
-		extends STypeGatherer<K, B, Role>
+public class RecVarGatherer<K extends ProtoKind, B extends Seq<K, B>>
+		extends STypeGatherer<K, B, RecVar>
 {
-
 	@Override
-	public Stream<Role> visitChoice(Choice<K, B> n)
+	public Stream<RecVar> visitContinue(Continue<K, B> n)
 	{
-		return Stream.of(n.subj);
-	}
-
-	@Override
-	public Stream<Role> visitDirectedInteraction(DirectedInteraction<K, B> n)
-	{
-		return Stream.of(n.src, n.dst);
-	}
-
-	@Override
-	public Stream<Role> visitDisconnect(DisconnectAction<K, B> n)
-	{
-		return Stream.of(n.left, n.right);
+		return Stream.of(n.recvar);
 	}
 }

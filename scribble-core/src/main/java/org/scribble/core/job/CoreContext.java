@@ -33,6 +33,7 @@ import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.visit.global.GTypeInliner;
+import org.scribble.core.visit.global.GTypeUnfolder;
 import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
@@ -54,7 +55,10 @@ public class CoreContext
 	private final Map<ProtoName<Global>, GProtocol> imeds;
 
 	// N.B. protos have pruned role decls -- CHECKME: prune args?
-	private final Map<ProtoName<Global>, GProtocol> inlined = new HashMap<>();  // Keys are full names
+	// Mods are preserved
+  // Keys are full names
+	private final Map<ProtoName<Global>, GProtocol> inlined = new HashMap<>();
+	private final Map<ProtoName<Global>, GProtocol> unfs = new HashMap<>();
 
 	// CHECKME: rename projis?
 	private final Map<ProtoName<Local>, LProjection> iprojs = new HashMap<>();  // Projected from inlined; keys are full names
@@ -131,6 +135,23 @@ public class CoreContext
 	{
 		return this.inlined.values().stream().collect(Collectors.toSet());
 	}*/
+	
+	public GProtocol getOnceUnfolded(ProtoName<Global> fullname)
+	{
+		GProtocol unf = this.unfs.get(fullname);
+		if (unf == null)
+		{
+			GTypeUnfolder v = new GTypeUnfolder(this.core);
+			unf = this.inlined.get(fullname).unfoldAllOnce(v);  // Protocol.getInlined does pruneRecs
+			addOnceUnfolded(fullname, unf);
+		}
+		return unf;
+	}
+	
+	protected void addOnceUnfolded(ProtoName<Global> fullname, GProtocol g)
+	{
+		this.unfs.put(fullname, g);
+	}
 	
   // Projected from inlined
 	public LProjection getProjectedInlined(ProtoName<Global> fullname, Role self)
