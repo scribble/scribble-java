@@ -43,6 +43,8 @@ import org.scribble.core.type.session.global.GTypeFactoryImpl;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LTypeFactoryImpl;
 import org.scribble.core.visit.ProtoDepsCollector;
+import org.scribble.core.visit.VisitorFactory;
+import org.scribble.core.visit.VisitorFactoryImpl;
 import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.util.ScribException;
@@ -70,9 +72,10 @@ public class Core
 		// TODO: factor out factory methods
 		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl(),
 				new LTypeFactoryImpl());
+		VisitorFactory vf = new VisitorFactoryImpl();
 		ModelFactory mf = new ModelFactory(EModelFactoryImpl::new,
 				SModelFactoryImpl::new);
-		return new CoreConfig(mainFullname, args, tf, mf); 
+		return new CoreConfig(mainFullname, args, tf, vf, mf); 
 				// CHECKME: combine E/SModelFactory?
 	}
 
@@ -107,13 +110,73 @@ public class Core
 					"Inlined subprotocols: " + fullname + "\n" + inlined);
 		}
 				
-		verbosePrintPass("Unfolding all recursions once for all inlined globals...");
+		verbosePrintPass(
+				"Unfolding all recursions once for all inlined globals...");
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			// TODO: currently, unfolded not actually stored by Context -- unfoldAllOnce repeated manually when needed, e.g., runSyntaxWfPasses
 			GProtocol unf = this.context.getOnceUnfolded(fullname);  // CHECKME: twice unfolding? instead of "unguarded"-unfolding?
 			verbosePrintPass(
 					"Unfolded all recursions once: " + unf.fullname + "\n" + unf);
+		}
+	}
+	
+	protected void runGlobalSyntaxWfPasses() throws ScribException
+	{
+		verbosePrintPass(
+				"Checking for unused role decls on all inlined globals...");
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
+		{
+			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
+			Set<Role> used = this.context.getInlined(fullname).def
+					.gather(new RoleGatherer<Global, GSeq>()::visit)
+					.collect(Collectors.toSet());
+			Set<Role> unused = this.context.getIntermediate(fullname).roles
+							// imeds have original role decls (inlined's are pruned)
+					.stream().filter(x -> !used.contains(x)).collect(Collectors.toSet());
+			if (!unused.isEmpty())
+			{
+				throw new ScribException(
+						"Unused roles in " + fullname + ": " + unused);
+			}
+		}
+
+		verbosePrintPass("Checking role enabling on all inlined globals...");
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
+		{
+			GProtocol unf = this.context.getOnceUnfolded(fullname);
+			if (unf.isAux())
+			{
+				continue;
+			}
+			unf.checkRoleEnabling(this);
+					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
+					// TODO: get unfolded from Context
+		}
+
+		verbosePrintPass(
+				"Checking consistent external choice subjects on all inlined globals...");
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
+		{
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())
+			{
+				continue;
+			}
+			inlined.checkExtChoiceConsistency(this);
+		}
+
+		verbosePrintPass(
+				"Checking connectedness on all inlined globals...");
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
+		{
+			GProtocol unf = this.context.getOnceUnfolded(fullname);
+			if (unf.isAux())
+			{
+				continue;
+			}
+			unf.checkConnectedness(this, !unf.isExplicit());
+					//e.g., rec X { connect A to B; continue X; }
 		}
 	}
 
@@ -150,6 +213,25 @@ public class Core
 			}
 		}
 	}
+		
+	// Pre: runGlobalSyntaxWfPasses
+	protected void runProjectionSyntaxWfPasses() throws ScribException
+	{
+		verbosePrintPass("Checking reachability on all projected inlineds...");
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
+		{
+			GProtocol inlined = this.context.getInlined(fullname);
+			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
+			{
+				continue;
+			}
+			for (Role self : inlined.roles)
+			{
+				LProjection iproj = this.context.getProjectedInlined(fullname, self);
+				iproj.checkReachability();
+			}
+		}
+	}
 
 	// Pre: runGlobalSyntaxWfPasses -- unfair EFSM building depends on WF (role enabling, e.g., bad.wfchoice.enabling.threeparty.Test02) for building algorithm to work...
 	// ...or patch unfair-transform graph building to not crash?
@@ -182,84 +264,6 @@ public class Core
 					verbosePrintPass("Built \"unfair\" EFSM: " + inlined.fullname + ":\n"
 							+ graph.toDot());
 				}
-			}
-		}
-	}
-	
-	protected void runGlobalSyntaxWfPasses() throws ScribException
-	{
-		verbosePrintPass(
-				"Checking for unused role decls on all inlined globals...");
-		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
-		{
-			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
-			Set<Role> used = this.context.getInlined(fullname).def
-					.gather(new RoleGatherer<Global, GSeq>()::visit)
-					.collect(Collectors.toSet());
-			Set<Role> unused = this.context.getIntermediate(fullname).roles
-							// imeds have original role decls (inlined's are pruned)
-					.stream().filter(x -> !used.contains(x)).collect(Collectors.toSet());
-			if (!unused.isEmpty())
-			{
-				throw new ScribException(
-						"Unused roles in " + fullname + ": " + unused);
-			}
-		}
-
-		verbosePrintPass("Checking role enabling on all inlined globals...");
-		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
-		{
-			GProtocol unf = this.context.getOnceUnfolded(fullname);
-			if (unf.isAux())
-			{
-				continue;
-			}
-			unf.checkRoleEnabling();
-					//e.g., C->D captured under an A->B choice after unfolding, cf. bad.wfchoice.enabling.twoparty.Test01b;
-					// TODO: get unfolded from Context
-		}
-
-		verbosePrintPass(
-				"Checking consistent external choice subjects on all inlined globals...");
-		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
-		{
-			GProtocol inlined = this.context.getInlined(fullname);
-			if (inlined.isAux())
-			{
-				continue;
-			}
-			inlined.checkExtChoiceConsistency();
-		}
-
-		verbosePrintPass(
-				"Checking connectedness on all inlined globals...");
-		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
-		{
-			GProtocol unf = this.context.getOnceUnfolded(fullname);
-			if (unf.isAux())
-			{
-				continue;
-			}
-			unf.checkConnectedness(!unf.isExplicit());
-					//e.g., rec X { connect A to B; continue X; }
-		}
-	}
-		
-	// Pre: runGlobalSyntaxWfPasses
-	protected void runProjectionSyntaxWfPasses() throws ScribException
-	{
-		verbosePrintPass("Checking reachability on all projected inlineds...");
-		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
-		{
-			GProtocol inlined = this.context.getInlined(fullname);
-			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
-			{
-				continue;
-			}
-			for (Role self : inlined.roles)
-			{
-				LProjection iproj = this.context.getProjectedInlined(fullname, self);
-				iproj.checkReachability();
 			}
 		}
 	}

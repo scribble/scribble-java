@@ -48,9 +48,7 @@ import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.core.visit.global.ConnectionChecker;
 import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
 import org.scribble.core.visit.global.InlinedProjector;
-import org.scribble.core.visit.global.Projector;
 import org.scribble.core.visit.global.RoleEnablingChecker;
-import org.scribble.core.visit.local.InlinedExtChoiceSubjFixer;
 import org.scribble.util.ScribException;
 
 public class GProtocol extends Protocol<Global, GProtoName, GSeq>
@@ -70,39 +68,42 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		return new GProtocol(source, mods, fullname, roles, params, def);
 	}
 
-	public void checkRoleEnabling() throws ScribException
+	// Cf. (e.g.) getInlined, that takes the Visitor (not Core)
+	public void checkRoleEnabling(Core core) throws ScribException
 	{
 		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
-		RoleEnablingChecker v = new RoleEnablingChecker(rs);
+		RoleEnablingChecker v = core.config.vf.RoleEnablingChecker(rs);
 		this.def.visitWith(v);
 	}
 
-	public void checkExtChoiceConsistency() throws ScribException
+	public void checkExtChoiceConsistency(Core core) throws ScribException
 	{
 		Map<Role, Role> rs = this.roles.stream()
 				.collect(Collectors.toMap(x -> x, x -> x));
-		ExtChoiceConsistencyChecker v = new ExtChoiceConsistencyChecker(rs);
+		ExtChoiceConsistencyChecker v = core.config.vf
+				.ExtChoiceConsistencyChecker(rs);
 		this.def.visitWith(v);
 	}
 
-	public void checkConnectedness(boolean implicit) throws ScribException
+	public void checkConnectedness(Core core, boolean implicit)
+			throws ScribException
 	{
 		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
-		ConnectionChecker v = new ConnectionChecker(rs, implicit);
+		ConnectionChecker v = core.config.vf.ConnectionChecker(rs, implicit);
 		this.def.visitWith(v);
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	public LProjection projectInlined(Core core, Role self)
 	{
-		LSeq def = new InlinedProjector(core, self).visitSeq(this.def);
-		LSeq fixed = new InlinedExtChoiceSubjFixer().visitSeq(def);
+		LSeq def = core.config.vf.InlinedProjector(core, self).visitSeq(this.def);
+		LSeq fixed = core.config.vf.InlinedExtChoiceSubjFixer().visitSeq(def);
 		return projectAux(self, this.roles, fixed);
 	}
 
 	public LProjection project(Core core, Role self)
 	{
-		LSeq def = new Projector(core, self).visitSeq(this.def);
+		LSeq def = core.config.vf.Projector(core, self).visitSeq(this.def);
 			// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
 		return projectAux(self,
 				core.getContext().getInlined(this.fullname).roles,  
@@ -127,9 +128,9 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 				this.fullname, pruned);
 	}
 	
+	// Cf. (e.g.) checkRoleEnabling, that takes Core
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)
-	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
-	// i.e., it gives the roles/args at the call-site
+	// Pre: stack.peek is the sig for the calling Do (or top-level entry), i.e., it gives the roles/args at the call-site
 	@Override
 	public GProtocol getInlined(STypeInliner<Global, GSeq> v)
 	{

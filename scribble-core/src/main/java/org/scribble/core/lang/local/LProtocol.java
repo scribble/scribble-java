@@ -120,7 +120,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 	@Override
 	public LProtocol unfoldAllOnce(STypeUnfolder<Local, LSeq> v)
 	{
-		LSeq unf = (LSeq) this.def.visitWithNoThrow(v);
+		LSeq unf = v.visitSeq(this.def);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.self, this.params, unf);
 	}

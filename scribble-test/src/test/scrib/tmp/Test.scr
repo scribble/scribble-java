@@ -82,13 +82,13 @@ module tmp.Test;
 			// ...disallow/check for reserved __ -- do in gtype translation?
 			// FIXME: qualifed sig name as non-role do-arg
 			// TODO: rename addChildren1
-			// CHECKME: duplicate proto mods
+			// CHECKME: duplicate proto mods (unit tests)
 			// ...check ad hoc ScribNode constructions go through af properly
-			// ...store unfoldings in Context
 
 // parser/ast re-refactoring
-	// split mf to global/local subcomps, make protected constrs
-	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
+	// split mf to global/local subcomps, make protected constrs -- done
+	// check G/LType casts vs. SType<Global/Local, ...> (favour latter) -- done: simplified Seq elems, removed Do.proto N param
+	// ...store unfoldings in Context -- done
 
 	// use stypefactory in core -- also make visitorfactorys (both core and ast)
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)

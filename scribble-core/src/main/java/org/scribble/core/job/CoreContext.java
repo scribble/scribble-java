@@ -118,7 +118,7 @@ public class CoreContext
 		GProtocol inlined = this.inlined.get(fullname);
 		if (inlined == null)
 		{
-			GTypeInliner v = new GTypeInliner(this.core);  // Factor out?
+			GTypeInliner v = this.core.config.vf.GTypeInliner(this.core);  // Factor out?
 			inlined = this.imeds.get(fullname).getInlined(v);  // Protocol.getInlined does pruneRecs
 			addInlined(fullname, inlined);
 		}
@@ -141,7 +141,7 @@ public class CoreContext
 		GProtocol unf = this.unfs.get(fullname);
 		if (unf == null)
 		{
-			GTypeUnfolder v = new GTypeUnfolder(this.core);
+			GTypeUnfolder v = this.core.config.vf.GTypeUnfolder(this.core);
 			unf = this.inlined.get(fullname).unfoldAllOnce(v);  // Protocol.getInlined does pruneRecs
 			addOnceUnfolded(fullname, unf);
 		}
