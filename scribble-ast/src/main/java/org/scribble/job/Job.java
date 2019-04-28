@@ -48,13 +48,13 @@ public class Job
 			throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
-		VisitorFactory vf = newAstVisitorFactory();
+		VisitorFactory vf = newVisitorFactory();
 		STypeFactory tf = newSTypeFactory();
 		this.config = newJobConfig(mainFullname, args, af, df, vf, tf);
 		this.context = newJobContext(this, parsed);  // Single instance per Job, should not be shared between Jobs
 	}
 
-	protected VisitorFactory newAstVisitorFactory()
+	protected VisitorFactory newVisitorFactory()
 	{
 		return new VisitorFactoryImpl();
 	}

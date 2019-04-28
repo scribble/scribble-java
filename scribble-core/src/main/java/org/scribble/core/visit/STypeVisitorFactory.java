@@ -24,6 +24,7 @@ import org.scribble.core.type.session.Seq;
 import org.scribble.core.visit.global.GTypeVisitorFactory;
 import org.scribble.core.visit.local.LTypeVisitorFactory;
 
+// No interface due to fields -- CHECKME: factor out "neutral" factory field for RecPruner etc.
 public class STypeVisitorFactory
 {
 	public GTypeVisitorFactory global;

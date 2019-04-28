@@ -64,7 +64,7 @@ public class Core
 				imeds);  // Single instance per Core and should never be shared
 	}
 	
-	protected STypeVisitorFactory newVisitorFactory()
+	protected STypeVisitorFactory newSTypeVisitorFactory()
 	{
 		return new STypeVisitorFactory(new GTypeVisitorFactoryImpl(),
 				new LTypeVisitorFactoryImpl());
@@ -80,7 +80,7 @@ public class Core
 	protected CoreConfig newCoreConfig(ModuleName mainFullname,
 			Map<CoreArgs, Boolean> args, STypeFactory tf)
 	{
-		STypeVisitorFactory vf = newVisitorFactory();
+		STypeVisitorFactory vf = newSTypeVisitorFactory();
 		ModelFactory mf = newModelFactory();
 		return new CoreConfig(mainFullname, args, tf, vf, mf); 
 				// CHECKME: combine E/SModelFactory?
