@@ -15,6 +15,7 @@ package org.scribble.core.type.session.local;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Local;
@@ -27,7 +28,8 @@ import org.scribble.util.ScribException;
 public class LSeq extends Seq<Local, LSeq> implements LType
 {
 	// GInteractionSeq or GBlock better as source?
-	protected LSeq(CommonTree source, List<? extends SType<Local, LSeq>> elems)
+	//protected LSeq(CommonTree source, List<? extends SType<Local, LSeq>> elems)
+	protected LSeq(CommonTree source, List<LType> elems)
 	{
 		super(source, elems);
 	}
@@ -36,7 +38,14 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 	public LSeq reconstruct(CommonTree source,
 			List<? extends SType<Local, LSeq>> elems)
 	{
-		return new LSeq(source, elems);
+		return new LSeq(source,
+				castElems(elems.stream()).collect(Collectors.toList()));
+	}
+	
+	protected static Stream<LType> castElems(
+			Stream<? extends SType<Local, LSeq>> elems)
+	{
+		return elems.map(x -> (LType) x);
 	}
 	
 	@Override
@@ -54,7 +63,7 @@ public class LSeq extends Seq<Local, LSeq> implements LType
 	@Override
 	public List<LType> getElements()
 	{
-		return this.elems.stream().map(x -> (LType) x).collect(Collectors.toList());
+		return castElems(this.elems.stream()).collect(Collectors.toList());
 	}
 	
 	@Override

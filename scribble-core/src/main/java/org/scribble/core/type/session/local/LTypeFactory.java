@@ -10,7 +10,6 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Msg;
-import org.scribble.core.type.session.SType;
 
 public interface LTypeFactory
 {
@@ -34,5 +33,5 @@ public interface LTypeFactory
 
 	LSend LSend(CommonTree source, Msg msg, Role dst);
 
-	LSeq LSeq(CommonTree source, List<? extends SType<Local, LSeq>> elems);
+	LSeq LSeq(CommonTree source, List<LType> elems);
 }

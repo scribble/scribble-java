@@ -175,7 +175,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	@Override
 	public GProtocol unfoldAllOnce(STypeUnfolder<Global, GSeq> v)
 	{
-		GSeq unf = (GSeq) this.def.visitWithNoThrow(v);
+		GSeq unf = v.visitSeq(this.def);
 		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.params, unf);
 	}

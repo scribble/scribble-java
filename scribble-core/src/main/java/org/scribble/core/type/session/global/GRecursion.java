@@ -27,8 +27,7 @@ public class GRecursion extends Recursion<Global, GSeq> implements GType
 	}
 	
 	@Override
-	public GRecursion reconstruct(CommonTree source,
-			RecVar recvar, GSeq block)
+	public GRecursion reconstruct(CommonTree source, RecVar recvar, GSeq block)
 	{
 		return new GRecursion(source, recvar, block);
 	}

@@ -26,7 +26,7 @@ public abstract class Seq<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeBase<K, B>
 {
 	// GType or LType -- could make SType subclasses take themself as another param, but not worth it
-	public final List<? extends SType<K, B>> elems;
+	public final List<SType<K, B>> elems;
 
 	public Seq(CommonTree source, List<? extends SType<K, B>> elems)
 	{

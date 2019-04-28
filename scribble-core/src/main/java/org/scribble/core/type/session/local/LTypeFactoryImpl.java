@@ -10,7 +10,6 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Msg;
-import org.scribble.core.type.session.SType;
 
 public class LTypeFactoryImpl implements LTypeFactory
 {
@@ -72,7 +71,7 @@ public class LTypeFactoryImpl implements LTypeFactory
 	}
 
 	@Override
-	public LSeq LSeq(CommonTree source, List<? extends SType<Local, LSeq>> elems)
+	public LSeq LSeq(CommonTree source, List<LType> elems)
 	{
 		return new LSeq(source, elems);
 	}

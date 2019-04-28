@@ -10,7 +10,6 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Msg;
-import org.scribble.core.type.session.SType;
 
 public interface GTypeFactory
 {
@@ -31,6 +30,6 @@ public interface GTypeFactory
 
 	GRecursion GRecursion(CommonTree source, RecVar recvar, GSeq body);
 
-	GSeq GSeq(CommonTree source, List<? extends SType<Global, GSeq>> elems);
+	GSeq GSeq(CommonTree source, List<GType> elems);
 
 }

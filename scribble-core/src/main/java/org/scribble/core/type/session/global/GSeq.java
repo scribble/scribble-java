@@ -15,6 +15,7 @@ package org.scribble.core.type.session.global;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
@@ -26,7 +27,7 @@ import org.scribble.util.ScribException;
 
 public class GSeq extends Seq<Global, GSeq> implements GType
 {
-	protected GSeq(CommonTree source, List<? extends SType<Global, GSeq>> elems)
+	protected GSeq(CommonTree source, List<GType> elems)
 	{
 		super(source, elems);
 	}
@@ -35,7 +36,14 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	public GSeq reconstruct(CommonTree source,
 			List<? extends SType<Global, GSeq>> elems)
 	{
-		return new GSeq(source, elems);
+		return new GSeq(source,
+				castElems(elems.stream()).collect(Collectors.toList()));
+	}
+	
+	protected static Stream<GType> castElems(
+			Stream<? extends SType<Global, GSeq>> elems)
+	{
+		return elems.map(x -> (GType) x);
 	}
 	
 	@Override
@@ -53,7 +61,7 @@ public class GSeq extends Seq<Global, GSeq> implements GType
 	@Override
 	public List<GType> getElements()
 	{
-		return this.elems.stream().map(x -> (GType) x).collect(Collectors.toList());
+		return castElems(this.elems.stream()).collect(Collectors.toList());
 	}
 
 	@Override

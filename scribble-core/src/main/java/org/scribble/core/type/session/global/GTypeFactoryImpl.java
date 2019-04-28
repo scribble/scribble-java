@@ -10,7 +10,6 @@ import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Msg;
-import org.scribble.core.type.session.SType;
 
 public class GTypeFactoryImpl implements GTypeFactory
 {
@@ -60,7 +59,7 @@ public class GTypeFactoryImpl implements GTypeFactory
 	}
 
 	@Override
-	public GSeq GSeq(CommonTree source, List<? extends SType<Global, GSeq>> elems)
+	public GSeq GSeq(CommonTree source, List<GType> elems)
 	{
 		return new GSeq(source, elems);
 	}

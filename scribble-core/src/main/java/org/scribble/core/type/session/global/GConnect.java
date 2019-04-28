@@ -30,9 +30,7 @@ public class GConnect extends ConnectAction<Global, GSeq>
 	}
 
 	@Override
-	public GConnect reconstruct(
-			CommonTree source, Msg msg, Role src,
-			Role dst)
+	public GConnect reconstruct(CommonTree source, Msg msg, Role src, Role dst)
 	{
 		return new GConnect(source, src, msg, dst);
 	}
