@@ -14,9 +14,10 @@
 package org.scribble.core.lang.global;
 
 import org.scribble.core.lang.SNode;
+import org.scribble.core.type.kind.Global;
 
 // Mainly for GDel.translate return (to include GProtocol)
-public interface GNode extends SNode
+public interface GNode extends SNode<Global>
 {
 	
 }

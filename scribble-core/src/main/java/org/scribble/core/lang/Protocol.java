@@ -30,8 +30,9 @@ import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.util.Constants;
 
-public abstract class Protocol<K extends ProtoKind, N extends ProtoName<K>, B extends Seq<K, B>>
-		implements SNode
+public abstract class Protocol
+		<K extends ProtoKind, N extends ProtoName<K>, B extends Seq<K, B>>
+		implements SNode<K>
 {
 	private final CommonTree source;  // CHECKME: factor out with SType(Base) ?
 	
