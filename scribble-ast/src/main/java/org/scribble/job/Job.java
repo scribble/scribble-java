@@ -135,7 +135,9 @@ public class Job
 		// Disamb is a "leftover" aspect of parsing -- so not in core
 		// N.B. disamb is mainly w.r.t. ambignames -- e.g., doesn't fully qualify names (currently mainly done by imed translation)
 		// CHECKME: disamb also currently does checks like do-arg kind and arity -- refactor into core? -- also does, e.g., distinct roledecls, protodecls, etc.
-		runVisitorPassOnAllModules(this.config.vf.DelDecorator(this));  // Currently, only the simple name nodes "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
+		runVisitorPassOnAllModules(this.config.vf.DelDecorator(this));  
+				// Currently, only for the simple name nodes "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
+				// CHECKME: refactor to construct (and set del) all uniformly via ScribTreeAdaptor, to deprecate DelDecorator? 
 		runVisitorPassOnAllModules(this.config.vf.NameDisambiguator(this));  // Includes validating names used in subprotocol calls..
 	}
 

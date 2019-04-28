@@ -10,7 +10,7 @@
  * $ mv scribble-parser/target/generated-sources/antlr3/org/scribble/parser/antlr/Scribble.tokens scribble-parser/target/generated-sources/antlr3/
  */
 
-/**
+/* * -- ** not allowed here.....
  * Pattern: most nodes have "imaginary token types".  
  * Where token attributes are not "inherited" from a concrete token, the default is to use textual name of the token type field as its text
  * e.g., gprotodecl: ... -> ^(GPROTODECL ...).  I.e., each token will be equivalent to, e.g., new CommonToken(ScribbleParser.GPROTODECL, "GPROTODECL").
@@ -196,6 +196,7 @@ tokens
   	return id;
   }
 }
+
 
 
 /****************************************************************************
