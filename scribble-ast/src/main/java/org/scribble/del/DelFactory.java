@@ -66,7 +66,7 @@ import org.scribble.ast.name.simple.SigParamNode;
 // (Perhaps could integrate with ScribTreeAdaptor, but easier to do after -- AST construction technically may further create/dup nodes during the ongoing pass)
 // A dec method for each AST class -- method name must be the same as target class name
 // Implementations (DelDecoratorImpl) in scribble-parser, can depend on parser implementation
-// E.g., DelDecoratorImpl: each method named after the class name -- currently dispatched by reflection
+// E.g., DelDecoratorImpl: each method named after the class name
 public interface DelFactory
 {
 	// Currently a bit more than plain factory, calls setDel

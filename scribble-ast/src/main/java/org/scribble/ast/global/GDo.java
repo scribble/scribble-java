@@ -19,6 +19,7 @@ import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtoName;
+import org.scribble.del.DelFactory;
 import org.scribble.job.JobContext;
 
 public class GDo extends Do<Global> implements GSimpleSessionNode
@@ -54,6 +55,12 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	public GDo dupNode()
 	{
 		return new GDo(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GDo(this);
 	}
 
 	@Override

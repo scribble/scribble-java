@@ -16,6 +16,7 @@ package org.scribble.ast.global;
 import org.antlr.runtime.Token;
 import org.scribble.ast.ProtoBlock;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 
 public class GProtoBlock extends ProtoBlock<Global> implements GScribNode
 {
@@ -41,5 +42,11 @@ public class GProtoBlock extends ProtoBlock<Global> implements GScribNode
 	public GProtoBlock dupNode()
 	{
 		return new GProtoBlock(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GProtoBlock(this);
 	}
 }

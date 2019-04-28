@@ -20,6 +20,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 
 public class GChoice extends Choice<Global> implements GCompoundSessionNode
 {
@@ -47,5 +48,11 @@ public class GChoice extends Choice<Global> implements GCompoundSessionNode
 	public GChoice dupNode()
 	{
 		return new GChoice(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GChoice(this);
 	}
 }

@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -53,6 +54,12 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	public ModuleDecl dupNode()
 	{
 		return new ModuleDecl(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.ModuleDecl(this);
 	}
 
 	protected ModuleDecl reconstruct(ModuleNameNode name)

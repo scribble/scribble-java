@@ -26,8 +26,9 @@ import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
-import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -102,6 +103,12 @@ public class Module extends ScribNodeBase
 	public Module dupNode()
 	{
 		return new Module(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.Module(this);
 	}
 	
 	// Set args as children on a dup of this -- children *not* cloned

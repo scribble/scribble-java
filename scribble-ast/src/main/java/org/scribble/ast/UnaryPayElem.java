@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.PayElemKind;
 import org.scribble.core.type.name.PayElemType;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -66,6 +67,12 @@ public class UnaryPayElem<K extends PayElemKind> extends ScribNodeBase
 	public UnaryPayElem<K> dupNode()
 	{
 		return new UnaryPayElem<>(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.UnaryPayElem(this);
 	}
 
 	public UnaryPayElem<K> reconstruct(PayElemNameNode<K> name)

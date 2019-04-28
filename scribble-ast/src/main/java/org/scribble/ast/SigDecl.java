@@ -16,8 +16,9 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.core.type.kind.SigKind;
-import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
 public class SigDecl extends NonProtoDecl<SigKind>
@@ -45,6 +46,12 @@ public class SigDecl extends NonProtoDecl<SigKind>
 	public SigDecl dupNode()
 	{
 		return new SigDecl(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.SigDecl(this);
 	}
 	
 	@Override

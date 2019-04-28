@@ -18,6 +18,7 @@ import org.scribble.ast.ProtoHeader;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtoName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
 public class GProtoHeader extends ProtoHeader<Global> implements GScribNode
@@ -38,6 +39,12 @@ public class GProtoHeader extends ProtoHeader<Global> implements GScribNode
 	public GProtoHeader dupNode()
 	{
 		return new GProtoHeader(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GProtoHeader(this);
 	}
 	
 	@Override

@@ -16,6 +16,7 @@ package org.scribble.ast.name.simple;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.IdKind;
 import org.scribble.core.type.name.Id;
+import org.scribble.del.DelFactory;
 
 // Kind can be disregarded, the "true" kind (for qualified names) recorded by the parent
 public class IdNode extends SimpleNameNode<IdKind>
@@ -36,6 +37,12 @@ public class IdNode extends SimpleNameNode<IdKind>
 	public IdNode dupNode()
 	{
 		return new IdNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.IdNode(this);
 	}
 	
 	@Override

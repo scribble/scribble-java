@@ -16,6 +16,7 @@ package org.scribble.ast.name.qualified;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtoName;
+import org.scribble.del.DelFactory;
 
 public class GProtoNameNode extends ProtoNameNode<Global>
 {
@@ -35,6 +36,12 @@ public class GProtoNameNode extends ProtoNameNode<Global>
 	public GProtoNameNode dupNode()
 	{
 		return new GProtoNameNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GProtoNameNode(this);
 	}
 	
 	@Override

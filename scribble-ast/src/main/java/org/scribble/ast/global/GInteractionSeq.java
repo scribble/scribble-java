@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 
 public class GInteractionSeq extends InteractionSeq<Global>
 		implements GScribNode
@@ -46,5 +47,11 @@ public class GInteractionSeq extends InteractionSeq<Global>
 	public GInteractionSeq dupNode()
 	{
 		return new GInteractionSeq(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GInteractionSeq(this);
 	}
 }

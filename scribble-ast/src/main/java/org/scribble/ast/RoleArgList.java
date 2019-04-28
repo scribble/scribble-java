@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.scribble.core.type.name.Role;
+import org.scribble.del.DelFactory;
 
 public class RoleArgList extends DoArgList<RoleArg>
 {
@@ -51,6 +52,12 @@ public class RoleArgList extends DoArgList<RoleArg>
 	public RoleArgList dupNode()
 	{
 		return new RoleArgList(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.RoleArgList(this);
 	}
 
 	@Override

@@ -16,6 +16,7 @@ package org.scribble.ast.name.simple;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.OpKind;
 import org.scribble.core.type.name.Op;
+import org.scribble.del.DelFactory;
 
 
 public class OpNode extends SimpleNameNode<OpKind>
@@ -45,6 +46,12 @@ public class OpNode extends SimpleNameNode<OpKind>
 	public OpNode dupNode()
 	{
 		return new OpNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.OpNode(this);
 	}
 	
 	@Override

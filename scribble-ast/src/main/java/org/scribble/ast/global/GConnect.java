@@ -16,6 +16,7 @@ package org.scribble.ast.global;
 import org.antlr.runtime.Token;
 import org.scribble.ast.ConnectAction;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
 // TODO: make GConnectionAction and factor this class with GWrap (cf. LConnectionAction)
@@ -38,6 +39,12 @@ public class GConnect extends ConnectAction<Global>
 	public GConnect dupNode()
 	{
 		return new GConnect(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GConnect(this);
 	}
 
 	@Override

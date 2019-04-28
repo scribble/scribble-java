@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.MsgNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.SigName;
+import org.scribble.del.DelFactory;
 
 public class SigParamNode extends NonRoleParamNode<SigKind>
 		implements MsgNode
@@ -38,6 +39,12 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 	public SigParamNode dupNode()
 	{
 		return new SigParamNode(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.SigParamNode(this);
 	}
 	
 	@Override

@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.BasicInteraction;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -62,6 +63,12 @@ public class GWrap extends BasicInteraction<Global>
 	public GWrap dupNode()
 	{
 		return new GWrap(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GWrap(this);
 	}
 
 	public GWrap reconstruct(RoleNode client, RoleNode server)

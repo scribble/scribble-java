@@ -13,10 +13,8 @@
  */
 package org.scribble.visit;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.DelFactory;
 import org.scribble.job.Job;
 import org.scribble.util.ScribException;
@@ -49,7 +47,9 @@ public class DelDecorator extends AstVisitor
 		{
 			return;
 		}
-		try
+		((ScribNodeBase) n).decorateDel(this.df);
+
+		/*try
 		{
 			String cname = n.getClass().getName();
 			String mname = cname.substring(cname.lastIndexOf('.')+1, cname.length());
@@ -62,7 +62,7 @@ public class DelDecorator extends AstVisitor
 				| InvocationTargetException e)
 		{
 			throw new RuntimeException(e);
-		}
+		}*/
 	}
 
 	/*protected void decorateChildren(ScribNode n)
@@ -70,3 +70,7 @@ public class DelDecorator extends AstVisitor
 		n.getChildren().stream().forEach(x -> decorate(x));
 	}*/
 }
+
+
+
+

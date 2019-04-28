@@ -15,6 +15,7 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.del.DelFactory;
 
 public class ScribNil extends ScribNodeBase
 {
@@ -34,5 +35,11 @@ public class ScribNil extends ScribNodeBase
 	public ScribNodeBase dupNode()
 	{
 		return new ScribNil(this);  // CHECKME: nil can have children(?), so may need to actually copy
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		throw new RuntimeException("Shouldn't get in here: ");
 	}
 }

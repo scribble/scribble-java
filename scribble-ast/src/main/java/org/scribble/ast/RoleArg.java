@@ -15,6 +15,7 @@ package org.scribble.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.DelFactory;
 
 // CHECKME: can this be simplified to an interface?  (also NonRoleArg)
 public class RoleArg extends DoArg<RoleNode>
@@ -41,5 +42,11 @@ public class RoleArg extends DoArg<RoleNode>
 	public RoleArg dupNode()
 	{
 		return new RoleArg(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.RoleArg(this);
 	}
 }

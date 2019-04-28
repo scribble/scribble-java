@@ -14,6 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
+import org.scribble.del.DelFactory;
 
 public class NonRoleArg extends DoArg<NonRoleArgNode>
 {
@@ -41,5 +42,11 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 	public NonRoleArg dupNode()
 	{
 		return new NonRoleArg(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.NonRoleArg(this);
 	}
 }

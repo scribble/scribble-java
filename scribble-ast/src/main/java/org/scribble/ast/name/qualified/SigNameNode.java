@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.MsgNode;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.SigName;
+import org.scribble.del.DelFactory;
 
 public class SigNameNode extends MemberNameNode<SigKind>
 		implements MsgNode
@@ -37,6 +38,12 @@ public class SigNameNode extends MemberNameNode<SigKind>
 	public SigNameNode dupNode()
 	{
 		return new SigNameNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.SigNameNode(this);
 	}
 
 	@Override

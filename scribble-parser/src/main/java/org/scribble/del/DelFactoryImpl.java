@@ -83,8 +83,6 @@ import org.scribble.del.name.simple.RecVarNodeDel;
 import org.scribble.del.name.simple.RoleNodeDel;
 
 
-//CHECKME: refactor decoration methods into AST interface, to ensure they are implemented and called?
-//CHECKME: to what extent are del's still needed?
 public class DelFactoryImpl implements DelFactory
 {
 	public DelFactoryImpl()

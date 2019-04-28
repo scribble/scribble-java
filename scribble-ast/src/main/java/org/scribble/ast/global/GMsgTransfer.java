@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.scribble.ast.MsgTransfer;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
 public class GMsgTransfer extends MsgTransfer<Global>
@@ -39,6 +40,12 @@ public class GMsgTransfer extends MsgTransfer<Global>
 	public GMsgTransfer dupNode()
 	{
 		return new GMsgTransfer(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GMsgTransfer(this);
 	}
 
 	@Override

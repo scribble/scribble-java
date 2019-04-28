@@ -16,6 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.core.type.session.SigLit;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -57,6 +58,12 @@ public class SigLitNode extends ScribNodeBase implements MsgNode
 	public SigLitNode dupNode()
 	{
 		return new SigLitNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.SigLitNode(this);
 	}
 
 	public SigLitNode reconstruct(OpNode op, PayElemList pay)

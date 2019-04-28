@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.MemberName;
+import org.scribble.del.DelFactory;
 
 // Can contain "mixed" type/sig kinds
 // Typing a bit awkward that this list has to use NonRoleParamKind as the "concrete" kind, while the NonRoleParamDecl elements use the actual concrete kind
@@ -59,6 +60,12 @@ public class NonRoleParamDeclList extends ParamDeclList<NonRoleParamKind>
 	public NonRoleParamDeclList dupNode()
 	{
 		return new NonRoleParamDeclList(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.NonRoleParamDeclList(this);
 	}
 
 	@Override

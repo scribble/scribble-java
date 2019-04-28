@@ -16,6 +16,7 @@ package org.scribble.ast.global;
 import org.antlr.runtime.Token;
 import org.scribble.ast.DisconnectAction;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 
 public class GDisconnect extends DisconnectAction<Global>
 		implements GSimpleSessionNode
@@ -30,6 +31,12 @@ public class GDisconnect extends DisconnectAction<Global>
 	public GDisconnect(GDisconnect node)
 	{
 		super(node);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GDisconnect(this);
 	}
 	
 	@Override
