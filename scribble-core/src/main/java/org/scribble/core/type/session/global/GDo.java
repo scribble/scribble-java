@@ -18,14 +18,14 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Do;
 
-public class GDo extends Do<Global, GSeq, GProtoName> implements GType
+public class GDo extends Do<Global, GSeq> implements GType
 {
-	protected GDo(CommonTree source, GProtoName proto,
+	protected GDo(CommonTree source, ProtoName<Global> proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);
@@ -33,7 +33,7 @@ public class GDo extends Do<Global, GSeq, GProtoName> implements GType
 
 	@Override
 	public GDo reconstruct(CommonTree source,
-			GProtoName proto, List<Role> roles,
+			ProtoName<Global> proto, List<Role> roles,
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new GDo(source, proto, roles, args);
@@ -86,7 +86,14 @@ public class GDo extends Do<Global, GSeq, GProtoName> implements GType
 	
 	
 
-	/*// CHECKME: factor up to base?
+	/*
+	@Override
+	public GProtoName getProto()
+	{
+		return (GProtoName) this.proto;
+	}
+ 
+	// CHECKME: factor up to base?
 	@Override
 	public GType getInlined(STypeInliner v)
 	{

@@ -17,7 +17,6 @@ import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Do;
@@ -34,9 +33,9 @@ public class LTypeInliner extends STypeInliner<Local, LSeq>
 	}
 
 	@Override
-	public <N extends ProtoName<Local>> LType visitDo(Do<Local, LSeq, N> n)
+	public LType visitDo(Do<Local, LSeq> n)
 	{
-		LProtoName fullname = (LProtoName) n.proto;
+		ProtoName<Local> fullname = n.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, n.roles, n.args);
 		RecVar rv = getInlinedRecVar(sig);
 		if (hasSig(sig))

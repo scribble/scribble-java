@@ -21,9 +21,8 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.SigName;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.Substitutions;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Choice;
@@ -78,7 +77,7 @@ public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public <N extends ProtoName<K>> SType<K, B> visitDo(Do<K, B, N> n)
+	public SType<K, B> visitDo(Do<K, B> n)
 	{
 		List<Role> roles = n.roles.stream().map(x -> this.subs.subsRole(x))
 				.collect(Collectors.toList());

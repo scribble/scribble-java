@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
@@ -41,7 +40,7 @@ public abstract class STypeUnfolder<K extends ProtoKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public final <N extends ProtoName<K>> SType<K, B> visitDo(Do<K, B, N> n)
+	public final SType<K, B> visitDo(Do<K, B> n)
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}

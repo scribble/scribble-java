@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
@@ -53,8 +52,7 @@ public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 	}
 
 	@Override
-	public <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(
-			Do<Local, LSeq, N> n)
+	public SType<Local, LSeq> visitDo(Do<Local, LSeq> n)
 	{
 		throw new RuntimeException("Unsupported for Do: " + n);
 	}
@@ -117,8 +115,7 @@ class InlinedEnablerInferer
 	}
 
 	@Override
-	public <N extends ProtoName<Local>> Optional<Role> visitDo(
-			Do<Local, LSeq, N> n)
+	public Optional<Role> visitDo(Do<Local, LSeq> n)
 	{
 		throw new RuntimeException("Unsupported for Do: " + n);
 	}

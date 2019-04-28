@@ -5,7 +5,7 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
@@ -23,7 +23,7 @@ public interface GTypeFactory
 
 	GDisconnect GDisconnect(CommonTree source, Role left, Role right);
 
-	GDo GDo(CommonTree source, GProtoName proto, List<Role> roles, 
+	GDo GDo(CommonTree source, ProtoName<Global> proto, List<Role> roles, 
 			List<Arg<? extends NonRoleParamKind>> args);
 
 	GMessageTransfer GMessageTransfer(CommonTree source, Role src, Msg msg,

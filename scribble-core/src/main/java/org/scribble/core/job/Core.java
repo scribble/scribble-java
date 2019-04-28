@@ -101,7 +101,7 @@ public class Core
 	protected void runSyntaxTransformPasses()  // No ScribException, no errors expected
 	{
 		verbosePrintPass("Inlining subprotocols for all globals...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
 			verbosePrintPass(
@@ -109,7 +109,7 @@ public class Core
 		}
 				
 		verbosePrintPass("Unfolding all recursions once for all inlined globals...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			// TODO: currently, unfolded not actually stored by Context -- unfoldAllOnce repeated manually when needed, e.g., runSyntaxWfPasses
 			GProtocol inlined = this.context.getInlined(fullname);
@@ -126,7 +126,7 @@ public class Core
 	protected void runProjectionPasses()  // No ScribException, no errors expected
 	{
 		verbosePrintPass("Projecting all inlined globals...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
 			for (Role self : inlined.roles)
@@ -142,7 +142,7 @@ public class Core
 
 		// Pre: inlined already projected -- used for Do projection
 		verbosePrintPass("Projecting all intermediate globals...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol imed = this.context.getIntermediate(fullname);
 			for (Role self : imed.roles)
@@ -159,7 +159,7 @@ public class Core
 	protected void runEfsmBuildingPasses()
 	{
 		verbosePrintPass("Building EFSMs for all projected inlineds...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
 			for (Role self : inlined.roles)
@@ -175,7 +175,7 @@ public class Core
 		{
 			verbosePrintPass(
 					"Building \"unfair\" EFSMs for all projected inlineds...");
-			for (GProtoName fullname : this.context.getParsedFullnames())
+			for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 			{
 				GProtocol inlined = this.context.getInlined(fullname);
 				for (Role self : inlined.roles)
@@ -193,7 +193,7 @@ public class Core
 	{
 		verbosePrintPass(
 				"Checking for unused role decls on all inlined globals...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			// CHECKME: relegate to "warning" ? -- some downsteam operations may depend on this though (e.g., graph building?)
 			Set<Role> used = this.context.getInlined(fullname).def
@@ -210,7 +210,7 @@ public class Core
 		}
 
 		verbosePrintPass("Checking role enabling on all inlined globals...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
 			if (inlined.isAux())
@@ -225,7 +225,7 @@ public class Core
 
 		verbosePrintPass(
 				"Checking consistent external choice subjects on all inlined globals...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
 			if (inlined.isAux())
@@ -237,7 +237,7 @@ public class Core
 
 		verbosePrintPass(
 				"Checking connectedness on all inlined globals...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
 			if (inlined.isAux())
@@ -254,7 +254,7 @@ public class Core
 	protected void runProjectionSyntaxWfPasses() throws ScribException
 	{
 		verbosePrintPass("Checking reachability on all projected inlineds...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
 			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
@@ -272,7 +272,7 @@ public class Core
 	protected void runLocalModelCheckingPasses() throws ScribException
 	{
 		verbosePrintPass("Checking non-deterministic messaging action payloads...");
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol inlined = this.context.getInlined(fullname);
 			if (inlined.isAux())  // CHECKME: also check for aux? e.g., bad.reach.globals.gdo.Test01b 
@@ -291,7 +291,7 @@ public class Core
 	{
 		verbosePrintPass("Building and checking global models from projected inlineds...");  // CHECKME: separate and move model building earlier?
 		// CHECKME: refactor more/whole validation into lang.GProtocol ?
-		for (GProtoName fullname : this.context.getParsedFullnames())
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			if (this.context.getIntermediate(fullname).isAux())
 			{
@@ -306,7 +306,7 @@ public class Core
 		}
 	}
 	
-	protected void validateByScribble(GProtoName fullname, boolean fair)
+	protected void validateByScribble(ProtoName<Global> fullname, boolean fair)
 			throws ScribException
 	{
 		SGraph graph = fair

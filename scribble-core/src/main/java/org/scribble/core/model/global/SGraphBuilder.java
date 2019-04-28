@@ -55,8 +55,8 @@ public class SGraphBuilder
 	// Factory method: not fully integrated with SGraph constructor because of Job arg (debug printing)
 	// Also checks for non-deterministic payloads
 	// Maybe refactor into an SGraph builder util; cf., EGraphBuilderUtil -- but not Visitor-based building (cf. EndpointGraphBuilder), this isn't an AST algorithm
-	public SGraph build(GProtoName fullname, Map<Role, EGraph> egraphs,
-			boolean explicit) throws ScribException
+	public SGraph build(Map<Role, EGraph> egraphs, boolean explicit,
+			GProtoName fullname) throws ScribException
 	{
 		this.util.reset();
 		

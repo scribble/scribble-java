@@ -25,7 +25,6 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.MsgId;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
@@ -195,8 +194,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	}
 
 	@Override
-	public final <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(
-			Do<Local, LSeq, N> n)
+	public final SType<Local, LSeq> visitDo(Do<Local, LSeq> n)
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}

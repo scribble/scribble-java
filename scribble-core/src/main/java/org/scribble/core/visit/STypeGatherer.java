@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -51,8 +50,8 @@ public abstract class STypeGatherer<K extends ProtoKind, B extends Seq<K, B>, T>
 					? Optional.of(visitContinue((Continue<K, B>) n))
 			: (n instanceof Recursion<?, ?>) 
 					? Optional.of(visitRecursion((Recursion<K, B>) n))
-			: (n instanceof Do<?, ?, ?>)     
-					? Optional.of(this.visitDo((Do<K, B, ?>) n))  // FIXME: since we know K, we should know ? extends ProtocolName<K> ?
+			: (n instanceof Do<?, ?>)     
+					? Optional.of(this.visitDo((Do<K, B>) n))
 			: Optional.empty();  // Better for extensibility than "manually" throwing Exception (e.g., for overriding)
 	}
 
@@ -79,7 +78,7 @@ public abstract class STypeGatherer<K extends ProtoKind, B extends Seq<K, B>, T>
 		return Stream.of();
 	}
 
-	public <N extends ProtoName<K>> Stream<T> visitDo(Do<K, B, N> n)
+	public Stream<T> visitDo(Do<K, B> n)
 	{
 		return Stream.of();
 	}

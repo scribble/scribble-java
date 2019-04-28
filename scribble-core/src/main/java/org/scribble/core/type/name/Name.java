@@ -21,15 +21,14 @@ import org.scribble.core.type.kind.Kind;
 
 public interface Name<K extends Kind> extends Serializable
 {
-	public K getKind();
+	K getKind();
 
-	public int getElementCount();
-	public boolean isEmpty();
-	public boolean isPrefixed();
-
-	public String[] getElements();
-	public String[] getPrefixElements();
-	public String getLastElement();
+	String[] getElements();
+	int getElementCount();
+	boolean isEmpty();
+	String getLastElement();
+	//boolean isPrefixed();
+	//String[] getPrefixElements();
 
 	static String[] compileElements(String[] cn, String n)
 	{

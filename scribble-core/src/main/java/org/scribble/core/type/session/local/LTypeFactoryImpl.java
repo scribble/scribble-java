@@ -5,7 +5,7 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
@@ -40,7 +40,7 @@ public class LTypeFactoryImpl implements LTypeFactory
 	}	
 
 	@Override
-	public LDo LDo(CommonTree source, LProtoName proto, List<Role> roles, 
+	public LDo LDo(CommonTree source, ProtoName<Local> proto, List<Role> roles,
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new LDo(source, proto, roles, args);

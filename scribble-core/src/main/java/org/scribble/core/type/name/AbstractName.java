@@ -22,9 +22,9 @@ public abstract class AbstractName<K extends Kind> implements Name<K>
 {
 	private static final long serialVersionUID = 1L;
 	
-	private K kind;  // non-final for serialization
+	protected K kind;  // non-final for serialization
 
-	private String[] elems;
+	protected String[] elems;
 
 	protected AbstractName(K kind, String... elems)
 	{
@@ -51,20 +51,9 @@ public abstract class AbstractName<K extends Kind> implements Name<K>
 	}
 
 	@Override
-	public boolean isPrefixed()
-	{
-		return this.elems.length > 1;
-	}
-
-	@Override
 	public String[] getElements()
 	{
 		return Arrays.copyOf(this.elems, this.elems.length);
-	}
-	@Override
-	public String[] getPrefixElements()
-	{
-		return Arrays.copyOfRange(this.elems, 0, this.elems.length - 1);
 	}
 	
 	// Not SimpleName so that e.g. ModuleName can return a simple ModuleName

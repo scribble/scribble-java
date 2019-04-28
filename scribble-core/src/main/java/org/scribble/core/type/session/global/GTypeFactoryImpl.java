@@ -5,7 +5,7 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
@@ -40,7 +40,7 @@ public class GTypeFactoryImpl implements GTypeFactory
 	}	
 
 	@Override
-	public GDo GDo(CommonTree source, GProtoName proto, List<Role> roles, 
+	public GDo GDo(CommonTree source, ProtoName<Global> proto, List<Role> roles, 
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new GDo(source, proto, roles, args);

@@ -21,7 +21,6 @@ import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreContext;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
@@ -52,7 +51,7 @@ public class Projector extends InlinedProjector  // CHECKME: this way, or the ot
 	}
 
 	@Override
-	public <N extends ProtoName<Global>> LType visitDo(Do<Global, GSeq, N> n)
+	public LType visitDo(Do<Global, GSeq> n)
 	{
 		if (!n.roles.contains(this.self))
 		{
@@ -60,11 +59,9 @@ public class Projector extends InlinedProjector  // CHECKME: this way, or the ot
 		}
 
 		CoreContext corec = this.core.getContext();
-		GProtoName proto = (GProtoName) n.proto;
-		GProtocol gpd = corec.getIntermediate(proto);
-		Role targSelf = gpd.roles.get(n.roles.indexOf(this.self));
-
+		ProtoName<Global> proto = n.proto;
 		GProtocol imed = corec.getIntermediate(proto);
+		Role targSelf = imed.roles.get(n.roles.indexOf(this.self));
 		if (!imed.roles.contains(targSelf))  // CHECKME: because roles already pruned for intermed decl?
 		{
 			return LSkip.SKIP;

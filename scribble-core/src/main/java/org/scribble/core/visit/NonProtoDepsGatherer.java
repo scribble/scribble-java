@@ -21,16 +21,15 @@ import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GDelegType;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.PayElemType;
-import org.scribble.core.type.name.ProtoName;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.ConnectAction;
 import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.SigLit;
 import org.scribble.core.type.session.Payload;
 import org.scribble.core.type.session.Seq;
+import org.scribble.core.type.session.SigLit;
 
 
 // Result should not contain duplicates (i.e., due to Choice/Seq)
@@ -88,8 +87,7 @@ public class NonProtoDepsGatherer<K extends ProtoKind, B extends Seq<K, B>>
 	}
 
 	@Override
-	public <N extends ProtoName<K>> Stream<MemberName<?>> visitDo(
-			Do<K, B, N> n)
+	public Stream<MemberName<?>> visitDo(Do<K, B> n)
 	{
 		return n.args.stream()
 				.filter(x -> (x instanceof SigLit) || (x instanceof DataName))  // CHECKME: refactor?

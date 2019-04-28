@@ -13,6 +13,8 @@
  */
 package org.scribble.core.type.name;
 
+import java.util.Arrays;
+
 import org.scribble.core.type.kind.Kind;
 
 
@@ -26,16 +28,16 @@ public abstract class QualName<K extends Kind> extends AbstractName<K>
 		super(kind, elems);
 	}
 
-	@Override
-	public boolean isEmpty()
-	{
-		return super.isEmpty();
-	}
-
-	@Override
+	//@Override
 	public boolean isPrefixed()
 	{
-		return super.isPrefixed();
+		return this.elems.length > 1;
+	}
+
+	//@Override
+	public String[] getPrefixElements()
+	{
+		return Arrays.copyOfRange(this.elems, 0, this.elems.length - 1);
 	}
 	
 	// Also done by Scope

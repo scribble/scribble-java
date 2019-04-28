@@ -17,7 +17,6 @@ import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Do;
@@ -34,10 +33,9 @@ public class GTypeInliner extends STypeInliner<Global, GSeq>
 	}
 
 	@Override
-	public <N extends ProtoName<Global>> SType<Global, GSeq> visitDo(
-			Do<Global, GSeq, N> n)
+	public SType<Global, GSeq> visitDo(Do<Global, GSeq> n)
 	{
-		GProtoName fullname = (GProtoName) n.proto;
+		ProtoName<Global> fullname = n.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, n.roles, n.args);
 		RecVar rv = getInlinedRecVar(sig);
 		if (hasSig(sig))
