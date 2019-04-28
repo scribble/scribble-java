@@ -89,10 +89,10 @@ module tmp.Test;
 	// check G/LType casts vs. SType<Global/Local, ...> (favour latter) -- done: simplified Seq elems, removed Do.proto N param
 	// ...store unfoldings in Context -- done
 	// use stypefactory in core -- also make visitorfactorys (both core and ast) -- done
+	// factor out all config factory methods more centrally? -- done a bit: mainly general factory method refactoring above
 	// TODO: rename addChildren1 -- done: addScribChildren
 
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
-	// factor out all config factory methods more centrally?
 	// Job Module projection
 			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles
 			// old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?

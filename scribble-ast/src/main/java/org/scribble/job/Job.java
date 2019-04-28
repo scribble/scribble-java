@@ -59,6 +59,7 @@ public class Job
 		return new AstVisitorFactoryImpl();
 	}
 	
+	// Used by GTypeTranslator (cf. getCore)
 	protected STypeFactory newSTypeFactory()
 	{
 		return new STypeFactory(new GTypeFactoryImpl(),
