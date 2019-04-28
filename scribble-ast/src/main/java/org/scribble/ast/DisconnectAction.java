@@ -51,7 +51,7 @@ public abstract class DisconnectAction<K extends ProtoKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(RoleNode left, RoleNode right)
+	public void addScribChildren(RoleNode left, RoleNode right)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(left);
@@ -63,7 +63,7 @@ public abstract class DisconnectAction<K extends ProtoKind>
 	public DisconnectAction<K> reconstruct(RoleNode left, RoleNode right)
 	{
 		DisconnectAction<K> dup = dupNode();
-		dup.addChildren1(left, right);
+		dup.addScribChildren(left, right);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

@@ -57,7 +57,7 @@ public class UnaryPayElem<K extends PayElemKind> extends ScribNodeBase
 	}
 
 	// "add", not "set"
-	public void addChildren1(PayElemNameNode<K> name)
+	public void addScribChildren(PayElemNameNode<K> name)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(name);
@@ -78,7 +78,7 @@ public class UnaryPayElem<K extends PayElemKind> extends ScribNodeBase
 	public UnaryPayElem<K> reconstruct(PayElemNameNode<K> name)
 	{
 		UnaryPayElem<K> dup = dupNode();
-		dup.addChildren1(name);
+		dup.addScribChildren(name);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

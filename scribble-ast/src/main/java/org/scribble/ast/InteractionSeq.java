@@ -40,7 +40,7 @@ public abstract class InteractionSeq<K extends ProtoKind>
 	public abstract List<? extends SessionNode<K>> getInteractionChildren();
 
 	// "add", not "set"
-	public void addChildren1(List<? extends SessionNode<K>> elems)
+	public void addScribChildren(List<? extends SessionNode<K>> elems)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChildren(elems);
@@ -52,7 +52,7 @@ public abstract class InteractionSeq<K extends ProtoKind>
 	public InteractionSeq<K> reconstruct(List<? extends SessionNode<K>> elems)
 	{
 		InteractionSeq<K> dup = dupNode();
-		dup.addChildren1(elems);
+		dup.addScribChildren(elems);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

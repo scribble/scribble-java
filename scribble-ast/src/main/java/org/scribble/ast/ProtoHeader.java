@@ -56,7 +56,7 @@ public abstract class ProtoHeader<K extends ProtoKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(ProtoNameNode<K> name, NonRoleParamDeclList ps,
+	public void addScribChildren(ProtoNameNode<K> name, NonRoleParamDeclList ps,
 			RoleDeclList rs)
 	{
 		// Cf. above getters and Scribble.g children order
@@ -71,7 +71,7 @@ public abstract class ProtoHeader<K extends ProtoKind>
 			RoleDeclList rs)
 	{
 		ProtoHeader<K> dup = dupNode();
-		dup.addChildren1(name, ps, rs);
+		dup.addScribChildren(name, ps, rs);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

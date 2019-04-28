@@ -59,7 +59,7 @@ public abstract class Do<K extends ProtoKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(ProtoNameNode<K> proto, NonRoleArgList as,
+	public void addScribChildren(ProtoNameNode<K> proto, NonRoleArgList as,
 			RoleArgList rs)
 	{
 		// Cf. above getters and Scribble.g children order
@@ -74,7 +74,7 @@ public abstract class Do<K extends ProtoKind>
 			RoleArgList rs)
 	{
 		Do<K> dup = dupNode();
-		dup.addChildren1(proto, as, rs);
+		dup.addScribChildren(proto, as, rs);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

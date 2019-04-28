@@ -272,7 +272,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.MODULE);  
 		Module n = new Module(t);
-		n.addChildren1(moddecl, imports, data, protos);
+		n.addScribChildren(moddecl, imports, data, protos);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -282,7 +282,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.MODULEDECL);  
 		ModuleDecl n = new ModuleDecl(t);
-		n.addChildren1(fullname);
+		n.addScribChildren(fullname);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -293,7 +293,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.IMPORTMODULE);  
 		ImportModule n = new ImportModule(t);
-		n.addChildren1(modname, alias);
+		n.addScribChildren(modname, alias);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -304,7 +304,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.DATADECL);
 		DataDecl n = new DataDecl(t);
-		n.addChildren1(alias, schema, extName, extSource);
+		n.addScribChildren(alias, schema, extName, extSource);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -315,7 +315,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.SIGDECL);
 		SigDecl n = new SigDecl(t);
-		n.addChildren1(alias, schema, extName, extSource);
+		n.addScribChildren(alias, schema, extName, extSource);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -326,7 +326,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GPROTODECL);
 		GProtoDecl n = new GProtoDecl(t);
-		n.addChildren1(mods, header, def);
+		n.addScribChildren(mods, header, def);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -339,7 +339,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GPROTOHEADER);
 		GProtoHeader n = new GProtoHeader(t);
-		n.addChildren1(name, ps, rs);
+		n.addScribChildren(name, ps, rs);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -349,7 +349,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.ROLEDECL_LIST);
 		RoleDeclList n = new RoleDeclList(t);
-		n.addChildren1(ds);
+		n.addScribChildren(ds);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -359,7 +359,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.ROLEDECL);
 		RoleDecl n = new RoleDecl(t);
-		n.addChildren1(r);
+		n.addScribChildren(r);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -370,7 +370,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.PARAMDECL_LIST);
 		NonRoleParamDeclList n = new NonRoleParamDeclList(t);
-		n.addChildren1(ds);
+		n.addScribChildren(ds);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -380,7 +380,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.DATAPARAMDECL);
 		DataParamDecl n = new DataParamDecl(t);
-		n.addChildren1(p);
+		n.addScribChildren(p);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -390,7 +390,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.SIGPARAMDECL);
 		SigParamDecl n = new SigParamDecl(t);
-		n.addChildren1(p);
+		n.addScribChildren(p);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -400,7 +400,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GPROTODEF);
 		GProtoDef n = new GProtoDef(t);
-		n.addChildren1(block);
+		n.addScribChildren(block);
 		return n;
 	}
 
@@ -409,7 +409,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GPROTOBLOCK);
 		GProtoBlock n = new GProtoBlock(t);
-		n.addChildren1(seq);
+		n.addScribChildren(seq);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -419,7 +419,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GINTERSEQ);
 		GInteractionSeq n = new GInteractionSeq(t);
-		n.addChildren1(elems);
+		n.addScribChildren(elems);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -429,7 +429,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.SIG_LIT);  
 		SigLitNode n = new SigLitNode(t);
-		n.addChildren1(op, pay);
+		n.addScribChildren(op, pay);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -439,7 +439,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.PAYELEM_LIST);  
 		PayElemList n = new PayElemList(t);
-		n.addChildren1(elems);
+		n.addScribChildren(elems);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -450,7 +450,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.UNARY_PAYELEM);  
 		UnaryPayElem<K> n = new UnaryPayElem<>(t);
-		n.addChildren1(name);
+		n.addScribChildren(name);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -461,7 +461,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.DELEG_PAYELEM);  
 		GDelegPayElem n = new GDelegPayElem(t);
-		n.addChildren1(proto, role);
+		n.addScribChildren(proto, role);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -471,7 +471,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GCONNECT);
 		GConnect n = new GConnect(t);
-		n.addChildren1(msg, src, Stream.of(dst).collect(Collectors.toList()));
+		n.addScribChildren(msg, src, Stream.of(dst).collect(Collectors.toList()));
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -481,7 +481,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GDCONN);
 		GDisconnect n = new GDisconnect(t);
-		n.addChildren1(left, right);
+		n.addScribChildren(left, right);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -492,7 +492,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GMSGTRANSFER);
 		GMsgTransfer n = new GMsgTransfer(t);
-		n.addChildren1(msg, src, dsts);
+		n.addScribChildren(msg, src, dsts);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -502,7 +502,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GWRAP);
 		GWrap n = new GWrap(t);
-		n.addChildren1(src, dst);
+		n.addScribChildren(src, dst);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -512,7 +512,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GCONTINUE);
 		GContinue n = new GContinue(t);
-		n.addChildren1(rv);
+		n.addScribChildren(rv);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -523,7 +523,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GDO);
 		GDo n = new GDo(t);
-		n.addChildren1(proto, as, rs);
+		n.addScribChildren(proto, as, rs);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -533,7 +533,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.ROLEARG_LIST);
 		RoleArgList n = new RoleArgList(t);
-		n.addChildren1(rs);
+		n.addScribChildren(rs);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -543,7 +543,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.ROLEARG);
 		RoleArg n = new RoleArg(t);
-		n.addChildren1(r);
+		n.addScribChildren(r);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -553,7 +553,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.NONROLEARG_LIST);
 		NonRoleArgList n = new NonRoleArgList(t);
-		n.addChildren1(as);
+		n.addScribChildren(as);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -563,7 +563,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.NONROLEARG);
 		NonRoleArg n = new NonRoleArg(t);
-		n.addChildren1(arg);
+		n.addScribChildren(arg);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -573,7 +573,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GCHOICE);
 		GChoice n = new GChoice(t);
-		n.addChildren1(subj, blocks);
+		n.addScribChildren(subj, blocks);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -583,7 +583,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GRECURSION);
 		GRecursion n = new GRecursion(t);
-		n.addChildren1(rv, block);
+		n.addScribChildren(rv, block);
 		n.decorateDel(this.df);
 		return n;
 	}

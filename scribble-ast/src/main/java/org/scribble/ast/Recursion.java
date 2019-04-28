@@ -46,7 +46,7 @@ public abstract class Recursion<K extends ProtoKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(RecVarNode recvar, ProtoBlock<K> block)
+	public void addScribChildren(RecVarNode recvar, ProtoBlock<K> block)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(recvar);
@@ -58,7 +58,7 @@ public abstract class Recursion<K extends ProtoKind>
 	public Recursion<K> reconstruct(RecVarNode recvar, ProtoBlock<K> block)
 	{
 		Recursion<K> dup = dupNode();
-		dup.addChildren1(recvar, block);
+		dup.addScribChildren(recvar, block);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

@@ -67,7 +67,7 @@ public abstract class DirectedInteraction<K extends ProtoKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(MsgNode msg, RoleNode src, List<RoleNode> dsts)
+	public void addScribChildren(MsgNode msg, RoleNode src, List<RoleNode> dsts)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(msg);
@@ -82,7 +82,7 @@ public abstract class DirectedInteraction<K extends ProtoKind>
 	{
 		DirectedInteraction<K> dup = dupNode();
 		// Same order as getter indices
-		dup.addChildren1(msg, src, dsts);
+		dup.addScribChildren(msg, src, dsts);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

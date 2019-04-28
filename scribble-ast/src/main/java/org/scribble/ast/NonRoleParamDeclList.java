@@ -50,7 +50,7 @@ public class NonRoleParamDeclList extends ParamDeclList<NonRoleParamKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(List<? extends ParamDecl<NonRoleParamKind>> ds)
+	public void addScribChildren(List<? extends ParamDecl<NonRoleParamKind>> ds)
 	{
 		// Cf. above getters and Scribble.g children order
 		super.addChildren(ds);
@@ -73,7 +73,7 @@ public class NonRoleParamDeclList extends ParamDeclList<NonRoleParamKind>
 			List<? extends ParamDecl<NonRoleParamKind>> ds)
 	{
 		NonRoleParamDeclList dup = dupNode();
-		dup.addChildren1(ds);
+		dup.addScribChildren(ds);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

@@ -43,7 +43,7 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(ModuleNameNode name)
+	public void addScribChildren(ModuleNameNode name)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(name);
@@ -65,7 +65,7 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	protected ModuleDecl reconstruct(ModuleNameNode name)
 	{
 		ModuleDecl dup = dupNode();
-		dup.addChildren1(name);
+		dup.addScribChildren(name);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

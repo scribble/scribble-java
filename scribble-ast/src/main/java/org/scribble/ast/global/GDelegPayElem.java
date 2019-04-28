@@ -57,7 +57,7 @@ public class GDelegPayElem extends ScribNodeBase implements PayElem<Local>
 	}
 
 	// "add", not "set"
-	public void addChildren1(GProtoNameNode proto, RoleNode role)
+	public void addScribChildren(GProtoNameNode proto, RoleNode role)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(proto);
@@ -79,7 +79,7 @@ public class GDelegPayElem extends ScribNodeBase implements PayElem<Local>
 	public GDelegPayElem reconstruct(GProtoNameNode proto, RoleNode role)
 	{
 		GDelegPayElem dup = dupNode();
-		addChildren1(proto, role);
+		addScribChildren(proto, role);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

@@ -38,7 +38,7 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	public abstract T getArgNodeChild();
 
 	// "add", not "set"
-	public void addChildren1(T arg)
+	public void addScribChildren(T arg)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(arg);
@@ -49,7 +49,7 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	public DoArg<T> reconstruct(T arg)
 	{
 		DoArg<T> dup = dupNode();
-		dup.addChildren1(arg);
+		dup.addScribChildren(arg);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

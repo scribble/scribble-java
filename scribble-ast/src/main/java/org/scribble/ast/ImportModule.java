@@ -54,7 +54,7 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(ModuleNameNode modname, ModuleNameNode alias)
+	public void addScribChildren(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(modname);
@@ -81,7 +81,7 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	public ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		ImportModule dup = dupNode();
-		dup.addChildren1(modname, alias);
+		dup.addScribChildren(modname, alias);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

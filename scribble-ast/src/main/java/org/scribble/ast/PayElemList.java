@@ -45,7 +45,7 @@ public class PayElemList extends ScribNodeBase
 	}
 
 	// "add", not "set"
-	public void addChildren1(List<PayElem<?>> elems)
+	public void addScribChildren(List<PayElem<?>> elems)
 	{
 		// Cf. above getters and Scribble.g children order
 		super.addChildren(elems);
@@ -66,7 +66,7 @@ public class PayElemList extends ScribNodeBase
 	protected PayElemList reconstruct(List<PayElem<?>> elems)
 	{
 		PayElemList dup = dupNode();
-		dup.addChildren1(elems);
+		dup.addScribChildren(elems);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

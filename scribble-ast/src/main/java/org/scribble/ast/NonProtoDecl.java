@@ -73,7 +73,7 @@ public abstract class NonProtoDecl<K extends NonProtoKind>
 	}
 
 	// "add", not "set"
-	public void addChildren1(NameNode<K> name, IdNode schema,
+	public void addScribChildren(NameNode<K> name, IdNode schema,
 			ExtIdNode extName, ExtIdNode extSource)
 	{
 		// Cf. above getters and Scribble.g children order
@@ -90,7 +90,7 @@ public abstract class NonProtoDecl<K extends NonProtoKind>
 			ExtIdNode extName, ExtIdNode extSource)
 	{
 		NonProtoDecl<K> dup = dupNode();
-		dup.addChildren1(name, schema, extName, extSource);
+		dup.addScribChildren(name, schema, extName, extSource);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

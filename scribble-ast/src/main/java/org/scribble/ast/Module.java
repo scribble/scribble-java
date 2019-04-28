@@ -88,7 +88,7 @@ public class Module extends ScribNodeBase
 	}
 
 	// "add", not "set"
-	public void addChildren1(ModuleDecl moddecl, List<ImportDecl<?>> imports,
+	public void addScribChildren(ModuleDecl moddecl, List<ImportDecl<?>> imports,
 			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
 	{
 		// Cf. above getters and Scribble.g children order
@@ -116,7 +116,7 @@ public class Module extends ScribNodeBase
 			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
 	{
 		Module dup = dupNode();
-		dup.addChildren1(moddecl, imports, data, protos);
+		dup.addScribChildren(moddecl, imports, data, protos);
 		dup.setDel(del());  // No copy
 		return dup;
 	}
