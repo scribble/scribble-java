@@ -136,13 +136,13 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 	}
 	
 	// Defensive
-	@Override
+	/*@Override
 	public final ScribNodeBase del(ScribDel del)
 	{
 		ScribNodeBase clone = clone();  // Need full clone because parent field prevents immutable construction
 		clone.setDel(del);
 		return clone;
-	}
+	}*/
 	
 	// Non-defensive
 	protected final void setDel(ScribDel del)

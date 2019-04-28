@@ -113,13 +113,13 @@ public interface AstFactory
 	GDo GDo(Token t, RoleArgList rs, NonRoleArgList args,
 			GProtoNameNode proto);
 
-	GChoice GChoice(Token t, RoleNode subj, List<GProtoBlock> blocks);
-	GRecursion GRecursion(Token t, RecVarNode rv, GProtoBlock block);
-
 	RoleArgList RoleArgList(Token t, List<RoleArg> rs);
 	RoleArg RoleArg(Token t, RoleNode r);
 	NonRoleArgList NonRoleArgList(Token t, List<NonRoleArg> args);
 	NonRoleArg NonRoleArg(Token t, NonRoleArgNode arg);
+
+	GChoice GChoice(Token t, RoleNode subj, List<GProtoBlock> blocks);
+	GRecursion GRecursion(Token t, RecVarNode rv, GProtoBlock block);
 }
 
 

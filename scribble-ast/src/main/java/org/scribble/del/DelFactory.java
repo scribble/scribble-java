@@ -122,7 +122,7 @@ public interface DelFactory
 
 	void GContinue(GContinue n);
 	void GDo(GDo n);
-	
+
 	void RoleArgList(RoleArgList n);
 	void RoleArg(RoleArg r);
 	void NonRoleArgList(NonRoleArgList n);

@@ -57,12 +57,20 @@ import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
+import org.scribble.core.type.kind.PayElemKind;
+import org.scribble.del.DelFactory;
 import org.scribble.parser.antlr.ScribbleParser;
 
 // CHECKME: do del setting directly here (or use af?), instead of DelDecorator
 // get/setType don't seem to be really used
 public class ScribTreeAdaptor extends CommonTreeAdaptor
 {
+	protected final DelFactory df;  // N.B. not af -- here, create nodes "manually" (with del setting) to preserve original tokens
+
+	public ScribTreeAdaptor(DelFactory df)
+	{
+		this.df = df;
+	}
 	
 	// Generated parser seems to use nil to create "blank" nodes and then "fill them in"
 	@Override
@@ -79,62 +87,264 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 		// Previously: String tname = t.getText(); -- by convention of Scribble.g, type constant name given as node text, e.g., module: ... -> ^(MODULE ...)
 		switch (t.getType())
 		{
-			case ScribbleParser.ID: return new IdNode(t);
-			case ScribbleParser.EXTID: return new ExtIdNode(t);
+			case ScribbleParser.ID:
+			{
+				IdNode n = new IdNode(t);
+				this.df.IdNode(n);
+				return n;
+			}
+			case ScribbleParser.EXTID: 
+			{
+				ExtIdNode n = new ExtIdNode(t);
+				this.df.ExtIdNode(n);
+				return n;
+			}
 			
-			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
+			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] -- N.B. DelDecorator pass needed for them (CHECKME: also do those here instead? to deprecate DelDecorator)
 
-			case ScribbleParser.GPROTO_NAME: return new GProtoNameNode(t);
-			case ScribbleParser.MODULE_NAME: return new ModuleNameNode(t);
-			case ScribbleParser.DATA_NAME: return new DataNameNode(t);
-			case ScribbleParser.SIG_NAME: return new SigNameNode(t);
+			// Compound names 
+			case ScribbleParser.GPROTO_NAME:
+			{
+				GProtoNameNode n = new GProtoNameNode(t);
+				this.df.GProtoNameNode(n);
+				return n;
+			}
+			case ScribbleParser.MODULE_NAME:
+			{
+				ModuleNameNode n = new ModuleNameNode(t);
+				this.df.ModuleNameNode(n);
+				return n;
+			}
+			case ScribbleParser.DATA_NAME:
+			{
+				DataNameNode n = new DataNameNode(t);
+				this.df.DataNameNode(n);
+				return n;
+			}
+			case ScribbleParser.SIG_NAME:
+			{
+				SigNameNode n = new SigNameNode(t);
+				this.df.SigNameNode(n);
+				return n;
+			}
 
-			case ScribbleParser.MODULE: return new Module(t);
-			case ScribbleParser.MODULEDECL: return new ModuleDecl(t);
-			case ScribbleParser.IMPORTMODULE: return new ImportModule(t);
+			// Non-name (i.e., general) AST nodes
+			case ScribbleParser.MODULE:
+			{
+				Module n = new Module(t);
+				this.df.Module(n);
+				return n;
+			}
+			case ScribbleParser.MODULEDECL:
+			{
+				ModuleDecl n = new ModuleDecl(t);
+				this.df.ModuleDecl(n);
+				return n;
+			}
+			case ScribbleParser.IMPORTMODULE:
+			{
+				ImportModule n = new ImportModule(t);
+				this.df.ImportModule(n);
+				return n;
+			}
 
-			case ScribbleParser.DATADECL: return new DataDecl(t);
-			case ScribbleParser.SIGDECL: return new SigDecl(t);
-			case ScribbleParser.GPROTODECL: return new GProtoDecl(t);
+			case ScribbleParser.DATADECL:
+			{
+				DataDecl n = new DataDecl(t);
+				this.df.DataDecl(n);
+				return n;
+			}
+			case ScribbleParser.SIGDECL:
+			{
+				SigDecl n = new SigDecl(t);
+				this.df.SigDecl(n);
+				return n;
+			}
+			case ScribbleParser.GPROTODECL:
+			{
+				GProtoDecl n = new GProtoDecl(t);
+				this.df.GProtoDecl(n);
+				return n;
+			}
  
 			// CHECKME: refactor into header?
-			case ScribbleParser.PROTOMOD_LIST: return new ProtoModList(t);
-			case ScribbleParser.AUX_KW: return new AuxMod(t);  // FIXME: KW return by parser directly (cf. other tokens are imaginary)
-			case ScribbleParser.EXPLICIT_KW: return new ExplicitMod(t);
+			case ScribbleParser.PROTOMOD_LIST:
+			{
+				ProtoModList n = new ProtoModList(t);
+				this.df.ProtoModList(n);
+				return n;
+			}
+			case ScribbleParser.AUX_KW:
+			{
+				AuxMod n = new AuxMod(t);  // FIXME: KW return by parser directly (cf. other tokens are imaginary)
+				this.df.AuxMod(n);
+				return n;
+			}
+			case ScribbleParser.EXPLICIT_KW:
+			{
+				ExplicitMod n = new ExplicitMod(t);
+				this.df.ExplicitMod(n);
+				return n;
+			}
 
-			case ScribbleParser.GPROTOHEADER: return new GProtoHeader(t);
-			case ScribbleParser.ROLEDECL_LIST: return new RoleDeclList(t);
-			case ScribbleParser.ROLEDECL: return new RoleDecl(t);
-			case ScribbleParser.PARAMDECL_LIST: return new NonRoleParamDeclList(t);
-			case ScribbleParser.DATAPARAMDECL: return new DataParamDecl(t);
-			case ScribbleParser.SIGPARAMDECL: return new SigParamDecl(t);
+			case ScribbleParser.GPROTOHEADER:
+			{
+				GProtoHeader n = new GProtoHeader(t);
+				this.df.GProtoHeader(n);
+				return n;
+			}
+			case ScribbleParser.ROLEDECL_LIST:
+			{
+				RoleDeclList n = new RoleDeclList(t);
+				this.df.RoleDeclList(n);
+				return n;
+			}
+			case ScribbleParser.ROLEDECL:
+			{
+				RoleDecl n = new RoleDecl(t);
+				this.df.RoleDecl(n);
+				return n;
+			}
+			case ScribbleParser.PARAMDECL_LIST:
+			{
+				NonRoleParamDeclList n = new NonRoleParamDeclList(t);
+				this.df.NonRoleParamDeclList(n);
+				return n;
+			}
+			case ScribbleParser.DATAPARAMDECL:
+			{
+				DataParamDecl n = new DataParamDecl(t);
+				this.df.DataParamDecl(n);
+				return n;
+			}
+			case ScribbleParser.SIGPARAMDECL:
+			{
+				SigParamDecl n = new SigParamDecl(t);
+				this.df.SigParamDecl(n);
+				return n;
+			}
 
-			case ScribbleParser.GPROTODEF: return new GProtoDef(t);
-			case ScribbleParser.GPROTOBLOCK: return new GProtoBlock(t);
-			case ScribbleParser.GINTERSEQ: return new GInteractionSeq(t);
+			case ScribbleParser.GPROTODEF:
+			{
+				GProtoDef n = new GProtoDef(t);
+				this.df.GProtoDef(n);
+				return n;
+			}
+			case ScribbleParser.GPROTOBLOCK:
+			{
+				GProtoBlock n = new GProtoBlock(t);
+				this.df.GProtoBlock(n);
+				return n;
+			}
+			case ScribbleParser.GINTERSEQ:
+			{
+				GInteractionSeq n = new GInteractionSeq(t);
+				this.df.GInteractionSeq(n);
+				return n;
+			}
 
-			case ScribbleParser.SIG_LIT: return new SigLitNode(t);
-			case ScribbleParser.PAYELEM_LIST: return new PayElemList(t);
-			case ScribbleParser.UNARY_PAYELEM: return new UnaryPayElem<>(t);
+			case ScribbleParser.SIG_LIT:
+			{
+				SigLitNode n = new SigLitNode(t);
+				this.df.SigLitNode(n);
+				return n;
+			}
+			case ScribbleParser.PAYELEM_LIST:
+			{
+				PayElemList n = new PayElemList(t);
+				this.df.PayElemList(n);
+				return n;
+			}
+			case ScribbleParser.UNARY_PAYELEM:
+			{
+				UnaryPayElem<PayElemKind> n = new UnaryPayElem<>(t);
+				this.df.UnaryPayElem(n);
+				return n;
+			}
 
-			case ScribbleParser.GCONNECT: return new GConnect(t);
-			case ScribbleParser.GDCONN: return new GDisconnect(t);
-			case ScribbleParser.GMSGTRANSFER: return new GMsgTransfer(t);
-			case ScribbleParser.GWRAP: return new GWrap(t);
+			case ScribbleParser.GCONNECT:
+			{
+				GConnect n = new GConnect(t);
+				this.df.GConnect(n);
+				return n;
+			}
+			case ScribbleParser.GDCONN:
+			{
+				GDisconnect n = new GDisconnect(t);
+				this.df.GDisconnect(n);
+				return n;
+			}
+			case ScribbleParser.GMSGTRANSFER:
+			{
+				GMsgTransfer n = new GMsgTransfer(t);
+				this.df.GMsgTransfer(n);
+				return n;
+			}
+			case ScribbleParser.GWRAP:
+			{
+				GWrap n = new GWrap(t);
+				this.df.GWrap(n);
+				return n;
+			}
 
-			case ScribbleParser.GCONTINUE: return new GContinue(t);
-			case ScribbleParser.GDO: return new GDo(t);
-				
-			case ScribbleParser.ROLEARG_LIST: return new RoleArgList(t);
-			case ScribbleParser.ROLEARG: return new RoleArg(t);
-			case ScribbleParser.NONROLEARG_LIST: return new NonRoleArgList(t);
-			case ScribbleParser.NONROLEARG: return new NonRoleArg(t);
+			case ScribbleParser.GCONTINUE:
+			{
+				GContinue n = new GContinue(t);
+				this.df.GContinue(n);
+				return n;
+			}
+			case ScribbleParser.GDO:
+			{
+				GDo n = new GDo(t);
+				this.df.GDo(n);
+				return n;
+			}
 
-			case ScribbleParser.GCHOICE: return new GChoice(t);
-			case ScribbleParser.GRECURSION: return new GRecursion(t);
+			case ScribbleParser.ROLEARG_LIST:
+			{
+				RoleArgList n = new RoleArgList(t);
+				this.df.RoleArgList(n);
+				return n;
+			}
+			case ScribbleParser.ROLEARG:
+			{
+				RoleArg n = new RoleArg(t);
+				this.df.RoleArg(n);
+				return n;
+			}
+			case ScribbleParser.NONROLEARG_LIST:
+			{
+				NonRoleArgList n = new NonRoleArgList(t);
+				this.df.NonRoleArgList(n);
+				return n;
+			}
+			case ScribbleParser.NONROLEARG:
+			{
+				NonRoleArg n = new NonRoleArg(t);
+				this.df.NonRoleArg(n);
+				return n;
+			}
+
+			case ScribbleParser.GCHOICE:
+			{
+				GChoice n = new GChoice(t);
+				this.df.GChoice(n);
+				return n;
+			}
+			case ScribbleParser.GRECURSION:
+			{
+				GRecursion n = new GRecursion(t);
+				this.df.GRecursion(n);
+				return n;
+			}
 
 			// Special cases
-			case ScribbleParser.EMPTY_OP: return new OpNode(t);  // From Scribble.g, token (t) text is OpNode.EMPTY_OP_TOKEN_TEXT
+			case ScribbleParser.EMPTY_OP:
+			{
+				OpNode n = new OpNode(t);  // From Scribble.g, token (t) text is OpNode.EMPTY_OP_TOKEN_TEXT
+				this.df.OpNode(n);
+				return n;
+			}
 
 			default:
 			{

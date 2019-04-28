@@ -67,7 +67,7 @@ public class AstFactoryImpl implements AstFactory
 
 	protected final DelFactory df;
 	
-	public AstFactoryImpl(ScribAntlrWrapper antlr, DelFactory df)
+	public AstFactoryImpl(ScribAntlrWrapper antlr)
 	{
 		try
 		{
@@ -84,7 +84,7 @@ public class AstFactoryImpl implements AstFactory
 				}
 			}
 			this.tokens = Collections.unmodifiableMap(tokens);
-			this.df = df;
+			this.df = antlr.df;
 		}
 		catch (IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e)
@@ -368,7 +368,7 @@ public class AstFactoryImpl implements AstFactory
 	public NonRoleParamDeclList NonRoleParamDeclList(Token t,
 			List<NonRoleParamDecl<NonRoleParamKind>> ds)
 	{
-		t =newToken(t, ScribbleParser.PARAMDECL_LIST);
+		t = newToken(t, ScribbleParser.PARAMDECL_LIST);
 		NonRoleParamDeclList n = new NonRoleParamDeclList(t);
 		n.addChildren1(ds);
 		this.df.NonRoleParamDeclList(n);

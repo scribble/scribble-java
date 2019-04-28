@@ -45,6 +45,10 @@ public class DelDecorator extends AstVisitor
 	
 	protected void decorate(ScribNode n)
 	{
+		if (n.del() != null)  // Currently, only the simple name nodes "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
+		{
+			return;
+		}
 		try
 		{
 			String cname = n.getClass().getName();
