@@ -61,7 +61,7 @@ import org.scribble.parser.antlr.ScribbleParser;
 
 public class AstFactoryImpl implements AstFactory
 {
-	// Purely for the convenience of newToken(Token, type)
+	// Purely for the convenience of newToken(Token, type), parser instance used to access token int constants
 	protected final ScribbleParser parser;
 	protected final Map<Integer, String> tokens;
 

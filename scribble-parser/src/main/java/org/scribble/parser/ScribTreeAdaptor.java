@@ -59,6 +59,7 @@ import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.parser.antlr.ScribbleParser;
 
+// CHECKME: do del setting directly here (or use af?), instead of DelDecorator
 // get/setType don't seem to be really used
 public class ScribTreeAdaptor extends CommonTreeAdaptor
 {

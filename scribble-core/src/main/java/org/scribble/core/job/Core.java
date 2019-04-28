@@ -39,9 +39,7 @@ import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.STypeFactory;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.core.type.session.global.GTypeFactoryImpl;
 import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.type.session.local.LTypeFactoryImpl;
 import org.scribble.core.visit.ProtoDepsCollector;
 import org.scribble.core.visit.VisitorFactory;
 import org.scribble.core.visit.VisitorFactoryImpl;
@@ -58,23 +56,30 @@ public class Core
 	
 	public Core(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			//Map<ModuleName, ModuleContext> modcs, 
-			Set<GProtocol> imeds)
+			Set<GProtocol> imeds, STypeFactory tf)
 	{
-		this.config = newCoreConfig(mainFullname, args);
+		this.config = newCoreConfig(mainFullname, args, tf);
 		this.context = newCoreContext(//modcs, 
 				imeds);  // Single instance per Core and should never be shared
+	}
+	
+	protected VisitorFactory newVisitorFactory()
+	{
+		return new VisitorFactoryImpl();
+	}
+	
+	protected ModelFactory newModelFactory()
+	{
+		return new ModelFactory(EModelFactoryImpl::new,
+				SModelFactoryImpl::new);
 	}
 
 	// A Scribble extension should override newCoreConfig/Context/etc as appropriate
 	protected CoreConfig newCoreConfig(ModuleName mainFullname,
-			Map<CoreArgs, Boolean> args)
+			Map<CoreArgs, Boolean> args, STypeFactory tf)
 	{
-		// TODO: factor out factory methods
-		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl(),
-				new LTypeFactoryImpl());
-		VisitorFactory vf = new VisitorFactoryImpl();
-		ModelFactory mf = new ModelFactory(EModelFactoryImpl::new,
-				SModelFactoryImpl::new);
+		VisitorFactory vf = newVisitorFactory();
+		ModelFactory mf = newModelFactory();
 		return new CoreConfig(mainFullname, args, tf, vf, mf); 
 				// CHECKME: combine E/SModelFactory?
 	}

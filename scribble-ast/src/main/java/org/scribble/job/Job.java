@@ -26,12 +26,13 @@ import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.session.STypeFactory;
 import org.scribble.core.type.session.global.GTypeFactoryImpl;
+import org.scribble.core.type.session.local.LTypeFactoryImpl;
 import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
-import org.scribble.visit.DelDecorator;
+import org.scribble.visit.AstVisitorFactory;
+import org.scribble.visit.AstVisitorFactoryImpl;
 import org.scribble.visit.GTypeTranslator;
-import org.scribble.visit.NameDisambiguator;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
@@ -42,46 +43,41 @@ public class Job
 	
 	private Core core;
 
-	// Just take MainContext as arg? -- would need to fix Maven dependencies
-	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Job(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
 			Map<ModuleName, Module> parsed, AstFactory af, DelFactory df)
 			throws ScribException
 	{
 		// CHECKME(?): main modname comes from the inlined mod decl -- check for issues if this clashes with an existing file system resource
-		this.config = newJobConfig(mainFullname, args, af, df);
+		AstVisitorFactory vf = newAstVisitorFactory();
+		STypeFactory tf = newSTypeFactory();
+		this.config = newJobConfig(mainFullname, args, af, df, vf, tf);
 		this.context = newJobContext(this, parsed);  // Single instance per Job, should not be shared between Jobs
 	}
 
-	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
-	protected JobConfig newJobConfig(ModuleName mainFullname,
-			Map<CoreArgs, Boolean> args, AstFactory af, DelFactory df)
+	protected AstVisitorFactory newAstVisitorFactory()
 	{
-		return new JobConfig(mainFullname, args, af, df);
+		return new AstVisitorFactoryImpl();
+	}
+	
+	protected STypeFactory newSTypeFactory()
+	{
+		return new STypeFactory(new GTypeFactoryImpl(),
+				new LTypeFactoryImpl());
 	}
 
-	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
+	// A Scribble extension should override newJobConfig/Context/Core as appropriate
+	protected JobConfig newJobConfig(ModuleName mainFullname,
+			Map<CoreArgs, Boolean> args, AstFactory af, DelFactory df,
+			AstVisitorFactory vf, STypeFactory tf)
+	{
+		return new JobConfig(mainFullname, args, af, df, vf, tf);
+	}
+
+	// A Scribble extension should override newJobConfig/Context/Core as appropriate
 	protected JobContext newJobContext(Job job,
 			Map<ModuleName, Module> parsed) throws ScribException
 	{
 		return new JobContext(this, parsed);
-	}
-
-	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
-	// CHECKME: factor out STypeTranslator, for future local parsing
-	protected GTypeTranslator newGTypeTranslator(ModuleName rootFullname)
-	{
-		STypeFactory tf = new STypeFactory(new GTypeFactoryImpl(), null);  // TODO: factor out factory
-		return new GTypeTranslator(this, rootFullname, tf);
-	}
-	
-	// A Scribble extension should override newJobConfig/Context/Translator and toJob as appropriate
-	protected Core newCore(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
-			//Map<ModuleName, ModuleContext> modcs, 
-			Set<GProtocol> imeds)
-	{
-		return new Core(mainFullname, args, //modcs, 
-				imeds);
 	}
 	
 	// "Finalises" this Job -- initialises the Job at this point, and cannot run futher Visitor passes on Job
@@ -92,11 +88,13 @@ public class Job
 	{
 		if (this.core == null)
 		{
+			STypeFactory tf = newSTypeFactory();
 			Map<ModuleName, Module> parsed = this.context.getParsed();
 			Set<GProtocol> imeds = new HashSet<>();
 			for (ModuleName fullname : parsed.keySet())
 			{
-				GTypeTranslator t = newGTypeTranslator(fullname);
+				GTypeTranslator t = this.config.vf.GTypeTranslator(this, fullname, tf);
+						// CHECKME: factor out STypeTranslator, for future local parsing
 				Module m = parsed.get(fullname);
 				for (GProtoDecl ast : m.getGProtoDeclChildren())
 				{
@@ -110,9 +108,18 @@ public class Job
 			}
 			this.core = newCore(this.config.main, this.config.args,
 					//this.context.getModuleContexts(), 
-					imeds);
+					imeds, tf);
 		}
 		return this.core;
+	}
+	
+	// A Scribble extension should override newJobConfig/Context/Core as appropriate
+	protected Core newCore(ModuleName mainFullname, Map<CoreArgs, Boolean> args,
+			//Map<ModuleName, ModuleContext> modcs, 
+			Set<GProtocol> imeds, STypeFactory tf)
+	{
+		return new Core(mainFullname, args, //modcs, 
+				imeds, tf);
 	}
 	
 	// First run Visitor passes, then call toJob
@@ -128,8 +135,8 @@ public class Job
 		// Disamb is a "leftover" aspect of parsing -- so not in core
 		// N.B. disamb is mainly w.r.t. ambignames -- e.g., doesn't fully qualify names (currently mainly done by imed translation)
 		// CHECKME: disamb also currently does checks like do-arg kind and arity -- refactor into core? -- also does, e.g., distinct roledecls, protodecls, etc.
-		runVisitorPassOnAllModules(new DelDecorator(this, this.config.df));  // Includes validating names used in subprotocol calls..
-		runVisitorPassOnAllModules(new NameDisambiguator(this));  // Includes validating names used in subprotocol calls..
+		runVisitorPassOnAllModules(this.config.vf.DelDecorator(this));  // Includes validating names used in subprotocol calls..
+		runVisitorPassOnAllModules(this.config.vf.NameDisambiguator(this));  // Includes validating names used in subprotocol calls..
 	}
 
 	public void runVisitorPassOnAllModules(AstVisitor v) throws ScribException

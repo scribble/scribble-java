@@ -28,10 +28,10 @@ public class DelDecorator extends AstVisitor
 {
 	protected final DelFactory df;
 
-	public DelDecorator(Job job, DelFactory df)
+	public DelDecorator(Job job)
 	{
 		super(job);
-		this.df = df;
+		this.df = job.config.df;
 	}
 	
 	// AstVisitor enter/leave typically delegates to dels -- DelDecorator is a "proto-visitor", no del to delegate to (yet)

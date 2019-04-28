@@ -121,14 +121,25 @@ public class Main
 		return new ScribAntlrWrapper();
 	}
 	
+	// N.B. not used by antlr generated parser itself
+	// Here (cf. Job) because it takes antlr (and lives in scribble-parser)
 	protected AstFactory newAstFactory(ScribAntlrWrapper antlr, DelFactory df)
 	{
 		return new AstFactoryImpl(antlr, df);
 	}
 	
+	// Here (cf. Job) because taken by this.af (and lives in scribble-parser)
 	protected DelFactory newDelFactory()
 	{
 		return new DelFactoryImpl();
+	}
+	
+	// For a Scribble extension, override newJob(parsed, args, mainFullname, AstFactory)
+	public final Job newJob() throws ScribException
+	{
+		DelFactory df = newDelFactory();  
+		AstFactory af = newAstFactory(this.antlr, df);  
+		return newJob(getParsedModules(), this.args, this.main, af, df);
 	}
 
 	// A Scribble extension should override newAntlr/Job as appropriate
@@ -166,14 +177,6 @@ public class Main
 				}
 			}
 		}
-	}
-	
-	// For a Scribble extension, override newJob(parsed, args, mainFullname, AstFactory)
-	public final Job newJob() throws ScribException
-	{
-		DelFactory df = newDelFactory();  
-		AstFactory af = newAstFactory(this.antlr, df);  
-		return newJob(getParsedModules(), this.args, this.main, af, df);
 	}
 	
 	public Map<ModuleName, Module> getParsedModules()
