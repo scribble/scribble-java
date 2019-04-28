@@ -23,7 +23,7 @@ import org.scribble.core.visit.STypeUnfolder;
 public class GTypeUnfolder extends STypeUnfolder<Global, GSeq>
 {
 	
-	public GTypeUnfolder(Core core)
+	protected GTypeUnfolder(Core core)
 	{
 		super(core);
 	}

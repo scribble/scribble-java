@@ -71,7 +71,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	public void checkRoleEnabling(Core core) throws ScribException
 	{
 		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
-		RoleEnablingChecker v = core.config.vf.RoleEnablingChecker(rs);
+		RoleEnablingChecker v = core.config.vf.global.RoleEnablingChecker(rs);
 		this.def.visitWith(v);
 	}
 
@@ -79,7 +79,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	{
 		Map<Role, Role> rs = this.roles.stream()
 				.collect(Collectors.toMap(x -> x, x -> x));
-		ExtChoiceConsistencyChecker v = core.config.vf
+		ExtChoiceConsistencyChecker v = core.config.vf.global
 				.ExtChoiceConsistencyChecker(rs);
 		this.def.visitWith(v);
 	}
@@ -88,21 +88,22 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 			throws ScribException
 	{
 		Set<Role> rs = this.roles.stream().collect(Collectors.toSet());
-		ConnectionChecker v = core.config.vf.ConnectionChecker(rs, implicit);
+		ConnectionChecker v = core.config.vf.global.ConnectionChecker(rs, implicit);
 		this.def.visitWith(v);
 	}
 	
 	// Currently assuming inlining (or at least "disjoint" protodecl projection, without role fixing)
 	public LProjection projectInlined(Core core, Role self)
 	{
-		LSeq def = core.config.vf.InlinedProjector(core, self).visitSeq(this.def);
-		LSeq fixed = core.config.vf.InlinedExtChoiceSubjFixer().visitSeq(def);
+		LSeq def = core.config.vf.global.InlinedProjector(core, self)
+				.visitSeq(this.def);
+		LSeq fixed = core.config.vf.local.InlinedExtChoiceSubjFixer().visitSeq(def);
 		return projectAux(core, self, this.roles, fixed);
 	}
 
 	public LProjection project(Core core, Role self)
 	{
-		LSeq def = core.config.vf.Projector(core, self).visitSeq(this.def);
+		LSeq def = core.config.vf.global.Projector(core, self).visitSeq(this.def);
 			// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
 		return projectAux(core, self,
 				core.getContext().getInlined(this.fullname).roles,  

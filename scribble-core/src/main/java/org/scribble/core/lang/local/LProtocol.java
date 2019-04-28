@@ -66,7 +66,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 
 	public void checkReachability(Core core) throws ScribException
 	{
-		this.def.visitWith(core.config.vf.ReachabilityChecker());
+		this.def.visitWith(core.config.vf.local.ReachabilityChecker());
 	}
 	
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)
@@ -133,7 +133,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 			EState s = core.config.mf.local.EState(Collections.emptySet());
 			return new EGraph(s, s);  // TODO: refactor constructor inside mf
 		}
-		EGraphBuilder b = new EGraphBuilder(core);
+		EGraphBuilder b = core.config.vf.local.EGraphBuilder(core);
 		this.def.visitWithNoThrow(b);
 		return b.finalise();
 	}

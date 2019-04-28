@@ -14,53 +14,38 @@
 package org.scribble.core.visit;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Seq;
-import org.scribble.core.visit.global.ConnectionChecker;
-import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
-import org.scribble.core.visit.global.GTypeInliner;
-import org.scribble.core.visit.global.GTypeUnfolder;
-import org.scribble.core.visit.global.InlinedProjector;
-import org.scribble.core.visit.global.Projector;
-import org.scribble.core.visit.global.RoleEnablingChecker;
-import org.scribble.core.visit.local.InlinedExtChoiceSubjFixer;
-import org.scribble.core.visit.local.ReachabilityChecker;
+import org.scribble.core.visit.global.GTypeVisitorFactory;
+import org.scribble.core.visit.local.LTypeVisitorFactory;
 
-public interface STypeVisitorFactory
+public class STypeVisitorFactory
 {
-	<K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> Substitutor(
+	public GTypeVisitorFactory global;
+	public LTypeVisitorFactory local;
+	
+	public STypeVisitorFactory(GTypeVisitorFactory global, LTypeVisitorFactory local)
+	{
+		this.global = global;
+		this.local = local;
+	}
+
+	public <K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> Substitutor(
 			List<Role> rold, List<Role> rnew,
 			List<MemberName<? extends NonRoleParamKind>> aold,
-			List<Arg<? extends NonRoleParamKind>> anew);
+			List<Arg<? extends NonRoleParamKind>> anew)
+	{
+		return new Substitutor<>(rold, rnew, aold, anew);
+	}
 
-	GTypeInliner GTypeInliner(Core core);
-	
-	<K extends ProtoKind, B extends Seq<K, B>> RecPruner<K, B> RecPruner();
-
-	GTypeUnfolder GTypeUnfolder(Core core);
-
-	RoleEnablingChecker RoleEnablingChecker(Set<Role> rs);
-
-	ExtChoiceConsistencyChecker ExtChoiceConsistencyChecker(
-			Map<Role, Role> enabled);
-
-	ConnectionChecker ConnectionChecker(Set<Role> rs, boolean implicit);
-
-	InlinedProjector InlinedProjector(Core core, Role self);
-
-	InlinedExtChoiceSubjFixer InlinedExtChoiceSubjFixer();
-
-	ReachabilityChecker ReachabilityChecker();
-
-	// CHECKME: deprecate?
-	Projector Projector(Core core, Role self);
+	public <K extends ProtoKind, B extends Seq<K, B>> RecPruner<K, B> RecPruner()
+	{
+		return new RecPruner<>();
+	}
 
 }

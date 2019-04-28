@@ -57,7 +57,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	public final Core core;
 	public final Role self;
 
-	public InlinedProjector(Core core, Role self)
+	protected InlinedProjector(Core core, Role self)
 	{
 		this.core = core;
 		this.self = self;

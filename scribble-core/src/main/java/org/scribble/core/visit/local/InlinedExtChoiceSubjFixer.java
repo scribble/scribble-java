@@ -43,6 +43,11 @@ public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 			// Record on entering rec states, to give to InlinedEnablerInferer on nested choice states (for unguarded continues)
 			// CHECKME: Optional necessary?  InlinedEnablerInferer may not succeed due to empty/bad contexts, but should that be reflected here?
 
+	protected InlinedExtChoiceSubjFixer()
+	{
+		
+	}
+
 	@Override
 	public Choice<Local, LSeq> visitChoice(Choice<Local, LSeq> n)
 	{

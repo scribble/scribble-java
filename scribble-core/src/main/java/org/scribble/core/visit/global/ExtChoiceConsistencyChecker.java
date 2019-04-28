@@ -38,7 +38,7 @@ public class ExtChoiceConsistencyChecker extends STypeVisitor<Global, GSeq>
 {
 	private Map<Role, Role> enablers;  // Invariant: unmodifiable
 
-	public ExtChoiceConsistencyChecker(Map<Role, Role> enabled)
+	protected ExtChoiceConsistencyChecker(Map<Role, Role> enabled)
 	{
 		setEnablers(enabled);
 	}

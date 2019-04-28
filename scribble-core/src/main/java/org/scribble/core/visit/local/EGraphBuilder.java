@@ -55,7 +55,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 
 	private EGraphBuilderUtil util;
 
-	public EGraphBuilder(Core core)
+	protected EGraphBuilder(Core core)
 	{
 		this.core = core;
 		this.util = core.config.mf.local.EGraphBuilderUtil();

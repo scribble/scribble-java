@@ -27,7 +27,7 @@ import org.scribble.core.visit.Substitutor;
 
 public class GTypeInliner extends STypeInliner<Global, GSeq>
 {
-	public GTypeInliner(Core core)
+	protected GTypeInliner(Core core)
 	{
 		super(core);
 	}

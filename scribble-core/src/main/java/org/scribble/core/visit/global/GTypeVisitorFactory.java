@@ -11,27 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.core.visit.local;
+package org.scribble.core.visit.global;
+
+import java.util.Map;
+import java.util.Set;
 
 import org.scribble.core.job.Core;
-import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.session.Continue;
-import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.STypeUnfolder;
+import org.scribble.core.type.name.Role;
 
-public class LTypeUnfolder extends STypeUnfolder<Local, LSeq>
+public interface GTypeVisitorFactory
 {
-	
-	protected LTypeUnfolder(Core core)
-	{
-		super(core);
-	}
+	GTypeInliner GTypeInliner(Core core);
 
-	@Override
-	public LType visitContinue(Continue<Local, LSeq> n)
-	{
-		return this.core.config.tf.local.LRecursion(n.getSource(), n.recvar,
-				(LSeq) getRec(n.recvar));
-	}
+	GTypeUnfolder GTypeUnfolder(Core core);
+
+	RoleEnablingChecker RoleEnablingChecker(Set<Role> rs);
+
+	ExtChoiceConsistencyChecker ExtChoiceConsistencyChecker(
+			Map<Role, Role> enabled);
+
+	ConnectionChecker ConnectionChecker(Set<Role> rs, boolean implicit);
+
+	InlinedProjector InlinedProjector(Core core, Role self);
+
+	// CHECKME: deprecate?
+	Projector Projector(Core core, Role self);
+
 }

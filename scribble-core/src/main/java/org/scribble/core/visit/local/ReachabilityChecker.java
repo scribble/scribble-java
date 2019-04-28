@@ -38,7 +38,7 @@ public class ReachabilityChecker extends STypeVisitor<Local, LSeq>
 {
 	private ReachabilityEnv env;  // Immutable
 
-	public ReachabilityChecker()
+	protected ReachabilityChecker()
 	{
 		this.env = new ReachabilityEnv(false, Collections.emptySet());
 	}

@@ -27,7 +27,7 @@ import org.scribble.core.visit.Substitutor;
 
 public class LTypeInliner extends STypeInliner<Local, LSeq>
 {
-	public LTypeInliner(Core core)
+	protected LTypeInliner(Core core)
 	{
 		super(core);
 	}

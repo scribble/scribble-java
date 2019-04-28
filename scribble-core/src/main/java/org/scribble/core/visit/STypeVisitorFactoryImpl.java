@@ -14,30 +14,27 @@
 package org.scribble.core.visit;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Seq;
-import org.scribble.core.visit.global.ConnectionChecker;
-import org.scribble.core.visit.global.ExtChoiceConsistencyChecker;
-import org.scribble.core.visit.global.GTypeInliner;
-import org.scribble.core.visit.global.GTypeUnfolder;
-import org.scribble.core.visit.global.InlinedProjector;
-import org.scribble.core.visit.global.Projector;
-import org.scribble.core.visit.global.RoleEnablingChecker;
-import org.scribble.core.visit.local.InlinedExtChoiceSubjFixer;
-import org.scribble.core.visit.local.ReachabilityChecker;
+import org.scribble.core.visit.global.GTypeVisitorFactory;
+import org.scribble.core.visit.local.LTypeVisitorFactory;
 
-public class STypeVisitorFactoryImpl implements STypeVisitorFactory
+public class STypeVisitorFactoryImpl
 {
+	public final GTypeVisitorFactory global;
+	public final LTypeVisitorFactory local;
+	
+	public STypeVisitorFactoryImpl(GTypeVisitorFactory global, LTypeVisitorFactory local)
+	{
+		this.global = global;
+		this.local = local;
+	}
 
-	@Override
 	public <K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> Substitutor(
 			List<Role> rold, List<Role> rnew,
 			List<MemberName<? extends NonRoleParamKind>> aold,
@@ -46,66 +43,9 @@ public class STypeVisitorFactoryImpl implements STypeVisitorFactory
 		return new Substitutor<>(rold, rnew, aold, anew);
 	}
 
-	@Override
-	public GTypeInliner GTypeInliner(Core core)
-	{
-		return new GTypeInliner(core);
-	}
-
-	@Override
-	public GTypeUnfolder GTypeUnfolder(Core core)
-	{
-		return new GTypeUnfolder(core);
-	}
-
-	@Override
 	public <K extends ProtoKind, B extends Seq<K, B>> RecPruner<K, B> RecPruner()
 	{
 		return new RecPruner<>();
-	}
-
-	@Override
-	public RoleEnablingChecker RoleEnablingChecker(Set<Role> rs)
-	{
-		return new RoleEnablingChecker(rs);
-	}
-
-	@Override
-	public ExtChoiceConsistencyChecker ExtChoiceConsistencyChecker(
-			Map<Role, Role> enabled)
-	{
-		return new ExtChoiceConsistencyChecker(enabled);
-	}
-
-	@Override
-	public ConnectionChecker ConnectionChecker(Set<Role> roles, boolean implicit)
-	{
-		return new ConnectionChecker(roles, implicit);
-	}
-
-	@Override
-	public InlinedProjector InlinedProjector(Core core, Role self)
-	{
-		return new InlinedProjector(core, self);
-	}
-
-	@Override
-	public InlinedExtChoiceSubjFixer InlinedExtChoiceSubjFixer()
-	{
-		return new InlinedExtChoiceSubjFixer();
-	}
-
-	@Override
-	public ReachabilityChecker ReachabilityChecker()
-	{
-		return new ReachabilityChecker();
-	}
-
-	// CHECKME: deprecate?
-	@Override
-	public Projector Projector(Core core, Role self)
-	{
-		return new Projector(core, self);
 	}
 
 }

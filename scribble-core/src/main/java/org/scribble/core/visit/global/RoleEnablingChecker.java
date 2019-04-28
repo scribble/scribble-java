@@ -37,7 +37,7 @@ public class RoleEnablingChecker extends STypeVisitor<Global, GSeq>
 {
 	private Set<Role> enabled;  // Invariant: unmodifiable
 
-	public RoleEnablingChecker(Set<Role> enabled)
+	protected RoleEnablingChecker(Set<Role> enabled)
 	{
 		setEnabled(enabled);
 	}

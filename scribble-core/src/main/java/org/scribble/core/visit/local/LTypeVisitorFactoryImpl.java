@@ -14,24 +14,25 @@
 package org.scribble.core.visit.local;
 
 import org.scribble.core.job.Core;
-import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.session.Continue;
-import org.scribble.core.type.session.local.LSeq;
-import org.scribble.core.type.session.local.LType;
-import org.scribble.core.visit.STypeUnfolder;
 
-public class LTypeUnfolder extends STypeUnfolder<Local, LSeq>
+public class LTypeVisitorFactoryImpl implements LTypeVisitorFactory
 {
-	
-	protected LTypeUnfolder(Core core)
+
+	@Override
+	public InlinedExtChoiceSubjFixer InlinedExtChoiceSubjFixer()
 	{
-		super(core);
+		return new InlinedExtChoiceSubjFixer();
 	}
 
 	@Override
-	public LType visitContinue(Continue<Local, LSeq> n)
+	public ReachabilityChecker ReachabilityChecker()
 	{
-		return this.core.config.tf.local.LRecursion(n.getSource(), n.recvar,
-				(LSeq) getRec(n.recvar));
+		return new ReachabilityChecker();
+	}
+
+	@Override
+	public EGraphBuilder EGraphBuilder(Core core)
+	{
+		return new EGraphBuilder(core);
 	}
 }
