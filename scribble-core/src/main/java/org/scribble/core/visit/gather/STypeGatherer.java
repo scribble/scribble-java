@@ -52,7 +52,9 @@ public abstract class STypeGatherer<K extends ProtoKind, B extends Seq<K, B>, T>
 					? Optional.of(visitRecursion((Recursion<K, B>) n))
 			: (n instanceof Do<?, ?>)     
 					? Optional.of(this.visitDo((Do<K, B>) n))
-			: Optional.empty();  // Better for extensibility than "manually" throwing Exception (e.g., for overriding)
+			: Optional.empty(); 
+					// Better for extensibility than "manually" throwing Exception (e.g., for overriding)
+					// N.B. currently causes exception on get in visit
 	}
 
 	public Stream<T> visitContinue(Continue<K, B> n)

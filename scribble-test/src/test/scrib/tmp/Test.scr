@@ -470,6 +470,7 @@ explicit global protocol Foo(role A, role B, role C)
 	choice at A
 	{
 		1() from A to B;
+		//disconnect A and B;
 		do Foo(A, B, C);
 	}
 	or
