@@ -133,9 +133,9 @@ public interface DelFactory
 	void UnaryPayElem(UnaryPayElem<?> n);
 	void GDelegPayElem(GDelegPayElem n);
 
+	void GMsgTransfer(GMsgTransfer n);
 	void GConnect(GConnect n);
 	void GDisconnect(GDisconnect n);
-	void GMsgTransfer(GMsgTransfer n);
 	void GWrap(GWrap n);
 
 	void GContinue(GContinue n);
@@ -161,11 +161,11 @@ public interface DelFactory
 
 	//void LDelegElem(LDelegElem n);
 
+	void LSend(LSend n);
+	void LRecv(LRecv n);
 	void LAcc(LAcc n);
 	void LReq(LReq n);
 	void LDisconnect(LDisconnect n);
-	void LSend(LSend n);
-	void LRecv(LRecv n);
 	void LClientWrap(LClientWrap n);
 	void LServerWrap(LServerWrap n);
 

@@ -130,9 +130,9 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.PAYELEM_LIST: n = new PayElemList(t); break;
 			case ScribbleParser.UNARY_PAYELEM: n = new UnaryPayElem<>(t); break;
 
+			case ScribbleParser.GMSGTRANSFER: n = new GMsgTransfer(t); break;
 			case ScribbleParser.GCONNECT: n = new GConnect(t); break;
 			case ScribbleParser.GDCONN: n = new GDisconnect(t); break;
-			case ScribbleParser.GMSGTRANSFER: n = new GMsgTransfer(t); break;
 			case ScribbleParser.GWRAP: n = new GWrap(t); break;
 
 			case ScribbleParser.GCONTINUE: n = new GContinue(t); break;

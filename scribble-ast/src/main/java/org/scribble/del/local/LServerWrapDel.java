@@ -14,17 +14,34 @@
 package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LClientWrap;
+import org.scribble.ast.local.LServerWrap;
 import org.scribble.del.BasicInteractionDel;
+import org.scribble.del.ConnectionActionDel;
+import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
+import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
-public class LWrapClientDel extends BasicInteractionDel  // LWrapDel
+public class LServerWrapDel extends BasicInteractionDel  // LWrapDel
 		implements LSimpleSessionNodeDel
 {
+
 	@Override
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
 			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LClientWrap) child).getClientChild().toName());
+		fixer.setChoiceSubject(((LServerWrap) child).getClientChild().toName());
+	}
+
+	@Override
+	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker)
+			throws ScribException
+	{
+		super.enterUnguardedChoiceDoProjectionCheck(parent, child, checker);
+		LServerWrap la = (LServerWrap) child;
+		UnguardedChoiceDoEnv env = checker.popEnv();
+		env = env.setChoiceSubject(la.getClientChild().toName());
+		checker.pushEnv(env);
 	}
 }

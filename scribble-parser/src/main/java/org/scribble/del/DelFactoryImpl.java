@@ -51,7 +51,9 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LAcc;
 import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LClientWrap;
 import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtoBlock;
@@ -62,6 +64,7 @@ import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.local.LRecv;
 import org.scribble.ast.local.LReq;
 import org.scribble.ast.local.LSend;
+import org.scribble.ast.local.LServerWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
@@ -88,6 +91,21 @@ import org.scribble.del.global.GProtoDeclDel;
 import org.scribble.del.global.GProtoDefDel;
 import org.scribble.del.global.GRecursionDel;
 import org.scribble.del.global.GWrapDel;
+import org.scribble.del.local.LAccDel;
+import org.scribble.del.local.LChoiceDel;
+import org.scribble.del.local.LClientWrapDel;
+import org.scribble.del.local.LContinueDel;
+import org.scribble.del.local.LDisconnectDel;
+import org.scribble.del.local.LDoDel;
+import org.scribble.del.local.LInteractionSeqDel;
+import org.scribble.del.local.LProtoBlockDel;
+import org.scribble.del.local.LProtoDeclDel;
+import org.scribble.del.local.LProtoDefDel;
+import org.scribble.del.local.LRecursionDel;
+import org.scribble.del.local.LRecvDel;
+import org.scribble.del.local.LReqDel;
+import org.scribble.del.local.LSendDel;
+import org.scribble.del.local.LServerWrapDel;
 import org.scribble.del.name.qualified.DataNameNodeDel;
 import org.scribble.del.name.qualified.SigNameNodeDel;
 import org.scribble.del.name.simple.AmbigNameNodeDel;
@@ -335,6 +353,12 @@ public class DelFactoryImpl implements DelFactory
 	}*/
 
 	@Override
+	public void GMsgTransfer(GMsgTransfer n)
+	{
+		setDel(n, new GMessageTransferDel());
+	}
+
+	@Override
 	public void GConnect(GConnect n)
 	{
 		setDel(n, new GConnectDel());
@@ -344,12 +368,6 @@ public class DelFactoryImpl implements DelFactory
 	public void GDisconnect(GDisconnect n)
 	{
 		setDel(n, new GDisconnectDel());
-	}
-
-	@Override
-	public void GMsgTransfer(GMsgTransfer n)
-	{
-		setDel(n, new GMessageTransferDel());
 	}
 
 	@Override
@@ -443,18 +461,6 @@ public class DelFactoryImpl implements DelFactory
 	}*/
 
 	@Override
-	public void LAcc(LAcc n)
-	{
-		setDel(n, new LAccDel());
-	}
-
-	@Override
-	public void LReq(LReq n)
-	{
-		setDel(n, new LReqDel());
-	}
-
-	@Override
 	public void LSend(LSend n)
 	{
 		setDel(n, new LSendDel());
@@ -467,13 +473,31 @@ public class DelFactoryImpl implements DelFactory
 	}
 
 	@Override
-	public void LClientWrap(LClientWrapWrap n)
+	public void LAcc(LAcc n)
+	{
+		setDel(n, new LAccDel());
+	}
+
+	@Override
+	public void LReq(LReq n)
+	{
+		setDel(n, new LReqDel());
+	}
+
+	@Override
+	public void LDisconnect(LDisconnect n)
+	{
+		setDel(n, new LDisconnectDel());
+	}
+
+	@Override
+	public void LClientWrap(LClientWrap n)
 	{
 		setDel(n, new LClientWrapDel());
 	}
 
 	@Override
-	public void LServerWrap(LServerWrapWrap n)
+	public void LServerWrap(LServerWrap n)
 	{
 		setDel(n, new LServerWrapDel());
 	}
