@@ -27,11 +27,11 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.del.ProtocolDeclDel;
+import org.scribble.del.ProtoDeclDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
-public class GProtoDeclDel extends ProtocolDeclDel<Global> implements GDel
+public class GProtoDeclDel extends ProtoDeclDel<Global> implements GDel
 {
 	public GProtoDeclDel()
 	{

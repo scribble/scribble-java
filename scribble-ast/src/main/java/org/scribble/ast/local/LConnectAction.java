@@ -11,15 +11,25 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.local;
+package org.scribble.ast.local;
 
+import org.antlr.runtime.Token;
+import org.scribble.ast.ConnectAction;
 import org.scribble.core.type.kind.Local;
-import org.scribble.del.ProtocolDeclDel;
 
-public class LProtocolDeclDel extends ProtocolDeclDel<Local> implements LDel
+public abstract class LConnectAction extends ConnectAction<Local>
+		implements LSimpleSessionNode
 {
-	public LProtocolDeclDel()
+	// ScribTreeAdaptor#create constructor
+	public LConnectAction(Token t)
 	{
-
+		super(t);
 	}
+
+	// Tree#dupNode constructor
+	public LConnectAction(LConnectAction node)
+	{
+		super(node);
+	}
+	
 }

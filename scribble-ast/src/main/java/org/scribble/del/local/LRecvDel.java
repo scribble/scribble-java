@@ -14,29 +14,30 @@
 package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LMsgTransfer;
-import org.scribble.ast.local.LSend;
+import org.scribble.ast.local.LRecv;
 import org.scribble.util.ScribException;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.wf.ExplicitCorrelationChecker;
+import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
+import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
-public class LSendDel extends LMsgTransferDel
+public class LRecvDel extends LMsgTransferDel
 {
-	// Could make a LMsgTransferDel to factor this out with LReceiveDel
 	@Override
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
 			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LSend) child).src.toName());
+		fixer.setChoiceSubject(((LRecv) child).src.toName());
 	}
 	
 	@Override
-	public LMsgTransfer leaveExplicitCorrelationCheck(ScribNode parent,
-			ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited)
+	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker)
 			throws ScribException
 	{
-		LMsgTransfer lmt = (LMsgTransfer) visited;
-		checker.pushEnv(checker.popEnv().disableAccept());
-		return lmt;
+		super.enterUnguardedChoiceDoProjectionCheck(parent, child, checker);
+		LRecv lr = (LRecv) child;
+		UnguardedChoiceDoEnv env = checker.popEnv();
+		env = env.setChoiceSubject(lr.getSourceChild().toName());
+		checker.pushEnv(env);
 	}
 }

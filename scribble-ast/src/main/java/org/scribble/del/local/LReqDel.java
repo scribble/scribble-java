@@ -14,29 +14,15 @@
 package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LMsgTransfer;
-import org.scribble.ast.local.LSend;
-import org.scribble.util.ScribException;
+import org.scribble.ast.local.LReq;
 import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.wf.ExplicitCorrelationChecker;
 
-public class LSendDel extends LMsgTransferDel
+public class LReqDel extends LConnectionActionDel
 {
-	// Could make a LMsgTransferDel to factor this out with LReceiveDel
 	@Override
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
 			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(((LSend) child).src.toName());
-	}
-	
-	@Override
-	public LMsgTransfer leaveExplicitCorrelationCheck(ScribNode parent,
-			ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited)
-			throws ScribException
-	{
-		LMsgTransfer lmt = (LMsgTransfer) visited;
-		checker.pushEnv(checker.popEnv().disableAccept());
-		return lmt;
+		fixer.setChoiceSubject(((LReq) child).getSourceChild().toName());
 	}
 }

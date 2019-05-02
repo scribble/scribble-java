@@ -11,14 +11,37 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.local;
+package org.scribble.ast.local;
 
-import org.scribble.del.ProtocolDefDel;
+import org.antlr.runtime.Token;
+import org.scribble.ast.DisconnectAction;
+import org.scribble.core.type.kind.Local;
+import org.scribble.del.DelFactory;
 
-public class LProtocolDefDel extends ProtocolDefDel
+public class LDisconnect extends DisconnectAction<Local>
+		implements LSimpleSessionNode
 {
-	public LProtocolDefDel()
+	// ScribTreeAdaptor#create constructor
+	public LDisconnect(Token t)
 	{
+		super(t);
+	}
 
+	// Tree#dupNode constructor
+	public LDisconnect(LDisconnect node)
+	{
+		super(node);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.LDisconnect(this);
+	}
+	
+	@Override
+	public LDisconnect dupNode()
+	{
+		return new LDisconnect(this);
 	}
 }

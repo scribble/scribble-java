@@ -11,45 +11,44 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
+package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.BasicInteraction;
+import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
 import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-// TODO: factor out base Wrap (cf. Disconnect) -- Wrap is a ConnectionAction?
-public class GWrap extends BasicInteraction<Global>
-		implements GSimpleSessionNode
+// TODO: factor out base Wrap (cf. Disconnect)
+public class LServerWrap extends BasicInteraction<Local>  // Wrap, ConnectionAction -- CHECKME?
+		implements LSimpleSessionNode
 {
-	// TODO: move to a base Wrap -- N.B. DirectedInteraction has its own children indices
-	public static final int CLIENT_CHILD_INDEX = 0;
-	public static final int SERVER_CHILD_INDEX = 1;
 
 	// ScribTreeAdaptor#create constructor
-	public GWrap(Token t)
+	public LServerWrap(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public GWrap(GWrap node)
+	public LServerWrap(LServerWrap node)
 	{
 		super(node);
 	}
 	
 	public RoleNode getClientChild()
 	{
-		return (RoleNode) getChild(CLIENT_CHILD_INDEX);
+		return (RoleNode) getChild(GWrap.CLIENT_CHILD_INDEX);  // Assuming local will inherit both sides from some base (cf. base ConnectAction)
 	}
 
+	// TOOD: factor out a base
 	public RoleNode getServerChild()
 	{
-		return (RoleNode) getChild(SERVER_CHILD_INDEX);
+		return (RoleNode) getChild(GWrap.SERVER_CHILD_INDEX);
 	}
 
 	// "add", not "set"
@@ -61,27 +60,29 @@ public class GWrap extends BasicInteraction<Global>
 	}
 	
 	@Override
-	public GWrap dupNode()
+	public LServerWrap dupNode()
 	{
-		return new GWrap(this);
+		return new LServerWrap(this);
 	}
 	
 	@Override
 	public void decorateDel(DelFactory df)
 	{
-		df.GWrap(this);
+		df.LServerWrap(this);
 	}
 
-	public GWrap reconstruct(RoleNode client, RoleNode server)
+	// TODO: factor out a base
+	public LServerWrap reconstruct(RoleNode client, RoleNode server)
 	{
-		GWrap n = dupNode();
+		LServerWrap n = dupNode();
 		n.addScribChildren(client, server);
 		n.setDel(del());  // No copy
 		return n;
 	}
 
+	// TODO: factor out a base
 	@Override
-	public GWrap visitChildren(AstVisitor nv) throws ScribException
+	public LServerWrap visitChildren(AstVisitor nv) throws ScribException
 	{
 		RoleNode src = (RoleNode) visitChild(getClientChild(), nv);
 		RoleNode dest = (RoleNode) visitChild(getServerChild(), nv);
@@ -91,7 +92,6 @@ public class GWrap extends BasicInteraction<Global>
 	@Override
 	public String toString()
 	{
-		return Constants.WRAP_KW + " " + getClientChild()
-				+ " " + Constants.TO_KW + " " + getServerChild() + ";";
+		return Constants.WRAP_KW + " " + getClientChild() + ";";
 	}
 }

@@ -11,9 +11,22 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.local;
+package org.scribble.ast.local;
 
-public class LReceiveDel extends LMessageTransferDel
+import org.scribble.ast.ProtoKindNode;
+import org.scribble.core.type.kind.Local;
+
+public interface LScribNode extends ProtoKindNode<Local>
 {
-
+	@Override
+	default boolean isLocal()
+	{
+		return true;
+	}
+	
+	@Override
+	default Local getKind()
+	{
+		return Local.KIND;
+	}
 }

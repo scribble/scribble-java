@@ -11,48 +11,42 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.Choice;
-import org.scribble.ast.ScribNode;
-import org.scribble.core.type.kind.Global;
+import org.scribble.ast.Recursion;
+import org.scribble.core.type.kind.Local;
 import org.scribble.del.DelFactory;
 
-public class GChoice extends Choice<Global> implements GCompoundSessionNode
+public class LRecursion extends Recursion<Local> implements LCompoundSessionNode
 {
 	// ScribTreeAdaptor#create constructor
-	public GChoice(Token t)
+	public LRecursion(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected GChoice(GChoice node)
+	protected LRecursion(LRecursion node)
 	{
 		super(node);
 	}
-	
+
 	@Override
-	public List<GProtoBlock> getBlockChildren()
+	public LProtoBlock getBlockChild()
 	{
-		List<? extends ScribNode> cs = getChildren();
-		return cs.subList(Choice.BLOCK_CHILDREN_START_INDEX, cs.size()).stream()
-				.map(x -> (GProtoBlock) x).collect(Collectors.toList());
+		return (LProtoBlock) getChild(Recursion.BODY_CHILD_INDEX);
 	}
 	
 	@Override
-	public GChoice dupNode()
+	public LRecursion dupNode()
 	{
-		return new GChoice(this);
+		return new LRecursion(this);
 	}
 	
 	@Override
 	public void decorateDel(DelFactory df)
 	{
-		df.GChoice(this);
+		df.LRecursion(this);
 	}
 }

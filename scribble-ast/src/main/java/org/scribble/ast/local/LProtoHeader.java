@@ -11,48 +11,57 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.Choice;
-import org.scribble.ast.ScribNode;
-import org.scribble.core.type.kind.Global;
+import org.scribble.ast.ProtoHeader;
+import org.scribble.ast.name.qualified.LProtoNameNode;
+import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.del.DelFactory;
+import org.scribble.util.Constants;
 
-public class GChoice extends Choice<Global> implements GCompoundSessionNode
+public class LProtoHeader extends ProtoHeader<Local> implements LSessionNode
 {
 	// ScribTreeAdaptor#create constructor
-	public GChoice(Token t)
+	public LProtoHeader(Token t)
 	{
 		super(t);
 	}
-
+	
 	// Tree#dupNode constructor
-	protected GChoice(GChoice node)
+	protected LProtoHeader(LProtoHeader node)
 	{
 		super(node);
 	}
-	
+
 	@Override
-	public List<GProtoBlock> getBlockChildren()
+	public LProtoHeader dupNode()
 	{
-		List<? extends ScribNode> cs = getChildren();
-		return cs.subList(Choice.BLOCK_CHILDREN_START_INDEX, cs.size()).stream()
-				.map(x -> (GProtoBlock) x).collect(Collectors.toList());
-	}
-	
-	@Override
-	public GChoice dupNode()
-	{
-		return new GChoice(this);
+		return new LProtoHeader(this);
 	}
 	
 	@Override
 	public void decorateDel(DelFactory df)
 	{
-		df.GChoice(this);
+		df.LProtoHeader(this);
+	}
+	
+	@Override
+	public LProtoNameNode getNameNodeChild()
+	{
+		return (LProtoNameNode) getRawNameNodeChild();
+	}
+
+	@Override
+	public LProtoName getDeclName()
+	{
+		return (LProtoName) super.getDeclName();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return Constants.LOCAL_KW + " " + super.toString();
 	}
 }

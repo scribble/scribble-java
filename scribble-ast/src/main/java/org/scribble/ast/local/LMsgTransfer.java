@@ -11,20 +11,24 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.local;
+package org.scribble.ast.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LClientWrap;
-import org.scribble.del.BasicInteractionDel;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.antlr.runtime.Token;
+import org.scribble.ast.MsgTransfer;
+import org.scribble.core.type.kind.Local;
 
-public class LWrapClientDel extends BasicInteractionDel  // LWrapDel
-		implements LSimpleSessionNodeDel
+public abstract class LMsgTransfer extends MsgTransfer<Local>
+		implements LSimpleSessionNode
 {
-	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
-			ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	// ScribTreeAdaptor#create constructor
+	public LMsgTransfer(Token t)
 	{
-		fixer.setChoiceSubject(((LClientWrap) child).getClientChild().toName());
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	public LMsgTransfer(LMsgTransfer node)
+	{
+		super(node);
 	}
 }

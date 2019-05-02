@@ -11,61 +11,62 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
+package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.Do;
-import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.LProtoNameNode;
 import org.scribble.core.lang.context.ModuleContext;
-import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.del.DelFactory;
 import org.scribble.job.JobContext;
 
-public class GDo extends Do<Global> implements GSimpleSessionNode
+public class LDo extends Do<Local> implements LSimpleSessionNode
 {
+
 	// ScribTreeAdaptor#create constructor
-	public GDo(Token t)
+	public LDo(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public GDo(GDo node)
+	public LDo(LDo node)
 	{
 		super(node);
 	}
 
 	@Override
-	public GProtoNameNode getProtocolNameNode()
+	public LProtoNameNode getProtocolNameNode()
 	{
-		return (GProtoNameNode) getChild(Do.NAME_CHILD_INDEX);
+		return (LProtoNameNode) getChild(Do.NAME_CHILD_INDEX);
 	}
 
 	@Override
-	public GProtoDecl getTargetProtocolDecl(JobContext jobc,
+	public LProtoDecl getTargetProtocolDecl(JobContext jobc,
 			ModuleContext modc)
 	{
-		GProtoName fullname = getTargetProtoDeclFullName(modc);
+		LProtoName fullname = getTargetProtoDeclFullName(modc);
 		return jobc.getModule(fullname.getPrefix())
-				.getGProtocolDeclChild(fullname.getSimpleName());
+				.getLProtocolDeclChild(fullname.getSimpleName());
 	}
 	
 	@Override
-	public GDo dupNode()
+	public LDo dupNode()
 	{
-		return new GDo(this);
+		return new LDo(this);
 	}
 	
 	@Override
 	public void decorateDel(DelFactory df)
 	{
-		df.GDo(this);
+		df.LDo(this);
 	}
 
 	@Override
-	public GProtoName getTargetProtoDeclFullName(ModuleContext modc)
+	public LProtoName getTargetProtoDeclFullName(ModuleContext modc)
 	{
-		return (GProtoName) super.getTargetProtoDeclFullName(modc);
+		return (LProtoName) super.getTargetProtoDeclFullName(modc);
 	}
 }

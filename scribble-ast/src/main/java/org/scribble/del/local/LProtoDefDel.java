@@ -13,7 +13,12 @@
  */
 package org.scribble.del.local;
 
-public class LAcceptDel extends LConnectionActionDel
+import org.scribble.del.ProtoDefDel;
+
+public class LProtoDefDel extends ProtoDefDel
 {
-	
+	public LProtoDefDel()
+	{
+
+	}
 }

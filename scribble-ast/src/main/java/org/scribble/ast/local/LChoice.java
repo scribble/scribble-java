@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
+package org.scribble.ast.local;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,40 +19,40 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
-import org.scribble.core.type.kind.Global;
+import org.scribble.core.type.kind.Local;
 import org.scribble.del.DelFactory;
 
-public class GChoice extends Choice<Global> implements GCompoundSessionNode
+public class LChoice extends Choice<Local> implements LCompoundSessionNode
 {
 	// ScribTreeAdaptor#create constructor
-	public GChoice(Token t)
+	public LChoice(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	protected GChoice(GChoice node)
+	protected LChoice(LChoice node)
 	{
 		super(node);
 	}
 	
 	@Override
-	public List<GProtoBlock> getBlockChildren()
+	public List<LProtoBlock> getBlockChildren()
 	{
 		List<? extends ScribNode> cs = getChildren();
 		return cs.subList(Choice.BLOCK_CHILDREN_START_INDEX, cs.size()).stream()
-				.map(x -> (GProtoBlock) x).collect(Collectors.toList());
+				.map(x -> (LProtoBlock) x).collect(Collectors.toList());
 	}
 	
 	@Override
-	public GChoice dupNode()
+	public LChoice dupNode()
 	{
-		return new GChoice(this);
+		return new LChoice(this);
 	}
 	
 	@Override
 	public void decorateDel(DelFactory df)
 	{
-		df.GChoice(this);
+		df.LChoice(this);
 	}
 }

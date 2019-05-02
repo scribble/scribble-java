@@ -11,12 +11,12 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.local;
+package org.scribble.del;
 
-import org.scribble.del.MessageTransferDel;
-
-public abstract class LMessageTransferDel extends MessageTransferDel
-		implements LSimpleSessionNodeDel
+public abstract class MsgTransferDel extends DirectedInteractionDel
 {
+	public MsgTransferDel()
+	{
 
+	}
 }

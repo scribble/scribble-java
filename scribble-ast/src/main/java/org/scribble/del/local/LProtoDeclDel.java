@@ -13,18 +13,13 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LClientWrap;
-import org.scribble.del.BasicInteractionDel;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.core.type.kind.Local;
+import org.scribble.del.ProtoDeclDel;
 
-public class LWrapClientDel extends BasicInteractionDel  // LWrapDel
-		implements LSimpleSessionNodeDel
+public class LProtoDeclDel extends ProtoDeclDel<Local>
 {
-	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
-			ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	public LProtoDeclDel()
 	{
-		fixer.setChoiceSubject(((LClientWrap) child).getClientChild().toName());
+
 	}
 }

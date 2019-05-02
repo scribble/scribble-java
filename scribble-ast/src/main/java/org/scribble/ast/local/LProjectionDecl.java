@@ -11,48 +11,43 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.ast.global;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.Choice;
-import org.scribble.ast.ScribNode;
-import org.scribble.core.type.kind.Global;
 import org.scribble.del.DelFactory;
 
-public class GChoice extends Choice<Global> implements GCompoundSessionNode
+public class LProjectionDecl extends LProtoDecl
 {
+	//public final GProtoName parent;  // FIXME: additional ast child?
+
 	// ScribTreeAdaptor#create constructor
-	public GChoice(Token t)
+	public LProjectionDecl(Token t)
 	{
 		super(t);
 	}
-
+	
 	// Tree#dupNode constructor
-	protected GChoice(GChoice node)
+	protected LProjectionDecl(LProtoDecl node)
 	{
 		super(node);
 	}
-	
+
+	// Cf. CommonTree#dupNode
 	@Override
-	public List<GProtoBlock> getBlockChildren()
+	public LProtoDecl dupNode()
 	{
-		List<? extends ScribNode> cs = getChildren();
-		return cs.subList(Choice.BLOCK_CHILDREN_START_INDEX, cs.size()).stream()
-				.map(x -> (GProtoBlock) x).collect(Collectors.toList());
-	}
-	
-	@Override
-	public GChoice dupNode()
-	{
-		return new GChoice(this);
+		return new LProtoDecl(this);
 	}
 	
 	@Override
 	public void decorateDel(DelFactory df)
 	{
-		df.GChoice(this);
+		throw new RuntimeException("TODO: " + this);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "TODO";
 	}
 }

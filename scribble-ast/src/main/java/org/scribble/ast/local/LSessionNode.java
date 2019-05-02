@@ -11,20 +11,22 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.local;
+package org.scribble.ast.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LClientWrap;
-import org.scribble.del.BasicInteractionDel;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
+import org.scribble.ast.SessionNode;
+import org.scribble.core.type.kind.Local;
 
-public class LWrapClientDel extends BasicInteractionDel  // LWrapDel
-		implements LSimpleSessionNodeDel
+public interface LSessionNode extends SessionNode<Local>, LScribNode
 {
 	@Override
-	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
-			ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	default boolean isLocal()
 	{
-		fixer.setChoiceSubject(((LClientWrap) child).getClientChild().toName());
+		return true;
+	}
+	
+	@Override
+	default Local getKind()
+	{
+		return Local.KIND;
 	}
 }

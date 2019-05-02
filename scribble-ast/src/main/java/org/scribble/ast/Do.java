@@ -92,7 +92,7 @@ public abstract class Do<K extends ProtoKind>
 	// FIXME: mcontext now redundant because NameDisambiguator converts all targets to full names -- NO: currently disamb doesn't
 	// To get full name from original target name, use mcontext visible names (e.g. in or before name disambiguation pass)
 	// This is still useful for subclass casting to G/LProtocolName
-	public ProtoName<K> getTargetProtocolDeclFullName(ModuleContext mcontext)
+	public ProtoName<K> getTargetProtoDeclFullName(ModuleContext mcontext)
 	{
 		//return mcontext.checkProtocolDeclDependencyFullName(this.proto.toName());
 		return getProtocolNameNode().toName();  // Pre: use after name disambiguation (maybe drop FullName suffix)

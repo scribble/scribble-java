@@ -20,12 +20,12 @@ import org.scribble.ast.global.GMsgTransfer;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Msg;
-import org.scribble.del.MessageTransferDel;
+import org.scribble.del.MsgTransferDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.NameDisambiguator;
 
-public class GMessageTransferDel extends MessageTransferDel
+public class GMessageTransferDel extends MsgTransferDel
 		implements GSimpleSessionNodeDel
 {
 	public GMessageTransferDel()

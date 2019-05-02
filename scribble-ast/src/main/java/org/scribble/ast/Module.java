@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.global.GProtoDecl;
+import org.scribble.ast.local.LProtoDecl;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.del.DelFactory;
@@ -171,6 +173,14 @@ public class Module extends ScribNodeBase
 						// Less efficient, but smaller code
 	}
 	
+	// TODO: factor out with above
+	public List<LProtoDecl> getLProtoDeclChildren()
+	{
+		return getProtoDeclChildren().stream().filter(x -> x.isLocal())
+				.map(x -> (LProtoDecl) x).collect(Collectors.toList());
+						// Less efficient, but smaller code
+	}
+	
 	// CHECKME: allow global and local protocols with same simpname in same module? -- currently, no?
 	public boolean hasGProtocolDecl(GProtoName simpname)
 	{
@@ -183,6 +193,20 @@ public class Module extends ScribNodeBase
 			GProtoName simpname)
 	{
 		Optional<GProtoDecl> res = getGProtoDeclChildren().stream()
+				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
+				.findFirst();  // No duplication check, rely on WF
+		if (!res.isPresent())
+		{
+			throw new RuntimeException("Proto decl not found: " + simpname);
+		}
+		return res.get();
+	}
+
+	// Pre: hasProtocolDecl(simpname)  // TODO: factor out with above
+	public LProtoDecl getLProtocolDeclChild(
+			LProtoName simpname)
+	{
+		Optional<LProtoDecl> res = getLProtoDeclChildren().stream()
 				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
 				.findFirst();  // No duplication check, rely on WF
 		if (!res.isPresent())

@@ -13,7 +13,10 @@
  */
 package org.scribble.del;
 
-public abstract class ProtocolDefDel extends ScribDelBase
-{
 
+// Not a CompoundSessionNodeDel -- corresponds to ProtocolBlock, not a CompoundSessionNode
+// A ProtocolBlock is not a "direct" session type constructor (cf. SessionNode)
+public abstract class ProtoBlockDel extends ScribDelBase
+{
+	
 }

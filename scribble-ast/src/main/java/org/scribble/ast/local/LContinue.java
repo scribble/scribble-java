@@ -11,12 +11,36 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del;
+package org.scribble.ast.local;
 
+import org.antlr.runtime.Token;
+import org.scribble.ast.Continue;
+import org.scribble.core.type.kind.Local;
+import org.scribble.del.DelFactory;
 
-// Not a CompoundSessionNodeDel -- corresponds to ProtocolBlock, not a CompoundSessionNode
-// A ProtocolBlock is not a "direct" session type constructor (cf. SessionNode)
-public abstract class ProtocolBlockDel extends ScribDelBase
+public class LContinue extends Continue<Local> implements LSimpleSessionNode
 {
+	// ScribTreeAdaptor#create constructor
+	public LContinue(Token t)
+	{
+		super(t);
+	}
+
+	// Tree#dupNode constructor
+	protected LContinue(LContinue node)
+	{
+		super(node);
+	}
 	
+	@Override
+	public LContinue dupNode()
+	{
+		return new LContinue(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.LContinue(this);
+	}
 }

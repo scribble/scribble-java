@@ -11,9 +11,26 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.scribble.del.local;
+package org.scribble.del;
 
-public class LRequestDel extends LConnectionActionDel
+import org.scribble.ast.ScribNode;
+import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.util.ScribException;
+import org.scribble.visit.NameDisambiguator;
+
+public abstract class ProtoDeclDel<K extends ProtoKind>
+		extends ScribDelBase
 {
-	
+	protected ProtoDeclDel()
+	{
+
+	}
+
+	@Override
+	public ScribNode leaveDisambiguation(ScribNode child,
+			NameDisambiguator disamb, ScribNode visited) throws ScribException
+	{
+		disamb.clear();
+		return visited;
+	}
 }
