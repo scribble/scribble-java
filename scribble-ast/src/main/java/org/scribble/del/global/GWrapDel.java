@@ -39,7 +39,7 @@ public class GWrapDel extends BasicInteractionDel //ConnectionActionDel
 	}
 
 	@Override
-	public GNode translate(ScribNode n, GTypeTranslator t) throws ScribException
+	public GNode translate(ScribNode n, GTypeTranslator t)
 	{
 		throw new RuntimeException("[TODO] :" + n);
 	}

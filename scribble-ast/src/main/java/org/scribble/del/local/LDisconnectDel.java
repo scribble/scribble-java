@@ -13,17 +13,12 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LDisconnect;
 import org.scribble.del.ConnectionActionDel;
-import org.scribble.main.ScribbleException;
-import org.scribble.type.name.Role;
-import org.scribble.visit.context.EGraphBuilder;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
 
-public class LDisconnectDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
+public class LDisconnectDel extends ConnectionActionDel
+		implements LSimpleSessionNodeDel
 {
-	@Override
+	/*@Override
 	public LDisconnect leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LDisconnect ld = (LDisconnect) visited;
@@ -36,5 +31,5 @@ public class LDisconnectDel extends ConnectionActionDel implements LSimpleIntera
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
 		fixer.setChoiceSubject(((LDisconnect) child).src.toName());
-	}
+	}*/
 }

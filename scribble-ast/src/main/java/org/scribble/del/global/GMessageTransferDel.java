@@ -51,7 +51,7 @@ public class GMessageTransferDel extends MsgTransferDel
 	
 	@Override
 	public org.scribble.core.type.session.global.GMessageTransfer translate(ScribNode n,
-			GTypeTranslator t) throws ScribException
+			GTypeTranslator t)
 	{
 		GMsgTransfer source = (GMsgTransfer) n;
 		Role src = source.getSourceChild().toName();

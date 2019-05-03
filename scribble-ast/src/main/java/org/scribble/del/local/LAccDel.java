@@ -13,16 +13,9 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LAcc;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
-import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
-
 public class LAccDel extends LConnectionActionDel
 {
-	@Override
+	/*@Override
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
 			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
@@ -39,5 +32,5 @@ public class LAccDel extends LConnectionActionDel
 		UnguardedChoiceDoEnv env = checker.popEnv();
 		env = env.setChoiceSubject(la.getSourceChild().toName());
 		checker.pushEnv(env);
-	}
+	}*/
 }

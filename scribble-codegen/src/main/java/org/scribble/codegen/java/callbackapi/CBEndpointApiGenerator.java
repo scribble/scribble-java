@@ -54,14 +54,7 @@ public class CBEndpointApiGenerator
 	public CBEndpointApiGenerator(Job job, GProtoName fullname, Role self, boolean subtypes)
 	{
 		this.job = job;
-		try
-		{
-			this.core = job.getCore();
-		}
-		catch (ScribException e)  // TODO: refactor
-		{
-			throw new RuntimeException(e);
-		}
+		this.core = job.getCore();
 		this.proto = fullname;
 		this.self = self;
 		

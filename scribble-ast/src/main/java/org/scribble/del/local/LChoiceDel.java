@@ -13,28 +13,11 @@
  */
 package org.scribble.del.local;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.scribble.ast.Choice;
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.kind.RoleKind;
-import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.ChoiceDel;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedChoiceDoPruner;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
-import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 public class LChoiceDel extends ChoiceDel implements LCompoundSessionNodeDel
 {
-	@Override
+	/*@Override
 	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
 			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
 			ScribNode visited) throws ScribException
@@ -106,5 +89,5 @@ public class LChoiceDel extends ChoiceDel implements LCompoundSessionNodeDel
 		fixer.setChoiceSubject(subj.toName());
 		LChoice projection = fixer.job.af.LChoice(lc.getSource(), subj, blocks);
 		return projection;
-	}
+	}*/
 }

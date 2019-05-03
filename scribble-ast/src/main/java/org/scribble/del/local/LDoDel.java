@@ -13,29 +13,11 @@
  */
 package org.scribble.del.local;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.scribble.ast.RoleArg;
-import org.scribble.ast.RoleArgList;
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GProtoDecl;
-import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LProtoDecl;
-import org.scribble.core.type.name.GProtoName;
-import org.scribble.core.type.name.Role;
 import org.scribble.del.DoDel;
-import org.scribble.job.JobContext;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedRoleDeclFixer;
-import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
 
 public class LDoDel extends DoDel implements LSimpleSessionNodeDel
 {
-	// Pre: this pass is only run on projections (LProjectionDeclDel has source global protocol info)
+	/*// Pre: this pass is only run on projections (LProjectionDeclDel has source global protocol info)
 	@Override
 	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent,
 			ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited)
@@ -64,7 +46,7 @@ public class LDoDel extends DoDel implements LSimpleSessionNodeDel
 	@Override
 	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribException
 	{
-		/*//if (checker.isCycle())
+		/* //if (checker.isCycle())
 		if (checker.isRootedCycle())  // ChoiceUnguardedSubprotocolChecker is a (regular) SubprotocolVisitor which pushes a subprotosig on root decl entry (ProjectedSubprotocolPruner.visit)
 			                            // Check for "rooted" cycle to ensure it's specifically the cycle from the root proto decl (back) to the target do
 																	// FIXME: but cycle to specific "target do" is not ensured: could be another instance of a do with the same subprotosig... an inherent issue of the current subprotocolvisitor framework
@@ -82,7 +64,7 @@ public class LDoDel extends DoDel implements LSimpleSessionNodeDel
 				checker.pushEnv(env.disablePrune());* /
 				//checker.enablePrune();
 			}
-		}*/
+		}* /
 		return super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker, visited);
 
 
@@ -99,5 +81,5 @@ public class LDoDel extends DoDel implements LSimpleSessionNodeDel
 		//		... but look only on direct path or across all branches?
 						
 		//...or else it should be: start from the target protocoldecl and go through to the candidate do (cf grecursion.prune)
-	}
+	}*/
 }

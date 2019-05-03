@@ -18,7 +18,6 @@ import java.util.Map;
 import org.scribble.core.job.Core;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.job.Job;
-import org.scribble.util.ScribException;
 
 // Basic pattern: use TypeGenerators to create all necessary TypeBuilders and cache them, and generateApi should call build on all as a final step
 public abstract class ApiGen
@@ -30,14 +29,7 @@ public abstract class ApiGen
 	public ApiGen(Job job, GProtoName fullname)
 	{
 		this.job = job;
-		try
-		{
-			this.core = job.getCore();
-		}
-		catch (ScribException e)  // TODO: refactor
-		{
-			throw new RuntimeException(e);
-		}
+		this.core = job.getCore();
 		this.gpn = fullname;
 	}
 	

@@ -30,9 +30,9 @@ import org.scribble.core.type.session.local.LTypeFactoryImpl;
 import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
+import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.VisitorFactory;
 import org.scribble.visit.VisitorFactoryImpl;
-import org.scribble.visit.GTypeTranslator;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Job
@@ -85,7 +85,7 @@ public class Job
 	// So, typically, Job passes should be finished before calling this
 	// Core passes may subsequently mutate Core(Context) though
 	// CHECKME: revise this pattern? -- maybe fork Core for a snapshot of current Job(Context) -- and, possibly, convert Core back to Job
-	public final Core getCore() throws ScribException
+	public final Core getCore()
 	{
 		if (this.core == null)
 		{

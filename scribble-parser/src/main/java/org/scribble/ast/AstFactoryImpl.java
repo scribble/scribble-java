@@ -37,9 +37,27 @@ import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
+import org.scribble.ast.local.LAcc;
+import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LClientWrap;
+import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDisconnect;
+import org.scribble.ast.local.LDo;
+import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
+import org.scribble.ast.local.LProtoBlock;
+import org.scribble.ast.local.LProtoDef;
+import org.scribble.ast.local.LProtoHeader;
+import org.scribble.ast.local.LRecursion;
+import org.scribble.ast.local.LRecv;
+import org.scribble.ast.local.LReq;
+import org.scribble.ast.local.LSend;
+import org.scribble.ast.local.LServerWrap;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.LProtoNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
@@ -115,7 +133,7 @@ public class AstFactoryImpl implements AstFactory
 		{
 			return new CommonToken(ScribbleParser.ID, text);
 		}
-		CommonToken t = new CommonToken(old);
+		CommonToken t = new CommonToken(old);  // Type and text set below, but "inherit" some other additional info
 		t.setType(ScribbleParser.ID);
 		t.setText(text);
 		return t;
@@ -587,8 +605,107 @@ public class AstFactoryImpl implements AstFactory
 		n.decorateDel(this.df);
 		return n;
 	}
-}
 
+	@Override
+	public LProjectionDecl LProjectionDecl(Token t, List<ProtoMod> mods,
+			GProtoNameNode fullname, RoleNode self, LProtoHeader header, LProtoDef def)  // del extends that of LProtoDecl
+	{
+		
+	}
+
+	@Override
+	public LProtoHeader LProtoHeader(Token t, LProtoNameNode name, RoleDeclList rs,
+			NonRoleParamDeclList ps)
+	{
+		
+	}
+
+	@Override
+	public LProtoDef LProtoDef(Token t, LProtoBlock block)
+	{
+		
+	}
+
+	@Override
+	public LProtoBlock LProtoBlock(Token t, LInteractionSeq seq)
+	{
+		
+	}
+
+	@Override
+	public LInteractionSeq LInteractionSeq(Token t, List<LSessionNode> elems)
+	{
+		
+	}
+
+	@Override
+	public LSend LSend(Token t, RoleNode src, MsgNode msg, RoleNode dst)
+	{
+		
+	}
+
+	@Override
+	public LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode dst)
+	{
+		
+		
+	}
+
+	@Override
+	public LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode dst)
+	{
+		
+	}
+
+	@Override
+	public LReq LReq(Token t, RoleNode src, MsgNode msg, RoleNode dst)
+	{
+
+	}
+
+	@Override
+	public LDisconnect LDisconnect(Token t, RoleNode self, RoleNode peer)
+	{
+		
+	}
+
+	@Override
+	public LClientWrap LClientWrap(Token t, RoleNode self, RoleNode peer)
+	{
+		
+	}
+
+	@Override
+	public LServerWrap LServerWrap(Token t, RoleNode self, RoleNode peer)
+	{
+		
+	}
+
+	@Override
+	public LContinue LContinue(Token t, RecVarNode recvar) 
+	{
+		
+	}
+
+	@Override
+	public LDo LDo(Token t, RoleArgList roles, NonRoleArgList args,
+			LProtoNameNode proto)
+	{
+		
+	}
+
+	@Override
+	public LChoice LChoice(Token t, RoleNode subj, List<LProtoBlock> blocks)
+	{
+		
+	}
+	@Override
+	public LRecursion LRecursion(Token t, RecVarNode recvar, LProtoBlock block)
+
+	{
+		
+	}
+}
 
 
 

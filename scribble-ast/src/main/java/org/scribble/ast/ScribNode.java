@@ -21,6 +21,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.SimpleAstVisitor;
+import org.scribble.visit.SimpleAstVisitorNoThrows;
 
 /**
  * This is the generic object from which all Scribble AST objects
@@ -46,6 +47,11 @@ public interface ScribNode extends Tree
 	
 	// "Simpler" version than above
 	default <T> T visitWith(SimpleAstVisitor<T> v) throws ScribException  // "Top-level" visitor entry method
+	{
+		return v.visit(this);  // N.B. ScribNode has getParent
+	}
+
+	default <T> T visitWith(SimpleAstVisitorNoThrows<T> v)  // "Top-level" visitor entry method
 	{
 		return v.visit(this);  // N.B. ScribNode has getParent
 	}

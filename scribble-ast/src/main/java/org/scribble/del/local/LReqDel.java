@@ -13,16 +13,12 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LReq;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
-
 public class LReqDel extends LConnectionActionDel
 {
-	@Override
+	/*@Override
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
 			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
 		fixer.setChoiceSubject(((LReq) child).getSourceChild().toName());
-	}
+	}*/
 }

@@ -28,7 +28,6 @@ import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.ProtoDeclDel;
-import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public class GProtoDeclDel extends ProtoDeclDel<Global> implements GDel
@@ -39,8 +38,7 @@ public class GProtoDeclDel extends ProtoDeclDel<Global> implements GDel
 	}
 	
 	@Override
-	public GProtocol translate(ScribNode n, GTypeTranslator t)
-			throws ScribException
+	public GProtocol translate(ScribNode n, GTypeTranslator t) 
 	{
 		GProtoDecl source = (GProtoDecl) n;
 		Module m = (Module) n.getParent();

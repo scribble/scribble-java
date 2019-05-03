@@ -18,7 +18,6 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.RecursionDel;
-import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public class GRecursionDel extends RecursionDel
@@ -27,7 +26,7 @@ public class GRecursionDel extends RecursionDel
 	
 	@Override
 	public org.scribble.core.type.session.global.GRecursion translate(ScribNode n,
-			GTypeTranslator t) throws ScribException
+			GTypeTranslator t)
 	{
 		GRecursion source = (GRecursion) n;
 		RecVar recvar = source.getRecVarChild().toName();

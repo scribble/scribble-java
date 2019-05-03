@@ -31,9 +31,27 @@ import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
+import org.scribble.ast.local.LAcc;
+import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LClientWrap;
+import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDisconnect;
+import org.scribble.ast.local.LDo;
+import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
+import org.scribble.ast.local.LProtoBlock;
+import org.scribble.ast.local.LProtoDef;
+import org.scribble.ast.local.LProtoHeader;
+import org.scribble.ast.local.LRecursion;
+import org.scribble.ast.local.LRecv;
+import org.scribble.ast.local.LReq;
+import org.scribble.ast.local.LSend;
+import org.scribble.ast.local.LServerWrap;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.LProtoNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
@@ -120,6 +138,36 @@ public interface AstFactory
 
 	GChoice GChoice(Token t, RoleNode subj, List<GProtoBlock> blocks);
 	GRecursion GRecursion(Token t, RecVarNode rv, GProtoBlock block);
+
+	/*LProtoDecl LProtoDecl(Token t, List<ProtoMod> mods,
+			LProtoHeader header, LProtoDef def);  // Not currently used -- local protos not parsed, only projected*/
+
+	LProjectionDecl LProjectionDecl(Token t, List<ProtoMod> mods,
+			GProtoNameNode fullname, RoleNode self, LProtoHeader header,
+			LProtoDef def);
+	// del extends that of LProtoDecl
+
+	LProtoHeader LProtoHeader(Token t, LProtoNameNode name, RoleDeclList rs,
+			NonRoleParamDeclList ps);
+
+	LProtoDef LProtoDef(Token t, LProtoBlock block);
+	LProtoBlock LProtoBlock(Token t, LInteractionSeq seq);
+	LInteractionSeq LInteractionSeq(Token t, List<LSessionNode> elems);
+
+	LSend LSend(Token t, RoleNode src, MsgNode msg, RoleNode dst);
+	LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode dst);
+	LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode dst);
+	LReq LReq(Token t, RoleNode src, MsgNode msg, RoleNode dst);
+	LDisconnect LDisconnect(Token t, RoleNode self, RoleNode peer); 
+	LClientWrap LClientWrap(Token t, RoleNode self, RoleNode peer);
+	LServerWrap LServerWrap(Token t, RoleNode self, RoleNode peer);
+
+	LContinue LContinue(Token t, RecVarNode recvar); 
+	LDo LDo(Token t, RoleArgList roles, NonRoleArgList args,
+			LProtoNameNode proto);
+
+	LChoice LChoice(Token t, RoleNode subj, List<LProtoBlock> blocks);
+	LRecursion LRecursion(Token t, RecVarNode recvar, LProtoBlock block);
 }
 
 

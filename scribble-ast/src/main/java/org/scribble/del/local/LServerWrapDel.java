@@ -13,20 +13,13 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LServerWrap;
 import org.scribble.del.BasicInteractionDel;
-import org.scribble.del.ConnectionActionDel;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
-import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 public class LServerWrapDel extends BasicInteractionDel  // LWrapDel
 		implements LSimpleSessionNodeDel
 {
 
-	@Override
+	/*@Override
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
 			ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
@@ -43,5 +36,5 @@ public class LServerWrapDel extends BasicInteractionDel  // LWrapDel
 		UnguardedChoiceDoEnv env = checker.popEnv();
 		env = env.setChoiceSubject(la.getClientChild().toName());
 		checker.pushEnv(env);
-	}
+	}*/
 }

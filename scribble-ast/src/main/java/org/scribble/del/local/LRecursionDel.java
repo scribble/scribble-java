@@ -13,19 +13,12 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.ast.Recursion;
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LRecursion;
 import org.scribble.del.RecursionDel;
-import org.scribble.util.ScribException;
-import org.scribble.visit.context.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.context.UnguardedChoiceDoProjectionChecker;
-import org.scribble.visit.context.env.UnguardedChoiceDoEnv;
 
 public class LRecursionDel extends RecursionDel
 		implements LCompoundSessionNodeDel
 {
-	@Override
+	/*@Override
 	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
 			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
 			ScribNode visited) throws ScribException
@@ -51,5 +44,5 @@ public class LRecursionDel extends RecursionDel
 	{
 		fixer.popRec(((LRecursion) child).getRecVarChild().toName());
 		return visited;
-	}
+	}*/
 }

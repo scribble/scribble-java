@@ -13,64 +13,35 @@
  */
 package org.scribble.del.local;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.scribble.ast.RoleDecl;
-import org.scribble.ast.RoleDeclList;
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.main.ScribbleException;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
-import org.scribble.visit.context.ProjectedRoleDeclFixer;
-
 public class LProjectionDeclDel extends LProtoDeclDel
 {
-	// Maybe better to store in context, but more convenient to pass to here via factory (than infer in context building) -- could alternatively store in projected module
-	protected final GProtocolName fullname;
-	protected final Role self;  // Can be obtained from LProtocolHeader?
+	public LProjectionDeclDel()
+	{
 
-	public LProjectionDeclDel(GProtocolName fullname, Role self)
-	{
-		this.fullname = fullname;
-		this.self = self;
-	}
-	
-	@Override
-	protected LProtoDeclDel copy()
-	{
-		return new LProjectionDeclDel(this.fullname, this.self);
 	}
 
-	@Override
-	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
+	/*@Override
+	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent,
+			ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited)
+			throws ScribException
 	{
-		LProtocolDecl lpd = (LProtocolDecl) visited;
+		LProjectionDecl lpd = (LProjectionDecl) visited;
+		LProtoHeader hdrtmp = lpd.getHeaderChild();
 		// FIXME: ensure all role params are used, to avoid empty roledecllist
-		Set<Role> occs = ((LProtoDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences();
-		List<RoleDecl> rds = lpd.header.roledecls.getDecls().stream().filter((rd) -> 
-				occs.contains(rd.getDeclName())).collect(Collectors.toList());
-		RoleDeclList rdl = fixer.job.af.RoleDeclList(lpd.header.roledecls.getSource(), rds);
-		LProtocolHeader tmp = lpd.getHeader();
-		LProtocolHeader hdr = tmp.reconstruct(tmp.getNameNode(), rdl, tmp.paramdecls);
-		LProtocolDecl fixed = lpd.reconstruct(hdr, lpd.def);
+		Set<Role> occs = ((LProtoDeclDel) lpd.del()).getProtoDeclContext()
+				.getRoleOccurrences();
+		List<RoleDecl> rds = hdrtmp.getRoleDeclListChild().getDeclChildren()
+				.stream().filter(rd -> occs.contains(rd.getDeclName()))
+				.collect(Collectors.toList());
+		RoleDeclList rdl = fixer.job.af
+				.RoleDeclList(hdrtmp.getRoleDeclListChild().getSource(), rds);
+		LProtoHeader hdr = (LProtoHeader) hdrtmp.reconstruct(hdrtmp.getNameNodeChild(),
+				hdrtmp.getParamDeclListChild(), rdl);
+		LProjectionDecl fixed = (LProjectionDecl) lpd.reconstruct(lpd.getModifierListChild(), hdr, lpd.getDefChild());
 		
-		fixer.job.debugPrintln("\n[DEBUG] Projected " + getSourceProtocol() + " for " + getSelfRole() + ":\n" + fixed);
+		fixer.job.debugPrintln("\n[DEBUG] Projected " + lpd//.getParentChild()
+				+ " for " + lpd.getSelfRole() + ":\n" + fixed);
 		
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, fixed);
-	}
-	
-	public GProtocolName getSourceProtocol()
-	{
-		return this.fullname;
-	}
-	
-	// Redundant with SelfRoleDecl in header
-	public Role getSelfRole()
-	{
-		return this.self;
-	}
+	}*/
 }

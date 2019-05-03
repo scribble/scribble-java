@@ -23,23 +23,23 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.del.DoDel;
-import org.scribble.util.ScribException;
+import org.scribble.util.RuntimeScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public class GDoDel extends DoDel implements GSimpleSessionNodeDel
 {
 	@Override
 	public org.scribble.core.type.session.global.GDo translate(ScribNode n,
-			GTypeTranslator t) throws ScribException
+			GTypeTranslator t)
 	{
 		GDo source = (GDo) n;
 
 		// Resolve full name -- CHECKME: factor out? cf., NameDisambiguator, DoDel::enter/leaveDisambiguation
 		GProtoName proto = source.getProtocolNameNode().toName();
 		ModuleContext modc = t.getModuleContext();
-		if (!modc.isVisibleProtocolDeclName(proto))
+		if (!modc.isVisibleProtocolDeclName(proto))  // CHECKME: should be already checked by NameDisamb?
 		{
-			throw new ScribException(source,
+			throw new RuntimeScribException(source,
 					"Protocol decl not visible: " + proto);
 		}
 		GProtoName fullname = (GProtoName) modc  // FIXME: sort out full name expansion between here and DoDel.leaveDisambiguation
