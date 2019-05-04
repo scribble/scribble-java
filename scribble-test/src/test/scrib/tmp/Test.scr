@@ -119,6 +119,29 @@ data <java> "..." from "..." as T;
 /*
 global protocol Proto1(role A, role B, role C)
 {
+	1() from A to B;
+	1() from B to C;
+	choice at A
+	{
+		2() from A to B;
+		2() from B to C;
+	}
+	or
+	{
+		do Proto1Aux(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, both "forwards" and "reverse" do-refs
+	}
+}
+
+aux global protocol Proto1Aux(role A, role B, role C)
+{
+	do Proto1(A, B, C);
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
 	choice at A
 	{
 		1() from A to B;
@@ -126,20 +149,40 @@ global protocol Proto1(role A, role B, role C)
 	}
 	or
 	{
-		2() from A to B;
-		2() from B to C;
-		do Proto1(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, "reverse" do-ref
+		do Proto1Aux(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, "forward" do-ref
 	}
 }
 
-aux global protocol Proto1Aux(role B, role C)
+aux global protocol Proto1Aux(role A, role B, role C)
 {
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	2() from A to B; 
 	2() from B to C; 
 }
 //*/
 
 
 //*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		do Proto1(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, need do-pruning as pre-req
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	1() from A to B;

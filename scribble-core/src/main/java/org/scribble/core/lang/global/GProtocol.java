@@ -102,6 +102,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		return projectAux(core, self, this.roles, fixed);
 	}
 
+	// N.B. no "fixing" passes done here -- need breadth-first passes to be sequentialised for subproto visiting
 	public LProjection project(Core core, Role self)
 	{
 		LSeq def = core.config.vf.global.Projector(core, self).visitSeq(this.def);
@@ -114,9 +115,8 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
 
 		// N.B. must do top-level entry on projection, cf. projectInlined
-		LProjection fixed = (LProjection) core.config.vf.local
-				.SubprotoExtChoiceSubjFixer().visitProtocol(proj);
-		return fixed;
+		//LProjection fixed = (LProjection) core.config.vf.local.SubprotoExtChoiceSubjFixer(core).visitProtocol(proj);
+		return proj;
 	}
 	
 	private LProjection projectAux(Core core, Role self, List<Role> decls,

@@ -37,8 +37,8 @@ public class LTypeVisitorFactoryImpl implements LTypeVisitorFactory
 	}
 
 	@Override
-	public SubprotoExtChoiceSubjFixer SubprotoExtChoiceSubjFixer()
+	public SubprotoExtChoiceSubjFixer SubprotoExtChoiceSubjFixer(Core core)
 	{
-		return new SubprotoExtChoiceSubjFixer();
+		return new SubprotoExtChoiceSubjFixer(core);
 	}
 }

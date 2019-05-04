@@ -206,6 +206,7 @@ public class CoreContext
 		return proj;
 	}
 
+	// Pre: addProjectedInlined (i.e., getProjection(ProtoName<Global>, Role))
 	public LProjection getProjection(ProtoName<Local> fullname)
 	{
 		LProjection proj = this.projs.get(fullname);
@@ -218,6 +219,13 @@ public class CoreContext
 	}
 	
 	protected void addProjection(LProjection proj)
+	{
+		this.projs.put(proj.fullname, proj);
+	}
+	
+	// N.B. mutates this.projected -- used by "fixing" passes
+	// TODO refactor (overall, into Job)
+	public void setProjection(LProjection proj)
 	{
 		this.projs.put(proj.fullname, proj);
 	}

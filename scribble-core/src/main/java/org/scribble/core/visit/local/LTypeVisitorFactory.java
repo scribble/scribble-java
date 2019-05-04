@@ -24,5 +24,5 @@ public interface LTypeVisitorFactory
 
 	EGraphBuilder EGraphBuilder(Core core);
 
-	SubprotoExtChoiceSubjFixer SubprotoExtChoiceSubjFixer();
+	SubprotoExtChoiceSubjFixer SubprotoExtChoiceSubjFixer(Core core);
 }

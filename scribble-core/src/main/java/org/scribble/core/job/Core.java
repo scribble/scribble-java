@@ -43,6 +43,7 @@ import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.core.visit.global.GTypeVisitorFactoryImpl;
 import org.scribble.core.visit.local.LTypeVisitorFactoryImpl;
+import org.scribble.core.visit.local.SubprotoExtChoiceSubjFixer;
 import org.scribble.util.ScribException;
 
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
@@ -205,15 +206,33 @@ public class Core
 		}
 
 		// Pre: inlined already projected -- used for Do projection
+		// N.B. no "fixing" passes done within here -- need breadth-first passes to be sequentialised for subproto visiting (see below)
 		verbosePrintPass("Projecting all intermediate globals...");
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol imed = this.context.getIntermediate(fullname);
 			for (Role self : imed.roles)
 			{
-				LProjection proj = this.context.getProjection(imed.fullname, self);
+				LProjection proj = this.context.getProjection(fullname, self);
 				verbosePrintPass("Projected intermediate onto " + self + ": "
 						+ imed.fullname + "\n" + proj);
+			}
+		}
+
+		verbosePrintPass("\"Fixing\" all projected intermediates...");
+		SubprotoExtChoiceSubjFixer v = this.config.vf.local
+				.SubprotoExtChoiceSubjFixer(this);  // Reusable (via top-level visitProtocol)
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
+		{
+			GProtocol imed = this.context.getIntermediate(fullname);
+			for (Role self : imed.roles)
+			{
+				LProjection proj = this.context.getProjection(fullname, self);
+				LProjection fixed = (LProjection) v.visitProtocol(proj);
+				this.context.setProjection(fixed);  // N.B. replaces existing projection
+				verbosePrintPass(
+						"Fixed external choice subjects for projected intermediate: "
+								+ fixed.fullname + ":\n" + fixed);
 			}
 		}
 	}

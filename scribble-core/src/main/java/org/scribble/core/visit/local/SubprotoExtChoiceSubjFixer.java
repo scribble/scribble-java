@@ -18,7 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.scribble.core.job.Core;
 import org.scribble.core.lang.Protocol;
+import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.Role;
@@ -29,11 +31,13 @@ import org.scribble.core.type.session.local.LSeq;
 // super takes care of rec/continue, here just additionally handle "do"
 public class SubprotoExtChoiceSubjFixer extends InlinedExtChoiceSubjFixer
 {
-	protected Map<LProtoName, Optional<Role>> protos = new HashMap<>();
+	protected final Core core;
+	
+	protected final Map<LProtoName, Optional<Role>> protos = new HashMap<>();
 
-	protected SubprotoExtChoiceSubjFixer()
+	protected SubprotoExtChoiceSubjFixer(Core core)
 	{
-		
+		this.core = core;
 	}
 	
 	// To visit top-level proto, reconstruct for fixed subjs -- nested visting (by Inferer) only does passive inference (no reconstruct)
@@ -41,6 +45,8 @@ public class SubprotoExtChoiceSubjFixer extends InlinedExtChoiceSubjFixer
 	public Protocol<Local, LProtoName, LSeq> visitProtocol(
 			Protocol<Local, LProtoName, LSeq> n)
 	{
+		this.protos.clear();  // Reusable
+		
 		// Cf. InlinedExtChoiceSubjFixer.visitRecursion
 		InlinedEnablerInferer v = getInferer(this);
 		Optional<Role> res = v.visitSeq(n.def);
@@ -66,13 +72,16 @@ public class SubprotoExtChoiceSubjFixer extends InlinedExtChoiceSubjFixer
 
 class SubprotoEnablerInferer extends InlinedEnablerInferer  // super takes care of rec/continue
 {
-	private Map<LProtoName, Optional<Role>> protos = new HashMap<>();
+	private final Core core;
+
+	private final Map<LProtoName, Optional<Role>> protos;
 
 	public SubprotoEnablerInferer(InlinedExtChoiceSubjFixer v)
 	{
 		super(v);
-		this.protos = Collections
-				.unmodifiableMap(((SubprotoExtChoiceSubjFixer) v).protos);
+		SubprotoExtChoiceSubjFixer cast = (SubprotoExtChoiceSubjFixer) v;
+		this.core = cast.core;
+		this.protos = Collections.unmodifiableMap(cast.protos);
 	}
 
 	@Override
@@ -82,6 +91,7 @@ class SubprotoEnablerInferer extends InlinedEnablerInferer  // super takes care 
 		{
 			return this.protos.get(n.proto);
 		}
-		throw new RuntimeException("[TODO] : " + n.proto + " ,, " + this.protos);
+		LProjection imed = core.getContext().getProjection(n.proto); 
+		return imed.def.visitWithNoThrow(this);  // CHECKME: how about looking up subj from inlined?
 	}
 }

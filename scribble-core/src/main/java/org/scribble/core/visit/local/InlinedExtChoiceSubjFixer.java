@@ -39,7 +39,7 @@ import org.scribble.core.visit.STypeVisitorNoThrow;
 // (Doing "at the time" during projection requires, e.g., recursion body projections for "inference" on recursion entry, but the body can't really be projected yet without that upfront "inference")
 public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 {
-	protected Map<RecVar, Optional<Role>> recs = new HashMap<>();
+	protected final Map<RecVar, Optional<Role>> recs = new HashMap<>();
 			// Record on entering rec states, to give to InlinedEnablerInferer on nested choice states (for unguarded continues)
 			// CHECKME: Optional necessary?  InlinedEnablerInferer may not succeed due to empty/bad contexts, but should that be reflected here?
 
@@ -83,7 +83,7 @@ public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 class InlinedEnablerInferer extends STypeAggNoThrow<Local, LSeq, Optional<Role>>
 		// Optional.empty signifies "inference" did not succeed, either an outright bad (should be caught by WF somewhere) or an "empty" context
 {
-	private Map<RecVar, Optional<Role>> recs;
+	private final Map<RecVar, Optional<Role>> recs;
 
 	public InlinedEnablerInferer(InlinedExtChoiceSubjFixer v)//Map<RecVar, Optional<Role>> recs)
 	{
