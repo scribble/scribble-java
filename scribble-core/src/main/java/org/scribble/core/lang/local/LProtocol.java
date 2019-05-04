@@ -159,9 +159,9 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 	{
 		return "("
 				+ this.roles.stream()
-						.map(x -> x.equals(this.self)
-								? Constants.SELF_KW + " " + this.self
-								: Constants.ROLE_KW + " " + x)
+						.map(x -> (x.equals(this.self)
+								? Constants.SELF_KW
+								: Constants.ROLE_KW) + " " + x)
 						.collect(Collectors.joining(", "))
 				+ ")";
 	}

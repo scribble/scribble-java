@@ -54,20 +54,12 @@ class SubprotoRoleCollector extends STypeAggNoThrow<Local, LSeq, Set<Role>>
 		}
 		this.stack.push(sig);
 		LProjection target = (LProjection) n.getTarget(this.core);
-		List<Role> foo = target.roles.stream()  // 
+		List<Role> tmp = target.roles.stream()
 				.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
-
-		
-		System.out.println("bbbb: " + foo + " ,, " + n.roles);
-
 		Substitutor<Local, LSeq> subs = this.core.config.vf
-				.Substitutor(foo, n.roles, target.params, n.args);  // CHECKME: prune args?
-		
-		
+				.Substitutor(tmp, n.roles, target.params, n.args);  // CHECKME: prune args?
 		Set<Role> res = target.def.visitWithNoThrow(subs).visitWithNoThrow(this);
-		
-
 		this.stack.pop();
 		return res;
 	}
@@ -78,7 +70,6 @@ class SubprotoRoleCollector extends STypeAggNoThrow<Local, LSeq, Set<Role>>
 		return Collections.emptySet();
 	}
 
-	// Currently only used by Recursion, Choice/Seq overrides don't use
 	@Override
 	protected Set<Role> agg(SType<Local, LSeq> n, Stream<Set<Role>> ts)
 	{
