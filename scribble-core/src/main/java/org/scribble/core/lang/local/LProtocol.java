@@ -15,7 +15,6 @@ package org.scribble.core.lang.local;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +27,10 @@ import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.SigName;
-import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.local.LRecursion;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.STypeInliner;
@@ -84,25 +80,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 	@Override
 	public LProtocol getInlined(STypeInliner<Local, LSeq> v)
 	{
-		// TODO: factor out with GProtocol
-		List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
-		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
-		for (MemberName<? extends NonRoleParamKind> n : this.params)
-		{
-			if (n instanceof DataName)
-			{
-				params.add((DataName) n);
-			}
-			else if (n instanceof SigName)
-			{
-				params.add((SigName) n);
-			}
-			else
-			{
-				throw new RuntimeException("TODO: " + n);
-			}
-		}
-		SubprotoSig sig = new SubprotoSig(this.fullname, this.roles, params);
+		SubprotoSig sig = new SubprotoSig(this);
 		v.pushSig(sig);
 
 		Substitutor<Local, LSeq> subs = v.core.config.vf.Substitutor(this.roles, sig.roles,

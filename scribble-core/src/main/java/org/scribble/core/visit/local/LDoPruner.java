@@ -14,6 +14,7 @@
 package org.scribble.core.visit.local;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.lang.Protocol;
+import org.scribble.core.lang.SubprotoSig;
+import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
@@ -37,9 +40,17 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 {
 	protected final Core core;
 
+	protected final Set<SubprotoSig> unguarded;  // Cf. InlinedProjector (unguarded-continue pruning)
+
 	protected LDoPruner(Core core)
 	{
 		this.core = core;
+		this.unguarded = new HashSet<>();
+	}
+	
+	public LProjection visitProjection(LProjection n)
+	{
+		SubprotoSig sig = new SubprotoSig(n.fullname, n.roles, n.params);
 	}
 	
 	// CHECKME: vf?

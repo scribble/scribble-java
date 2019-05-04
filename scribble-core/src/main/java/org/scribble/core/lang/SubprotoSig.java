@@ -14,12 +14,16 @@
 package org.scribble.core.lang;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.core.type.kind.NonRoleParamKind;
+import org.scribble.core.type.name.DataName;
+import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
 
 // CHECKME: relocate?
@@ -33,7 +37,6 @@ public class SubprotoSig
 			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
 			// Arg, not MemberName, because need to include MessageSigs (sig literals)
 
-	// public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role> roles, List<Argument<? extends Kind>> args)
 	public SubprotoSig(ProtoName<?> fullname,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
@@ -41,6 +44,34 @@ public class SubprotoSig
 		// this.scope = scope;
 		this.roles = Collections.unmodifiableList(roles);
 		this.args = Collections.unmodifiableList(args);
+	}
+
+	public SubprotoSig(Protocol<?, ?, ?> n)
+	{
+		this(n.fullname, n.roles, paramsToArgs(n.params));
+	}
+
+	private static List<Arg<? extends NonRoleParamKind>> paramsToArgs(
+			List<MemberName<? extends NonRoleParamKind>> params)
+	{
+		List<Arg<? extends NonRoleParamKind>> args = new LinkedList<>();
+		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
+		for (MemberName<? extends NonRoleParamKind> n : params)
+		{
+			if (n instanceof DataName)
+			{
+				args.add((DataName) n);
+			}
+			else if (n instanceof SigName)
+			{
+				args.add((SigName) n);
+			}
+			else
+			{
+				throw new RuntimeException("[TODO] : " + n.getClass() + "\n\t" + n);
+			}
+		}
+		return args;
 	}
 
 	@Override

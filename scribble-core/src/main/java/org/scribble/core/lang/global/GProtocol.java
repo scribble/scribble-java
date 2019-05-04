@@ -29,14 +29,11 @@ import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
-import org.scribble.core.type.name.SigName;
-import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.global.GRecursion;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
@@ -143,25 +140,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	@Override
 	public GProtocol getInlined(STypeInliner<Global, GSeq> v)
 	{
-		// TODO: factor out with LProtocol
-		List<Arg<? extends NonRoleParamKind>> params = new LinkedList<>();
-		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs -- TODO: factor out
-		for (MemberName<? extends NonRoleParamKind> n : this.params)
-		{
-			if (n instanceof DataName)
-			{
-				params.add((DataName) n);
-			}
-			else if (n instanceof SigName)
-			{
-				params.add((SigName) n);
-			}
-			else
-			{
-				throw new RuntimeException("TODO: " + n);
-			}
-		}
-		SubprotoSig sig = new SubprotoSig(this.fullname, this.roles, params);
+		SubprotoSig sig = new SubprotoSig(this);
 		v.pushSig(sig);
 
 		Substitutor<Global, GSeq> subs = v.core.config.vf.Substitutor(this.roles, sig.roles,

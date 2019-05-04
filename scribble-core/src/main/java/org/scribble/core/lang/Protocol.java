@@ -39,7 +39,8 @@ public abstract class Protocol
 	public final List<ProtocolMod> mods;
 	public final N fullname;
 	public final List<Role> roles;  // Ordered role params; pre: size >= 2
-	public final List<MemberName<? extends NonRoleParamKind>> params;  // N.B. there is no Data/SigParamName  // CHECKME: always simple names?
+	public final List<MemberName<? extends NonRoleParamKind>> params;  
+			// N.B. there is no Data/SigParamName  // CHECKME: always simple names?
 			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
 			// CHECKME: make a ParamName? or at least SimpleName?
 	public final B def;
