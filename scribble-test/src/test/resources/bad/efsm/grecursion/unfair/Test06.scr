@@ -1,3 +1,5 @@
+//$ bin/scribblec.sh scribble-test/src/test/resources/bad/efsm/grecursion/unfair/Test06.scr
+
 module bad.efsm.grecursion.unfair.Test06;
 
 

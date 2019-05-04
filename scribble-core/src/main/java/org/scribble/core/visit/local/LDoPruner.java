@@ -13,7 +13,7 @@
  */
 package org.scribble.core.visit.local;
 
-import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,13 +25,13 @@ import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
-import org.scribble.core.type.session.Seq;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.type.session.local.LSkip;
+import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeVisitorNoThrow;
 
 // Cf. RecPruner
@@ -39,18 +39,23 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		extends STypeVisitorNoThrow<Local, LSeq>
 {
 	protected final Core core;
+	
+	protected final Deque<SubprotoSig> stack;
 
 	protected final Set<SubprotoSig> unguarded;  // Cf. InlinedProjector (unguarded-continue pruning)
 
 	protected LDoPruner(Core core)
 	{
 		this.core = core;
+		this.stack = new LinkedList<>();
 		this.unguarded = new HashSet<>();
 	}
-	
-	public LProjection visitProjection(LProjection n)
+
+	protected LDoPruner(LDoPruner v)
 	{
-		SubprotoSig sig = new SubprotoSig(n.fullname, n.roles, n.params);
+		this.core = v.core;
+		this.stack = new LinkedList<>(v.stack);
+		this.unguarded = new HashSet<>(v.unguarded);
 	}
 	
 	// CHECKME: vf?
@@ -58,58 +63,76 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 	{
 		return new SubprotoRoleCollector(this.core);
 	}
-
-	@Override
-	public SType<Local, LSeq> visitDo(Do<Local, LSeq> n)
+	
+	// TODO: refactor to LProjection -- cf. GProtocol (e.g., getInlined, etc)
+	public LProjection visitProjection(LProjection n)
 	{
-		Protocol<Local, ?, LSeq> target = n.getTarget(this.core);
-		Set<Role> rs = target.def.visitWithNoThrow(newRoleCollector());  // N.B. does subproto visiting, unlike RoleGather
+		this.stack.clear();
+		this.unguarded.clear();
 
-		System.out.println("aaa: " + rs);
-
-		if (rs.isEmpty())
-		{
-			return this.core.config.tf.local.LSeq(null, Collections.emptyList());  // Cf. LSkip (currently, no GSkip -- CHECKME: make one?)
-		}
-
-		return n;  // Cf. unit(n)
+		SubprotoSig sig = new SubprotoSig(n);
+		this.stack.push(sig);
+		this.unguarded.add(sig);
+		LSeq def = visitSeq(n.def);
+		return n.reconstruct(n.getSource(), n.mods, n.fullname, n.roles, n.self,
+				n.params, def);
 	}
 
 	@Override
 	public SType<Local, LSeq> visitChoice(Choice<Local, LSeq> n)
 	{
-		List<LSeq> blocks = n.blocks.stream().map(x -> visitSeq(x))
-				.filter(x -> !x.isEmpty()).collect(Collectors.toList());
+		// Duplicated from InlinedProjector.visitChoice
+		List<LSeq> blocks = n.blocks.stream()
+				.map(x -> new LDoPruner(this).visitSeq(x)).filter(x -> !x.isEmpty())
+				.collect(Collectors.toList());
 		if (blocks.isEmpty())
 		{
-			return n.blocks.get(0).reconstruct(null, blocks);  // N.B. returning a Seq -- handled by visitSeq (similar to LSkip for locals)
+			return LSkip.SKIP;  // N.B. returning a Seq -- handled by visitSeq (similar to LSkip for locals)
 		}
+		this.unguarded.remove(this.stack.peek());
 		return n.reconstruct(n.getSource(), n.subj, blocks);
+	}
+
+	@Override
+	public SType<Local, LSeq> visitDo(Do<Local, LSeq> n)
+	{
+		SubprotoSig sig = new SubprotoSig(n.proto, n.roles, n.args);
+		System.out.println("111: " + sig + " ,, " + this.stack + " ,, " + this.unguarded);
+		if (this.stack.contains(sig))
+		{
+			System.out.println("222: " + this.unguarded.contains(sig));
+			return this.unguarded.contains(sig) ? LSkip.SKIP : n;
+		}
+		this.stack.push(sig);
+		Protocol<Local, ?, LSeq> target = n.getTarget(this.core);
+		visitSeq(target.def);  // Discard changes -- "nested" entries only do "info collection", actual AST modifications only recoded for the top-level Projection (cf. visitProjection)
+		this.stack.pop();
+		return n;  // Cf. unit(n)
 	}
 
 	@Override
 	public SType<Local, LSeq> visitRecursion(Recursion<Local, LSeq> n)
 	{
 		LSeq body = visitSeq(n.body);
-		return body.isEmpty() ? body : n.reconstruct(n.getSource(), n.recvar, body);
+		return body.isEmpty() 
+				? LSkip.SKIP
+				: n.reconstruct(n.getSource(), n.recvar, body);
 	}
 
 	@Override
 	public LSeq visitSeq(LSeq n)
 	{
-		List<SType<Local, LSeq>> elems = new LinkedList<>();
-		for (SType<Local, LSeq> e : n.elems)
+		// Duplicated from InlinedProjector.visitSeq
+		List<LType> elems = new LinkedList<>();
+		for (LType e : n.getElements())
 		{
-			SType<Local, LSeq> e1 = (SType<Local, LSeq>) e.visitWithNoThrow(this);
-			if (e1 instanceof Seq<?, ?>)  // cf. visitDo, empty  (also cf. LSkip)
-			{
-				elems.addAll(((Seq<Local, LSeq>) e1).elems);  // Handles empty Seq case (actually, the only nested Seq case)
-			}
-			else
+			LType e1 = (LType) e.visitWithNoThrow(this);
+			if (!(e1 instanceof LSkip))
 			{
 				elems.add(e1);
+				this.unguarded.clear();
 			}
 		}
-		return n.reconstruct(n.getSource(), elems);
+		return this.core.config.tf.local.LSeq(null, elems);
 	}
 }

@@ -252,9 +252,7 @@ public class Core
 			for (Role self : imed.roles)
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
-				LSeq def = v2.visitSeq(proj.def);
-				LProjection fixed = proj.reconstruct(proj.getSource(), proj.mods,
-						proj.fullname, proj.roles, proj.self, proj.params, def);
+				LProjection fixed = v2.visitProjection(proj);
 				this.context.setProjection(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Do-pruned projected intermediate: "

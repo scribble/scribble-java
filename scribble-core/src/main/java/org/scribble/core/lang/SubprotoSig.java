@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
@@ -37,6 +38,7 @@ public class SubprotoSig
 			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
 			// Arg, not MemberName, because need to include MessageSigs (sig literals)
 
+	// CHECKME: refactor as factory methods on Protocol/Do ?
 	public SubprotoSig(ProtoName<?> fullname,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
@@ -49,6 +51,12 @@ public class SubprotoSig
 	public SubprotoSig(Protocol<?, ?, ?> n)
 	{
 		this(n.fullname, n.roles, paramsToArgs(n.params));
+	}
+
+	public SubprotoSig(LProjection n)
+	{
+		this(n.fullname, n.roles.stream().map(x -> x.equals(n.self) ? Role.SELF : x)  // FIXME: (implicit) self role mess
+				.collect(Collectors.toList()), paramsToArgs(n.params));
 	}
 
 	private static List<Arg<? extends NonRoleParamKind>> paramsToArgs(

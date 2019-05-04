@@ -90,7 +90,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		{
 			return LSkip.SKIP; // CHECKME: OK, or "empty" choice at subj still important?
 		}
-		//this.unguarded.clear();  // At least one block is non-empty, consider continues guarded -- done in Seq
+		this.unguarded.clear();  // At least one block is non-empty, consider continues guarded (must do here, blocks visited using dup's)
 		
 		//InlinedEnablerInferer v = new InlinedEnablerInferer(this.unguarded);
 		Role subj = n.subj.equals(this.self) 
@@ -192,14 +192,12 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		for (SType<Global, GSeq> e : n.elems)
 		{
 			LType e1 = e.visitWithNoThrow(this);
-			elems.add(e1);
 			if (!(e1 instanceof LSkip))
 			{
+				elems.add(e1);
 				this.unguarded.clear();
 			}
 		}
-		elems = elems.stream().filter(x -> !x.equals(LSkip.SKIP))
-				.collect(Collectors.toList());
 		return this.core.config.tf.local.LSeq(null, elems);
 				// Empty seqs converted to LSkip by GChoice/Recursion projection
 				// And a WF top-level protocol cannot produce empty LSeq
