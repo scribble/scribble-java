@@ -282,7 +282,7 @@ global protocol Proto1(role A, role B, role C)
 //*
 global protocol Proto1(role A, role B, role C)
 {
-	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C) -- test already exists?
+	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C) -- test already exists?  // Also testing imed projections
 	{
 		1() from A to B;
 		1() from B to C;
