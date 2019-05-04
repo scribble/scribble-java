@@ -22,6 +22,7 @@ import org.scribble.core.type.session.DirectedInteraction;
 import org.scribble.core.type.session.DisconnectAction;
 import org.scribble.core.type.session.Seq;
 
+// N.B. does *not* gather do-args, nor follow subprotos
 public class RoleGatherer<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeGatherer<K, B, Role>
 {

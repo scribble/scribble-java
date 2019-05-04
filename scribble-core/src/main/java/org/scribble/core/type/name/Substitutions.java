@@ -40,12 +40,12 @@ public class Substitutions
 		if (rold.size() != rnew.size())
 		{
 			throw new RuntimeException(
-					"Role lists don't match: " + rold + " ; " + rnew);
+					"Role list arity mismatch: " + rold + " ; " + rnew);
 		}
 		if (aold.size() != anew.size())
 		{
 			throw new RuntimeException(
-					"Arg lists don't match: " + aold + " ; " + anew);
+					"Arg list arity mismatch: " + aold + " ; " + anew);
 		}
 		Iterator<Role> i = rnew.iterator();
 		rold.forEach(x -> this.rsubs.put(x, i.next()));

@@ -24,5 +24,9 @@ public interface LTypeVisitorFactory
 
 	EGraphBuilder EGraphBuilder(Core core);
 
+	LDoArgPruner LDoArgPruner(Core core);
+
+	LDoPruner LDoPruner(Core core);
+	
 	SubprotoExtChoiceSubjFixer SubprotoExtChoiceSubjFixer(Core core);
 }

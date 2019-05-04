@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.core.job.Core;
+import org.scribble.core.lang.Protocol;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.ProtoName;
@@ -47,6 +49,8 @@ public abstract class Do<K extends ProtoKind, B extends Seq<K, B>>
 
 	/*// Not that useful: calling on Do<K, B> doesn't give the overridden return
 	public abstract ProtoName<K> getProto();  // Override with concrete return*/
+	
+	public abstract Protocol<K, ?, B> getTarget(Core core);  // CHECKME: "?"
 
 	public abstract Do<K, B> reconstruct(CommonTree source,
 			ProtoName<K> proto, List<Role> roles, List<Arg<? extends NonRoleParamKind>> args);

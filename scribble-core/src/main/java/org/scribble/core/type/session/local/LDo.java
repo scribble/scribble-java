@@ -16,6 +16,8 @@ package org.scribble.core.type.session.local;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.core.job.Core;
+import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.ProtoName;
@@ -29,6 +31,12 @@ public class LDo extends Do<Local, LSeq> implements LType
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);
+	}
+	
+	@Override
+	public LProtocol getTarget(Core core)
+	{
+		return core.getContext().getProjection(this.proto);  // CHECKME: hardcoded to projections -- factor out "getLocal" (parsed or projected)
 	}
 
 	@Override

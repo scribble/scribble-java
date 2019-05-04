@@ -71,7 +71,7 @@ public class SubprotoProjector extends InlinedProjector  // CHECKME: this way, o
 				targSelf);
 		Substitutions subs = new Substitutions(imed.roles, n.roles,
 				Collections.emptyList(), Collections.emptyList());
-		List<Role> used = corec.getInlined(proto).roles.stream()
+		List<Role> used = corec.getInlined(proto).roles.stream()  // N.B. global (inlined) roles -- still need to prune roles w.r.t. localised projection
 				.map(x -> subs.subsRole(x)).collect(Collectors.toList());
 		List<Role> rs = n.roles.stream().filter(x -> used.contains(x))
 				.map(x -> x.equals(this.self) ? Role.SELF : x)

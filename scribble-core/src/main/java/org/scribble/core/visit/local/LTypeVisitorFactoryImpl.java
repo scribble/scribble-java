@@ -37,6 +37,18 @@ public class LTypeVisitorFactoryImpl implements LTypeVisitorFactory
 	}
 
 	@Override
+	public LDoArgPruner LDoArgPruner(Core core)
+	{
+		return new LDoArgPruner(core);
+	}
+
+	@Override
+	public LDoPruner LDoPruner(Core core)
+	{
+		return new LDoPruner(core);
+	}
+
+	@Override
 	public SubprotoExtChoiceSubjFixer SubprotoExtChoiceSubjFixer(Core core)
 	{
 		return new SubprotoExtChoiceSubjFixer(core);

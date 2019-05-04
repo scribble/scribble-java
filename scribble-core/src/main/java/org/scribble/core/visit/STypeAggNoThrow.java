@@ -37,7 +37,6 @@ public abstract class STypeAggNoThrow<K extends ProtoKind, B extends Seq<K, B>, 
 	// Pre: agg(Stream.of(unit())) = unit()
 	protected abstract T agg(SType<K, B> n, Stream<T> ts);  // Cf. generic varargs, heap pollution issue
 	
-	// SType return for extensibility/flexibility
 	public T visitContinue(Continue<K, B> n)
 	{
 		return unit(n);

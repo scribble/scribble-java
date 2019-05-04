@@ -14,6 +14,7 @@
 package org.scribble.core.job;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +43,8 @@ import org.scribble.core.visit.STypeVisitorFactory;
 import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.core.visit.global.GTypeVisitorFactoryImpl;
+import org.scribble.core.visit.local.LDoArgPruner;
+import org.scribble.core.visit.local.LDoPruner;
 import org.scribble.core.visit.local.LTypeVisitorFactoryImpl;
 import org.scribble.core.visit.local.SubprotoExtChoiceSubjFixer;
 import org.scribble.util.ScribException;
@@ -219,8 +222,47 @@ public class Core
 			}
 		}
 
+		verbosePrintPass("Pruning do-args on all projected intermediates...");
+		LDoArgPruner v1 = this.config.vf.local.LDoArgPruner(this);   // Reusable
+		List<LProjection> pruned = new LinkedList<>();
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
+		{
+			GProtocol imed = this.context.getIntermediate(fullname);
+			for (Role self : imed.roles)
+			{
+				LProjection proj = this.context.getProjection(fullname, self);
+				/*LSeq def = v1.visitSeq(proj.def);
+				LProjection fixed = proj.reconstruct(proj.getSource(), proj.mods,
+						proj.fullname, proj.roles, proj.self, proj.params, def);*/
+				LProjection fixed = (LProjection) v1.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
+				pruned.add(fixed);  // N.B. replaces existing projection
+				verbosePrintPass(
+						"Pruned do-args on projected intermediate: "
+								+ fixed.fullname + ":\n" + fixed);
+			}
+		}
+		pruned.forEach(x -> this.getContext().setProjection(x));  
+				// Update after all visited, to prevent visiting an already pruned projdecl from breaking the pruning of a subsequent one (e.g., mutually recursive proto refs)
+
+		verbosePrintPass("Do-pruning all projected intermediates...");
+		LDoPruner v2 = this.config.vf.local.LDoPruner(this);   // Reusable
+		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
+		{
+			GProtocol imed = this.context.getIntermediate(fullname);
+			for (Role self : imed.roles)
+			{
+				LProjection proj = this.context.getProjection(fullname, self);
+				//LSeq def = v2.visitSeq(proj.def);
+				LProjection fixed = proj;//proj.reconstruct(proj.getSource(), proj.mods, proj.fullname, proj.roles, proj.self, proj.params, def);
+				this.context.setProjection(fixed);  // N.B. replaces existing projection
+				verbosePrintPass(
+						"Do-pruned projected intermediate: "
+								+ fixed.fullname + ":\n" + fixed);
+			}
+		}
+
 		verbosePrintPass("\"Fixing\" all projected intermediates...");
-		SubprotoExtChoiceSubjFixer v = this.config.vf.local
+		SubprotoExtChoiceSubjFixer v3 = this.config.vf.local
 				.SubprotoExtChoiceSubjFixer(this);  // Reusable (via top-level visitProtocol)
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
@@ -228,7 +270,7 @@ public class Core
 			for (Role self : imed.roles)
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
-				LProjection fixed = (LProjection) v.visitProtocol(proj);
+				LProjection fixed = (LProjection) v3.visitProtocol(proj);
 				this.context.setProjection(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Fixed external choice subjects for projected intermediate: "

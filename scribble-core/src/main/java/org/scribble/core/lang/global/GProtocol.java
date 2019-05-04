@@ -119,16 +119,17 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		return proj;
 	}
 	
+	// Does rec and role pruning
 	private LProjection projectAux(Core core, Role self, List<Role> decls,
 			LSeq body)
 	{
 		LSeq pruned = core.config.vf.<Local, LSeq>RecPruner().visitSeq(body);
 		LProtoName fullname = InlinedProjector
 				.getFullProjectionName(this.fullname, self);
-		Set<Role> tmp = pruned.gather(new RoleGatherer<Local, LSeq>()::visit)
+		Set<Role> used = pruned.gather(new RoleGatherer<Local, LSeq>()::visit)
 				.collect(Collectors.toSet());
 		List<Role> roles = decls.stream()
-				.filter(x -> x.equals(self) || tmp.contains(x))
+				.filter(x -> x.equals(self) || used.contains(x))
 				.collect(Collectors.toList());
 		List<MemberName<? extends NonRoleParamKind>> params =
 				new LinkedList<>(this.params);  // CHECKME: filter params by usage?

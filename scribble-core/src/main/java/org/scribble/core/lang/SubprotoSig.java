@@ -33,8 +33,7 @@ public class SubprotoSig
 			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
 			// Arg, not MemberName, because need to include MessageSigs (sig literals)
 
-	// public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role>
-	// roles, List<Argument<? extends Kind>> args)
+	// public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role> roles, List<Argument<? extends Kind>> args)
 	public SubprotoSig(ProtoName<?> fullname,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{

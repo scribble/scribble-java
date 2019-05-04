@@ -16,6 +16,8 @@ package org.scribble.core.type.session.global;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.core.job.Core;
+import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.ProtoName;
@@ -29,6 +31,12 @@ public class GDo extends Do<Global, GSeq> implements GType
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);
+	}
+	
+	@Override
+	public GProtocol getTarget(Core core)
+	{
+		return core.getContext().getIntermediate(this.proto);  // Subproto visiting hardcoded to intermediate (i.e., parsed)
 	}
 
 	@Override
