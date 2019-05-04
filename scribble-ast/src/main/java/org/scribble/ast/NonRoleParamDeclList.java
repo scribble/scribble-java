@@ -49,12 +49,12 @@ public class NonRoleParamDeclList extends ParamDeclList<NonRoleParamKind>
 		return cast;
 	}
 
-	// "add", not "set"
-	public void addScribChildren(List<? extends ParamDecl<NonRoleParamKind>> ds)
+	/*// "add", not "set"
+	public void addScribChildren(List<? extends ParamDecl<? extends NonRoleParamKind>> ds)
 	{
 		// Cf. above getters and Scribble.g children order
 		super.addChildren(ds);
-	}
+	}*/
 
 	@Override
 	public NonRoleParamDeclList dupNode()

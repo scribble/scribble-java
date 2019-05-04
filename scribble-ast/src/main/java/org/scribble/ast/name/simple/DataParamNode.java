@@ -47,6 +47,7 @@ public class DataParamNode extends NonRoleParamNode<DataKind>
 		df.DataParamNode(this);
 	}
 	
+  // N.B. no "DataParamName"
 	@Override
 	public DataName toName()
 	{

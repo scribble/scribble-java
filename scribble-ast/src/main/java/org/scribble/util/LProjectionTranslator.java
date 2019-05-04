@@ -14,25 +14,35 @@
 package org.scribble.util;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MsgNode;
+import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.ast.ProtoMod;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtoBlock;
 import org.scribble.ast.local.LProtoDef;
 import org.scribble.ast.local.LProtoHeader;
 import org.scribble.ast.local.LSessionNode;
+import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreContext;
+import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.local.LProjection;
+import org.scribble.core.type.kind.NonRoleParamKind;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Msg;
@@ -50,7 +60,6 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.job.Job;
 
-// CHECKME: move to visit package?
 public class LProjectionTranslator
 {
 	public final Job job;
@@ -71,15 +80,49 @@ public class LProjectionTranslator
 				ltype.roles.stream().map(
 						x -> this.af.RoleDecl(null, this.af.RoleNode(null, x.toString())))
 						.collect(Collectors.toList()));
-		NonRoleParamDeclList ps = this.af.NonRoleParamDeclList(null,
-				ltype.roles.stream().map(x -> null)
-						.collect(Collectors.toList()));
-		List<IdNode> elems = Arrays.asList(fullname.getElements()).stream()
-				.map(x -> this.af.IdNode(null, x)).collect(Collectors.toList());
-		LProtoHeader hdr = this.af.LProtoHeader(null,
+		List<NonRoleParamDecl<? extends NonRoleParamKind>> pds = new LinkedList<>();
+		for (MemberName<? extends NonRoleParamKind> p : ltype.params)
+		{
+			if (p instanceof SigName)
+			{
+				SigParamNode n = this.af.SigParamNode(null, p.toString());
+				pds.add(this.af.SigParamDecl(null, n));
+			}
+			else if (p instanceof DataName)
+			{
+				DataParamNode n = this.af.DataParamNode(null, p.toString());
+				pds.add(this.af.DataParamDecl(null, n));
+			}
+			else
+			{
+				throw new RuntimeException(
+						"[TODO] Unsupported kind: " + p.getClass() + "\n\t" + p);
+			}
+		}
+		NonRoleParamDeclList ps = this.af.NonRoleParamDeclList(null, pds);
+
+		List<ProtoMod> mods = ltype.mods.stream()
+				.map(x -> translate(x)).collect(Collectors.toList());
+		GProtoNameNode parent = this.af.GProtoNameNode(null,
+				IdNode.from(this.af, fullname.getElements()));
+		RoleNode self1 = this.af.RoleNode(null, self.toString());
+		List<IdNode> elems = IdNode.from(this.af, fullname.getElements());
+		LProtoHeader header = this.af.LProtoHeader(null,
 				this.af.LProtoNameNode(null, elems), rs, ps);
 		LProtoDef def = this.af.LProtoDef(null, translate(ltype.def));
-		return this.af.LProjectionDecl(null, ltype.mods, fullname, self, header, def);
+		return this.af.LProjectionDecl(null, mods, parent, self1, header,
+				def);
+	}
+	
+	// Cf. IdNode.from
+	protected ProtoMod translate(ProtocolMod mod)
+	{
+		switch (mod)
+		{
+			case AUX:      return af.AuxMod(null);
+			case EXPLICIT: return af.ExplicitMod(null);
+			default:       throw new RuntimeException("Unknown modifier: " + mod);
+		}
 	}
 	
 	protected MsgNode translate(Msg msg)

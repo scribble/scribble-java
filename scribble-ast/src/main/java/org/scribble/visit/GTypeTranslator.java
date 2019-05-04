@@ -20,7 +20,6 @@ import org.scribble.core.type.session.STypeFactory;
 import org.scribble.del.global.GDel;
 import org.scribble.job.Job;
 
-// CHECKME: move to visit package?
 public class GTypeTranslator extends SimpleAstVisitorNoThrows<GNode>
 {
 	public final STypeFactory tf;

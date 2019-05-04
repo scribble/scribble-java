@@ -43,7 +43,7 @@ public class GProtoDeclDel extends ProtoDeclDel<Global> implements GDel
 		GProtoDecl source = (GProtoDecl) n;
 		Module m = (Module) n.getParent();
 		List<ProtocolMod> mods = source.getModifierListChild().getModList().stream()
-				.map(x -> ProtocolMod.fromAst(x)).collect(Collectors.toList());
+				.map(x -> x.toProtocolMod()).collect(Collectors.toList());
 		GProtoName fullname = new GProtoName(m.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
 		List<Role> rs = source.getRoles();

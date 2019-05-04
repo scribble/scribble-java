@@ -46,7 +46,8 @@ public class SigParamNode extends NonRoleParamNode<SigKind>
 	{
 		df.SigParamNode(this);
 	}
-	
+
+  // N.B. no "SigParamName"
 	@Override
 	public SigName toName()
 	{

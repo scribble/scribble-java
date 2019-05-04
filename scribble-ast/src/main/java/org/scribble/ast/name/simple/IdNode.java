@@ -13,7 +13,12 @@
  */
 package org.scribble.ast.name.simple;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.antlr.runtime.Token;
+import org.scribble.ast.AstFactory;
 import org.scribble.core.type.kind.IdKind;
 import org.scribble.core.type.name.Id;
 import org.scribble.del.DelFactory;
@@ -31,6 +36,13 @@ public class IdNode extends SimpleNameNode<IdKind>
 	protected IdNode(IdNode node)
 	{
 		super(node);
+	}
+	
+	// CHECKME: move to af?
+	public static List<IdNode> from(AstFactory af, String[] elems)
+	{
+		return Stream.of(elems).map(x -> af.IdNode(null, x))
+				.collect(Collectors.toList());
 	}
 	
 	@Override

@@ -257,6 +257,16 @@ public class AstFactoryImpl implements AstFactory
 		n.decorateDel(this.df);
 		return n;
 	}
+	
+	@Override
+	public LProtoNameNode LProtoNameNode(Token t, List<IdNode> elems)
+	{
+		t = newToken(t, ScribbleParser.LPROTO_NAME);
+		LProtoNameNode n = new LProtoNameNode(t);
+		n.addChildren(elems);
+		n.decorateDel(this.df);
+		return n;
+	}
 
 	@Override
 	public ModuleNameNode ModuleNameNode(Token t, List<IdNode> elems)
@@ -349,7 +359,33 @@ public class AstFactoryImpl implements AstFactory
 		return n;
 	}
 	
-	// TODO: ProtoModList, etc.
+	@Override
+	public ProtoModList ProtoModList(Token t, List<ProtoMod> mods)
+	{
+		t = newToken(t, ScribbleParser.PROTOMOD_LIST);
+		ProtoModList n = new ProtoModList(t);
+		n.addScribChildren(mods);
+		n.decorateDel(this.df);
+		return n;
+	}
+
+	@Override
+	public AuxMod AuxMod(Token t)
+	{
+		t = newToken(t, ScribbleParser.AUX_KW);  // N.B. directly using KW
+		AuxMod n = new AuxMod(t);
+		n.decorateDel(this.df);
+		return n;
+	}
+
+	@Override
+	public ExplicitMod ExplicitMod(Token t)
+	{
+		t = newToken(t, ScribbleParser.EXPLICIT_KW);  // N.B. directly using KW
+		ExplicitMod n = new ExplicitMod(t);
+		n.decorateDel(this.df);
+		return n;
+	}
 
 	@Override
 	public GProtoHeader GProtocolHeader(Token t, GProtoNameNode name,
@@ -383,8 +419,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public NonRoleParamDeclList NonRoleParamDeclList(Token t,
-			List<NonRoleParamDecl<NonRoleParamKind>> ds)
+	public NonRoleParamDeclList NonRoleParamDeclList(Token t, 
+			List<NonRoleParamDecl<? extends NonRoleParamKind>> ds)
 	{
 		t = newToken(t, ScribbleParser.PARAMDECL_LIST);
 		NonRoleParamDeclList n = new NonRoleParamDeclList(t);

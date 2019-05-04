@@ -35,12 +35,24 @@ public class ProtoModList extends ScribNodeBase
 	{
 		super(node);
 	}
-
-	// Cf., NameNode::getSimpleNameList
-	public List<ProtoMod> getModList()
+	
+	public List<ProtoMod> getModChildren()
 	{
 		return ((List<?>) getChildren()).stream().map(x -> (ProtoMod) x)
 				.collect(Collectors.toList());
+	}
+	
+	// "add", not "set"
+	public void addScribChildren(List<ProtoMod> mods)
+	{
+		addChildren(mods);
+	}
+
+  // CHECKME: deprecate? cf. getModChildren
+	// Cf., NameNode::getSimpleNameList
+	public List<ProtoMod> getModList()
+	{
+		return getModChildren();
 	}
 	
 	public boolean hasAux()

@@ -84,6 +84,7 @@ public interface AstFactory
 
 	DataNameNode DataNameNode(Token t, List<IdNode> elems);
 	GProtoNameNode GProtoNameNode(Token t, List<IdNode> elems);
+	LProtoNameNode LProtoNameNode(Token t, List<IdNode> elems);
 	ModuleNameNode ModuleNameNode(Token t, List<IdNode> elems);
 	SigNameNode SigNameNode(Token t, List<IdNode> elems);
 	
@@ -100,14 +101,17 @@ public interface AstFactory
 	GProtoDecl GProtoDecl(Token t, ProtoModList mods, GProtoHeader header,
 			GProtoDef def);
 
-	// TODO: add ProtoModList, etc.
+	// TODO: refactor to use ProtoModList, etc.
+	ProtoModList ProtoModList(Token t, List<ProtoMod> mods);
+	AuxMod AuxMod(Token t);
+	ExplicitMod ExplicitMod(Token t);
 
 	GProtoHeader GProtocolHeader(Token t, GProtoNameNode name, RoleDeclList rs,
 			NonRoleParamDeclList ps);
 	RoleDeclList RoleDeclList(Token t, List<RoleDecl> ds);
 	RoleDecl RoleDecl(Token t, RoleNode r);
 	NonRoleParamDeclList NonRoleParamDeclList(Token t, 
-			List<NonRoleParamDecl<NonRoleParamKind>> ds);
+			List<NonRoleParamDecl<? extends NonRoleParamKind>> ds);
 	DataParamDecl DataParamDecl(Token t, DataParamNode p);
 	SigParamDecl SigParamDecl(Token t, SigParamNode p);
 

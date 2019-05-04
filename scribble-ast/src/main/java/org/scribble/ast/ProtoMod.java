@@ -14,6 +14,7 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
+import org.scribble.core.lang.ProtocolMod;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -45,5 +46,16 @@ public abstract class ProtoMod extends ScribNodeBase
 	public ProtoMod visitChildren(AstVisitor nv) throws ScribException
 	{
 		return this;
+	}
+	
+	// cf. toName
+	public ProtocolMod toProtocolMod()  // TODO: rename
+	{
+		switch (toString())  // Directly from 
+		{
+			case "aux":      return ProtocolMod.AUX;
+			case "explicit": return ProtocolMod.EXPLICIT;
+			default:         throw new RuntimeException("Unknown modifier: " + this);
+		}
 	}
 }

@@ -50,7 +50,8 @@ public abstract class Choice<K extends ProtoKind>
 	public abstract List<? extends ProtoBlock<K>> getBlockChildren();
 	
 	// "add", not "set"
-	public void addScribChildren(RoleNode subj, List<? extends ProtoBlock<K>> blocks)
+	public void addScribChildren(RoleNode subj,
+			List<? extends ProtoBlock<K>> blocks)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(subj);

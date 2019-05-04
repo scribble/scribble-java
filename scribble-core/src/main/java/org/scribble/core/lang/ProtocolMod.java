@@ -13,8 +13,6 @@
  */
 package org.scribble.core.lang;
 
-import org.antlr.runtime.tree.CommonTree;
-
 public enum ProtocolMod
 {
 	AUX, 
@@ -30,8 +28,22 @@ public enum ProtocolMod
 			default:       throw new RuntimeException("Unknown modifier: " + this);
 		}
 	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
-	// TODO: refactor to scrib-lang -- param should be ProtocolMod, not CommonTree
+	/*// TODO: refactor to scrib-lang -- param should be ProtocolMod, not CommonTree
 	public static ProtocolMod fromAst(CommonTree ast)//org.scribble.ast.ProtocolMod ast)
 	{
 		switch (ast.toString())
@@ -40,5 +52,4 @@ public enum ProtocolMod
 			case "explicit": return EXPLICIT;
 			default:         throw new RuntimeException("Unknown modifier: " + ast);
 		}
-	}
-}
+	}*/
