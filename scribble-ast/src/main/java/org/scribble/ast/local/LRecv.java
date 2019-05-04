@@ -13,8 +13,6 @@
  */
 package org.scribble.ast.local;
 
-import java.util.stream.Collectors;
-
 import org.antlr.runtime.Token;
 import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
@@ -48,10 +46,7 @@ public class LRecv extends LMsgTransfer
 	@Override
 	public String toString()
 	{
-		return getMessageNodeChild() + " " + Constants.FROM_KW
-				+ " "
-				+ getDestinationChildren().stream().map(x -> x.toString())
-						.collect(Collectors.joining(", "))
-				+ ";";
+		return getMessageNodeChild() + " " + Constants.FROM_KW + " "
+				+ getSourceChild() + ";";
 	}
 }

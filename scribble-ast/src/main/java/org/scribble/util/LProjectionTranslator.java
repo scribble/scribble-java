@@ -20,12 +20,16 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.MsgNode;
+import org.scribble.ast.NonRoleArg;
+import org.scribble.ast.NonRoleArgList;
+import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.PayElem;
 import org.scribble.ast.PayElemList;
 import org.scribble.ast.ProtoMod;
 import org.scribble.ast.ProtoModList;
+import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtoBlock;
@@ -37,16 +41,21 @@ import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
 import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.ast.name.simple.IdNode;
+import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.local.LProjection;
+import org.scribble.core.type.kind.DataKind;
+import org.scribble.core.type.kind.NonRoleArgKind;
 import org.scribble.core.type.kind.NonRoleParamKind;
+import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Msg;
 import org.scribble.core.type.session.SigLit;
 import org.scribble.core.type.session.local.LAcc;
@@ -130,10 +139,10 @@ public class LProjectionTranslator
 		if (msg.isSigLit())
 		{	
 			SigLit cast = (SigLit) msg;
+			OpNode op = this.af.OpNode(null, cast.op.toString());
 			PayElemList pay = this.af.PayElemList(null, cast.payload.elems.stream()
 					.map(x -> translate(x)).collect(Collectors.toList()));
-			return this.af.SigLitNode(null, this.af.OpNode(null, cast.op.toString()),
-					pay);
+			return this.af.SigLitNode(null, op, pay);
 		}
 		else
 		{
@@ -195,9 +204,76 @@ public class LProjectionTranslator
 
 	protected org.scribble.ast.local.LDisconnect translate(LDisconnect t)
 	{
-		RoleNode self = this.af.RoleNode(null, t.left.toString());
-		RoleNode peer = this.af.RoleNode(null, t.right.toString());
+		RoleNode self = this.af.RoleNode(null, t.left.toString());  // FIXME: remove explicit self parsing from all I/O actions
+		RoleNode peer = this.af.RoleNode(null, t.getPeer().toString());
 		return this.af.LDisconnect(null, self, peer);
+	}
+
+	protected org.scribble.ast.local.LContinue translate(LContinue t)
+	{
+		RecVarNode rv = this.af.RecVarNode(null, t.recvar.toString());
+		return this.af.LContinue(null, rv);
+	}
+
+	protected org.scribble.ast.local.LDo translate(LDo t)
+	{
+		List<NonRoleArg> args = new LinkedList<>();
+		for (Arg<? extends NonRoleParamKind> p : t.args)
+		{
+			NonRoleArgKind k = p.getKind();
+			NonRoleArgNode a;
+			if (k.equals(SigKind.KIND))
+			{
+				if (p instanceof SigLit)
+				{
+					SigLit cast = (SigLit) p;
+					OpNode op = this.af.OpNode(null, cast.op.toString());
+					PayElemList pay = this.af.PayElemList(null, cast.payload.elems
+							.stream().map(x -> translate(x)).collect(Collectors.toList()));
+					a = this.af.SigLitNode(null, op, pay);  // FIXME: could need to be SigParamNode
+				}
+				else if (p instanceof SigName)
+				{
+					a = this.af.SigNameNode(null,
+							IdNode.from(this.af, ((SigName) p).getElements()));
+						// FIXME: could need to be SigParamNode
+				}
+				else 
+				{
+					throw new RuntimeException(
+							"Shouldn't get in here: " + p.getClass() + "\n\t" + p);
+				}
+			}
+			else if (k.equals(DataKind.KIND))
+			{
+				if (p instanceof DataName)
+				{
+					a = this.af.DataNameNode(null,
+							IdNode.from(this.af, ((SigName) p).getElements()));
+						// FIXME: could need to be DataParamNode
+				}
+				else 
+				{
+					throw new RuntimeException(
+							"[TODO] : " + p.getClass() + "\n\t" + p);
+				}
+			}
+			else
+			{
+				throw new RuntimeException(
+						"[TODO] Unsupported kind: " + p.getClass() + "\n\t" + p);
+			}
+			args.add(this.af.NonRoleArg(null, a));
+		}
+		NonRoleArgList as = this.af.NonRoleArgList(null, args);
+
+		LProtoNameNode proto = this.af.LProtoNameNode(null,
+				IdNode.from(this.af, t.proto.getElements()));
+		RoleArgList rs = this.af.RoleArgList(null,  // Cf. translate(LProjectionDecl)
+				t.roles.stream().map(
+						x -> this.af.RoleArg(null, this.af.RoleNode(null, x.toString())))  // CHECKME: special "self" node?
+						.collect(Collectors.toList()));
+		return this.af.LDo(null, proto, as, rs);
 	}
 
 	protected org.scribble.ast.local.LChoice translate(LChoice t)

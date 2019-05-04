@@ -55,4 +55,6 @@ public class Constants
 	//public static final String SPAWN_KW = "spawn";
 	
 	public static final String REQUEST_KW = "request";
+	public static final String CLIENTWRAP_KW = "cwrap";
+	public static final String SERVERWRAP_KW = "swrap";
 }

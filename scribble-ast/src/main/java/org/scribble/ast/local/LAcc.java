@@ -46,8 +46,7 @@ public class LAcc extends LConnectAction implements LSimpleSessionNode
 	@Override
 	public String toString()
 	{
-		return (isUnitMessage() ? "" : getMessageNodeChild() + " ")
-				+ Constants.ACCEPT_KW + " " + Constants.FROM_KW
-				+ " " + getSourceChild() + ";";
+		return (isUnitMessage() ? "" : getMessageNodeChild() + " ")  // TODO: deprecate ommitted "()" special case
+				+ Constants.ACCEPT_KW + " " + getSourceChild() + ";";
 	}
 }

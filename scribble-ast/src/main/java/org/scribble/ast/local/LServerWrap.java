@@ -92,6 +92,6 @@ public class LServerWrap extends BasicInteraction<Local>  // Wrap, ConnectionAct
 	@Override
 	public String toString()
 	{
-		return Constants.WRAP_KW + " " + getClientChild() + ";";
+		return Constants.SERVERWRAP_KW + " " + getClientChild() + ";";
 	}
 }

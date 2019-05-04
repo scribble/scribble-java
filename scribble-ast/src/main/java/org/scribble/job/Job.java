@@ -150,19 +150,17 @@ public class Job
 
 		Map<ProtoName<Local>, LProjection> projs = getCore()
 				.getProjections(fullname, self);
-		/*Map<ProtoName<Local>, LProjectionDecl> projs = getCore()
-				.getProjections(fullname, self).entrySet().stream()
-				.collect(Collectors.toMap(Entry::getKey, x -> t.translate(x.getValue())));*/
-		
 		Map<ProtoName<Local>, Module> projmods = new HashMap<>();
 		for (ProtoName<Local> pfullname : projs.keySet())
 		{
+			LProjection proj = projs.get(pfullname);
+
 			ModuleNameNode modn = this.config.af.ModuleNameNode(null,
 					IdNode.from(this.config.af, pfullname.getPrefix().getElements()));
 			ModuleDecl modd = this.config.af.ModuleDecl(null, modn);
 			List<ImportDecl<?>> imports = Collections.emptyList();  // FIXME TODO
 			List<NonProtoDecl<?>> nonprotos = Collections.emptyList();  // FIXME TODO
-			List<LProjectionDecl> protos = Arrays.asList(t.translate(projs.get(pfullname)));
+			List<LProjectionDecl> protos = Arrays.asList(t.translate(proj));
 			Module mod = this.config.af.Module(null, modd, imports, nonprotos, protos);
 			projmods.put(pfullname, mod);
 		}

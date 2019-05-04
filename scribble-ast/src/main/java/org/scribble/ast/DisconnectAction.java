@@ -81,6 +81,6 @@ public abstract class DisconnectAction<K extends ProtoKind>
 	public String toString()
 	{
 		return Constants.DISCONNECT_KW + " " + getLeftChild()
-				+ " " + Constants.TO_KW + " " + getRightChild() + ";";
+				+ " " + Constants.AND_KW + " " + getRightChild() + ";";
 	}
 }

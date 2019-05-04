@@ -91,7 +91,6 @@ public class LClientWrap extends BasicInteraction<Local> // Wrap, ConnectionActi
 	@Override
 	public String toString()
 	{
-		return Constants.WRAP_KW + " " + Constants.TO_KW + " " + getClientChild()
-				+ ";";
+		return Constants.CLIENTWRAP_KW + getServerChild() + ";";
 	}
 }

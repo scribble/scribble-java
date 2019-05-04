@@ -571,8 +571,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GDo GDo(Token t, RoleArgList rs, NonRoleArgList as,
-			GProtoNameNode proto)
+	public GDo GDo(Token t, GProtoNameNode proto, NonRoleArgList as,
+			RoleArgList rs)
 	{
 		t = newToken(t, ScribbleParser.GDO);
 		GDo n = new GDo(t);
@@ -774,8 +774,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LDo LDo(Token t, RoleArgList rs, NonRoleArgList as,
-			LProtoNameNode proto)
+	public LDo LDo(Token t, LProtoNameNode proto, NonRoleArgList as,
+			RoleArgList rs)
 	{
 		t = newToken(t, ScribbleParser.LDO);
 		LDo n = new LDo(t);

@@ -46,8 +46,7 @@ public class LReq extends LConnectAction implements LSimpleSessionNode
 	@Override
 	public String toString()
 	{
-		return (isUnitMessage() ? "" : getMessageNodeChild() + " ")
-				+ Constants.REQUEST_KW + " " + Constants.TO_KW
-				+ " " + getDestinationChild() + ";";
+		return (isUnitMessage() ? "" : getMessageNodeChild() + " ")  // TODO: deprecate ommitted "()" special case
+				+ Constants.REQUEST_KW + " " + getDestinationChild() + ";";
 	}
 }

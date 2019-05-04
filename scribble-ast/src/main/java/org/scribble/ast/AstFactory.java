@@ -135,8 +135,7 @@ public interface AstFactory
 	GWrap GWrap(Token t, RoleNode client, RoleNode server);
 
 	GContinue GContinue(Token t, RecVarNode rv);
-	GDo GDo(Token t, RoleArgList rs, NonRoleArgList args,
-			GProtoNameNode proto);
+	GDo GDo(Token t, GProtoNameNode proto, NonRoleArgList args, RoleArgList rs);
 
 	RoleArgList RoleArgList(Token t, List<RoleArg> rs);
 	RoleArg RoleArg(Token t, RoleNode r);
@@ -161,7 +160,7 @@ public interface AstFactory
 	LProtoBlock LProtoBlock(Token t, LInteractionSeq seq);
 	LInteractionSeq LInteractionSeq(Token t, List<LSessionNode> elems);
 
-	// CHECKME: refactor with self arg? -- cf. core local types
+	// CHECKME: refactor with self arg? -- cf. core local types -- yes: FIXME
 	LSend LSend(Token t, RoleNode src, MsgNode msg, RoleNode dst);
 	LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode dst);
 	LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode dst);
@@ -171,7 +170,7 @@ public interface AstFactory
 	LServerWrap LServerWrap(Token t, RoleNode client, RoleNode server);
 
 	LContinue LContinue(Token t, RecVarNode rv); 
-	LDo LDo(Token t, RoleArgList rs, NonRoleArgList as, LProtoNameNode proto);
+	LDo LDo(Token t, LProtoNameNode proto, NonRoleArgList as, RoleArgList rs);
 
 	LChoice LChoice(Token t, RoleNode subj, List<LProtoBlock> blocks);
 	LRecursion LRecursion(Token t, RecVarNode rv, LProtoBlock block);

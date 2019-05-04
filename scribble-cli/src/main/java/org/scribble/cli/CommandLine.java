@@ -307,8 +307,7 @@ public class CommandLine
 		{
 			GProtoName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Role role = checkRoleArg(jobc, fullname, args[i+1]);
-			Map<LProtoName, Module> projections = job.getProjections(fullname,
-					role);  // FIXME: generate and output Module container -- should be done via Lang?
+			Map<LProtoName, Module> projections = job.getProjections(fullname, role);  // FIXME: generate and output Module container -- should be done via Job?
 			System.out.println("\n" + projections.values().stream()
 					.map(p -> p.toString()).collect(Collectors.joining("\n\n")));
 		}

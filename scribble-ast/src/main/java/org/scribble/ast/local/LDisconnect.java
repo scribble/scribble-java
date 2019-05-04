@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.DisconnectAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.del.DelFactory;
+import org.scribble.util.Constants;
 
 public class LDisconnect extends DisconnectAction<Local>
 		implements LSimpleSessionNode
@@ -43,5 +44,11 @@ public class LDisconnect extends DisconnectAction<Local>
 	public LDisconnect dupNode()
 	{
 		return new LDisconnect(this);
+	}
+
+	@Override
+	public String toString()
+	{
+		return Constants.DISCONNECT_KW + " " + getRightChild() + ";";   // FIXME: make explicit, using right as peer (cf. core.type)
 	}
 }
