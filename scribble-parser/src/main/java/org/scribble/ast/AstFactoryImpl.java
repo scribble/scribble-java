@@ -294,8 +294,8 @@ public class AstFactoryImpl implements AstFactory
 	 */
 	
 	@Override
-	public Module Module(Token t, ModuleDecl moddecl, List<ImportDecl<?>> imports,
-			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
+	public Module Module(Token t, ModuleDecl moddecl, List<? extends ImportDecl<?>> imports,
+			List<? extends NonProtoDecl<?>> data, List<? extends ProtoDecl<?>> protos)
 	{
 		t = newToken(t, ScribbleParser.MODULE);  
 		Module n = new Module(t);

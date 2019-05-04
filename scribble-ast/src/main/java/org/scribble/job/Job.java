@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -157,10 +158,10 @@ public class Job
 			ModuleNameNode modn = this.config.af.ModuleNameNode(null,
 					IdNode.from(this.config.af, pfullname.getPrefix().getElements()));
 			ModuleDecl modd = this.config.af.ModuleDecl(null, modn);
-			projmods.put(pfullname,
-					this.config.af.Module(null, modd, Collections.emptyList(),
-							Collections.emptyList(),
-							Arrays.asList(t.translate(projs.get(pfullname)))));
+			List<LProjectionDecl> protos = Arrays.asList(t.translate(projs.get(pfullname)));
+			Module mod = this.config.af.Module(null, modd, Collections.emptyList(),
+					Collections.emptyList(), protos);
+			projmods.put(pfullname, mod);
 		}
 
 		LProjection root = projs

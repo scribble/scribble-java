@@ -90,8 +90,9 @@ public class Module extends ScribNodeBase
 	}
 
 	// "add", not "set"
-	public void addScribChildren(ModuleDecl moddecl, List<ImportDecl<?>> imports,
-			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
+	public void addScribChildren(ModuleDecl moddecl,
+			List<? extends ImportDecl<?>> imports,
+			List<? extends NonProtoDecl<?>> data, List<? extends ProtoDecl<?>> protos)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(moddecl);

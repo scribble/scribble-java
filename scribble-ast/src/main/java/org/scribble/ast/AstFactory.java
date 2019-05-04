@@ -88,8 +88,11 @@ public interface AstFactory
 	ModuleNameNode ModuleNameNode(Token t, List<IdNode> elems);
 	SigNameNode SigNameNode(Token t, List<IdNode> elems);
 	
-	Module Module(Token t, ModuleDecl mdecl, List<ImportDecl<?>> imports,
-			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos);
+	Module Module(Token t, ModuleDecl mdecl,
+			List<? extends ImportDecl<?>> imports,
+			List<? extends NonProtoDecl<?>> data,
+			List<? extends ProtoDecl<?>> protos);
+
 	ModuleDecl ModuleDecl(Token t, ModuleNameNode fullname);
 	ImportModule ImportModule(Token t, ModuleNameNode modname,
 			ModuleNameNode alias);
@@ -117,7 +120,7 @@ public interface AstFactory
 
 	GProtoDef GProtoDef(Token t, GProtoBlock block);
 	GProtoBlock GProtoBlock(Token t, GInteractionSeq seq);
-	GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems);
+	GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems);  // CHECKME: ? extends GSessionNode ? -- and similar others?
 
 	SigLitNode SigLitNode(Token t, OpNode op, PayElemList pay);
 	PayElemList PayElemList(Token t, List<PayElem<?>> elems);
