@@ -22,9 +22,9 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Seq;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
@@ -45,7 +45,8 @@ public abstract class Protocol
 	public final B def;
 
 	public Protocol(CommonTree source, List<ProtocolMod> mods, N fullname,
-			List<Role> roles, List<MemberName<? extends NonRoleParamKind>> params, B def)
+			List<Role> roles, List<MemberName<? extends NonRoleParamKind>> params,
+			B def)
 	{
 		this.source = source;  // CHECKME: factor out with SType(Base) ?
 		this.mods = Collections.unmodifiableList(mods);
@@ -55,9 +56,10 @@ public abstract class Protocol
 		this.def = def;
 	}
 	
-	/*public abstract Protocol<K, N, B> reconstruct(ProtocolDecl<K> source,
+	// N.B. LProtocol has an additional "self" field, reconstruct pattern not perfect
+	public abstract Protocol<K, N, B> reconstruct(CommonTree source,
 			List<ProtocolMod> mods, N fullname, List<Role> roles,
-			List<MemberName<? extends NonRoleParamKind>> params, B def);*/
+			List<MemberName<? extends NonRoleParamKind>> params, B def);
 	
 	public boolean isAux()
 	{
@@ -69,8 +71,6 @@ public abstract class Protocol
 		return this.mods.contains(ProtocolMod.EXPLICIT);
 	}
 
-	//public abstract Protocol<K, N, B> getInlined(STypeInliner v);
-	//public abstract Protocol<K, N, B> unfoldAllOnce(STypeUnfolder<K> u);
 	public abstract Protocol<K, N, B> getInlined(STypeInliner<K, B> v);
 	public abstract Protocol<K, N, B> unfoldAllOnce(STypeUnfolder<K, B> v);
 

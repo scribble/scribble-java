@@ -61,9 +61,9 @@ public class GTypeVisitorFactoryImpl implements GTypeVisitorFactory
 
 	// CHECKME: deprecate?
 	@Override
-	public Projector Projector(Core core, Role self)
+	public SubprotoProjector Projector(Core core, Role self)
 	{
-		return new Projector(core, self);
+		return new SubprotoProjector(core, self);
 	}
 
 }

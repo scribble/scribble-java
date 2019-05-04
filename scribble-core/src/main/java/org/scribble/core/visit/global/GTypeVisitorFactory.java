@@ -35,6 +35,6 @@ public interface GTypeVisitorFactory
 	InlinedProjector InlinedProjector(Core core, Role self);
 
 	// CHECKME: deprecate?
-	Projector Projector(Core core, Role self);
+	SubprotoProjector Projector(Core core, Role self);
 
 }

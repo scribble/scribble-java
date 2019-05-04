@@ -57,6 +57,15 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		this.self = self;
 	}
 
+	@Override
+	public LProtocol reconstruct(CommonTree source,
+			List<ProtocolMod> mods, LProtoName fullname, List<Role> roles,
+			//Role self,  // CHECKME: reconstruct pattern not working here?
+			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
+	{
+		return reconstruct(source, mods, fullname, roles, this.self, params, def);  // N.B. this.self
+	}
+
 	public LProtocol reconstruct(CommonTree source,
 			List<ProtocolMod> mods, LProtoName fullname, List<Role> roles,
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
@@ -110,7 +119,8 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 				.collect(Collectors.toSet());
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
 				.collect(Collectors.toList());*/
-		return new LProtocol(getSource(), this.mods, this.fullname, this.roles,
+		return //new LProtocol
+				reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.self, this.params, def);  // CHECKME: or null source?
 	}
 	

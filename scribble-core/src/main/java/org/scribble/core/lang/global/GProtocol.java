@@ -60,6 +60,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		super(source, mods, fullname, roles, params, def);
 	}
 
+	@Override
 	public GProtocol reconstruct(CommonTree source,
 			List<ProtocolMod> mods, GProtoName fullname, List<Role> roles,
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
@@ -169,7 +170,8 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 				.collect(Collectors.toSet());
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls -- CHECKME: what is an example? was this from before unused role checking?
 				.collect(Collectors.toList());
-		return new GProtocol(getSource(), this.mods, this.fullname, rs,
+		return //new GProtocol
+				reconstruct(getSource(), this.mods, this.fullname, rs,
 				this.params, def);
 	}
 	
