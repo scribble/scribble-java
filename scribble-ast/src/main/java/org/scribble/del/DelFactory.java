@@ -54,6 +54,7 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtoBlock;
 import org.scribble.ast.local.LProtoDecl;
 import org.scribble.ast.local.LProtoDef;
@@ -152,6 +153,7 @@ public interface DelFactory
 	
 	// Locals
 	void LProtoDecl(LProtoDecl n);
+	void LProjectionDecl(LProjectionDecl n);
 
 	void LProtoHeader(LProtoHeader n);
 	

@@ -86,6 +86,7 @@ tokens
 
 	// Compound names
   GPROTO_NAME = 'GPROTO_NAME';  // Parse specifically as GProto, for ScribTreeAdaptor.create
+  LPROTO_NAME = 'LPROTO_NAME';
   MODULE_NAME = 'MODULE_NAME';
   DATA_NAME = 'DATA_NAME';   // N.B. distinct from DATAPARAM_NAME
   SIG_NAME = 'SIG_NAME';   // N.B. distinct from SIGPARAM_NAME
@@ -119,9 +120,9 @@ tokens
  	// Scribble "session nodes" -- cf. org.scribble.core.type.session vs. org.scribble.core.lang
   GINTERSEQ = 'GINTERSEQ';
 
-  GCONNECT = 'GCONNECT';
-  GDCONN = 'GDCONN';
   GMSGTRANSFER = 'GMSGTRANSFER';
+  GCONNECT = 'GCONNECT';
+  GDCONN = 'GDCONN';  // TODO: rename GDISCONN
   GWRAP = 'GWRAP';
 
   GCONTINUE = 'GCONTINUE';
@@ -134,6 +135,30 @@ tokens
 
   GCHOICE = 'GCHOICE';
   GRECURSION = 'GRECURSION';
+
+  // Locals: currently not directly parsed, but needed for, e.g., projection
+  LPROTODECL = 'LPROTODECL';
+
+  LPROTOHEADER = 'LPROTOHEADER';
+  
+  LPROTODEF = 'LPROTODEF';
+  LPROTOBLOCK = 'LPROTOBLOCK';
+  
+  LINTERSEQ = 'LINTERSEQ';
+
+  LSEND = 'LSEND';
+  LRECV = 'LRECV';
+  LACC = 'LACC';
+  LREQ = 'LREQ';
+  LDCONN = 'LDCONN';
+  LCLIENTWRAP = 'LCLIENTWRAP';
+  LSERVERWRAP = 'LSERVERWRAP';
+
+  LCONTINUE = 'LCONTINUE';
+  LDO = 'LDO';
+
+  LCHOICE = 'LCHOICE';
+  LRECURSION = 'LRECURSION';
 }
 
 

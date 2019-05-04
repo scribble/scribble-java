@@ -125,11 +125,11 @@ public interface AstFactory
 			PayElemNameNode<K> name);
 	GDelegPayElem GDelegPayElem(Token t, GProtoNameNode name, RoleNode r);
 
-	GConnect GConnect(Token t, RoleNode src, MsgNode msg, RoleNode dst);
-	GDisconnect GDisconnect(Token t, RoleNode src, RoleNode dst);
 	GMsgTransfer GMsgTransfer(Token t, RoleNode src, MsgNode msg,
 			List<RoleNode> dsts);
-	GWrap GWrap(Token t, RoleNode src, RoleNode dst);
+	GConnect GConnect(Token t, RoleNode src, MsgNode msg, RoleNode dst);
+	GDisconnect GDisconnect(Token t, RoleNode left, RoleNode right);
+	GWrap GWrap(Token t, RoleNode client, RoleNode server);
 
 	GContinue GContinue(Token t, RecVarNode rv);
 	GDo GDo(Token t, RoleArgList rs, NonRoleArgList args,
@@ -143,12 +143,12 @@ public interface AstFactory
 	GChoice GChoice(Token t, RoleNode subj, List<GProtoBlock> blocks);
 	GRecursion GRecursion(Token t, RecVarNode rv, GProtoBlock block);
 
-	/*LProtoDecl LProtoDecl(Token t, List<ProtoMod> mods,
+	/*LProtoDecl LProtoDecl(Token t, ProtoModList mods,
 			LProtoHeader header, LProtoDef def);  // Not currently used -- local protos not parsed, only projected*/
 
-	LProjectionDecl LProjectionDecl(Token t, List<ProtoMod> mods,
-			GProtoNameNode fullname, RoleNode self, LProtoHeader header,
-			LProtoDef def);
+	LProjectionDecl LProjectionDecl(Token t, ProtoModList mods,
+			LProtoHeader header, LProtoDef def, GProtoNameNode fullname,
+			RoleNode self);
 	// del extends that of LProtoDecl
 
 	LProtoHeader LProtoHeader(Token t, LProtoNameNode name, RoleDeclList rs,
@@ -158,20 +158,20 @@ public interface AstFactory
 	LProtoBlock LProtoBlock(Token t, LInteractionSeq seq);
 	LInteractionSeq LInteractionSeq(Token t, List<LSessionNode> elems);
 
+	// CHECKME: refactor with self arg? -- cf. core local types
 	LSend LSend(Token t, RoleNode src, MsgNode msg, RoleNode dst);
 	LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode dst);
 	LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode dst);
 	LReq LReq(Token t, RoleNode src, MsgNode msg, RoleNode dst);
-	LDisconnect LDisconnect(Token t, RoleNode self, RoleNode peer); 
-	LClientWrap LClientWrap(Token t, RoleNode self, RoleNode peer);
-	LServerWrap LServerWrap(Token t, RoleNode self, RoleNode peer);
+	LDisconnect LDisconnect(Token t, RoleNode left, RoleNode right); 
+	LClientWrap LClientWrap(Token t, RoleNode client, RoleNode server);
+	LServerWrap LServerWrap(Token t, RoleNode client, RoleNode server);
 
-	LContinue LContinue(Token t, RecVarNode recvar); 
-	LDo LDo(Token t, RoleArgList roles, NonRoleArgList args,
-			LProtoNameNode proto);
+	LContinue LContinue(Token t, RecVarNode rv); 
+	LDo LDo(Token t, RoleArgList rs, NonRoleArgList as, LProtoNameNode proto);
 
 	LChoice LChoice(Token t, RoleNode subj, List<LProtoBlock> blocks);
-	LRecursion LRecursion(Token t, RecVarNode recvar, LProtoBlock block);
+	LRecursion LRecursion(Token t, RecVarNode rv, LProtoBlock block);
 }
 
 

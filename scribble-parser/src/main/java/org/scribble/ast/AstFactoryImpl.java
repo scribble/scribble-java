@@ -13,6 +13,7 @@
  */
 package org.scribble.ast;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -521,6 +522,17 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
+	public GMsgTransfer GMsgTransfer(Token t, RoleNode src, MsgNode msg,
+			List<RoleNode> dsts)
+	{
+		t = newToken(t, ScribbleParser.GMSGTRANSFER);
+		GMsgTransfer n = new GMsgTransfer(t);
+		n.addScribChildren(msg, src, dsts);
+		n.decorateDel(this.df);
+		return n;
+	}
+
+	@Override
 	public GConnect GConnect(Token t, RoleNode src, MsgNode msg, RoleNode dst)
 	{
 		t = newToken(t, ScribbleParser.GCONNECT);
@@ -541,22 +553,11 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GMsgTransfer GMsgTransfer(Token t, RoleNode src, MsgNode msg,
-			List<RoleNode> dsts)
-	{
-		t = newToken(t, ScribbleParser.GMSGTRANSFER);
-		GMsgTransfer n = new GMsgTransfer(t);
-		n.addScribChildren(msg, src, dsts);
-		n.decorateDel(this.df);
-		return n;
-	}
-
-	@Override
-	public GWrap GWrap(Token t, RoleNode src, RoleNode dst)
+	public GWrap GWrap(Token t, RoleNode client, RoleNode server)
 	{
 		t = newToken(t, ScribbleParser.GWRAP);
 		GWrap n = new GWrap(t);
-		n.addScribChildren(src, dst);
+		n.addScribChildren(client, server);
 		n.decorateDel(this.df);
 		return n;
 	}
@@ -643,103 +644,166 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LProjectionDecl LProjectionDecl(Token t, List<ProtoMod> mods,
-			GProtoNameNode fullname, RoleNode self, LProtoHeader header, LProtoDef def)  // del extends that of LProtoDecl
+	public LProjectionDecl LProjectionDecl(Token t, ProtoModList mods,
+			LProtoHeader header, LProtoDef def, GProtoNameNode fullname,
+			RoleNode self)  // del extends that of LProtoDecl
 	{
-		
+		t = newToken(t, ScribbleParser.LPROTODECL);
+		LProjectionDecl n = new LProjectionDecl(t);
+		n.addScribChildren(mods, header, def, fullname, self);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
 	public LProtoHeader LProtoHeader(Token t, LProtoNameNode name, RoleDeclList rs,
 			NonRoleParamDeclList ps)
 	{
-		
+		t = newToken(t, ScribbleParser.LPROTOHEADER);
+		LProtoHeader n = new LProtoHeader(t);
+		n.addScribChildren(name, ps, rs);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
 	public LProtoDef LProtoDef(Token t, LProtoBlock block)
 	{
-		
+		t = newToken(t, ScribbleParser.LPROTODEF);
+		LProtoDef n = new LProtoDef(t);
+		n.addScribChildren(block);
+		return n;
 	}
 
 	@Override
 	public LProtoBlock LProtoBlock(Token t, LInteractionSeq seq)
 	{
-		
+		t = newToken(t, ScribbleParser.LPROTOBLOCK);
+		LProtoBlock n = new LProtoBlock(t);
+		n.addScribChildren(seq);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
 	public LInteractionSeq LInteractionSeq(Token t, List<LSessionNode> elems)
 	{
-		
+		t = newToken(t, ScribbleParser.LINTERSEQ);
+		LInteractionSeq n = new LInteractionSeq(t);
+		n.addScribChildren(elems);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
 	public LSend LSend(Token t, RoleNode src, MsgNode msg, RoleNode dst)
 	{
-		
+		t = newToken(t, ScribbleParser.LSEND);
+		LSend n = new LSend(t);
+		n.addScribChildren(msg, src, Arrays.asList(dst));
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
 	public LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode dst)
 	{
-		
-		
+		t = newToken(t, ScribbleParser.LRECV);
+		LRecv n = new LRecv(t);
+		n.addScribChildren(msg, src, Arrays.asList(dst));
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
 	public LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode dst)
 	{
-		
+		t = newToken(t, ScribbleParser.LACC);
+		LAcc n = new LAcc(t);
+		n.addScribChildren(msg, src, Arrays.asList(dst));
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
 	public LReq LReq(Token t, RoleNode src, MsgNode msg, RoleNode dst)
 	{
-
+		t = newToken(t, ScribbleParser.LREQ);
+		LReq n = new LReq(t);
+		n.addScribChildren(msg, src, Arrays.asList(dst));
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
-	public LDisconnect LDisconnect(Token t, RoleNode self, RoleNode peer)
+	public LDisconnect LDisconnect(Token t, RoleNode left, RoleNode right)
 	{
-		
+		t = newToken(t, ScribbleParser.LDCONN);
+		LDisconnect n = new LDisconnect(t);
+		n.addScribChildren(left, right);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
-	public LClientWrap LClientWrap(Token t, RoleNode self, RoleNode peer)
+	public LClientWrap LClientWrap(Token t, RoleNode client, RoleNode server)
 	{
-		
+		t = newToken(t, ScribbleParser.LCLIENTWRAP);
+		LClientWrap n = new LClientWrap(t);
+		n.addScribChildren(client, server);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
-	public LServerWrap LServerWrap(Token t, RoleNode self, RoleNode peer)
+	public LServerWrap LServerWrap(Token t, RoleNode client, RoleNode server)
 	{
-		
+		t = newToken(t, ScribbleParser.LSERVERWRAP);
+		LServerWrap n = new LServerWrap(t);
+		n.addScribChildren(client, server);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
-	public LContinue LContinue(Token t, RecVarNode recvar) 
+	public LContinue LContinue(Token t, RecVarNode rv) 
 	{
-		
+		t = newToken(t, ScribbleParser.LCONTINUE);
+		LContinue n = new LContinue(t);
+		n.addScribChildren(rv);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
-	public LDo LDo(Token t, RoleArgList roles, NonRoleArgList args,
+	public LDo LDo(Token t, RoleArgList rs, NonRoleArgList as,
 			LProtoNameNode proto)
 	{
-		
+		t = newToken(t, ScribbleParser.LDO);
+		LDo n = new LDo(t);
+		n.addScribChildren(proto, as, rs);
+		n.decorateDel(this.df);
+		return n;
 	}
 
 	@Override
 	public LChoice LChoice(Token t, RoleNode subj, List<LProtoBlock> blocks)
 	{
-		
+		t = newToken(t, ScribbleParser.LCHOICE);
+		LChoice n = new LChoice(t);
+		n.addScribChildren(subj, blocks);
+		n.decorateDel(this.df);
+		return n;
 	}
-	@Override
-	public LRecursion LRecursion(Token t, RecVarNode recvar, LProtoBlock block)
 
+	@Override
+	public LRecursion LRecursion(Token t, RecVarNode rv, LProtoBlock block)
 	{
-		
+		t = newToken(t, ScribbleParser.LRECURSION);
+		LRecursion n = new LRecursion(t);
+		n.addScribChildren(rv, block);
+		n.decorateDel(this.df);
+		return n;
 	}
 }
 

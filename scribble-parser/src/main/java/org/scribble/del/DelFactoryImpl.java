@@ -56,6 +56,7 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtoBlock;
 import org.scribble.ast.local.LProtoDecl;
 import org.scribble.ast.local.LProtoDef;
@@ -98,6 +99,7 @@ import org.scribble.del.local.LContinueDel;
 import org.scribble.del.local.LDisconnectDel;
 import org.scribble.del.local.LDoDel;
 import org.scribble.del.local.LInteractionSeqDel;
+import org.scribble.del.local.LProjectionDeclDel;
 import org.scribble.del.local.LProtoBlockDel;
 import org.scribble.del.local.LProtoDeclDel;
 import org.scribble.del.local.LProtoDefDel;
@@ -428,6 +430,12 @@ public class DelFactoryImpl implements DelFactory
 	public void LProtoDecl(LProtoDecl n)
 	{
 		setDel(n, new LProtoDeclDel());
+	}
+
+	@Override
+	public void LProjectionDecl(LProjectionDecl n)
+	{
+		setDel(n, new LProjectionDeclDel());
 	}
 
 	@Override

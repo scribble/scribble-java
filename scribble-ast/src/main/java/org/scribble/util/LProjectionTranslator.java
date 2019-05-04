@@ -25,6 +25,7 @@ import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.PayElem;
 import org.scribble.ast.PayElemList;
 import org.scribble.ast.ProtoMod;
+import org.scribble.ast.ProtoModList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.local.LProtoBlock;
@@ -105,8 +106,8 @@ public class LProjectionTranslator
 		}
 		NonRoleParamDeclList ps = this.af.NonRoleParamDeclList(null, pds);
 
-		List<ProtoMod> mods = ltype.mods.stream()
-				.map(x -> translate(x)).collect(Collectors.toList());
+		ProtoModList mods = this.af.ProtoModList(null, ltype.mods.stream()
+				.map(x -> translate(x)).collect(Collectors.toList()));
 		GProtoNameNode parent = this.af.GProtoNameNode(null,
 				IdNode.from(this.af, fullname.getElements()));
 		RoleNode self1 = this.af.RoleNode(null, self.toString());
@@ -114,8 +115,7 @@ public class LProjectionTranslator
 		LProtoHeader header = this.af.LProtoHeader(null,
 				this.af.LProtoNameNode(null, elems), rs, ps);
 		LProtoDef def = this.af.LProtoDef(null, translate(ltype.def));
-		return this.af.LProjectionDecl(null, mods, parent, self1, header,
-				def);
+		return this.af.LProjectionDecl(null, mods, header, def, parent, self1);
 	}
 	
 	// Cf. IdNode.from

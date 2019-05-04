@@ -50,16 +50,6 @@ public abstract class ProtoDecl<K extends ProtoKind> extends ScribNodeBase
 	public abstract ProtoHeader<K> getHeaderChild();
 	public abstract ProtoDef<K> getDefChild();
 
-	public boolean isAux()
-	{
-		return getModifierListChild().hasAux();
-	}
-
-	public boolean isExplicit()
-	{
-		return getModifierListChild().hasExplicit();
-	}
-
 	// "add", not "set"
 	public void addScribChildren(ProtoModList mods, ProtoHeader<K> header,
 			ProtoDef<K> def)
@@ -68,6 +58,16 @@ public abstract class ProtoDecl<K extends ProtoKind> extends ScribNodeBase
 		addChild(mods);
 		addChild(header);
 		addChild(def);
+	}
+
+	public boolean isAux()
+	{
+		return getModifierListChild().hasAux();
+	}
+
+	public boolean isExplicit()
+	{
+		return getModifierListChild().hasExplicit();
 	}
 	
 	public abstract ProtoDecl<K> dupNode();
