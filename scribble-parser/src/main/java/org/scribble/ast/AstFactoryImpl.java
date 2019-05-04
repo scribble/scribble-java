@@ -18,8 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
@@ -537,7 +535,7 @@ public class AstFactoryImpl implements AstFactory
 	{
 		t = newToken(t, ScribbleParser.GCONNECT);
 		GConnect n = new GConnect(t);
-		n.addScribChildren(msg, src, Stream.of(dst).collect(Collectors.toList()));
+		n.addScribChildren(msg, src, Arrays.asList(dst));
 		n.decorateDel(this.df);
 		return n;
 	}

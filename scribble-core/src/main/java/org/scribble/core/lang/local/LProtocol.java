@@ -13,11 +13,11 @@
  */
 package org.scribble.core.lang.local;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.Core;
@@ -103,8 +103,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 		LSeq inlined = v.visitSeq(subs.visitSeq(this.def));
 		RecVar rv = v.getInlinedRecVar(sig);
 		LRecursion rec = v.core.config.tf.local.LRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
-		LSeq seq = v.core.config.tf.local.LSeq(null,
-				Stream.of(rec).collect(Collectors.toList()));
+		LSeq seq = v.core.config.tf.local.LSeq(null, Arrays.asList(rec));
 		LSeq def = v.core.config.vf.<Local, LSeq>RecPruner().visitSeq(seq);
 		/*//CHECKME: necessary for LProtocol/Projection? cf. global
 		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)

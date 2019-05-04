@@ -34,6 +34,7 @@ import org.scribble.ast.local.LProtoHeader;
 import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.LProtoNameNode;
 import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -82,6 +83,7 @@ public class LProjectionTranslator
 		Core core = this.job.getCore();
 		CoreContext jobc = core.getContext();
 		LProjection ltype = jobc.getProjection(fullname, self);
+
 		RoleDeclList rs = this.af.RoleDeclList(null,
 				ltype.roles.stream().map(
 						x -> this.af.RoleDecl(null, this.af.RoleNode(null, x.toString())))
@@ -109,14 +111,14 @@ public class LProjectionTranslator
 
 		ProtoModList mods = this.af.ProtoModList(null, ltype.mods.stream()
 				.map(x -> translate(x)).collect(Collectors.toList()));
-		GProtoNameNode parent = this.af.GProtoNameNode(null,
+		GProtoNameNode global = this.af.GProtoNameNode(null,
 				IdNode.from(this.af, fullname.getElements()));
 		RoleNode self1 = this.af.RoleNode(null, self.toString());
-		List<IdNode> elems = IdNode.from(this.af, fullname.getElements());
-		LProtoHeader header = this.af.LProtoHeader(null,
-				this.af.LProtoNameNode(null, elems), rs, ps);
+		LProtoNameNode projFullname = this.af.LProtoNameNode(null,
+				IdNode.from(this.af, fullname.getElements()));
+		LProtoHeader header = this.af.LProtoHeader(null, projFullname, rs, ps);
 		LProtoDef def = this.af.LProtoDef(null, translate(ltype.def));
-		return this.af.LProjectionDecl(null, mods, header, def, parent, self1);
+		return this.af.LProjectionDecl(null, mods, header, def, global, self1);
 	}
 	
 	// Cf. IdNode.from

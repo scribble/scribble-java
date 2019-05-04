@@ -13,12 +13,12 @@
  */
 package org.scribble.core.lang.global;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.Core;
@@ -163,8 +163,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		GSeq inlined = v.visitSeq(subs.visitSeq(this.def));
 		RecVar rv = v.getInlinedRecVar(sig);
 		GRecursion rec = v.core.config.tf.global.GRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
-		GSeq seq = v.core.config.tf.global.GSeq(null,
-				Stream.of(rec).collect(Collectors.toList()));
+		GSeq seq = v.core.config.tf.global.GSeq(null, Arrays.asList(rec));
 		GSeq def = v.core.config.vf.<Global, GSeq>RecPruner().visitSeq(seq);
 		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
 				.collect(Collectors.toSet());
