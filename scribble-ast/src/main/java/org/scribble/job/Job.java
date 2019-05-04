@@ -180,8 +180,9 @@ public class Job
 		}
 
 		System.out.println("");
-		warningPrintln("[TODO] Full module projection (with imports): "
-				+ fullname + "@" + self);
+		warningPrintln(
+				"[TODO] Module projection incomplete, missing imports and non-proto decls: "
+						+ fullname + "@" + self);
 		
 		return Collections.emptyMap();
 				//FIXME: build output Modules

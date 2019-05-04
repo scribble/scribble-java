@@ -224,7 +224,7 @@ public class Core
 
 		verbosePrintPass("Pruning do-args on all projected intermediates...");
 		LDoArgPruner v1 = this.config.vf.local.LDoArgPruner(this);   // Reusable
-		List<LProjection> pruned = new LinkedList<>();
+		List<LProjection> pruned1 = new LinkedList<>();
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol imed = this.context.getIntermediate(fullname);
@@ -235,17 +235,18 @@ public class Core
 				LProjection fixed = proj.reconstruct(proj.getSource(), proj.mods,
 						proj.fullname, proj.roles, proj.self, proj.params, def);*/
 				LProjection fixed = (LProjection) v1.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
-				pruned.add(fixed);  // N.B. replaces existing projection
+				pruned1.add(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Pruned do-args on projected intermediate: "
 								+ fixed.fullname + ":\n" + fixed);
 			}
 		}
-		pruned.forEach(x -> this.getContext().setProjection(x));  
+		pruned1.forEach(x -> this.getContext().setProjection(x));  
 				// Update after all visited, to prevent visiting an already pruned projdecl from breaking the pruning of a subsequent one (e.g., mutually recursive proto refs)
 
 		verbosePrintPass("Do-pruning all projected intermediates...");
 		LDoPruner v2 = this.config.vf.local.LDoPruner(this);   // Reusable
+		List<LProjection> pruned2 = new LinkedList<>();
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol imed = this.context.getIntermediate(fullname);
@@ -253,12 +254,14 @@ public class Core
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
 				LProjection fixed = v2.visitProjection(proj);
-				this.context.setProjection(fixed);  // N.B. replaces existing projection
+				pruned2.add(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Do-pruned projected intermediate: "
 								+ fixed.fullname + ":\n" + fixed);
 			}
 		}
+		pruned2.forEach(x -> this.getContext().setProjection(x));  
+				// Update after all visited, to prevent visiting an already pruned projdecl from breaking the pruning of a subsequent one (e.g., mutually recursive proto refs)
 
 		verbosePrintPass(
 				"Fixing external choice subjects for all projected intermediates...");

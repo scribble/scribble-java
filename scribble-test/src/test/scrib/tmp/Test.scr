@@ -96,6 +96,7 @@ module tmp.Test;
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
 	// Job Module projection
 			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles
+			// TODO: projected imports/nonprotodecls
 			// old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
 	// FIXME: explicit self roles/decls (core and ast) -- currently, self decls in protocols (in core) are purely cosmetic in toString
 				// And fix self in ast locals, and astfactory
@@ -118,6 +119,26 @@ module tmp.Test;
 
 
 data <java> "..." from "..." as T;
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		do Proto1Aux(A, B);
+	}
+	or
+	{
+		2() from A to B;
+	}	
+	4() from A to C;
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	3() from A to B;
+}
 
 
 /*
@@ -170,7 +191,7 @@ aux global protocol Proto1Aux1(role A, role B, role C)
 //*/
 
 
-//*
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A

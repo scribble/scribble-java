@@ -98,29 +98,12 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		LSeq fixed = core.config.vf.local.InlinedExtChoiceSubjFixer().visitSeq(def);
 		return projectAux(core, self, this.roles, fixed);
 	}
-
-	// N.B. no "fixing" passes done here -- need breadth-first passes to be sequentialised for subproto visiting
-	public LProjection project(Core core, Role self)
-	{
-		LSeq def = core.config.vf.global.Projector(core, self).visitSeq(this.def);
-		LProjection proj = projectAux(core, self,
-				core.getContext().getInlined(this.fullname).roles,  
-						// Using inlined global, global role decls already pruned -- CHECKME: is this still relevant?
-						// Actual projection role decl pruning done by projectAux
-				def);
-
-		// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
-
-		// N.B. must do top-level entry on projection, cf. projectInlined
-		//LProjection fixed = (LProjection) core.config.vf.local.SubprotoExtChoiceSubjFixer(core).visitProtocol(proj);
-		return proj;
-	}
 	
 	// Does rec and role pruning
 	private LProjection projectAux(Core core, Role self, List<Role> decls,
-			LSeq body)
+			LSeq def)
 	{
-		LSeq pruned = core.config.vf.<Local, LSeq>RecPruner().visitSeq(body);
+		LSeq pruned = core.config.vf.<Local, LSeq>RecPruner().visitSeq(def);
 		LProtoName fullname = InlinedProjector
 				.getFullProjectionName(this.fullname, self);
 		Set<Role> used = pruned.gather(new RoleGatherer<Local, LSeq>()::visit)
@@ -131,7 +114,24 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		List<MemberName<? extends NonRoleParamKind>> params =
 				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
 		return new LProjection(this.mods, fullname, roles, self, params,
+				this.fullname, pruned);  // CHECKME: add/do via tf?
+	}
+
+	// N.B. no "fixing" passes done here -- need breadth-first passes to be sequentialised for subproto visiting
+	public LProjection project(Core core, Role self)
+	{
+		LSeq def = core.config.vf.global.Projector(core, self).visitSeq(this.def);
+		// N.B. not using projectAux, because don't want to prune role decls using RoleGatherer: it doesn't follow subprotos, so can over-prune roledecls (e.g., bad.efsm.grecursion.unfair.Test06, C)
+		// Instead, retain full global role decls for now -- and prune later, via LDoArgPruner
+		LSeq pruned = core.config.vf.<Local, LSeq>RecPruner().visitSeq(def);
+		LProtoName fullname = InlinedProjector
+				.getFullProjectionName(this.fullname, self);
+		List<MemberName<? extends NonRoleParamKind>> params =
+				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
+		LProjection proj = new LProjection(this.mods, fullname, this.roles, self, params,
 				this.fullname, pruned);
+		// TODO: fully refactor ext choice subj fixing, do pruning, etc to Job and use AstVisitor?
+		return proj;
 	}
 	
 	// Cf. (e.g.) checkRoleEnabling, that takes Core

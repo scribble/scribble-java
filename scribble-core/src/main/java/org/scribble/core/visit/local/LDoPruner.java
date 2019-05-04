@@ -97,17 +97,16 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 	public SType<Local, LSeq> visitDo(Do<Local, LSeq> n)
 	{
 		SubprotoSig sig = new SubprotoSig(n.proto, n.roles, n.args);
-		System.out.println("111: " + sig + " ,, " + this.stack + " ,, " + this.unguarded);
 		if (this.stack.contains(sig))
 		{
-			System.out.println("222: " + this.unguarded.contains(sig));
 			return this.unguarded.contains(sig) ? LSkip.SKIP : n;
 		}
 		this.stack.push(sig);
 		Protocol<Local, ?, LSeq> target = n.getTarget(this.core);
-		visitSeq(target.def);  // Discard changes -- "nested" entries only do "info collection", actual AST modifications only recoded for the top-level Projection (cf. visitProjection)
+		LSeq def = visitSeq(target.def); 
+				// Changes ultimately discarded: "nested" entries only do "info collection", actual AST modifications only recoded for the top-level Projection (cf. visitProjection)
 		this.stack.pop();
-		return n;  // Cf. unit(n)
+		return (def.isEmpty()) ? LSkip.SKIP : n;  // Cf. unit(n)
 	}
 
 	@Override
