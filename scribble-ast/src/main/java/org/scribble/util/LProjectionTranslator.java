@@ -65,10 +65,11 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.job.Job;
 
+// Cannot refactor into LType hierarchy, due to Maven module dependencies (scribble-core cannot see scribble-ast)
 public class LProjectionTranslator
 {
 	public final Job job;
-	protected final AstFactory af;
+	private final AstFactory af;
 
 	public LProjectionTranslator(Job job)
 	{
@@ -223,7 +224,7 @@ public class LProjectionTranslator
 		return this.af.LProtoBlock(null, this.af.LInteractionSeq(null, elems));
 	}
 
-	// Cannot refactor into LType hierarchy, due to Maven module dependencies (scribble-core cannot see outside)
+	// Cannot refactor into LType hierarchy, due to Maven module dependencies (scribble-core cannot see scribble-ast)
 	// Only LSeq not done, return is not an LSessionNode
 	protected LSessionNode translate(LType t)
 	{
