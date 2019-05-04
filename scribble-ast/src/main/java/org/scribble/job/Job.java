@@ -22,8 +22,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.AstFactory;
+import org.scribble.ast.ImportDecl;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
+import org.scribble.ast.NonProtoDecl;
 import org.scribble.ast.global.GProtoDecl;
 import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
@@ -158,22 +160,22 @@ public class Job
 			ModuleNameNode modn = this.config.af.ModuleNameNode(null,
 					IdNode.from(this.config.af, pfullname.getPrefix().getElements()));
 			ModuleDecl modd = this.config.af.ModuleDecl(null, modn);
+			List<ImportDecl<?>> imports = Collections.emptyList();  // FIXME TODO
+			List<NonProtoDecl<?>> nonprotos = Collections.emptyList();  // FIXME TODO
 			List<LProjectionDecl> protos = Arrays.asList(t.translate(projs.get(pfullname)));
-			Module mod = this.config.af.Module(null, modd, Collections.emptyList(),
-					Collections.emptyList(), protos);
+			Module mod = this.config.af.Module(null, modd, imports, nonprotos, protos);
 			projmods.put(pfullname, mod);
 		}
 
 		LProjection root = projs
 				.get(InlinedProjector.getFullProjectionName(fullname, self));
-		
 		System.out.println(
 				"\nProjection modules for " + fullname + "@" + self + ":\n\n"
-						+ projmods.get(root.fullname));
+						+ projmods.get(root.fullname));  // FIXME TODO refactor printing into CommandLine
 		for (ProtoName<Local> pfullname : projmods.keySet())
 		{
 			// CHECKME: projection decl name is currently *compound* full name (not simple name), OK?
-			if (!root.fullname.equals(pfullname))
+			if (!pfullname.equals(root.fullname))
 			{
 				System.out.println("\n" + projmods.get(pfullname));
 			}

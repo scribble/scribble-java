@@ -90,7 +90,7 @@ public interface AstFactory
 	
 	Module Module(Token t, ModuleDecl mdecl,
 			List<? extends ImportDecl<?>> imports,
-			List<? extends NonProtoDecl<?>> data,
+			List<? extends NonProtoDecl<?>> nonprotos,
 			List<? extends ProtoDecl<?>> protos);
 
 	ModuleDecl ModuleDecl(Token t, ModuleNameNode fullname);
