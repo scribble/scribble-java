@@ -41,6 +41,12 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 	{
 		this.core = core;
 	}
+	
+	// CHECKME: vf?
+	protected SubprotoRoleCollector newRoleCollector()
+	{
+		return new SubprotoRoleCollector(this.core);
+	}
 
 	@Override
 	public SType<Local, LSeq> visitDo(Do<Local, LSeq> n)
@@ -54,13 +60,8 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		{
 			return this.core.config.tf.local.LSeq(null, Collections.emptyList());  // Cf. LSkip (currently, no GSkip -- CHECKME: make one?)
 		}
+
 		return n;  // Cf. unit(n)
-	}
-	
-	// CHECKME: vf?
-	protected SubprotoRoleCollector newRoleCollector()
-	{
-		return new SubprotoRoleCollector(this.core);
 	}
 
 	@Override

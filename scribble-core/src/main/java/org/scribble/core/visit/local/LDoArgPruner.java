@@ -29,7 +29,6 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.STypeVisitorNoThrow;
 import org.scribble.core.visit.Substitutor;
 
-// Cf. SubprotoRoleCollector
 public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 {
 	private final Core core;
@@ -39,6 +38,13 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 		this.core = core;
 	}
 	
+	// CHECKME: vf?
+	protected PreSubprotoRoleCollector newPreRoleCollector()  // N.B. "Pre" role collector
+	{
+		return new PreSubprotoRoleCollector(this.core);
+	}
+	
+	// TODO: rename class?  also fixes projection role decls
 	// TODO: refactor into LProjection/LProtocol -- cf. GProtocol
 	public LProjection visitProjection(
 			LProjection n)
@@ -51,12 +57,6 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 		return n.reconstruct(n.getSource(), n.mods, n.fullname, rs, n.self,
 				n.params, pruned);
 				// CHECKME: prune params?
-	}
-	
-	// CHECKME: vf?
-	protected PreSubprotoRoleCollector newPreRoleCollector()  // N.B. "Pre" role collector
-	{
-		return new PreSubprotoRoleCollector(this.core);
 	}
 
 	public Do<Local, LSeq> visitDo(Do<Local, LSeq> n)
@@ -83,10 +83,10 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 	}
 }
 
+
 // Role collector for pre do-arg pruning: do-arg arity doesn't yet match target
 class PreSubprotoRoleCollector extends SubprotoRoleCollector
 {
-	
 	public PreSubprotoRoleCollector(Core core)
 	{
 		super(core);

@@ -262,7 +262,8 @@ public class Core
 			}
 		}
 
-		verbosePrintPass("\"Fixing\" all projected intermediates...");
+		verbosePrintPass(
+				"Fixing external choice subjects for all projected intermediates...");
 		SubprotoExtChoiceSubjFixer v3 = this.config.vf.local
 				.SubprotoExtChoiceSubjFixer(this);  // Reusable (via top-level visitProtocol)
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
