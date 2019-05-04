@@ -13,6 +13,7 @@
  */
 package org.scribble.core.visit.local;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +37,8 @@ public class SubprotoExtChoiceSubjFixer extends InlinedExtChoiceSubjFixer
 	}
 	
 	// To visit top-level proto, reconstruct for fixed subjs -- nested visting (by Inferer) only does passive inference (no reconstruct)
-	protected Protocol<Local, LProtoName, LSeq> visitProtocol(
+	// Must enter here, for initial this.protos entry
+	public Protocol<Local, LProtoName, LSeq> visitProtocol(
 			Protocol<Local, LProtoName, LSeq> n)
 	{
 		// Cf. InlinedExtChoiceSubjFixer.visitRecursion
@@ -69,6 +71,8 @@ class SubprotoEnablerInferer extends InlinedEnablerInferer  // super takes care 
 	public SubprotoEnablerInferer(InlinedExtChoiceSubjFixer v)
 	{
 		super(v);
+		this.protos = Collections
+				.unmodifiableMap(((SubprotoExtChoiceSubjFixer) v).protos);
 	}
 
 	@Override
@@ -78,6 +82,6 @@ class SubprotoEnablerInferer extends InlinedEnablerInferer  // super takes care 
 		{
 			return this.protos.get(n.proto);
 		}
-		throw new RuntimeException("[TODO] : " + n);
+		throw new RuntimeException("[TODO] : " + n.proto + " ,, " + this.protos);
 	}
 }

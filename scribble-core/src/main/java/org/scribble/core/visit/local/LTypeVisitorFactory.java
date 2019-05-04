@@ -23,4 +23,6 @@ public interface LTypeVisitorFactory
 	ReachabilityChecker ReachabilityChecker();
 
 	EGraphBuilder EGraphBuilder(Core core);
+
+	SubprotoExtChoiceSubjFixer SubprotoExtChoiceSubjFixer();
 }

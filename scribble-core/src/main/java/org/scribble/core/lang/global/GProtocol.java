@@ -105,12 +105,18 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	public LProjection project(Core core, Role self)
 	{
 		LSeq def = core.config.vf.global.Projector(core, self).visitSeq(this.def);
-			// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
-		return projectAux(core, self,
+		LProjection proj = projectAux(core, self,
 				core.getContext().getInlined(this.fullname).roles,  
 						// Using inlined global, global role decls already pruned -- CHECKME: is this still relevant?
 						// Actual projection role decl pruning done by projectAux
 				def);
+
+		// FIXME: ext choice subj fixing, do pruning -- refactor to Job and use AstVisitor?
+
+		// N.B. must do top-level entry on projection, cf. projectInlined
+		LProjection fixed = (LProjection) core.config.vf.local
+				.SubprotoExtChoiceSubjFixer().visitProtocol(proj);
+		return fixed;
 	}
 	
 	private LProjection projectAux(Core core, Role self, List<Role> decls,

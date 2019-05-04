@@ -117,6 +117,47 @@ data <java> "..." from "..." as T;
 
 
 /*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;
+		do Proto1(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, "reverse" do-ref
+	}
+}
+
+aux global protocol Proto1Aux(role B, role C)
+{
+	2() from B to C; 
+}
+//*/
+
+
+//*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	1() from B to C;
+	choice at A
+	{
+		2() from A to B;
+		2() from B to C;
+	}
+	or
+	{
+		do Proto1(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, "reverse" do-ref
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	rec X
@@ -279,7 +320,7 @@ global protocol Proto1(role A, role B, role C)
 }
 //*/
 
-//*
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C) -- test already exists?  // Also testing imed projections

@@ -35,4 +35,10 @@ public class LTypeVisitorFactoryImpl implements LTypeVisitorFactory
 	{
 		return new EGraphBuilder(core);
 	}
+
+	@Override
+	public SubprotoExtChoiceSubjFixer SubprotoExtChoiceSubjFixer()
+	{
+		return new SubprotoExtChoiceSubjFixer();
+	}
 }

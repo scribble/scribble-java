@@ -88,7 +88,7 @@ public class LProjectionTranslator
 	{
 		RoleDeclList rs = this.af.RoleDeclList(null,
 				ltype.roles.stream().map(
-						x -> this.af.RoleDecl(null, this.af.RoleNode(null, x.toString())))  // CHECKME: special "self" node?
+						x -> this.af.RoleDecl(null, this.af.RoleNode(null, x.toString())))  // FIXME: special "self" node?
 						.collect(Collectors.toList()));
 		List<NonRoleParamDecl<? extends NonRoleParamKind>> pds = new LinkedList<>();
 		for (MemberName<? extends NonRoleParamKind> p : ltype.params)
@@ -115,7 +115,7 @@ public class LProjectionTranslator
 				.map(x -> translate(x)).collect(Collectors.toList()));
 		GProtoNameNode global = this.af.GProtoNameNode(null,
 				IdNode.from(this.af, ltype.global.getElements()));
-		RoleNode self1 = this.af.RoleNode(null, ltype.self.toString());  // CHECKME: special "self" node?
+		RoleNode self1 = this.af.RoleNode(null, ltype.self.toString());  // FIXME: special "self" node?
 		LProtoNameNode projFullname = this.af.LProtoNameNode(null,
 				IdNode.from(this.af, ltype.fullname.getElements()));
 		LProtoHeader header = this.af.LProtoHeader(null, projFullname, rs, ps);
@@ -168,7 +168,7 @@ public class LProjectionTranslator
 		}
 	}
 
-  // CHECKME: in following, special "self" nodes?
+  // FIXME: in following, special "self" nodes?
 
 	protected org.scribble.ast.local.LAcc translate(LAcc t)
 	{
@@ -271,7 +271,7 @@ public class LProjectionTranslator
 				IdNode.from(this.af, t.proto.getElements()));
 		RoleArgList rs = this.af.RoleArgList(null,  // Cf. translate(LProjectionDecl)
 				t.roles.stream().map(
-						x -> this.af.RoleArg(null, this.af.RoleNode(null, x.toString())))  // CHECKME: special "self" node?
+						x -> this.af.RoleArg(null, this.af.RoleNode(null, x.toString())))  // FIXME: special "self" node?
 						.collect(Collectors.toList()));
 		return this.af.LDo(null, proto, as, rs);
 	}
