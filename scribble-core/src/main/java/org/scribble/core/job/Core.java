@@ -13,7 +13,7 @@
  */
 package org.scribble.core.job;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProjection;
-import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.ModelFactory;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EModelFactoryImpl;
@@ -31,8 +30,6 @@ import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.model.visit.local.NonDetPayChecker;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.GProtoName;
-import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtoName;
@@ -337,39 +334,33 @@ public class Core
 	}
 
 	// Pre: checkWellFormedness 
-	// Returns: fullname -> Module -- CHECKME TODO: refactor local Module creation to Job?
-	// CHECKME: generate projection Modules for an inline main? -- no: TODO refactor to Job
-	public Map<LProtoName, LProtocol> getProjections(GProtoName fullname,
-			Role role) throws ScribException
+	// TODO: refactor projection, choice-subj fixing, do-pruning, do-arg fixing, etc. fully to Job (and drop this.projs from here)
+	public Map<ProtoName<Local>, LProjection> getProjections(
+			ProtoName<Global> fullname, Role self) throws ScribException
 	{
-		//Module root = 
-		LProtocol proj =
-				this.context.getProjection(fullname, role);
+		Map<ProtoName<Local>, LProjection> res = new HashMap<>();
+
+		LProjection proj = this.context.getProjection(fullname, self);
+		res.put(proj.fullname, proj);
 		
-		List<ProtoName<Local>> pfullnames = proj.def
+		List<ProtoName<Local>> pdeps = proj.def
 				.gather(new ProtoDepsCollector<Local, LSeq>()::visit)
 				.collect(Collectors.toList());
-		for (ProtoName<Local> pfullname : pfullnames)
+		for (ProtoName<Local> pfullname : pdeps)
 		{
-			System.out
-					.println("\n" + this.context.getProjection((LProtoName) pfullname));
-		}
-		if (!pfullnames.contains(proj.fullname))
-		{
-			System.out.println("\n" + proj);
+			res.put(pfullname, this.context.getProjection(pfullname));
 		}
 
 		List<MemberName<?>> ns = proj.def
 				.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
 				.collect(Collectors.toList());
-
-		warningPrintln("");
-		warningPrintln("[TODO] Full module projection (with imports): "
-				+ fullname + "@" + role);
+		if (!ns.isEmpty())
+		{
+			throw new RuntimeException(
+					"[TODO] Non-proto dependencies: " + ns + "\n\t" + proj);
+		}
 		
-		return Collections.emptyMap();
-				//FIXME: build output Modules
-				//FIXME: (interleaved) ordering between proto and nonproto (Module) imports -- order by original Global import order?
+		return res;
 	}
 	
 	public CoreContext getContext()

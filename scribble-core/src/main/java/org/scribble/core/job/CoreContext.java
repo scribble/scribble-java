@@ -68,6 +68,7 @@ public class CoreContext
 	// LProtocolName is the full local protocol name (module name is the prefix)  // LProtocolName key is LProtocol value fullname (i.e., redundant)
 	private final Map<ProtoName<Local>, LProjection> projs = new HashMap<>();
 			// FIXME: choice-subj fixing, do-pruning -- factor out to Job and do there via AstVisitor? -- make testing compare the two sides 
+			// TODO: refactor projection, choice-subj fixing, do-pruning, do-arg fixing, etc. fully to Job (and drop this.projs from here)
 
 	// Built from projected inlined
 	private final Map<ProtoName<Local>, EGraph> fEGraphs = new HashMap<>();
@@ -192,7 +193,7 @@ public class CoreContext
 
 	// Projected from intermediate
 	// Core gives LProjection -- projection Modules should be by Job
-	public LProjection getProjection(GProtoName fullname, Role self)
+	public LProjection getProjection(ProtoName<Global> fullname, Role self)
 	{
 		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname,
 				self);

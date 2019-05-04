@@ -13,21 +13,32 @@
  */
 package org.scribble.job;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtoDecl;
+import org.scribble.ast.local.LProjectionDecl;
 import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.lang.global.GProtocol;
+import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.core.type.name.ProtoName;
+import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.STypeFactory;
 import org.scribble.core.type.session.global.GTypeFactoryImpl;
 import org.scribble.core.type.session.local.LTypeFactoryImpl;
+import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.del.DelFactory;
+import org.scribble.util.LProjectionTranslator;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.GTypeTranslator;
@@ -121,6 +132,39 @@ public class Job
 	{
 		return new Core(mainFullname, args, //modcs, 
 				imeds, tf);
+	}
+
+	// Returns: fullname -> Module -- CHECKME TODO: refactor local Module creation to Job?
+	// CHECKME: generate projection Modules for an *inline* main?
+	public Map<LProtoName, Module> getProjections(GProtoName fullname,
+			Role self) throws ScribException
+	{
+		LProjectionTranslator t = new LProjectionTranslator(this);
+		Map<ProtoName<Local>, LProjectionDecl> projs = getCore()
+				.getProjections(fullname, self).entrySet().stream()
+				.collect(Collectors.toMap(Entry::getKey, x -> t.translate(x.getValue())));
+
+		LProjectionDecl root = projs
+				.get(InlinedProjector.getFullProjectionName(fullname, self));
+		
+		System.out.println(
+				"Projection modules for " + fullname + "@" + self + ":\n" + root);
+		for (ProtoName<Local> pfullname : projs.keySet())
+		{
+			// CHECKME: projection decl name is currently *compound* full name (not simple name), OK?
+			if (!root.getHeaderChild().getDeclName().equals(pfullname))
+			{
+				System.out.println("\n" + projs.get(pfullname));
+			}
+		}
+
+		System.out.println("");
+		warningPrintln("[TODO] Full module projection (with imports): "
+				+ fullname + "@" + self);
+		
+		return Collections.emptyMap();
+				//FIXME: build output Modules
+				//FIXME: (interleaved) ordering between proto and nonproto (Module) imports -- order by original Global import order?
 	}
 	
 	// First run Visitor passes, then call toJob

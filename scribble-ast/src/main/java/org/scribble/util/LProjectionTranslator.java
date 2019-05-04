@@ -40,16 +40,12 @@ import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.core.job.Core;
-import org.scribble.core.job.CoreContext;
 import org.scribble.core.lang.ProtocolMod;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataName;
-import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.PayElemType;
-import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Msg;
 import org.scribble.core.type.session.SigLit;
@@ -67,6 +63,7 @@ import org.scribble.core.type.session.local.LType;
 import org.scribble.job.Job;
 
 // Cannot refactor into LType hierarchy, due to Maven module dependencies (scribble-core cannot see scribble-ast)
+// Actually, this is a quite general LScribNode translator
 public class LProjectionTranslator
 {
 	public final Job job;
@@ -78,15 +75,11 @@ public class LProjectionTranslator
 		this.af = job.config.af;
 	}
 
-	public LProjectionDecl translate(GProtoName fullname, Role self)
+	public LProjectionDecl translate(LProjection ltype)
 	{
-		Core core = this.job.getCore();
-		CoreContext jobc = core.getContext();
-		LProjection ltype = jobc.getProjection(fullname, self);
-
 		RoleDeclList rs = this.af.RoleDeclList(null,
 				ltype.roles.stream().map(
-						x -> this.af.RoleDecl(null, this.af.RoleNode(null, x.toString())))
+						x -> this.af.RoleDecl(null, this.af.RoleNode(null, x.toString())))  // CHECKME: special "self" node?
 						.collect(Collectors.toList()));
 		List<NonRoleParamDecl<? extends NonRoleParamKind>> pds = new LinkedList<>();
 		for (MemberName<? extends NonRoleParamKind> p : ltype.params)
@@ -112,10 +105,10 @@ public class LProjectionTranslator
 		ProtoModList mods = this.af.ProtoModList(null, ltype.mods.stream()
 				.map(x -> translate(x)).collect(Collectors.toList()));
 		GProtoNameNode global = this.af.GProtoNameNode(null,
-				IdNode.from(this.af, fullname.getElements()));
-		RoleNode self1 = this.af.RoleNode(null, self.toString());
+				IdNode.from(this.af, ltype.parent.getElements()));
+		RoleNode self1 = this.af.RoleNode(null, ltype.self.toString());  // CHECKME: special "self" node?
 		LProtoNameNode projFullname = this.af.LProtoNameNode(null,
-				IdNode.from(this.af, fullname.getElements()));
+				IdNode.from(this.af, ltype.fullname.getElements()));
 		LProtoHeader header = this.af.LProtoHeader(null, projFullname, rs, ps);
 		LProtoDef def = this.af.LProtoDef(null, translate(ltype.def));
 		return this.af.LProjectionDecl(null, mods, header, def, global, self1);
@@ -165,7 +158,9 @@ public class LProjectionTranslator
 					"[TODO] Unsupported PayElemType: " + e.getClass() + "\n\t" + e);
 		}
 	}
-	
+
+  // CHECKME: in following, special "self" nodes?
+
 	protected org.scribble.ast.local.LAcc translate(LAcc t)
 	{
 		RoleNode src = this.af.RoleNode(null, t.src.toString());

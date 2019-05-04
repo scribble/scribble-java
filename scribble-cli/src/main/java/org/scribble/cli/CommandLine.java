@@ -30,10 +30,8 @@ import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.global.GProtoDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
-import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.job.CoreContext;
-import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
 import org.scribble.core.type.name.GProtoName;
@@ -305,12 +303,11 @@ public class CommandLine
 			throws CommandLineException, ScribException
 	{
 		JobContext jobc = job.getContext();
-		Core core = job.getCore();
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtoName fullname = checkGlobalProtocolArg(jobc, args[i]);
 			Role role = checkRoleArg(jobc, fullname, args[i+1]);
-			Map<LProtoName, LProtocol> projections = core.getProjections(fullname,
+			Map<LProtoName, Module> projections = job.getProjections(fullname,
 					role);  // FIXME: generate and output Module container -- should be done via Lang?
 			System.out.println("\n" + projections.values().stream()
 					.map(p -> p.toString()).collect(Collectors.joining("\n\n")));
