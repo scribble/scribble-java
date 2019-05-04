@@ -22,6 +22,8 @@ import org.scribble.ast.AstFactory;
 import org.scribble.ast.MsgNode;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
+import org.scribble.ast.PayElem;
+import org.scribble.ast.PayElemList;
 import org.scribble.ast.ProtoMod;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.local.LProjectionDecl;
@@ -29,6 +31,7 @@ import org.scribble.ast.local.LProtoBlock;
 import org.scribble.ast.local.LProtoDef;
 import org.scribble.ast.local.LProtoHeader;
 import org.scribble.ast.local.LSessionNode;
+import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.ast.name.simple.IdNode;
@@ -43,6 +46,7 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.MemberName;
+import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Msg;
@@ -130,8 +134,10 @@ public class LProjectionTranslator
 		if (msg.isSigLit())
 		{	
 			SigLit cast = (SigLit) msg;
+			PayElemList pay = this.af.PayElemList(null, cast.payload.elems.stream()
+					.map(x -> translate(x)).collect(Collectors.toList()));
 			return this.af.SigLitNode(null, this.af.OpNode(null, cast.op.toString()),
-					cast.payload);
+					pay);
 		}
 		else
 		{
@@ -139,6 +145,21 @@ public class LProjectionTranslator
 			List<IdNode> elems = Arrays.asList(cast.getElements()).stream()
 					.map(x -> this.af.IdNode(null, x)).collect(Collectors.toList());
 			return this.af.SigNameNode(null, elems);
+		}
+	}
+
+	protected PayElem<?> translate(PayElemType<?> e)
+	{
+		if (e instanceof DataName)
+		{
+			DataNameNode res = this.af.DataNameNode(null,
+					IdNode.from(af, ((DataName) e).getElements()));
+			return (PayElem<?>) res;
+		}
+		else
+		{
+			throw new RuntimeException(
+					"[TODO] Unsupported PayElemType: " + e.getClass() + "\n\t" + e);
 		}
 	}
 	
