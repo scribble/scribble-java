@@ -65,6 +65,7 @@ public class CoreContext
 	
 	// CHECKME: refactor to Job ?
 	// Projected from intermediates
+	// N.B. unlike iprojs, initial projections not pruned/fixed at all -- do-arg pruning, do-pruning, ext-choice-subj fixing all done incrementally
 	// LProtocolName is the full local protocol name (module name is the prefix)  // LProtocolName key is LProtocol value fullname (i.e., redundant)
 	private final Map<ProtoName<Local>, LProjection> projs = new HashMap<>();
 			// FIXME: choice-subj fixing, do-pruning -- factor out to Job and do there via AstVisitor? -- make testing compare the two sides 

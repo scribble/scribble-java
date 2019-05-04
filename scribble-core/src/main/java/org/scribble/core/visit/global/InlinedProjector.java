@@ -90,7 +90,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		{
 			return LSkip.SKIP; // CHECKME: OK, or "empty" choice at subj still important?
 		}
-		this.unguarded.clear();  // At least one block is non-empty, consider continues guarded (must do here, blocks visited using dup's)
+		this.unguarded.clear();  // At least one block is non-empty, consider continues guarded -- must clear here, blocks visited using dup's
 		
 		//InlinedEnablerInferer v = new InlinedEnablerInferer(this.unguarded);
 		Role subj = n.subj.equals(this.self) 

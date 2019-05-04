@@ -231,9 +231,6 @@ public class Core
 			for (Role self : imed.roles)
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
-				/*LSeq def = v1.visitSeq(proj.def);
-				LProjection fixed = proj.reconstruct(proj.getSource(), proj.mods,
-						proj.fullname, proj.roles, proj.self, proj.params, def);*/
 				LProjection fixed = (LProjection) v1.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
 				pruned1.add(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
@@ -253,7 +250,7 @@ public class Core
 			for (Role self : imed.roles)
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
-				LProjection fixed = v2.visitProjection(proj);
+				LProjection fixed = v2.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
 				pruned2.add(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Do-pruned projected intermediate: "

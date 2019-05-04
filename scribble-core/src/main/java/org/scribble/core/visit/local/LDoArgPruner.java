@@ -63,17 +63,7 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 	{
 		LProjection target = (LProjection) n.getTarget(this.core);
 		GProtocol inlined = this.core.getContext().getInlined(target.global); 
-				// n.roles arity currently matches inlined.roles (cf. InlinedProjector.visitDo)
-		/*Iterator<Role> curr = n.roles.iterator();*/
 		List<Role> pruned = new LinkedList<>();
-		/*for (Role r : inlined.roles)
-		{
-			Role next = curr.next();
-			if (target.roles.contains(r))
-			{
-				pruned.add(next);
-			}
-		}*/
 		Set<Role> rs = n.visitWithNoThrow(newPreRoleCollector());  // N.B. does subproto visiting, unlike RoleGather
 		pruned = inlined.roles.stream()
 				.filter(x -> rs.contains(x) || x.equals(target.self))
