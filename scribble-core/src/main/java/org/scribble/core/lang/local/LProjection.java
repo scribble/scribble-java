@@ -29,15 +29,15 @@ import org.scribble.core.visit.STypeInliner;
 
 public class LProjection extends LProtocol
 {
-	public final GProtoName parent;
+	public final GProtoName global;
 	
 	public LProjection(List<ProtocolMod> mods, LProtoName fullname,
 			List<Role> roles, Role self,
-			List<MemberName<? extends NonRoleParamKind>> params, GProtoName parent,
+			List<MemberName<? extends NonRoleParamKind>> params, GProtoName global,
 			LSeq body)
 	{
 		super(null, mods, fullname, roles, self, params, body);
-		this.parent = parent;
+		this.global = global;
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class LProjection extends LProtocol
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
 	{
 		return new LProjection(mods, fullname, roles, this.self, params,
-				this.parent, body);
+				this.global, body);
 	}
 
 	/*@Override
@@ -80,7 +80,7 @@ public class LProjection extends LProtocol
 				+ "local protocol " + this.fullname.getSimpleName()
 				+ paramsToString()
 				+ rolesToString()
-				+ " projects " + this.parent
+				+ " projects " + this.global
 				+ " {\n" + this.def + "\n}";
 	}
 
@@ -89,7 +89,7 @@ public class LProjection extends LProtocol
 	{
 		int hash = 3167;
 		hash = 31 * hash + super.hashCode();
-		hash = 31 * hash + this.parent.hashCode();
+		hash = 31 * hash + this.global.hashCode();
 		return hash;
 	}
 

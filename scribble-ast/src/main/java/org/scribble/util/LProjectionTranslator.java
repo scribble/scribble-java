@@ -105,7 +105,7 @@ public class LProjectionTranslator
 		ProtoModList mods = this.af.ProtoModList(null, ltype.mods.stream()
 				.map(x -> translate(x)).collect(Collectors.toList()));
 		GProtoNameNode global = this.af.GProtoNameNode(null,
-				IdNode.from(this.af, ltype.parent.getElements()));
+				IdNode.from(this.af, ltype.global.getElements()));
 		RoleNode self1 = this.af.RoleNode(null, ltype.self.toString());  // CHECKME: special "self" node?
 		LProtoNameNode projFullname = this.af.LProtoNameNode(null,
 				IdNode.from(this.af, ltype.fullname.getElements()));

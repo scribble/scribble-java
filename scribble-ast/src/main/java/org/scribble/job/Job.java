@@ -13,20 +13,24 @@
  */
 package org.scribble.job;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.Module;
+import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.global.GProtoDecl;
 import org.scribble.ast.local.LProjectionDecl;
+import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.ast.name.simple.IdNode;
 import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.lang.global.GProtocol;
+import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
@@ -140,21 +144,37 @@ public class Job
 			Role self) throws ScribException
 	{
 		LProjectionTranslator t = new LProjectionTranslator(this);
-		Map<ProtoName<Local>, LProjectionDecl> projs = getCore()
-				.getProjections(fullname, self).entrySet().stream()
-				.collect(Collectors.toMap(Entry::getKey, x -> t.translate(x.getValue())));
 
-		LProjectionDecl root = projs
+		Map<ProtoName<Local>, LProjection> projs = getCore()
+				.getProjections(fullname, self);
+		/*Map<ProtoName<Local>, LProjectionDecl> projs = getCore()
+				.getProjections(fullname, self).entrySet().stream()
+				.collect(Collectors.toMap(Entry::getKey, x -> t.translate(x.getValue())));*/
+		
+		Map<ProtoName<Local>, Module> projmods = new HashMap<>();
+		for (ProtoName<Local> pfullname : projs.keySet())
+		{
+			ModuleNameNode modn = this.config.af.ModuleNameNode(null,
+					IdNode.from(this.config.af, pfullname.getPrefix().getElements()));
+			ModuleDecl modd = this.config.af.ModuleDecl(null, modn);
+			projmods.put(pfullname,
+					this.config.af.Module(null, modd, Collections.emptyList(),
+							Collections.emptyList(),
+							Arrays.asList(t.translate(projs.get(pfullname)))));
+		}
+
+		LProjection root = projs
 				.get(InlinedProjector.getFullProjectionName(fullname, self));
 		
 		System.out.println(
-				"Projection modules for " + fullname + "@" + self + ":\n" + root);
-		for (ProtoName<Local> pfullname : projs.keySet())
+				"\nProjection modules for " + fullname + "@" + self + ":\n\n"
+						+ projmods.get(root.fullname));
+		for (ProtoName<Local> pfullname : projmods.keySet())
 		{
 			// CHECKME: projection decl name is currently *compound* full name (not simple name), OK?
-			if (!root.getHeaderChild().getDeclName().equals(pfullname))
+			if (!root.fullname.equals(pfullname))
 			{
-				System.out.println("\n" + projs.get(pfullname));
+				System.out.println("\n" + projmods.get(pfullname));
 			}
 		}
 
