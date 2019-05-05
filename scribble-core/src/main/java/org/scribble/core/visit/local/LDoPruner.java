@@ -108,6 +108,7 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		
 		// FIXME: subs?
 		// Duplicated from SubprotoRoleCollector
+		// FIXME: factor out with, e.g., SubprotoExtChoiceSubjFixer
 		List<Role> tmp = target.roles.stream()
 				.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());

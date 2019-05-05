@@ -80,7 +80,7 @@ public class LProjectionDecl extends LProtoDecl
 	{
 		// Duplicated from ProtoDecl
 		ProtoModList mods = getModifierListChild();
-		return (mods.isEmpty() ? "" : mods + " ") + getHeaderChild() + " "
+		return (mods.isEmpty() ? "" : mods + " ") + getHeaderChild() + " "  // FIXME: self role decl (cf. LProtocol.rolesToString)
 				+ "projects " +  getGlobalChild() + " "  // Cf. core.lang.local.LProjection
 				+ getDefChild();
 	}

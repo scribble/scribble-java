@@ -15,8 +15,10 @@ package org.scribble.core.visit.local;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.lang.Protocol;
@@ -27,6 +29,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LSeq;
+import org.scribble.core.visit.Substitutor;
 
 // Pre: LDoArgPruner (for basic subproto visiting pattern), LDoPruner (to avoid infinite looping when "stackless" subproto visiting)
 // super takes care of rec/continue, here just additionally handle "do"
@@ -94,10 +97,23 @@ class SubprotoEnablerInferer extends InlinedEnablerInferer  // super takes care 
 		{
 			return this.protos.get(n.proto);
 		}
-		LProjection imed = core.getContext().getProjection(n.proto); 
+		//LProjection imed = core.getContext().getProjection(n.proto); 
 		
+		// Cf. LDoPruner.visitDo
+		LProjection imed = (LProjection) n.getTarget(this.core);
 		// FIXME: subs
+		// FIXME: factor out with LDoPruner
+		List<Role> tmp = imed.roles.stream()
+				.map(x -> x.equals(imed.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
+				.collect(Collectors.toList());
 		
-		return imed.def.visitWithNoThrow(this);  // CHECKME: how about looking up subj from inlined?
+	//System.out.println("aaa: " + this.self + " ,, " + target.fullname + " ,, " + target.roles + " ,, " + target.self + " ,, " + tmp + " ,, " + n.roles + "\n\t" + n);
+
+		Substitutor<Local, LSeq> subs = this.core.config.vf.Substitutor(tmp,
+				n.roles, imed.params, n.args, true);  // true (passive) for fixing ext-choice subjs (e.g., bad.liveness.roleprog.unfair.Test06)
+
+		return visitSeq(subs.visitSeq(imed.def)); 
+		
+		//return imed.def.visitWithNoThrow(this);  // CHECKME: how about looking up subj from inlined?
 	}
 }
