@@ -121,6 +121,8 @@ module tmp.Test;
 
 // Test refactoring:
 	// refactor test to use main instead of cli
+	// add checking between projected-inlined against inlined-projected-imeds, graph building, etc.
+	// add finer-grained result verification
 
 
 data <java> "..." from "..." as T;
