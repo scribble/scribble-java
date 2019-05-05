@@ -97,6 +97,7 @@ module tmp.Test;
 
 	// TODO: refactor doarg pruning, do pruning and extchoicesubj-fixing vistor passes (cf., entry methods into LProjection)
 	// fix self in ast locals, astfactory
+	// wrap base class, more global base classes (maybe in del's)
 	// Job Module projection, projected imports/nonprotodecls -- locals import globals for nonprotos?
 
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
