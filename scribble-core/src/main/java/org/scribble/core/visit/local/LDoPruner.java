@@ -33,14 +33,13 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeVisitorNoThrow;
-import org.scribble.core.visit.Substitutor;
 
 
 
-// Pre: LDoArgPruner (for basic subproto visiting pattern)
+// Pre: LRoleDeclAndDoArgFixer (for LSubprotoVisitorNoThrow visiting pattern)
 // Cf. RecPruner
 public class LDoPruner //extends DoPruner<Local, LSeq>
-		extends STypeVisitorNoThrow<Local, LSeq>
+		extends STypeVisitorNoThrow<Local, LSeq> implements LSubprotoVisitorNoThrow
 {
 	protected final Core core;
 
@@ -103,17 +102,11 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		{
 			return this.unguarded.contains(sig) ? LSkip.SKIP : n;
 		}
-		this.stack.push(sig);
-		LProjection target = (LProjection) n.getTarget(this.core);  // cf. visitProjection (i.e., for projections)
-		
+
 		// Duplicated from SubprotoRoleCollector
-		// FIXME: factor out with, e.g., SubprotoExtChoiceSubjFixer
-		List<Role> tmp = target.roles.stream()
-				.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
-				.collect(Collectors.toList());
-		Substitutor<Local, LSeq> subs = this.core.config.vf.Substitutor(tmp,
-				n.roles, target.params, n.args, true);  // true (passive) to ignore non-fixed ext-choice subjs (e.g., good.efsm.gdo.Test11)
-		LSeq def = visitSeq(subs.visitSeq(target.def)); 
+		this.stack.push(sig);
+		LSeq def = visitSeq(prepareSubprotoForVisit(this.core, n, true));
+				// true (passive) to ignore non-fixed ext-choice subjs (e.g., good.efsm.gdo.Test11)
 				// Changes ultimately discarded: "nested" entries only do "info collection", actual AST modifications only recoded for the top-level Projection (cf. visitProjection)
 		this.stack.pop();
 		return def.isEmpty() ? LSkip.SKIP : n;  // Cf. unit(n)

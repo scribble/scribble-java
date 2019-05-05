@@ -24,7 +24,7 @@ public interface LTypeVisitorFactory
 
 	EGraphBuilder EGraphBuilder(Core core);
 
-	LDoArgPruner LDoArgPruner(Core core);
+	LRoleDeclAndDoArgFixer LDoArgPruner(Core core);
 
 	LDoPruner LDoPruner(Core core);
 	

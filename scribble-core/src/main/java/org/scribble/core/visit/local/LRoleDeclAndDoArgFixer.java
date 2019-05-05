@@ -35,13 +35,15 @@ import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.core.visit.STypeVisitorNoThrow;
 import org.scribble.core.visit.Substitutor;
 
-public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
+// Pre: SubprotoProjector -- "self" fixed for interactions and choice-subjs, but not for do role-args
+// Prunes LProto/Proj role decls, and fixes/prunes do role-args (including "self" fixing)
+public class LRoleDeclAndDoArgFixer extends STypeVisitorNoThrow<Local, LSeq>
 {
 	private final Core core;
 
 	private Role self;
 	
-	protected LDoArgPruner(Core core)
+	protected LRoleDeclAndDoArgFixer(Core core)
 	{
 		this.core = core;
 	}
@@ -52,7 +54,6 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 		return new PreSubprotoRoleCollector(this.core);
 	}
 	
-	// TODO: rename class?  also fixes projection role decls
 	// TODO: refactor into LProjection/LProtocol -- cf. GProtocol
 	public LProjection visitProjection(
 			LProjection n)
@@ -64,24 +65,24 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 				.collect(Collectors.toList());
 		LSeq pruned = visitSeq(n.def);
 		return n.reconstruct(n.getSource(), n.mods, n.fullname, rs, n.self,
-				n.params, pruned);
-				// CHECKME: prune params?
+				n.params, pruned);  // CHECKME: prune params?
 	}
 
 	public Do<Local, LSeq> visitDo(Do<Local, LSeq> n)
 	{
-		List<Role> pruned = new LinkedList<>();
-		Set<Role> rs = n.visitWithNoThrow(newRoleCollector());  // N.B. does subproto visiting, unlike RoleGather
-		pruned = n.roles.stream()
+		List<Role> fixed = new LinkedList<>();
+		Set<Role> rs = n.visitWithNoThrow(newRoleCollector());  // N.B. does subproto visiting, unlike RoleGatherer
+		fixed = n.roles.stream()
 				.filter(x -> rs.contains(x) || x.equals(this.self))
 				.map(x -> x.equals(this.self) ? Role.SELF : x)		// FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
-		return n.reconstruct(n.getSource(), n.proto, pruned, n.args);  // CHECKME: prune args?
+		return n.reconstruct(n.getSource(), n.proto, fixed, n.args);  // CHECKME: prune args?
 	}
 }
 
 
-// Role collector for pre do-arg pruning: do-arg arity doesn't yet match target
+// Role collector for pre do-arg pruning (i.e., only for use by LDoArgPruner):
+// do-arg arity doesn't yet match target, and "self" not done in do-args (see InlinedProjector.visitDo)
 class PreSubprotoRoleCollector extends SubprotoRoleCollector
 {
 	public PreSubprotoRoleCollector(Core core)
@@ -102,7 +103,9 @@ class PreSubprotoRoleCollector extends SubprotoRoleCollector
 		LProjection target = (LProjection) n.getTarget(this.core);
 		List<Role> tmp = this.core.getContext().getInlined(target.global).roles
 						// Currently, do-args arity matches that of inlined, i.e., not necessarily the arity of the actual local target (cf. InlinedProjector.visitDo)
-				.stream()//.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
+				.stream()//.map(x -> x.equals(target.self) ? Role.SELF : x)  
+						// "self" for do-args not done yet (cf., SubprotoProjector.visitDo), now being fixed by LDoArgPruner
+						// Cf., LSubprotoVisitorNoThrow.prepareSubprotoForVisit
 				.collect(Collectors.toList());
 		Substitutor<Local, LSeq> subs = this.core.config.vf
 				.Substitutor(tmp, n.roles, target.params, n.args, true);  // true (passive) to ignore "self"  // CHECKME: prune args?
@@ -114,7 +117,8 @@ class PreSubprotoRoleCollector extends SubprotoRoleCollector
 
 
 // CHECKME: simply integrate into one with PreSubprotoRoleCollector?  Or maybe still separately useful?
-class SubprotoRoleCollector extends STypeAggNoThrow<Local, LSeq, Set<Role>>
+class SubprotoRoleCollector extends STypeAggNoThrow<Local, LSeq, Set<Role>> 
+		implements LSubprotoVisitorNoThrow
 {
 	protected final Core core;
 
@@ -143,14 +147,11 @@ class SubprotoRoleCollector extends STypeAggNoThrow<Local, LSeq, Set<Role>>
 		{
 			return unit(n);  // empty set
 		}
+
+		// Cf. LDoPruner.visitDo
 		this.stack.push(sig);
-		LProjection target = (LProjection) n.getTarget(this.core);
-		List<Role> tmp = target.roles.stream()
-				//.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
-				.collect(Collectors.toList());
-		Substitutor<Local, LSeq> subs = this.core.config.vf
-				.Substitutor(tmp, n.roles, target.params, n.args);  // CHECKME: prune args?
-		Set<Role> res = target.def.visitWithNoThrow(subs).visitWithNoThrow(this);
+		Set<Role> res = prepareSubprotoForVisit(this.core, n)  // Non-passive, cf. PreSubprotoRoleCollector
+				.visitWithNoThrow(this);
 		this.stack.pop();
 		return res;
 	}

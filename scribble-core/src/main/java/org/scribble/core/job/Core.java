@@ -45,7 +45,7 @@ import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.ProtoDepsCollector;
 import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.core.visit.global.GTypeVisitorFactoryImpl;
-import org.scribble.core.visit.local.LDoArgPruner;
+import org.scribble.core.visit.local.LRoleDeclAndDoArgFixer;
 import org.scribble.core.visit.local.LDoPruner;
 import org.scribble.core.visit.local.LTypeVisitorFactoryImpl;
 import org.scribble.core.visit.local.SubprotoExtChoiceSubjFixer;
@@ -226,8 +226,8 @@ public class Core
 		}
 
 		verbosePrintPass("Pruning do-args on all projected intermediates...");
-		LDoArgPruner v1 = this.config.vf.local.LDoArgPruner(this);   // Reusable
-		List<LProjection> pruned1 = new LinkedList<>();
+		LRoleDeclAndDoArgFixer v1 = this.config.vf.local.LDoArgPruner(this);   // Reusable
+		List<LProjection> done1 = new LinkedList<>();
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol imed = this.context.getIntermediate(fullname);
@@ -235,18 +235,18 @@ public class Core
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
 				LProjection fixed = (LProjection) v1.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
-				pruned1.add(fixed);  // N.B. replaces existing projection
+				done1.add(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Pruned do-args on projected intermediate: "
 								+ fixed.fullname + ":\n" + fixed);
 			}
 		}
-		pruned1.forEach(x -> this.getContext().setProjection(x));  
+		done1.forEach(x -> this.getContext().setProjection(x));  
 				// Update after all visited, to prevent visiting an already pruned projdecl from breaking the pruning of a subsequent one (e.g., mutually recursive proto refs)
 
 		verbosePrintPass("Do-pruning all projected intermediates...");
 		LDoPruner v2 = this.config.vf.local.LDoPruner(this);   // Reusable
-		List<LProjection> pruned2 = new LinkedList<>();
+		List<LProjection> done2 = new LinkedList<>();
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
 			GProtocol imed = this.context.getIntermediate(fullname);
@@ -254,13 +254,13 @@ public class Core
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
 				LProjection fixed = v2.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
-				pruned2.add(fixed);  // N.B. replaces existing projection
+				done2.add(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Do-pruned projected intermediate: "
 								+ fixed.fullname + ":\n" + fixed);
 			}
 		}
-		pruned2.forEach(x -> this.getContext().setProjection(x));  
+		done2.forEach(x -> this.getContext().setProjection(x));  
 				// Update after all visited, to prevent visiting an already pruned projdecl from breaking the pruning of a subsequent one (e.g., mutually recursive proto refs)
 
 		verbosePrintPass(
