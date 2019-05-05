@@ -16,7 +16,7 @@ package org.scribble.core.model.global;
 import java.util.Map;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.ModelFactoryImpl;
+import org.scribble.core.model.ModelFactoryBase;
 import org.scribble.core.model.endpoint.EFsm;
 import org.scribble.core.model.global.actions.SAcc;
 import org.scribble.core.model.global.actions.SClientWrap;
@@ -31,7 +31,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
 // Separate E/SModelFactories fits protected E/SState constructor pattern
-public class SModelFactoryImpl extends ModelFactoryImpl implements SModelFactory
+public class SModelFactoryImpl extends ModelFactoryBase implements SModelFactory
 {
 	
 	public SModelFactoryImpl(ModelFactory mf)

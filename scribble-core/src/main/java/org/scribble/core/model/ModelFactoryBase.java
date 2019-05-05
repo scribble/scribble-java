@@ -13,13 +13,13 @@
  */
 package org.scribble.core.model;
 
-// Base class for all E/SModelFactoryImpl
-// N.B. this class does *not* itself implement top-level ModelFactory
-public abstract class ModelFactoryImpl
+// Base class for all *E/SModelFactoryImpl*
+// N.B. this class does *not* itself implement the top-level ModelFactory wrapper (nor vice versa)
+public abstract class ModelFactoryBase
 {
 	protected ModelFactory mf = null;
 
-	public ModelFactoryImpl(ModelFactory mf)
+	public ModelFactoryBase(ModelFactory mf)
 	{
 		this.mf = mf;
 	}

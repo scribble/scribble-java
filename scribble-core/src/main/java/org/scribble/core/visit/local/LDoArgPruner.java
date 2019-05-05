@@ -40,13 +40,13 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 {
 	private final Core core;
 	
-	public LDoArgPruner(Core core)
+	protected LDoArgPruner(Core core)
 	{
 		this.core = core;
 	}
 	
 	// CHECKME: vf?
-	protected PreSubprotoRoleCollector newPreRoleCollector()  // N.B. "Pre" role collector
+	protected PreSubprotoRoleCollector newRoleCollector()  // N.B. "Pre" role collector
 	{
 		return new PreSubprotoRoleCollector(this.core);
 	}
@@ -56,7 +56,7 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 	public LProjection visitProjection(
 			LProjection n)
 	{
-		Set<Role> used = n.def.visitWithNoThrow(newPreRoleCollector());  // CHECKME: vf?
+		Set<Role> used = n.def.visitWithNoThrow(newRoleCollector());  // CHECKME: vf?
 		List<Role> rs = n.roles.stream()
 				.filter(x -> used.contains(x) || x.equals(n.self))  // FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
@@ -71,7 +71,7 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 		LProjection target = (LProjection) n.getTarget(this.core);
 		GProtocol inlined = this.core.getContext().getInlined(target.global); 
 		List<Role> pruned = new LinkedList<>();
-		Set<Role> rs = n.visitWithNoThrow(newPreRoleCollector());  // N.B. does subproto visiting, unlike RoleGather
+		Set<Role> rs = n.visitWithNoThrow(newRoleCollector());  // N.B. does subproto visiting, unlike RoleGather
 		pruned = inlined.roles.stream()
 				.filter(x -> rs.contains(x) || x.equals(target.self))
 				.map(x -> x.equals(target.self) ? Role.SELF : x)		// FIXME: self roledecl not actually being a self role is a mess

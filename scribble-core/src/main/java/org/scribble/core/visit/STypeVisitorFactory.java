@@ -24,29 +24,25 @@ import org.scribble.core.type.session.Seq;
 import org.scribble.core.visit.global.GTypeVisitorFactory;
 import org.scribble.core.visit.local.LTypeVisitorFactory;
 
-// No interface due to fields -- CHECKME: factor out "neutral" factory field for RecPruner etc.
-public class STypeVisitorFactory
+// Not an interface due to fields
+public abstract class STypeVisitorFactory
 {
-	public GTypeVisitorFactory global;
-	public LTypeVisitorFactory local;
+	public final GTypeVisitorFactory global;
+	public final LTypeVisitorFactory local;
 	
-	public STypeVisitorFactory(GTypeVisitorFactory global, LTypeVisitorFactory local)
+	public STypeVisitorFactory(GTypeVisitorFactory global,
+			LTypeVisitorFactory local)
 	{
 		this.global = global;
 		this.local = local;
 	}
 
-	public <K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> Substitutor(
-			List<Role> rold, List<Role> rnew,
-			List<MemberName<? extends NonRoleParamKind>> aold,
-			List<Arg<? extends NonRoleParamKind>> anew)
-	{
-		return new Substitutor<>(rold, rnew, aold, anew);
-	}
+	public abstract <K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> 
+			Substitutor(List<Role> rold, List<Role> rnew,
+					List<MemberName<? extends NonRoleParamKind>> aold,
+					List<Arg<? extends NonRoleParamKind>> anew);
 
-	public <K extends ProtoKind, B extends Seq<K, B>> RecPruner<K, B> RecPruner()
-	{
-		return new RecPruner<>();
-	}
+	public abstract <K extends ProtoKind, B extends Seq<K, B>> RecPruner<K, B> 
+			RecPruner();
 
 }

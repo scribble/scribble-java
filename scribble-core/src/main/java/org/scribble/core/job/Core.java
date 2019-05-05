@@ -40,6 +40,7 @@ import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.ProtoDepsCollector;
 import org.scribble.core.visit.STypeVisitorFactory;
+import org.scribble.core.visit.STypeVisitorFactoryImpl;
 import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.core.visit.global.GTypeVisitorFactoryImpl;
@@ -68,7 +69,7 @@ public class Core
 	
 	protected STypeVisitorFactory newSTypeVisitorFactory()
 	{
-		return new STypeVisitorFactory(new GTypeVisitorFactoryImpl(),
+		return new STypeVisitorFactoryImpl(new GTypeVisitorFactoryImpl(),
 				new LTypeVisitorFactoryImpl());
 	}
 	

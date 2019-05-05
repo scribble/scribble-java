@@ -16,7 +16,7 @@ package org.scribble.core.model.endpoint;
 import java.util.Set;
 
 import org.scribble.core.model.ModelFactory;
-import org.scribble.core.model.ModelFactoryImpl;
+import org.scribble.core.model.ModelFactoryBase;
 import org.scribble.core.model.endpoint.actions.EAcc;
 import org.scribble.core.model.endpoint.actions.EClientWrap;
 import org.scribble.core.model.endpoint.actions.EDisconnect;
@@ -30,7 +30,7 @@ import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Payload;
 
 // Separate E/SModelFactories fits protected E/SState constructor pattern
-public class EModelFactoryImpl extends ModelFactoryImpl implements EModelFactory
+public class EModelFactoryImpl extends ModelFactoryBase implements EModelFactory
 {
 	
 	public EModelFactoryImpl(ModelFactory mf)
