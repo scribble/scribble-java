@@ -28,7 +28,9 @@ import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.local.LSeq;
 
+// Pre: LDoArgPruner (for basic subproto visiting pattern), LDoPruner (to avoid infinite looping when "stackless" subproto visiting)
 // super takes care of rec/continue, here just additionally handle "do"
+// A "stackless" subproto visitor, c.f. LDoPruner
 public class SubprotoExtChoiceSubjFixer extends InlinedExtChoiceSubjFixer
 {
 	protected final Core core;
@@ -93,6 +95,9 @@ class SubprotoEnablerInferer extends InlinedEnablerInferer  // super takes care 
 			return this.protos.get(n.proto);
 		}
 		LProjection imed = core.getContext().getProjection(n.proto); 
+		
+		// FIXME: subs
+		
 		return imed.def.visitWithNoThrow(this);  // CHECKME: how about looking up subj from inlined?
 	}
 }

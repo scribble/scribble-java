@@ -34,6 +34,9 @@ import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeVisitorNoThrow;
 
+
+
+// Pre: LDoArgPruner (for basic subproto visiting pattern)
 // Cf. RecPruner
 public class LDoPruner //extends DoPruner<Local, LSeq>
 		extends STypeVisitorNoThrow<Local, LSeq>

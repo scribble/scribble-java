@@ -112,6 +112,7 @@ module tmp.Test;
 	// fix codegen when -fair
 	// CHECKME: accept branching on messages (and safety properties) -- connection should not be established if message stuck? (cf. reception error) -- issue is implementation: what is a realistic semantics for sync-connect-branching (i.e., prevent client from async progressing after messaging) -- consider reversing client/server branching side? i.e. client requests, but then receives? (and consider serverside-branching a sugar?)
 	// fix state numbering?  also numbering mismatch between outputs, e.g., minlts
+	// wrap API gen (and refactor wrap AST hierarchy, e.g., base classes)
 
 // Later:
 	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
