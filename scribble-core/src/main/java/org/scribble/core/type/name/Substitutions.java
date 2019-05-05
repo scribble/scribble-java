@@ -60,6 +60,10 @@ public class Substitutions
 	
 	public Role subsRole(Role old)
 	{
+		if (!this.rsubs.containsKey(old))
+		{
+			throw new RuntimeException("Unknown role: " + old);
+		}
 		return this.rsubs.get(old);
 	}
 	
@@ -67,6 +71,10 @@ public class Substitutions
 			Arg<? extends NonRoleParamKind> subsArg(MemberName<?> old)  
 			// ? param more convenient for accepting DataType/MessageSigName params
 	{
+		if (!this.asubs.containsKey(old))
+		{
+			throw new RuntimeException("Unknown param/arg: " + old);
+		}
 		return this.asubs.get(old);
 	}
 	

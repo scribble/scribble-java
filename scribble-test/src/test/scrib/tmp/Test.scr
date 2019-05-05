@@ -79,7 +79,7 @@ module tmp.Test;
 	// ...refactor -spin as an ext -- dropped -spin from master
 
 		// Outstanding:
-			// ...disallow/check for reserved __ -- do in gtype translation?
+			// ...disallow/check for reserved __ -- do in gtype translation? is mainly for codegen though? maybe also inlining?
 			// FIXME: qualifed sig name as non-role do-arg
 			// CHECKME: duplicate proto mods (unit tests)
 
@@ -97,7 +97,7 @@ module tmp.Test;
 	// FIXME: explicit self roles/decls (core and ast) -- currently, self decls in protocols (in core) are purely cosmetic in toString
 				// And fix self in ast locals, and astfactory
 	// Job Module projection
-			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles -- done in core (and needs tidying)
+			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles -- done in core for now (and needs tidying)
 			// TODO: projected imports/nonprotodecls
 
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)

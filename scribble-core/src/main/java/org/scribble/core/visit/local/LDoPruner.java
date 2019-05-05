@@ -58,12 +58,6 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		this.unguarded = new HashSet<>(v.unguarded);
 	}
 	
-	// CHECKME: vf?
-	protected SubprotoRoleCollector newRoleCollector()
-	{
-		return new SubprotoRoleCollector(this.core);
-	}
-	
 	// TODO: refactor to LProjection -- cf. GProtocol (e.g., getInlined, etc)
 	public LProjection visitProjection(LProjection n)
 	{
@@ -106,7 +100,7 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		LSeq def = visitSeq(target.def); 
 				// Changes ultimately discarded: "nested" entries only do "info collection", actual AST modifications only recoded for the top-level Projection (cf. visitProjection)
 		this.stack.pop();
-		return (def.isEmpty()) ? LSkip.SKIP : n;  // Cf. unit(n)
+		return def.isEmpty() ? LSkip.SKIP : n;  // Cf. unit(n)
 	}
 
 	@Override
