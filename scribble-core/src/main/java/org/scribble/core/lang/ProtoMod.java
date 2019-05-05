@@ -13,7 +13,7 @@
  */
 package org.scribble.core.lang;
 
-public enum ProtocolMod
+public enum ProtoMod
 {
 	AUX, 
 	EXPLICIT;

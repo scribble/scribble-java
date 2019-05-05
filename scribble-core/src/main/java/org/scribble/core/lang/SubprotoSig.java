@@ -31,7 +31,6 @@ import org.scribble.core.type.session.Arg;
 public class SubprotoSig
 {
 	public final ProtoName<?> fullname;
-	// public Scope scope;
 	public final List<Role> roles;  // i.e., roles (and args) are ordered
 	public final List<Arg<? extends NonRoleParamKind>> args;
 			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
@@ -42,7 +41,6 @@ public class SubprotoSig
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		this.fullname = fullname;
-		// this.scope = scope;
 		this.roles = Collections.unmodifiableList(roles);
 		this.args = Collections.unmodifiableList(args);
 	}
@@ -67,7 +65,7 @@ public class SubprotoSig
 	
 	// TODO: refactor, into params?
 	public static Arg<? extends NonRoleParamKind> paramToArg(
-			MemberName<?> n)  // Omit " extends NonRoleParamKind" for param, more flexible without harm
+			MemberName<?> n)  // Omit " extends NonRoleParamKind" on param, more flexible without major harm
 	{
 		if (n instanceof DataName)
 		{
@@ -88,7 +86,6 @@ public class SubprotoSig
 	{
 		int hash = 1093;
 		hash = 31 * hash + this.fullname.hashCode();
-		// hash = 31 * hash + this.scope.hashCode();
 		hash = 31 * hash + this.roles.hashCode();
 		hash = 31 * hash + this.args.hashCode();
 		return hash;
@@ -106,14 +103,14 @@ public class SubprotoSig
 			return false;
 		}
 		SubprotoSig subsig = (SubprotoSig) o;
-		return this.fullname.equals(subsig.fullname) // && this.scope.equals(subsig.scope)
+		return this.fullname.equals(subsig.fullname)
 				&& this.roles.equals(subsig.roles) && this.args.equals(subsig.args);
 	}
 
 	@Override
 	public String toString()
 	{
-		return // this.scope + ":" +
+		return
 				this.fullname
 				+ "<"
 				+ this.args.stream().map(x -> x.toString())

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.Core;
 import org.scribble.core.lang.Protocol;
-import org.scribble.core.lang.ProtocolMod;
+import org.scribble.core.lang.ProtoMod;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.Global;
@@ -50,7 +50,7 @@ import org.scribble.util.ScribException;
 public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 		implements GNode  // Mainly for GDel.translate return (to include GProtocol)
 {
-	public GProtocol(CommonTree source, List<ProtocolMod> mods,
+	public GProtocol(CommonTree source, List<ProtoMod> mods,
 			GProtoName fullname, List<Role> roles,
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
@@ -59,7 +59,7 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 
 	@Override
 	public GProtocol reconstruct(CommonTree source,
-			List<ProtocolMod> mods, GProtoName fullname, List<Role> roles,
+			List<ProtoMod> mods, GProtoName fullname, List<Role> roles,
 			List<MemberName<? extends NonRoleParamKind>> params, GSeq def)
 	{
 		return new GProtocol(source, mods, fullname, roles, params, def);

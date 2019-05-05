@@ -106,7 +106,7 @@ public interface AstFactory
 			GProtoDef def);
 
 	// TODO: refactor to use ProtoModList, etc.
-	ProtoModList ProtoModList(Token t, List<ProtoMod> mods);
+	ProtoModList ProtoModList(Token t, List<ProtoModNode> mods);
 	AuxMod AuxMod(Token t);
 	ExplicitMod ExplicitMod(Token t);
 

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.core.lang.ProtocolMod;
+import org.scribble.core.lang.ProtoMod;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.GProtoName;
@@ -31,7 +31,7 @@ public class LProjection extends LProtocol
 {
 	public final GProtoName global;
 	
-	public LProjection(List<ProtocolMod> mods, LProtoName fullname,
+	public LProjection(List<ProtoMod> mods, LProtoName fullname,
 			List<Role> roles, Role self,
 			List<MemberName<? extends NonRoleParamKind>> params, GProtoName global,
 			LSeq body)
@@ -42,7 +42,7 @@ public class LProjection extends LProtocol
 
 	@Override
 	public LProjection reconstruct(CommonTree source,
-			List<ProtocolMod> mods, LProtoName fullname, List<Role> roles,
+			List<ProtoMod> mods, LProtoName fullname, List<Role> roles,
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq body)
 	{
 		return new LProjection(mods, fullname, roles, this.self, params,

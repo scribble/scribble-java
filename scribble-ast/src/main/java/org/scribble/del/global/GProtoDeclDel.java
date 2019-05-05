@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtoDecl;
-import org.scribble.core.lang.ProtocolMod;
+import org.scribble.core.lang.ProtoMod;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
@@ -42,8 +42,8 @@ public class GProtoDeclDel extends ProtoDeclDel<Global> implements GDel
 	{
 		GProtoDecl source = (GProtoDecl) n;
 		Module m = (Module) n.getParent();
-		List<ProtocolMod> mods = source.getModifierListChild().getModList().stream()
-				.map(x -> x.toProtocolMod()).collect(Collectors.toList());
+		List<ProtoMod> mods = source.getModifierListChild().getModList().stream()
+				.map(x -> x.toProtoMod()).collect(Collectors.toList());
 		GProtoName fullname = new GProtoName(m.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
 		List<Role> rs = source.getRoles();

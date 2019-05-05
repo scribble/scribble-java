@@ -27,7 +27,7 @@ import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.PayElem;
 import org.scribble.ast.PayElemList;
-import org.scribble.ast.ProtoMod;
+import org.scribble.ast.ProtoModNode;
 import org.scribble.ast.ProtoModList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.RoleDeclList;
@@ -45,7 +45,7 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
-import org.scribble.core.lang.ProtocolMod;
+import org.scribble.core.lang.ProtoMod;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.kind.NonRoleArgKind;
@@ -127,7 +127,7 @@ public class LProjectionTranslator
 	}
 	
 	// Cf. IdNode.from
-	protected ProtoMod translate(ProtocolMod mod)
+	protected ProtoModNode translate(ProtoMod mod)
 	{
 		switch (mod)
 		{

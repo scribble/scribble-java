@@ -360,7 +360,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public ProtoModList ProtoModList(Token t, List<ProtoMod> mods)
+	public ProtoModList ProtoModList(Token t, List<ProtoModNode> mods)
 	{
 		t = newToken(t, ScribbleParser.PROTOMOD_LIST);
 		ProtoModList n = new ProtoModList(t);

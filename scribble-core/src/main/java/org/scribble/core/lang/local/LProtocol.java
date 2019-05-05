@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.job.Core;
 import org.scribble.core.lang.Protocol;
-import org.scribble.core.lang.ProtocolMod;
+import org.scribble.core.lang.ProtoMod;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.endpoint.EState;
@@ -45,7 +45,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 {
 	public final Role self;
 
-	public LProtocol(CommonTree source, List<ProtocolMod> mods,
+	public LProtocol(CommonTree source, List<ProtoMod> mods,
 			LProtoName fullname, List<Role> roles, Role self,
 			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
@@ -55,7 +55,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 
 	@Override
 	public LProtocol reconstruct(CommonTree source,
-			List<ProtocolMod> mods, LProtoName fullname, List<Role> roles,
+			List<ProtoMod> mods, LProtoName fullname, List<Role> roles,
 			//Role self,  // CHECKME: reconstruct pattern not working here?
 			List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
@@ -63,7 +63,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 	}
 
 	public LProtocol reconstruct(CommonTree source,
-			List<ProtocolMod> mods, LProtoName fullname, List<Role> roles,
+			List<ProtoMod> mods, LProtoName fullname, List<Role> roles,
 			Role self, List<MemberName<? extends NonRoleParamKind>> params, LSeq def)
 	{
 		return new LProtocol(source, mods, fullname, roles, self, params, def);

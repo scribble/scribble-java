@@ -107,6 +107,7 @@ module tmp.Test;
 	 // CHECKME TODO: param-arg pruning?
 	
 // Job/codegen refactoring:
+	// Check Maven deps
 	// also do-arg pruning, for role-pruned projection decls
 	// choice-specific fairness annotations
 	// fix codegen when -fair

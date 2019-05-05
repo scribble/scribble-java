@@ -47,6 +47,6 @@ public class LSelfRoleDecl extends RoleDecl
 	@Override
 	public String getKeyword()
 	{
-		return Constants.SELF_KW;
+		return Constants.SELF_KW;  // Main reason for this subclass; overriding various toStrings awkward
 	}
 }

@@ -16,7 +16,7 @@ package org.scribble.ast;
 import org.antlr.runtime.Token;
 import org.scribble.del.DelFactory;
 
-public class AuxMod extends ProtoMod
+public class AuxMod extends ProtoModNode
 {
 	// ScribTreeAdaptor#create constructor
 	public AuxMod(Token t)
