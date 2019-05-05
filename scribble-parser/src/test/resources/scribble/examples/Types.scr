@@ -2,5 +2,6 @@ module scribble.examples.Types;
 
 type <xsd> "{http://www.acme.com/financial}Trade" from "http://www.acme.com/schemas/Trade.xsd" as Trade;
 
-global protocol TestTypes(role Buyer,role Seller as MySeller) {
+global protocol TestTypes(role Buyer, role Seller) {
+
 }

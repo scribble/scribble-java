@@ -3,16 +3,18 @@ module scribble.examples.GMessage;
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
 type <xsd> "{http://www.acme.com/financial}Customer" from "http://www.acme.com/schemas/Customer.xsd" as Customer;
 
-global protocol GMessageTest(role Buyer,role SellerA,role SellerB) {
-	buy(Order,Customer) from Buyer to SellerA;
-	buy(Order,Customer) from Buyer to SellerA,SellerB;
-	buy(o:Order,c:Customer) from Buyer to SellerA;
-	buy(Order) from Buyer to SellerA,SellerB;
-	buy(ord:Order) from Buyer to SellerA;
+global protocol GMessageTest(role Buyer, role SellerA, role SellerB) {
+	buy(Order, Customer) from Buyer to SellerA;
+	//buy(Order, Customer) from Buyer to SellerA, SellerB;
+	buy(Order, Customer) from Buyer to SellerA;
+	//buy(Order) from Buyer to SellerA, SellerB;
+	buy(Order) from Buyer to SellerA;
 }
 
-global protocol PlaceOrder(role Buyer,role Seller) {
+aux global protocol PlaceOrder(role Buyer, role Seller) {
+
 }
 
-global protocol Receipt(role Buyer,role Seller) {
+aux global protocol Receipt(role Buyer, role Seller) {
+
 }

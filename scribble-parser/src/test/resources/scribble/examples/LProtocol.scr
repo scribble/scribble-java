@@ -1,14 +1,13 @@
 module scribble.examples.LProtocol;
 
-local protocol GMessageTest at SellerB(role Buyer,role SellerA,role SellerB) {
+local protocol GMessageTest(role Buyer, role SellerA, role SellerB) {
 }
 
-local protocol Order at Seller<sig Fred as Joe,type Jack>(role Buyer,role Seller) {
+local protocol Order<sig Fred, type Jack>(role Buyer, self Seller) {
 }
 
-local protocol Receipt at Seller(role Buyer as B,role Seller as S) {
+local protocol Receipt(self Buyer, role Seller) {
 }
 
-local protocol GMessageTest2 at SellerB(role Buyer,role SellerA,role SellerB) instantiates GMessageTest(Buyer,SellerA,SellerB);
+//local protocol GMessageTest2 at SellerB(role Buyer,role SellerA,role SellerB) instantiates GMessageTest(Buyer,SellerA,SellerB);
 
-local protocol Order2 at Seller2<sig Fred as Joe,type Jack>(role Buyer2,role Seller2) instantiates Order<hello(World),Fred as Joe>(Buyer2 as Buyer,Seller2 as Seller);
