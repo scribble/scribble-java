@@ -308,12 +308,12 @@ fragment UNDERSCORE:
 // "The TreeAdaptor is not called; instead [the] constructors are invoked directly."
 // "Note that parameters are not allowed on token references to the left of ->:"
 // "Use imaginary nodes as you normally would, but with the addition of the node type:"  // But currently, ID token itself unchanged and ttype int ends up discarded
-ambigname: t=ID -> ID<AmbigNameNode>[$t];
-dataparamname: t=ID -> ID<DataParamNode>[$t]; 
+ambigname: t=ID -> ID<AmbigNameNode>[$t] ;
+dataparamname: t=ID -> ID<DataParamNode>[$t] ; 
 opname: -> ^(EMPTY_OP) | t=ID -> ID<OpNode>[$t] ;
-recvarname: t=ID -> ID<RecVarNode>[$t];
-rolename: t=ID -> ID<RoleNode>[$t];
-sigparamname: t=ID -> ID<SigParamNode>[$t];
+recvarname: t=ID -> ID<RecVarNode>[$t] ;
+rolename: t=ID -> ID<RoleNode>[$t] ;
+sigparamname: t=ID -> ID<SigParamNode>[$t] ;
 
 
 /**
