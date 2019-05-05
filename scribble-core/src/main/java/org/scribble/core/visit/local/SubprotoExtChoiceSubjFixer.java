@@ -73,7 +73,7 @@ public class SubprotoExtChoiceSubjFixer extends InlinedExtChoiceSubjFixer
 }
 
 class SubprotoEnablerInferer extends InlinedEnablerInferer  // super takes care of rec/continue
-		implements LSubprotoVisitorNoThrow
+		implements LSubprotoVisitorNoThrow<Optional<Role>>
 {
 	private final Core core;
 

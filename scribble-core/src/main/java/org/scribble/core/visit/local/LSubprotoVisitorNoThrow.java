@@ -26,8 +26,12 @@ import org.scribble.core.visit.Substitutor;
 
 
 // Pre: LRoleDeclAndDoArgFixer (for imed LProjections)
-public interface LSubprotoVisitorNoThrow
+public interface LSubprotoVisitorNoThrow<T>  // T should be SType<K, B> for STypeVisitor
 {
+
+	// Subclasses of "Inlined" visitors should re-override using prepareSubprotoForVisit -- cf. LSubprotoVisitorNoThrow.super.visitDo(n)
+	T visitDo(Do<Local, LSeq> n);
+
 	default LSeq prepareSubprotoForVisit(Core core, Do<Local, LSeq> n)
 	{
 		return prepareSubprotoForVisit(core, n, false);

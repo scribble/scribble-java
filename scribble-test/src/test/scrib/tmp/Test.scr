@@ -89,26 +89,24 @@ module tmp.Test;
 	// ...store unfoldings in Context -- done
 	// use stypefactory in core -- also make visitorfactorys (both core and ast) -- done
 	// factor out all config factory methods more centrally? -- done a bit: mainly general factory method refactoring above
-	// TODO: rename addChildren1 -- done: addScribChildren
+	// rename addChildren1 -- done: addScribChildren
 	// ...make ad hoc ScribNode constructions go through af properly -- done
+	// rename ProtoMod, ProtocolMod -- rename core Protocol? -- done: ast renamed ProtoModNode
+	// explicit self roles/decls (core and ast) -- currently, self decls in protocols (in core) are purely cosmetic in toString -- done: just lselfdecl, basically for printing
+	// fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles -- done in core for now (and needs tidying)
 
-	// rename ProtoMod, ProtocolMod -- rename core Protocol?
 	// TODO: refactor doarg pruning, do pruning and extchoicesubj-fixing vistor passes (cf., entry methods into LProjection)
-	// FIXME: explicit self roles/decls (core and ast) -- currently, self decls in protocols (in core) are purely cosmetic in toString
-				// And fix self in ast locals, and astfactory
-	// Job Module projection
-			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles -- done in core for now (and needs tidying)
-			// TODO: projected imports/nonprotodecls -- locals import globals for nonprotos?
+	// fix self in ast locals, astfactory
+	// Job Module projection, projected imports/nonprotodecls -- locals import globals for nonprotos?
 
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
 	// fully refactor imed/module projection to Job: old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
 	// refactor imed projection role pruning? currently done once for globals, which is done for locals once and then pruning done again for do-args
 			// no?  now only pruned?
-	 // CHECKME TODO: param-arg pruning?
+	 // CHECKME: TODO: proto-param and do-nonrole-arg pruning?
 	
 // Job/codegen refactoring:
 	// Check Maven deps
-	// also do-arg pruning, for role-pruned projection decls
 	// choice-specific fairness annotations
 	// fix codegen when -fair
 	// CHECKME: accept branching on messages (and safety properties) -- connection should not be established if message stuck? (cf. reception error) -- issue is implementation: what is a realistic semantics for sync-connect-branching (i.e., prevent client from async progressing after messaging) -- consider reversing client/server branching side? i.e. client requests, but then receives? (and consider serverside-branching a sugar?)

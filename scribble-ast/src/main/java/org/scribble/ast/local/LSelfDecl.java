@@ -18,30 +18,30 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
-public class LSelfRoleDecl extends RoleDecl
+public class LSelfDecl extends RoleDecl
 {
 	// ScribTreeAdaptor#create constructor
-	public LSelfRoleDecl(Token t)
+	public LSelfDecl(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public LSelfRoleDecl(LSelfRoleDecl node)
+	public LSelfDecl(LSelfDecl node)
 	{
 		super(node);
 	}
 	
 	@Override
-	public LSelfRoleDecl dupNode()
+	public LSelfDecl dupNode()
 	{
-		return new LSelfRoleDecl(this);
+		return new LSelfDecl(this);
 	}
 	
 	@Override
 	public void decorateDel(DelFactory df)
 	{
-		df.LSelfRoleDecl(this);
+		df.LSelfDecl(this);
 	}
 
 	@Override

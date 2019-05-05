@@ -90,7 +90,7 @@ public class LProjectionTranslator
 			{
 				RoleNode r = this.af.RoleNode(null, x.toString());
 				return x.equals(proj.self) 
-						? this.af.LSelfRoleDecl(null, r)
+						? this.af.LSelfDecl(null, r)
 						: this.af.RoleDecl(null, r);
 			}).collect(Collectors.toList()));
 		List<NonRoleParamDecl<? extends NonRoleParamKind>> pds = new LinkedList<>();

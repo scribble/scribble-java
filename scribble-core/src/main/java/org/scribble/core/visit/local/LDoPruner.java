@@ -39,7 +39,8 @@ import org.scribble.core.visit.STypeVisitorNoThrow;
 // Pre: LRoleDeclAndDoArgFixer (for LSubprotoVisitorNoThrow visiting pattern)
 // Cf. RecPruner
 public class LDoPruner //extends DoPruner<Local, LSeq>
-		extends STypeVisitorNoThrow<Local, LSeq> implements LSubprotoVisitorNoThrow
+		extends STypeVisitorNoThrow<Local, LSeq>
+		implements LSubprotoVisitorNoThrow<SType<Local, LSeq>>
 {
 	protected final Core core;
 

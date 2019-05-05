@@ -45,7 +45,7 @@ import org.scribble.ast.local.LProtoHeader;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.local.LRecv;
 import org.scribble.ast.local.LReq;
-import org.scribble.ast.local.LSelfRoleDecl;
+import org.scribble.ast.local.LSelfDecl;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.local.LServerWrap;
 import org.scribble.ast.local.LSessionNode;
@@ -156,7 +156,7 @@ public interface AstFactory
 
 	LProtoHeader LProtoHeader(Token t, LProtoNameNode name, RoleDeclList rs,
 			NonRoleParamDeclList ps);
-	LSelfRoleDecl LSelfRoleDecl(Token t, RoleNode r);
+	LSelfDecl LSelfDecl(Token t, RoleNode r);
 
 	LProtoDef LProtoDef(Token t, LProtoBlock block);
 	LProtoBlock LProtoBlock(Token t, LInteractionSeq seq);

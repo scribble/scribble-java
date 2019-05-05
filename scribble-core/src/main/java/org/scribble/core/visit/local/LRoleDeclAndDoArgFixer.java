@@ -55,8 +55,7 @@ public class LRoleDeclAndDoArgFixer extends STypeVisitorNoThrow<Local, LSeq>
 	}
 	
 	// TODO: refactor into LProjection/LProtocol -- cf. GProtocol
-	public LProjection visitProjection(
-			LProjection n)
+	public LProjection visitProjection(LProjection n)
 	{
 		this.self = n.self;
 		Set<Role> used = n.def.visitWithNoThrow(newRoleCollector());  // CHECKME: vf?
@@ -118,7 +117,7 @@ class PreSubprotoRoleCollector extends SubprotoRoleCollector
 
 // CHECKME: simply integrate into one with PreSubprotoRoleCollector?  Or maybe still separately useful?
 class SubprotoRoleCollector extends STypeAggNoThrow<Local, LSeq, Set<Role>> 
-		implements LSubprotoVisitorNoThrow
+		implements LSubprotoVisitorNoThrow<Set<Role>>
 {
 	protected final Core core;
 
@@ -135,11 +134,13 @@ class SubprotoRoleCollector extends STypeAggNoThrow<Local, LSeq, Set<Role>>
 		return Stream.of(n.src, n.dst).collect(Collectors.toSet());
 	}
 
+	@Override
 	public Set<Role> visitDisconnect(DisconnectAction<Local, LSeq> n)
 	{
 		return Stream.of(n.left, n.right).collect(Collectors.toSet());
 	}
 
+	@Override
 	public Set<Role> visitDo(Do<Local, LSeq> n)
 	{
 		SubprotoSig sig = new SubprotoSig(n.proto, n.roles, n.args);
