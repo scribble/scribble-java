@@ -106,18 +106,13 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		this.stack.push(sig);
 		LProjection target = (LProjection) n.getTarget(this.core);  // cf. visitProjection (i.e., for projections)
 		
-		// FIXME: subs?
 		// Duplicated from SubprotoRoleCollector
 		// FIXME: factor out with, e.g., SubprotoExtChoiceSubjFixer
 		List<Role> tmp = target.roles.stream()
 				.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
-		
-	//System.out.println("aaa: " + this.self + " ,, " + target.fullname + " ,, " + target.roles + " ,, " + target.self + " ,, " + tmp + " ,, " + n.roles + "\n\t" + n);
-
 		Substitutor<Local, LSeq> subs = this.core.config.vf.Substitutor(tmp,
 				n.roles, target.params, n.args, true);  // true (passive) to ignore non-fixed ext-choice subjs (e.g., good.efsm.gdo.Test11)
-
 		LSeq def = visitSeq(subs.visitSeq(target.def)); 
 				// Changes ultimately discarded: "nested" entries only do "info collection", actual AST modifications only recoded for the top-level Projection (cf. visitProjection)
 		this.stack.pop();

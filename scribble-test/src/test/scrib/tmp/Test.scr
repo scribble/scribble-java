@@ -93,12 +93,12 @@ module tmp.Test;
 	// ...make ad hoc ScribNode constructions go through af properly -- done
 
 	// rename ProtoMod, ProtocolMod -- rename core Protocol?
-	// TODO: refactor doarg pruning, do pruning and extchoicesubj fixing vistor passes
+	// TODO: refactor doarg pruning, do pruning and extchoicesubj-fixing vistor passes (cf., entry methods into LProjection)
 	// FIXME: explicit self roles/decls (core and ast) -- currently, self decls in protocols (in core) are purely cosmetic in toString
 				// And fix self in ast locals, and astfactory
 	// Job Module projection
 			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles -- done in core for now (and needs tidying)
-			// TODO: projected imports/nonprotodecls
+			// TODO: projected imports/nonprotodecls -- locals import globals for nonprotos?
 
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
 	// fully refactor imed/module projection to Job: old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
