@@ -74,8 +74,9 @@ public class SubprotoProjector extends InlinedProjector  // CHECKME: this way, o
 		List<Role> used = corec.getInlined(proto).roles.stream()  // N.B. global (inlined) roles -- still need to prune roles w.r.t. localised projection
 				.map(x -> subs.subsRole(x)).collect(Collectors.toList());
 		List<Role> rs = n.roles.stream().filter(x -> used.contains(x))
-				.map(x -> x.equals(this.self) ? Role.SELF : x)
-						// CHECKME: "self" also explcitily used for Choice, but implicitly for MessageTransfer, inconsistent?
+				//.map(x -> x.equals(this.self) ? Role.SELF : x)  
+						// CHECKME: now leaving self fully to LDoArgPruner -- easier to do role subs for do-visiting
+						// CHECKME: syntax: "self" explictly used for Choice subject, but implicitly for MessageTransfer, inconsistent?
 				.collect(Collectors.toList());
 		return this.core.config.tf.local.LDo(null, fullname, rs, n.args);  // TODO CHECKME: prune args?
 	}

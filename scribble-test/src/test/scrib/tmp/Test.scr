@@ -131,6 +131,33 @@ data <java> "..." from "..." as T;
 
 
 /*
+global protocol Proto1(role A, role B)
+{
+	do Proto1Aux(A, B);
+}
+
+aux global protocol Proto1Aux(role C, role D)
+{
+	2() from C to D;
+	//do Proto1(B, A);	 // Testing LDoArgPruner, do role pruning
+}
+//*/
+
+//*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	do Proto1Aux(B, A);	
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	2() from A to B;
+	do Proto1(B, A);	 // Testing LDoArgPruner, this.self vs. target.self
+}
+//*/
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A

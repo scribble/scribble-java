@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
-import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
@@ -39,6 +38,8 @@ import org.scribble.core.visit.Substitutor;
 public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 {
 	private final Core core;
+
+	private Role self;
 	
 	protected LDoArgPruner(Core core)
 	{
@@ -56,6 +57,7 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 	public LProjection visitProjection(
 			LProjection n)
 	{
+		this.self = n.self;
 		Set<Role> used = n.def.visitWithNoThrow(newRoleCollector());  // CHECKME: vf?
 		List<Role> rs = n.roles.stream()
 				.filter(x -> used.contains(x) || x.equals(n.self))  // FIXME: self roledecl not actually being a self role is a mess
@@ -68,14 +70,20 @@ public class LDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 
 	public Do<Local, LSeq> visitDo(Do<Local, LSeq> n)
 	{
-		LProjection target = (LProjection) n.getTarget(this.core);
-		GProtocol inlined = this.core.getContext().getInlined(target.global); 
+		/*LProjection target = (LProjection) n.getTarget(this.core);
+		GProtocol inlined = this.core.getContext().getInlined(target.global);*/
 		List<Role> pruned = new LinkedList<>();
+
+		//System.out.println("0000: " + target.self + " ,, " + inlined.roles +" ,, " + n);
+
 		Set<Role> rs = n.visitWithNoThrow(newRoleCollector());  // N.B. does subproto visiting, unlike RoleGather
-		pruned = inlined.roles.stream()
-				.filter(x -> rs.contains(x) || x.equals(target.self))
-				.map(x -> x.equals(target.self) ? Role.SELF : x)		// FIXME: self roledecl not actually being a self role is a mess
+		pruned = n.roles.stream()
+				.filter(x -> rs.contains(x) || x.equals(this.self))
+				.map(x -> x.equals(this.self) ? Role.SELF : x)		// FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
+
+		//System.out.println("1111: " + " ,, " + rs + " ,, " + pruned);
+		
 		return n.reconstruct(n.getSource(), n.proto, pruned, n.args);  // CHECKME: prune args?
 	}
 }
@@ -101,11 +109,23 @@ class PreSubprotoRoleCollector extends SubprotoRoleCollector
 		LProjection target = (LProjection) n.getTarget(this.core);
 		List<Role> tmp = this.core.getContext().getInlined(target.global).roles
 						// Currently, do-args arity matches that of inlined, i.e., not necessarily the arity of the actual local target (cf. InlinedProjector.visitDo)
-				.stream().map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
+				.stream()//.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
 		Substitutor<Local, LSeq> subs = this.core.config.vf
-				.Substitutor(tmp, n.roles, target.params, n.args);  // CHECKME: prune args?
+				.Substitutor(tmp, n.roles, target.params, n.args, true);  // true (passive) to ignore "self"  // CHECKME: prune args?
+		
+		//System.out.println("2222:\n" + tmp + " ,," + n.roles);
+		//System.out.println("\n" + target.def);
+		//System.out.println("\n" + target.def.visitWithNoThrow(subs));
+		if (2 > 1)
+		{
+			//System.exit(1);
+		}
+		
+
 		Set<Role> res = target.def.visitWithNoThrow(subs).visitWithNoThrow(this);
+		
+		//System.out.println(res + " \n");
 		this.stack.pop();
 		return res;
 	}
@@ -145,7 +165,7 @@ class SubprotoRoleCollector extends STypeAggNoThrow<Local, LSeq, Set<Role>>
 		this.stack.push(sig);
 		LProjection target = (LProjection) n.getTarget(this.core);
 		List<Role> tmp = target.roles.stream()
-				.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
+				//.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
 		Substitutor<Local, LSeq> subs = this.core.config.vf
 				.Substitutor(tmp, n.roles, target.params, n.args);  // CHECKME: prune args?

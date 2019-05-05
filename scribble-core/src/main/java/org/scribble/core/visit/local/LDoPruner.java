@@ -43,6 +43,8 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		extends STypeVisitorNoThrow<Local, LSeq>
 {
 	protected final Core core;
+
+	private Role self;
 	
 	protected final Deque<SubprotoSig> stack;
 
@@ -58,6 +60,7 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 	protected LDoPruner(LDoPruner v)
 	{
 		this.core = v.core;
+		this.self = v.self;
 		this.stack = new LinkedList<>(v.stack);
 		this.unguarded = new HashSet<>(v.unguarded);
 	}
@@ -65,6 +68,7 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 	// TODO: refactor to LProjection -- cf. GProtocol (e.g., getInlined, etc)
 	public LProjection visitProjection(LProjection n)
 	{
+		this.self = n.self;
 		this.stack.clear();
 		this.unguarded.clear();
 
@@ -104,14 +108,14 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		
 		// FIXME: subs?
 		// Duplicated from SubprotoRoleCollector
-List<Role> tmp = target.roles.stream()
+		List<Role> tmp = target.roles.stream()
 				.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
 		
-	System.out.println("aaa: " + target.fullname + " ,, " + target.roles + " ,, " + target.self + " ,, " + tmp + " ,, " + n.roles + "\n\t" + n);
+	//System.out.println("aaa: " + this.self + " ,, " + target.fullname + " ,, " + target.roles + " ,, " + target.self + " ,, " + tmp + " ,, " + n.roles + "\n\t" + n);
 
-Substitutor<Local, LSeq> subs = this.core.config.vf
-				.Substitutor(tmp, n.roles, target.params, n.args, true);
+		Substitutor<Local, LSeq> subs = this.core.config.vf.Substitutor(tmp,
+				n.roles, target.params, n.args, true);  // true (passive) to ignore non-fixed ext-choice subjs (e.g., good.efsm.gdo.Test11)
 
 		LSeq def = visitSeq(subs.visitSeq(target.def)); 
 				// Changes ultimately discarded: "nested" entries only do "info collection", actual AST modifications only recoded for the top-level Projection (cf. visitProjection)
