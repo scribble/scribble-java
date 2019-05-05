@@ -49,6 +49,7 @@ import org.scribble.core.visit.local.LTypeVisitorFactoryImpl;
 import org.scribble.core.visit.local.SubprotoExtChoiceSubjFixer;
 import org.scribble.util.ScribException;
 
+
 // A "compiler job" front-end that supports operations comprising visitor passes over the AST and/or local/global models
 public class Core
 {

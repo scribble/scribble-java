@@ -96,12 +96,15 @@ module tmp.Test;
 	// TODO: refactor doarg pruning, do pruning and extchoicesubj fixing vistor passes
 	// FIXME: explicit self roles/decls (core and ast) -- currently, self decls in protocols (in core) are purely cosmetic in toString
 				// And fix self in ast locals, and astfactory
-	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
 	// Job Module projection
-			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles
+			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles -- done in core (and needs tidying)
 			// TODO: projected imports/nonprotodecls
-			// old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
-	// refactor role pruning? currently done once for globals, which is done for locals once and then pruning done again for do-args -- TODO: param-arg pruning?
+
+	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
+	// fully refactor imed/module projection to Job: old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
+	// refactor imed projection role pruning? currently done once for globals, which is done for locals once and then pruning done again for do-args
+			// no?  now only pruned?
+	 // CHECKME TODO: param-arg pruning?
 	
 // Job/codegen refactoring:
 	// also do-arg pruning, for role-pruned projection decls
@@ -114,6 +117,7 @@ module tmp.Test;
 			// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 	// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
 		// -- otoh, ast errors give source feedback -- maybe implement both
+	// Refactor PayElemNameNode
 
 // Test refactoring:
 	// refactor test to use main instead of cli
