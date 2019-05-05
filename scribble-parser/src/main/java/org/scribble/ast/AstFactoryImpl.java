@@ -50,6 +50,7 @@ import org.scribble.ast.local.LProtoHeader;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.local.LRecv;
 import org.scribble.ast.local.LReq;
+import org.scribble.ast.local.LSelfRoleDecl;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.local.LServerWrap;
 import org.scribble.ast.local.LSessionNode;
@@ -660,6 +661,16 @@ public class AstFactoryImpl implements AstFactory
 		t = newToken(t, ScribbleParser.LPROTOHEADER);
 		LProtoHeader n = new LProtoHeader(t);
 		n.addScribChildren(name, ps, rs);
+		n.decorateDel(this.df);
+		return n;
+	}
+
+	@Override
+	public LSelfRoleDecl LSelfRoleDecl(Token t, RoleNode r)
+	{
+		t = newToken(t, ScribbleParser.LSELFROLEDECL);
+		LSelfRoleDecl n = new LSelfRoleDecl(t);
+		n.addScribChildren(r);
 		n.decorateDel(this.df);
 		return n;
 	}

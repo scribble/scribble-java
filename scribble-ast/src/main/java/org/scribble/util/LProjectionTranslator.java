@@ -84,14 +84,17 @@ public class LProjectionTranslator
 		this.af = job.config.af;
 	}
 
-	public LProjectionDecl translate(LProjection ltype)
+	public LProjectionDecl translate(LProjection proj)
 	{
-		RoleDeclList rs = this.af.RoleDeclList(null,
-				ltype.roles.stream().map(
-						x -> this.af.RoleDecl(null, this.af.RoleNode(null, x.toString())))  // FIXME: special "self" node?
-						.collect(Collectors.toList()));
+		RoleDeclList rs = this.af.RoleDeclList(null, proj.roles.stream().map(x ->
+			{
+				RoleNode r = this.af.RoleNode(null, x.toString());
+				return x.equals(proj.self) 
+						? this.af.LSelfRoleDecl(null, r)
+						: this.af.RoleDecl(null, r);
+			}).collect(Collectors.toList()));
 		List<NonRoleParamDecl<? extends NonRoleParamKind>> pds = new LinkedList<>();
-		for (MemberName<? extends NonRoleParamKind> p : ltype.params)
+		for (MemberName<? extends NonRoleParamKind> p : proj.params)
 		{
 			if (p instanceof SigName)
 			{
@@ -111,15 +114,15 @@ public class LProjectionTranslator
 		}
 		NonRoleParamDeclList ps = this.af.NonRoleParamDeclList(null, pds);
 
-		ProtoModList mods = this.af.ProtoModList(null, ltype.mods.stream()
+		ProtoModList mods = this.af.ProtoModList(null, proj.mods.stream()
 				.map(x -> translate(x)).collect(Collectors.toList()));
 		GProtoNameNode global = this.af.GProtoNameNode(null,
-				IdNode.from(this.af, ltype.global.getElements()));
-		RoleNode self1 = this.af.RoleNode(null, ltype.self.toString());  // FIXME: special "self" node?
+				IdNode.from(this.af, proj.global.getElements()));
+		RoleNode self1 = this.af.RoleNode(null, proj.self.toString());  // FIXME: special "self" node?
 		LProtoNameNode projFullname = this.af.LProtoNameNode(null,
-				IdNode.from(this.af, ltype.fullname.getElements()));
+				IdNode.from(this.af, proj.fullname.getElements()));
 		LProtoHeader header = this.af.LProtoHeader(null, projFullname, rs, ps);
-		LProtoDef def = this.af.LProtoDef(null, translate(ltype.def));
+		LProtoDef def = this.af.LProtoDef(null, translate(proj.def));
 		return this.af.LProjectionDecl(null, mods, header, def, global, self1);
 	}
 	

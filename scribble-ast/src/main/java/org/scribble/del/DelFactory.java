@@ -62,6 +62,7 @@ import org.scribble.ast.local.LProtoHeader;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.local.LRecv;
 import org.scribble.ast.local.LReq;
+import org.scribble.ast.local.LSelfRoleDecl;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.local.LServerWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
@@ -157,6 +158,8 @@ public interface DelFactory
 
 	void LProtoHeader(LProtoHeader n);
 	
+	void LSelfRoleDecl(LSelfRoleDecl n);
+
 	void LProtoDef(LProtoDef n);
 	void LProtoBlock(LProtoBlock n);
 	void LInteractionSeq(LInteractionSeq n);
