@@ -183,6 +183,7 @@ public class Job
 		warningPrintln(
 				"[TODO] Module projection incomplete, missing imports and non-proto decls: "
 						+ fullname + "@" + self);
+				// CHECKME: nonprotos should refer to source global module?  i.e., projection modules should import globals?  maybe consistent with "projects" clause
 		
 		return Collections.emptyMap();
 				//FIXME: build output Modules

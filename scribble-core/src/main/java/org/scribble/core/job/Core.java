@@ -14,6 +14,7 @@
 package org.scribble.core.job;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -402,27 +403,29 @@ public class Core
 			ProtoName<Global> fullname, Role self) throws ScribException
 	{
 		Map<ProtoName<Local>, LProjection> res = new HashMap<>();
+		Set<MemberName<?>> nonprotos = new LinkedHashSet<>();
+		LProjection root = this.context.getProjection(fullname, self);
 
-		LProjection proj = this.context.getProjection(fullname, self);
-		res.put(proj.fullname, proj);
-		
-		List<ProtoName<Local>> pdeps = proj.def
-				.gather(new ProtoDepsCollector<Local, LSeq>()::visit)
-				.collect(Collectors.toList());
-		for (ProtoName<Local> pfullname : pdeps)
+		List<ProtoName<Local>> todo = new LinkedList<>();
+		todo.add(root.fullname);
+		while (!todo.isEmpty())
 		{
-			res.put(pfullname, this.context.getProjection(pfullname));
+			ProtoName<Local> pfullname = todo.remove(0);
+			LProjection proj = this.context.getProjection(pfullname);
+			res.put(pfullname, proj);
+			proj.def.gather(new ProtoDepsCollector<Local, LSeq>()::visit)
+					.filter(x -> !res.containsKey(x)).forEachOrdered(x -> todo.add(x));
+			proj.def.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
+					.forEachOrdered(x -> nonprotos.add(x));
 		}
 
-		List<MemberName<?>> ns = proj.def
-				.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
-				.collect(Collectors.toList());
-		if (!ns.isEmpty())
+		if (!nonprotos.isEmpty())  
+				// CHECKME: best way to handle mixtured of proto and nonproto dependencies?  
+				// nonprotos should refer to source global module?  i.e., projection modules should import globals?  maybe consistent with "projects" clause
 		{
 			throw new RuntimeException(
-					"[TODO] Non-proto dependencies: " + ns + "\n\t" + proj);
+					"[TODO] Non-proto dependencies: " + nonprotos + "\n\t" + root);
 		}
-		
 		return res;
 	}
 	

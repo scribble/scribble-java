@@ -130,7 +130,7 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
-//*
+/*
 global protocol Proto1(role A, role B)
 {
 	do Proto1Aux(A, B);
@@ -139,12 +139,13 @@ global protocol Proto1(role A, role B)
 aux global protocol Proto1Aux(role C, role D)
 {
 	2() from C to D;  // Testing LDoArgPruner, do role pruning
-	do Proto1(D, C);  // Testing -project output, proto deps
-			// FIXME: protodeps
+	//do Proto1(C, D);
+	//do Proto1(D, C);  // Testing -project output, proto deps
 }
 //*/
 
-/*
+
+//*
 global protocol Proto1(role A, role B)
 {
 	1() from A to B;
@@ -155,8 +156,10 @@ aux global protocol Proto1Aux(role A, role B)
 {
 	2() from A to B;
 	do Proto1(B, A);	 // Testing LDoArgPruner, this.self vs. target.self
+	//do Proto1(A, B);
 }
 //*/
+
 
 /*
 global protocol Proto1(role A, role B, role C)
