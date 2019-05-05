@@ -85,7 +85,8 @@ public class BranchSockGen extends ScribSockGen
 			EnumBuilder eb = cb.newMemberEnum(enumClass);
 			eb.addModifiers(JavaBuilder.PUBLIC);
 			eb.addInterfaces(OPENUM_INTERFACE);
-			this.curr.getDetActions().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+			this.curr.getDetActions().forEach(
+					a -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 
 			addDirectBranchCallbackMethod(ROLE_PARAM, MESSAGE_VAR, OP, main, peer);  // Hack: callback apigen while i/o i/f's not supported for connect/accept/etc
 		}

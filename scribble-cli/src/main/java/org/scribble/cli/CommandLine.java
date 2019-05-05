@@ -468,7 +468,7 @@ public class CommandLine
 		{
 			f = path -> { System.out.println(path + ":\n" + classes.get(path)); };
 		}
-		classes.keySet().stream().forEach(f);
+		classes.keySet().forEach(f);
 	}
 
 	protected static void runDot(String dot, String png)

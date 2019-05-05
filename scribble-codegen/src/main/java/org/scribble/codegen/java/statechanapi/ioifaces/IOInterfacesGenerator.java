@@ -190,11 +190,15 @@ public class IOInterfacesGenerator extends ApiGen
 	{
 		Map<String, String> output = new HashMap<>();
 		String prefix = getIOInterfacePackageName(this.gpn, getSelf()).replace('.', '/') + "/";
-		this.actions.values().stream().forEach((ib) -> output.put(prefix + ib.getName() + ".java", ib.build()));
-		this.succs.values().stream().forEach((ib) -> output.put(prefix + ib.getName() + ".java", ib.build()));
-		this.iostates.values().stream().forEach((tb) -> output.put(prefix + tb.getName() + ".java", tb.build()));
+		this.actions.values()
+				.forEach(ib -> output.put(prefix + ib.getName() + ".java", ib.build()));
+		this.succs.values()
+				.forEach(ib -> output.put(prefix + ib.getName() + ".java", ib.build()));
+		this.iostates.values()
+				.forEach(tb -> output.put(prefix + tb.getName() + ".java", tb.build()));
 
-		this.caseActions.values().stream().forEach((ib) -> output.put(prefix + ib.getName() + ".java", ib.build()));
+		this.caseActions.values()
+				.forEach(ib -> output.put(prefix + ib.getName() + ".java", ib.build()));
 
 		return output;
 	}
@@ -680,7 +684,7 @@ public class IOInterfacesGenerator extends ApiGen
 						}
 						res.putAll(tmp);*/
 					}
-					res.values().forEach((r) -> subtypeifs.put(r.getName(), r));
+					res.values().forEach(r -> subtypeifs.put(r.getName(), r));
 				}
 			}
 		}

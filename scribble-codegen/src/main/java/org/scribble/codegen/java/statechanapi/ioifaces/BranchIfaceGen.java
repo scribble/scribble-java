@@ -84,7 +84,8 @@ public class BranchIfaceGen extends IOStateIfaceGen
 		EnumBuilder eb = this.ib.newMemberEnum(getBranchInterfaceEnumName(self, this.curr));
 		eb.addModifiers(JavaBuilder.PUBLIC);
 		eb.addInterfaces(ScribSockGen.OPENUM_INTERFACE);
-		this.curr.getDetActions().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+		this.curr.getDetActions()
+				.forEach(a -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 	}
 
 	// Don't add Action Interfaces (added to CaseInterface)

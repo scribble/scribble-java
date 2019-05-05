@@ -557,13 +557,14 @@ public class CBEndpointApiGenerator3
 								.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 				messageIf.addInterfaces(iface);
 			}
-			s.getActions().stream().map(a -> a.peer).distinct().forEach(r ->
+			s.getActions().stream().map(a -> a.peer).distinct().forEachOrdered(r ->
 			{
 				ClassBuilder roleClass = stateClass.newMemberClass(r.toString());
 				roleClass.addModifiers("public", "static");
 				ConstructorBuilder roleCons = roleClass.newConstructor();
 				roleCons.addModifiers("private");
-				s.getActions().stream().filter(a -> a.peer.equals(r)).forEach(a ->
+				s.getActions().stream().filter(a -> a.peer.equals(r))
+						.forEachOrdered(a ->
 				{
 					String opName = SessionApiGenerator.getOpClassName(a.mid);
 					ClassBuilder opClass = roleClass.newMemberClass(opName);

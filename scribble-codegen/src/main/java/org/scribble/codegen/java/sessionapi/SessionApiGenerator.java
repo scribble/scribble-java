@@ -75,7 +75,8 @@ public class SessionApiGenerator extends ApiGen
 		Map<String, String> map = new HashMap<>();
 		map.put(path, sb.toString());
 		
-		this.classes.keySet().stream().forEach(n -> map.put(n, this.classes.get(n).build()));
+		this.classes.keySet().stream()
+				.forEachOrdered(n -> map.put(n, this.classes.get(n).build()));
 		
 		return map;
 	}
@@ -124,8 +125,8 @@ public class SessionApiGenerator extends ApiGen
 		fb3.setExpression(SessionApiGenerator.SESSIONTYPEFACTORY_CLASS
 				+ ".parseGlobalProtocolName(\"" + gpn + "\")");
 
-		this.roles.stream().forEach((r) -> addRoleField(this.cb, r));
-		this.mids.stream().forEach((mid) -> addOpField(this.cb, mid));
+		this.roles.forEach(r -> addRoleField(this.cb, r));
+		this.mids.forEach(mid -> addOpField(this.cb, mid));
 
 		ConstructorBuilder ctor = this.cb.newConstructor();
 		ctor.addModifiers(JavaBuilder.PUBLIC);

@@ -121,7 +121,7 @@ public class SModel
 				i.hasNext() && !todo.isEmpty(); )
 		{
 			i.next().getActions().stream().map(x -> x.subj).distinct()
-					.forEach(x -> todo.remove(x));
+					.forEachOrdered(x -> todo.remove(x));
 				// cf. a.containsRole(r) -- implies obj will be subj for the counterpart action somewhere in the termset?
 		}
 
