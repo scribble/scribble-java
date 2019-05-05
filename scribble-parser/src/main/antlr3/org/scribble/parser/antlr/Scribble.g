@@ -300,7 +300,7 @@ fragment UNDERSCORE:
  * Chapter 3 Syntax (Parser rules)
  ***************************************************************************/
 
-/*  // Double star here not accepted by ANTLR...
+/* * // Double star here not accepted by ANTLR...
  * Section 3.1 Primitive Names
  */
 //simplename: id=ID -> { checkId($id.tree) } ;  // How to integrate with ID<RoleNode>[$t] ?
@@ -323,9 +323,8 @@ sigparamname: t=ID -> ID<SigParamNode>[$t];
 gprotoname: t=ID ('.' ID)* -> ^(GPROTO_NAME[$t] ID+) ;
 modulename: t=ID ('.' ID)* -> ^(MODULE_NAME[$t] ID+) ;
 
-// Compound only
+// Compound only (cf., e.g., gprotoname; cf. simpledataname)
 qualifieddataname: t=ID '.' ID ('.' ID)* -> ^(DATA_NAME[$t] ID+) ;
-
 
 // Cf. primitive names, above
 simpledataname: t=ID -> ^(DATA_NAME[$t] ID) ;
