@@ -37,12 +37,14 @@ public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {
 	private Substitutions subs;
+	private boolean passive;
 
 	protected Substitutor(List<Role> rold, List<Role> rnew,
 			List<MemberName<? extends NonRoleParamKind>> aold,
-			List<Arg<? extends NonRoleParamKind>> anew)
+			List<Arg<? extends NonRoleParamKind>> anew, boolean passive)
 	{
 		this.subs = new Substitutions(rold, rnew, aold, anew);
+		this.passive = passive;
 	}
 
 	@Override
@@ -50,7 +52,8 @@ public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 	{
 		List<B> blocks = n.blocks.stream().map(x -> visitSeq(x))
 				.collect(Collectors.toList());
-		return n.reconstruct(n.getSource(), this.subs.subsRole(n.subj), blocks);
+		return n.reconstruct(n.getSource(),
+				this.subs.subsRole(n.subj, this.passive), blocks);
 	}
 
 	@Override
@@ -62,24 +65,27 @@ public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 			MemberName<?> name = (MemberName<?>) msg;
 			if (this.subs.hasArg(name))
 			{
-				msg = (Msg) this.subs.subsArg(name);
+				msg = (Msg) this.subs.subsArg(name, this.passive);
 			}
 		}
-		return n.reconstruct(n.getSource(), msg, this.subs.subsRole(n.src),
-				this.subs.subsRole(n.dst));
+		return n.reconstruct(n.getSource(), msg,
+				this.subs.subsRole(n.src, this.passive),
+				this.subs.subsRole(n.dst, this.passive));
 	}
 
 	@Override
 	public SType<K, B> visitDisconnect(DisconnectAction<K, B> n)
 	{
-		return n.reconstruct(n.getSource(), this.subs.subsRole(n.left),
-				this.subs.subsRole(n.right));
+		return n.reconstruct(n.getSource(),
+				this.subs.subsRole(n.left, this.passive),
+				this.subs.subsRole(n.right, this.passive));
 	}
 
 	@Override
 	public SType<K, B> visitDo(Do<K, B> n)
 	{
-		List<Role> roles = n.roles.stream().map(x -> this.subs.subsRole(x))
+		List<Role> roles = n.roles.stream()
+				.map(x -> this.subs.subsRole(x, this.passive))
 				.collect(Collectors.toList());
 		List<Arg<? extends NonRoleParamKind>> args = new LinkedList<>();
 		for (Arg<? extends NonRoleParamKind> a : n.args) 
@@ -88,11 +94,11 @@ public class Substitutor<K extends ProtoKind, B extends Seq<K, B>>
 			{
 				if (a instanceof DataName)
 				{
-					a = this.subs.subsArg((DataName) a);
+					a = this.subs.subsArg((DataName) a, this.passive);
 				}
 				else if (a instanceof SigName)
 				{
-					a = this.subs.subsArg((SigName) a);
+					a = this.subs.subsArg((SigName) a, this.passive);
 				}
 			}
 			args.add(a);

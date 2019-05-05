@@ -14,7 +14,6 @@
 package org.scribble.core.lang;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,24 +61,26 @@ public class SubprotoSig
 	private static List<Arg<? extends NonRoleParamKind>> paramsToArgs(
 			List<MemberName<? extends NonRoleParamKind>> params)
 	{
-		List<Arg<? extends NonRoleParamKind>> args = new LinkedList<>();
 		// Convert MemberName params to Args -- cf. NonRoleArgList::getParamKindArgs
-		for (MemberName<? extends NonRoleParamKind> n : params)
+		return params.stream().map(x -> paramToArg(x)).collect(Collectors.toList());
+	}
+	
+	// TODO: refactor, into params?
+	public static Arg<? extends NonRoleParamKind> paramToArg(
+			MemberName<?> n)  // Omit " extends NonRoleParamKind" for param, more flexible without harm
+	{
+		if (n instanceof DataName)
 		{
-			if (n instanceof DataName)
-			{
-				args.add((DataName) n);
-			}
-			else if (n instanceof SigName)
-			{
-				args.add((SigName) n);
-			}
-			else
-			{
-				throw new RuntimeException("[TODO] : " + n.getClass() + "\n\t" + n);
-			}
+			return (DataName) n;
 		}
-		return args;
+		else if (n instanceof SigName)
+		{
+			return (SigName) n;
+		}
+		else
+		{
+			throw new RuntimeException("[TODO] : " + n.getClass() + "\n\t" + n);
+		}
 	}
 
 	@Override

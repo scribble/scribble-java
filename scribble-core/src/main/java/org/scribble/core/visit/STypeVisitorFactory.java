@@ -37,10 +37,18 @@ public abstract class STypeVisitorFactory
 		this.local = local;
 	}
 
+	public <K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> 
+			Substitutor(List<Role> rold, List<Role> rnew,
+					List<MemberName<? extends NonRoleParamKind>> aold,
+					List<Arg<? extends NonRoleParamKind>> anew)
+	{
+		return Substitutor(rold, rnew, aold, anew, false);
+	}
+
 	public abstract <K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> 
 			Substitutor(List<Role> rold, List<Role> rnew,
 					List<MemberName<? extends NonRoleParamKind>> aold,
-					List<Arg<? extends NonRoleParamKind>> anew);
+					List<Arg<? extends NonRoleParamKind>> anew, boolean passive);
 
 	public abstract <K extends ProtoKind, B extends Seq<K, B>> RecPruner<K, B> 
 			RecPruner();

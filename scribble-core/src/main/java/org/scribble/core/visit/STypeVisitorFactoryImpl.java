@@ -37,9 +37,9 @@ public class STypeVisitorFactoryImpl extends STypeVisitorFactory
 	public <K extends ProtoKind, B extends Seq<K, B>> Substitutor<K, B> 
 			Substitutor(List<Role> rold, List<Role> rnew,
 					List<MemberName<? extends NonRoleParamKind>> aold,
-					List<Arg<? extends NonRoleParamKind>> anew)
+					List<Arg<? extends NonRoleParamKind>> anew, boolean passive)
 	{
-		return new Substitutor<>(rold, rnew, aold, anew);
+		return new Substitutor<>(rold, rnew, aold, anew, passive);
 	}
 
 	@Override

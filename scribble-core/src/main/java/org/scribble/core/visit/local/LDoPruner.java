@@ -21,10 +21,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
-import org.scribble.core.lang.Protocol;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProjection;
 import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Do;
 import org.scribble.core.type.session.Recursion;
@@ -33,6 +33,7 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
 import org.scribble.core.visit.STypeVisitorNoThrow;
+import org.scribble.core.visit.Substitutor;
 
 
 
@@ -99,8 +100,20 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 			return this.unguarded.contains(sig) ? LSkip.SKIP : n;
 		}
 		this.stack.push(sig);
-		Protocol<Local, ?, LSeq> target = n.getTarget(this.core);
-		LSeq def = visitSeq(target.def); 
+		LProjection target = (LProjection) n.getTarget(this.core);  // cf. visitProjection (i.e., for projections)
+		
+		// FIXME: subs?
+		// Duplicated from SubprotoRoleCollector
+List<Role> tmp = target.roles.stream()
+				.map(x -> x.equals(target.self) ? Role.SELF : x)  // FIXME: self roledecl not actually being a self role is a mess
+				.collect(Collectors.toList());
+		
+	System.out.println("aaa: " + target.fullname + " ,, " + target.roles + " ,, " + target.self + " ,, " + tmp + " ,, " + n.roles + "\n\t" + n);
+
+Substitutor<Local, LSeq> subs = this.core.config.vf
+				.Substitutor(tmp, n.roles, target.params, n.args, true);
+
+		LSeq def = visitSeq(subs.visitSeq(target.def)); 
 				// Changes ultimately discarded: "nested" entries only do "info collection", actual AST modifications only recoded for the top-level Projection (cf. visitProjection)
 		this.stack.pop();
 		return def.isEmpty() ? LSkip.SKIP : n;  // Cf. unit(n)
