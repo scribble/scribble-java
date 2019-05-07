@@ -14,7 +14,6 @@
 package org.scribble.job;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -43,7 +42,6 @@ import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
-import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtoName;
@@ -55,7 +53,6 @@ import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LTypeFactoryImpl;
 import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.ProtoDepsCollector;
-import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.del.DelFactory;
 import org.scribble.util.LProjectionTranslator;
 import org.scribble.util.ScribException;
@@ -155,15 +152,15 @@ public class Job
 
 	// Returns: fullname -> Module -- CHECKME TODO: refactor local Module creation to Job?
 	// CHECKME: generate projection Modules for an *inline* main?
-	public Map<LProtoName, Module> getProjections(GProtoName fullname,
+	public Map<ProtoName<Local>, Module> getProjections(GProtoName fullname,
 			Role self) throws ScribException
 	{
 		AstFactory af = this.config.af;
 		LProjectionTranslator t = new LProjectionTranslator(this);
+		Map<ProtoName<Local>, Module> res = new HashMap<>();
 
 		Map<ProtoName<Local>, LProjection> projs = getCore()
 				.getProjections(fullname, self);
-		Map<ProtoName<Local>, Module> projmods = new HashMap<>();
 		for (ProtoName<Local> pfullname : projs.keySet())
 		{
 			LProjection proj = projs.get(pfullname);
@@ -182,7 +179,7 @@ public class Job
 
 			LinkedHashSet<MemberName<?>> npdeps = new LinkedHashSet<>();
 			proj.def.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)  // Gathering only from this proto decl (no subproto visiting)
-					.forEachOrdered(x -> npdeps.add(x));  // setify while preserving order
+					.forEachOrdered(x -> npdeps.add(x));  // set-ify while preserving order
 			List<NonProtoDecl<?>> nonprods = new LinkedList<>();
 			for (MemberName<?> nonpro : npdeps)
 			{
@@ -210,32 +207,12 @@ public class Job
 			ModuleDecl modd = af.ModuleDecl(null, modn);
 			List<LProjectionDecl> protos = Arrays.asList(t.translate(proj));
 			Module mod = af.Module(null, modd, imports, nonprods, protos);
-			projmods.put(pfullname, mod);
+			res.put(pfullname, mod);
 		}
 
-		LProjection root = projs
-				.get(InlinedProjector.getFullProjectionName(fullname, self));
-		System.out.println(
-				"\nProjection modules for " + fullname + "@" + self + ":\n\n"
-						+ projmods.get(root.fullname));  // FIXME TODO refactor printing into CommandLine
-		for (ProtoName<Local> pfullname : projmods.keySet())
-		{
-			// CHECKME: projection decl name is currently *compound* full name (not simple name), OK?
-			if (!pfullname.equals(root.fullname))
-			{
-				System.out.println("\n" + projmods.get(pfullname));
-			}
-		}
-
-		System.out.println("");
-		warningPrintln(
-				"[TODO] Module projection incomplete, missing imports and non-proto decls: "
-						+ fullname + "@" + self);
-				// CHECKME: nonprotos should refer to source global module?  i.e., projection modules should import globals?  maybe consistent with "projects" clause
-		
-		return Collections.emptyMap();
-				//FIXME: build output Modules
-				//FIXME: (interleaved) ordering between proto and nonproto (Module) imports -- order by original Global import order?
+		// CHECKME: nonprotos should refer to source global module?  i.e., projection modules should import globals?  maybe consistent with "projects" clause
+		return res;
+				// CHECKME: (interleaved) ordering between proto and nonproto (Module) imports -- order by original Global import order?
 	}
 	
 	// First run Visitor passes, then call toJob
