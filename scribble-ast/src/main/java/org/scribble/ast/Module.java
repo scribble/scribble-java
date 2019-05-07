@@ -180,32 +180,38 @@ public class Module extends ScribNodeBase
 	// CHECKME: allow global and local protocols with same simpname in same module? -- currently, no?
 	public boolean hasGProtocolDecl(GProtoName simpname)
 	{
-		return getGProtoDeclChildren().stream()
-				.anyMatch(x -> x.getHeaderChild().getDeclName().equals(simpname));
+		return hasProtocolDeclChild(simpname, ProtoDecl::isGlobal).isPresent();
 	}
 	
 	// Pre: hasGProtocolDecl(simpname)
 	public GProtoDecl getGProtocolDeclChild(GProtoName simpname)
 	{
-		return (GProtoDecl) getProtocolDeclChild(simpname, ProtoDecl::isGlobal);
+		Optional<ProtoDecl<?>> res = hasProtocolDeclChild(simpname,
+				ProtoDecl::isGlobal);
+		if (!res.isPresent())
+		{
+			throw new RuntimeException("Global proto decl not found: " + simpname);
+		}
+		return (GProtoDecl) res.get();
 	}
 
 	public LProtoDecl getLProtocolDeclChild(LProtoName simpname)
 	{
-		return (LProtoDecl) getProtocolDeclChild(simpname, ProtoDecl::isLocal);
-	}
-
-	private ProtoDecl<?> getProtocolDeclChild(
-			ProtoName<?> simpname, Predicate<ProtoDecl<?>> f)
-	{
-		Optional<ProtoDecl<?>> res = getProtoDeclChildren().stream()
-				.filter(x -> f.test(x) && x.getHeaderChild().getDeclName().equals(simpname))
-				.findFirst();  // No duplication check, rely on WF
+		Optional<ProtoDecl<?>> res = hasProtocolDeclChild(simpname,
+				ProtoDecl::isLocal);
 		if (!res.isPresent())
 		{
-			throw new RuntimeException("Proto decl not found: " + simpname);
+			throw new RuntimeException("Local proto decl not found: " + simpname);
 		}
-		return res.get();
+		return (LProtoDecl) res.get();
+	}
+
+	private Optional<ProtoDecl<?>> hasProtocolDeclChild(
+			ProtoName<?> simpname, Predicate<ProtoDecl<?>> f)
+	{
+		return getProtoDeclChildren().stream()
+				.filter(x -> f.test(x) && x.getHeaderChild().getDeclName().equals(simpname))
+				.findFirst();  // No duplication check, rely on WF
 	}
 
 	public ModuleName getFullModuleName()
