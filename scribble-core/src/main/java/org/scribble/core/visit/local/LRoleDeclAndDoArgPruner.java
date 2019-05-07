@@ -35,15 +35,13 @@ import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.core.visit.STypeVisitorNoThrow;
 import org.scribble.core.visit.Substitutor;
 
-// Pre: SubprotoProjector -- "self" fixed for interactions and choice-subjs, but not for do role-args
-// Prunes LProto/Proj role decls, and fixes/prunes do role-args (including "self" fixing)
-public class LRoleDeclAndDoArgFixer extends STypeVisitorNoThrow<Local, LSeq>
+// Pre: SubprotoProjector -- "self" fixed for interactions, choice-subjs and do role-args
+// Prunes LProto/Proj role decls and do role-args
+public class LRoleDeclAndDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 {
 	private final Core core;
-
-	private Role self;
 	
-	protected LRoleDeclAndDoArgFixer(Core core)
+	protected LRoleDeclAndDoArgPruner(Core core)
 	{
 		this.core = core;
 	}
@@ -57,7 +55,6 @@ public class LRoleDeclAndDoArgFixer extends STypeVisitorNoThrow<Local, LSeq>
 	// TODO: refactor into LProjection/LProtocol -- cf. GProtocol
 	public LProjection visitProjection(LProjection n)
 	{
-		this.self = n.self;
 		Set<Role> used = n.def.visitWithNoThrow(newRoleCollector());  // CHECKME: vf?
 		List<Role> rs = n.roles.stream()
 				.filter(x -> used.contains(x) || x.equals(n.self))  // FIXME: self roledecl not actually being a self role is a mess
@@ -72,8 +69,9 @@ public class LRoleDeclAndDoArgFixer extends STypeVisitorNoThrow<Local, LSeq>
 		List<Role> fixed = new LinkedList<>();
 		Set<Role> rs = n.visitWithNoThrow(newRoleCollector());  // N.B. does subproto visiting, unlike RoleGatherer
 		fixed = n.roles.stream()
-				.filter(x -> rs.contains(x) || x.equals(this.self))
-				.map(x -> x.equals(this.self) ? Role.SELF : x)		// FIXME: self roledecl not actually being a self role is a mess
+				/*.filter(x -> rs.contains(x) || x.equals(this.self))
+				.map(x -> x.equals(this.self) ? Role.SELF : x)		// FIXME: self roledecl not actually being a self role is a mess*/
+				.filter(x -> rs.contains(x) || x.equals(Role.SELF))
 				.collect(Collectors.toList());
 		return n.reconstruct(n.getSource(), n.proto, fixed, n.args);  // CHECKME: prune args?
 	}

@@ -37,9 +37,9 @@ public class LTypeVisitorFactoryImpl implements LTypeVisitorFactory
 	}
 
 	@Override
-	public LRoleDeclAndDoArgFixer LDoArgPruner(Core core)
+	public LRoleDeclAndDoArgPruner LDoArgPruner(Core core)
 	{
-		return new LRoleDeclAndDoArgFixer(core);
+		return new LRoleDeclAndDoArgPruner(core);
 	}
 
 	@Override

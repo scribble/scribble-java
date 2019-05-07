@@ -45,7 +45,7 @@ import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.ProtoDepsCollector;
 import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.core.visit.global.GTypeVisitorFactoryImpl;
-import org.scribble.core.visit.local.LRoleDeclAndDoArgFixer;
+import org.scribble.core.visit.local.LRoleDeclAndDoArgPruner;
 import org.scribble.core.visit.local.LDoPruner;
 import org.scribble.core.visit.local.LTypeVisitorFactoryImpl;
 import org.scribble.core.visit.local.SubprotoExtChoiceSubjFixer;
@@ -226,7 +226,7 @@ public class Core
 		}
 
 		verbosePrintPass("Pruning do-args on all projected intermediates...");
-		LRoleDeclAndDoArgFixer v1 = this.config.vf.local.LDoArgPruner(this);   // Reusable
+		LRoleDeclAndDoArgPruner v1 = this.config.vf.local.LDoArgPruner(this);   // Reusable
 		List<LProjection> done1 = new LinkedList<>();
 		for (ProtoName<Global> fullname : this.context.getParsedFullnames())
 		{
@@ -234,11 +234,11 @@ public class Core
 			for (Role self : imed.roles)
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
-				LProjection fixed = (LProjection) v1.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
-				done1.add(fixed);  // N.B. replaces existing projection
+				LProjection pruned = (LProjection) v1.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
+				done1.add(pruned);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Pruned do-args on projected intermediate: "
-								+ fixed.fullname + ":\n" + fixed);
+								+ pruned.fullname + ":\n" + pruned);
 			}
 		}
 		done1.forEach(x -> this.getContext().setProjection(x));  
