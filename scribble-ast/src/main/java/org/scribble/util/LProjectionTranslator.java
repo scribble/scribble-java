@@ -79,7 +79,7 @@ public class LProjectionTranslator
 	public final Job job;
 	private final AstFactory af;
 	
-	private final RoleNode SELF_NODE;  // translate LChoice/LDo currently make their own self RoleNodes
+	private final RoleNode SELF_NODE;  // translate LChoice/LDo currently make their own self RoleNodes (convenience)
 
 	public LProjectionTranslator(Job job)
 	{
