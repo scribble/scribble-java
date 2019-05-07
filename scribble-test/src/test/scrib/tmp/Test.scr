@@ -97,8 +97,7 @@ module tmp.Test;
 	// refactor doarg pruning, do pruning and extchoicesubj-fixing vistor passes (cf., entry methods into LProjection) -- done: for current uniformity, but TODO: actually should do the opposite
 	// fix self in ast locals, astfactory -- done: "self" rolenode is just a constant instance, only LSelfDecl is a special subclass
 	// wrap base class, more global base classes (maybe in del's) -- done: just wrap base classes -- TODO: further factoring, e.g., LDirectedInteraction getSelf/Peer
-
-	// Job Module projection, projected imports/nonprotodecls -- locals import globals for nonprotos?
+	// Job Module projection, projected imports/nonprotodecls -- locals import globals for nonprotos? (better for "projects" clause?) -- done: basic, but nonprotos "copied" from globals -- TODO: import global?
 
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
 	// fully refactor imed/module projection to Job: old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
@@ -134,7 +133,7 @@ data <java> "..." from "..." as T;
 //*
 global protocol Proto1(role A, role B)
 {
-	T from A to B;
+	1(T) from A to B;
 }
 //*/
 

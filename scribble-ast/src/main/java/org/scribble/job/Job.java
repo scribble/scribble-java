@@ -18,9 +18,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactory;
 import org.scribble.ast.ImportDecl;
@@ -52,6 +54,7 @@ import org.scribble.core.type.session.global.GTypeFactoryImpl;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LTypeFactoryImpl;
 import org.scribble.core.visit.gather.NonProtoDepsGatherer;
+import org.scribble.core.visit.gather.ProtoDepsCollector;
 import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.del.DelFactory;
 import org.scribble.util.LProjectionTranslator;
@@ -165,21 +168,29 @@ public class Job
 		{
 			LProjection proj = projs.get(pfullname);
 
-			LinkedHashSet<MemberName<?>> nonpros = new LinkedHashSet<>();
-			proj.def.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
-					.forEachOrdered(x -> nonpros.add(x));  // setify while preserving order
+			List<ImportDecl<?>> imports = new LinkedList<>();
+			List<ProtoName<Local>> pdeps = proj.def
+					.gather(new ProtoDepsCollector<Local, LSeq>()::visit).distinct()
+					.collect(Collectors.toList());  // Gathering only from this proto decl (no subproto visiting)  // Overlaps with Core::getProjections
+			pdeps.remove(pfullname);
+			for (ProtoName<Local> imp : pdeps)
+			{
+				ModuleNameNode modnn = af.ModuleNameNode(null,
+						IdNode.from(af, imp.getElements()));
+				imports.add(af.ImportModule(null, modnn, null));
+			}
 
-			ModuleNameNode modn = af.ModuleNameNode(null,
-					IdNode.from(af, pfullname.getPrefix().getElements()));
-			ModuleDecl modd = af.ModuleDecl(null, modn);
-			List<ImportDecl<?>> imports = Collections.emptyList();  // FIXME TODO
-			List<NonProtoDecl<?>> nonprods = Collections.emptyList();  // FIXME TODO
-			
-			//GProtoDecl global = this.context.getParsed(fullname);
-			Module m = this.context.getModule(fullname.getPrefix());
-			for (MemberName<?> nonpro : nonpros)
+			LinkedHashSet<MemberName<?>> npdeps = new LinkedHashSet<>();
+			proj.def.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)  // Gathering only from this proto decl (no subproto visiting)
+					.forEachOrdered(x -> npdeps.add(x));  // setify while preserving order
+			List<NonProtoDecl<?>> nonprods = new LinkedList<>();
+			for (MemberName<?> nonpro : npdeps)
 			{
 				Kind kind = nonpro.getKind();
+				ModuleName pref = nonpro.getPrefix();
+				Module m = this.context
+						.getModule(pref.isEmpty() ? fullname.getPrefix() : pref);
+						// CHECKME: currently just "copying" decl from source (global) Module, how about importing the Module instead?  (and re-qualifying names as needed)
 				if (kind.equals(DataKind.KIND))
 				{
 					nonprods.add(m.getTypeDeclChild(((DataName) nonpro).getSimpleName()));
@@ -193,7 +204,10 @@ public class Job
 					throw new RuntimeException("Unhandled: " + kind + "\n\t" + nonpro);
 				}
 			}
-			
+
+			ModuleNameNode modn = af.ModuleNameNode(null,
+					IdNode.from(af, pfullname.getPrefix().getElements()));
+			ModuleDecl modd = af.ModuleDecl(null, modn);
 			List<LProjectionDecl> protos = Arrays.asList(t.translate(proj));
 			Module mod = af.Module(null, modd, imports, nonprods, protos);
 			projmods.put(pfullname, mod);

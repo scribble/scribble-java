@@ -47,7 +47,7 @@ public class ImportModule extends ImportDecl<ModuleKind>
 
 	// Pre: hasAlias -- no alias means no child
 	// Simple name
-	// No child (null) if no alias
+	// No child if no alias (cf. hasAlias) -- cf. addScribChildren, alias == null
 	public ModuleNameNode getAliasNameNodeChild()
 	{
 		return (ModuleNameNode) getChild(ALIAS_CHILD);

@@ -14,7 +14,6 @@
 package org.scribble.core.job;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import org.scribble.core.model.global.SModelFactoryImpl;
 import org.scribble.core.model.visit.local.NonDetPayChecker;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
@@ -41,12 +39,11 @@ import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.visit.STypeVisitorFactory;
 import org.scribble.core.visit.STypeVisitorFactoryImpl;
-import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.gather.ProtoDepsCollector;
 import org.scribble.core.visit.gather.RoleGatherer;
 import org.scribble.core.visit.global.GTypeVisitorFactoryImpl;
-import org.scribble.core.visit.local.LRoleDeclAndDoArgPruner;
 import org.scribble.core.visit.local.LDoPruner;
+import org.scribble.core.visit.local.LRoleDeclAndDoArgPruner;
 import org.scribble.core.visit.local.LTypeVisitorFactoryImpl;
 import org.scribble.core.visit.local.SubprotoExtChoiceSubjFixer;
 import org.scribble.util.ScribException;
@@ -413,8 +410,9 @@ public class Core
 			ProtoName<Local> pfullname = todo.remove(0);
 			LProjection proj = this.context.getProjection(pfullname);
 			res.put(pfullname, proj);
-			proj.def.gather(new ProtoDepsCollector<Local, LSeq>()::visit)
-					.filter(x -> !res.containsKey(x)).forEachOrdered(x -> todo.add(x));
+			proj.def.gather(new ProtoDepsCollector<Local, LSeq>()::visit).distinct()
+					.filter(x -> !res.containsKey(x) && !todo.contains(x))
+					.forEachOrdered(x -> todo.add(x));
 			/*proj.def.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
 					.forEachOrdered(x -> nonprotos.add(x));*/
 		}

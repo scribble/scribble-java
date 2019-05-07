@@ -96,7 +96,7 @@ public interface AstFactory
 
 	ModuleDecl ModuleDecl(Token t, ModuleNameNode fullname);
 	ImportModule ImportModule(Token t, ModuleNameNode modname,
-			ModuleNameNode alias);
+			ModuleNameNode alias);  // alias == null for no alias (child not added)
 
 	DataDecl DataDecl(Token t, IdNode schema, ExtIdNode extName,
 			ExtIdNode extSource, DataNameNode name);

@@ -166,7 +166,7 @@ public class LProjectionTranslator
 		{
 			DataNameNode res = this.af.DataNameNode(null,
 					IdNode.from(af, ((DataName) e).getElements()));
-			return (PayElem<?>) res;
+			return this.af.UnaryPayElem(null, res);
 		}
 		else
 		{
