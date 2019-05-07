@@ -43,7 +43,6 @@ public class SubprotoExtChoiceSubjFixer extends InlinedExtChoiceSubjFixer
 	
 	// To visit top-level proto, reconstruct for fixed subjs -- nested visting (by Inferer) only does passive inference (no reconstruct)
 	// Must enter here, for initial this.protos entry
-	// TODO: refactor into LProjection/LProtocol -- cf. GProtocol
 	public Protocol<Local, LProtoName, LSeq> visitProtocol(
 			Protocol<Local, LProtoName, LSeq> n)
 	{

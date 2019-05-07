@@ -17,7 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.core.lang.local.LProjection;
+import org.scribble.core.lang.global.GProtocol;
+import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
@@ -45,14 +46,15 @@ public class SubprotoSig
 		this.args = Collections.unmodifiableList(args);
 	}
 
-	public SubprotoSig(Protocol<?, ?, ?> n)
+	public SubprotoSig(GProtocol n)
 	{
 		this(n.fullname, n.roles, paramsToArgs(n.params));
 	}
 
-	public SubprotoSig(LProjection n)
+	public SubprotoSig(LProtocol n)
 	{
-		this(n.fullname, n.roles.stream().map(x -> x.equals(n.self) ? Role.SELF : x)  // FIXME: (implicit) self role mess
+		this(n.fullname, n.roles.stream().map(x -> x.equals(n.self) ? Role.SELF : x)
+						// FIXME: (implicit) self role mess
 				.collect(Collectors.toList()), paramsToArgs(n.params));
 	}
 

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
-import org.scribble.core.lang.local.LProjection;
+import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
@@ -65,14 +65,14 @@ public class LDoPruner //extends DoPruner<Local, LSeq>
 		this.unguarded = new HashSet<>(v.unguarded);
 	}
 	
-	// TODO: refactor to LProjection -- cf. GProtocol (e.g., getInlined, etc)
-	public LProjection visitProjection(LProjection n)
+	// Top-level entry, different to the other visit methods
+	public LProtocol visitLProtocol(LProtocol n)
 	{
 		this.self = n.self;
 		this.stack.clear();
 		this.unguarded.clear();
 
-		SubprotoSig sig = new SubprotoSig(n);
+		SubprotoSig sig = new SubprotoSig(n);  // N.B. overloaded constructor, param type important
 		this.stack.push(sig);
 		this.unguarded.add(sig);
 		LSeq def = visitSeq(n.def);

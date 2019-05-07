@@ -37,6 +37,9 @@ import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.core.visit.Substitutor;
 import org.scribble.core.visit.local.EGraphBuilder;
+import org.scribble.core.visit.local.LDoPruner;
+import org.scribble.core.visit.local.LRoleDeclAndDoArgPruner;
+import org.scribble.core.visit.local.SubprotoExtChoiceSubjFixer;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 
@@ -68,11 +71,6 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 	{
 		return new LProtocol(source, mods, fullname, roles, self, params, def);
 	}
-
-	public void checkReachability(Core core) throws ScribException
-	{
-		this.def.visitWith(core.config.vf.local.ReachabilityChecker());
-	}
 	
 	// CHECKME: drop from Protocol (after removing Protocol from SType?)
 	// Pre: stack.peek is the sig for the calling Do (or top-level entry)
@@ -85,8 +83,6 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 
 		Substitutor<Local, LSeq> subs = v.core.config.vf.Substitutor(this.roles, sig.roles,
 				this.params, sig.args);
-		/*LSeq body = (LSeq) this.def.visitWithNoEx(subs).visitWithNoEx(v)
-				.visitWithNoEx(new RecPruner<>());*/
 		LSeq inlined = v.visitSeq(subs.visitSeq(this.def));
 		RecVar rv = v.getInlinedRecVar(sig);
 		LRecursion rec = v.core.config.tf.local.LRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
@@ -97,8 +93,7 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 				.collect(Collectors.toSet());
 		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls
 				.collect(Collectors.toList());*/
-		return //new LProtocol
-				reconstruct(getSource(), this.mods, this.fullname, this.roles,
+		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
 				this.self, this.params, def);  // CHECKME: or null source?
 	}
 	
@@ -110,13 +105,32 @@ public class LProtocol extends Protocol<Local, LProtoName, LSeq>
 				this.self, this.params, unf);
 	}
 
+	public void checkReachability(Core core) throws ScribException
+	{
+		this.def.visitWith(core.config.vf.local.ReachabilityChecker());
+	}
+	
+	// Implicitly means Subproto visitor
+	public LProtocol pruneRoleDeclsAndDoArgs(LRoleDeclAndDoArgPruner v)
+	{
+		return v.visitLProtocol(this);
+	}
+	
+	// Implicitly means Subproto visitor
+	public LProtocol pruneDos(LDoPruner v)
+	{
+		return v.visitLProtocol(this);
+	}
+	
+	public LProtocol fixExtChoiceSubjs(SubprotoExtChoiceSubjFixer v)
+	{
+		return (LProtocol) v.visitProtocol(this);
+	}
+
 	public EGraph toEGraph(Core core)
 	{
-		//EGraphBuilderUtil2 b = job.newEGraphBuilderUtil();
-		////b.init(null);  // FIXME: init param not used
 		if (this.def.isEmpty())  // Empty Seq special case for top-level -- in general, Seq must be non-empty, cf. LSeq::buildGraph entry/exit
 		{
-			//EState s = b.getEntry();
 			EState s = core.config.mf.local.EState(Collections.emptySet());
 			return new EGraph(s, s);  // TODO: refactor constructor inside mf
 		}

@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.local.LProjection;
+import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -52,8 +53,7 @@ public class LRoleDeclAndDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 		return new PreSubprotoRoleCollector(this.core);
 	}
 	
-	// TODO: refactor into LProjection/LProtocol -- cf. GProtocol
-	public LProjection visitProjection(LProjection n)
+	public LProtocol visitLProtocol(LProtocol n)
 	{
 		Set<Role> used = n.def.visitWithNoThrow(newRoleCollector());  // CHECKME: vf?
 		List<Role> rs = n.roles.stream()

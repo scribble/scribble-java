@@ -234,11 +234,11 @@ public class Core
 			for (Role self : imed.roles)
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
-				LProjection pruned = (LProjection) v1.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
-				done1.add(pruned);  // N.B. replaces existing projection
+				LProjection fixed = (LProjection) proj.pruneRoleDeclsAndDoArgs(v1);  // TODO: refactor as LProjection/LProto meth, cf. GProto
+				done1.add(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Pruned do-args on projected intermediate: "
-								+ pruned.fullname + ":\n" + pruned);
+								+ fixed.fullname + ":\n" + fixed);
 			}
 		}
 		done1.forEach(x -> this.getContext().setProjection(x));  
@@ -253,7 +253,7 @@ public class Core
 			for (Role self : imed.roles)
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
-				LProjection fixed = v2.visitProjection(proj);  // TODO: refactor as LProjection/LProto meth, cf. GProto
+				LProjection fixed = (LProjection) proj.pruneDos(v2);  // TODO: refactor as LProjection/LProto meth, cf. GProto
 				done2.add(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Do-pruned projected intermediate: "
@@ -273,7 +273,7 @@ public class Core
 			for (Role self : imed.roles)
 			{
 				LProjection proj = this.context.getProjection(fullname, self);
-				LProjection fixed = (LProjection) v3.visitProtocol(proj);
+				LProjection fixed = (LProjection) proj.fixExtChoiceSubjs(v3);
 				this.context.setProjection(fixed);  // N.B. replaces existing projection
 				verbosePrintPass(
 						"Fixed external choice subjects for projected intermediate: "
