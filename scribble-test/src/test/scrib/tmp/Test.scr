@@ -94,10 +94,10 @@ module tmp.Test;
 	// rename ProtoMod, ProtocolMod -- rename core Protocol? -- done: ast renamed ProtoModNode
 	// explicit self roles/decls (core and ast) -- currently, self decls in protocols (in core) are purely cosmetic in toString -- done: just lselfdecl, basically for printing
 	// fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles -- done in core for now (and needs tidying)
-	// refactor doarg pruning, do pruning and extchoicesubj-fixing vistor passes (cf., entry methods into LProjection) -- done: for current uniformity, but actually should do the opposite
+	// refactor doarg pruning, do pruning and extchoicesubj-fixing vistor passes (cf., entry methods into LProjection) -- done: for current uniformity, but TODO: actually should do the opposite
+	// fix self in ast locals, astfactory -- done: "self" rolenode is just a constant instance, only LSelfDecl is a special subclass
+	// wrap base class, more global base classes (maybe in del's) -- done: just wrap base classes -- TODO: further factoring, e.g., LDirectedInteraction getSelf/Peer
 
-	// fix self in ast locals, astfactory
-	// wrap base class, more global base classes (maybe in del's)
 	// Job Module projection, projected imports/nonprotodecls -- locals import globals for nonprotos?
 
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)

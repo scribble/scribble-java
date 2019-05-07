@@ -163,7 +163,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public SType<Local, LSeq> visitDirectedInteraction(
 			DirectedInteraction<Local, LSeq> n)
 	{
-		Role peer = ((n instanceof LSend) || (n instanceof LReq)) ? n.dst
+		Role peer = ((n instanceof LSend) || (n instanceof LReq)) ? n.dst  // CHECKME: refactor LType getSelf/Peer? cf. ast
 				: ((n instanceof LRecv) || (n instanceof LAcc)) ? n.src
 				: null;
 		if (peer == null)
