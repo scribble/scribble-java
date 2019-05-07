@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
+import org.scribble.del.DelFactory;
 
 public class RoleDeclList extends ParamDeclList<RoleKind>
 {
@@ -51,6 +52,12 @@ public class RoleDeclList extends ParamDeclList<RoleKind>
 	public RoleDeclList dupNode()
 	{
 		return new RoleDeclList(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.RoleDeclList(this);
 	}
 
 	@Override

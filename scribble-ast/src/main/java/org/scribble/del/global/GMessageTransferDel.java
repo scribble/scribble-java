@@ -20,12 +20,12 @@ import org.scribble.ast.global.GMsgTransfer;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Msg;
-import org.scribble.del.MessageTransferDel;
+import org.scribble.del.MsgTransferDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.NameDisambiguator;
 
-public class GMessageTransferDel extends MessageTransferDel
+public class GMessageTransferDel extends MsgTransferDel
 		implements GSimpleSessionNodeDel
 {
 	public GMessageTransferDel()
@@ -51,7 +51,7 @@ public class GMessageTransferDel extends MessageTransferDel
 	
 	@Override
 	public org.scribble.core.type.session.global.GMessageTransfer translate(ScribNode n,
-			GTypeTranslator t) throws ScribException
+			GTypeTranslator t)
 	{
 		GMsgTransfer source = (GMsgTransfer) n;
 		Role src = source.getSourceChild().toName();
@@ -62,7 +62,6 @@ public class GMessageTransferDel extends MessageTransferDel
 		}
 		Role dst = ds.get(0).toName();
 		Msg msg = source.getMessageNodeChild().toMsg();
-		return new org.scribble.core.type.session.global.GMessageTransfer(source,
-				src, msg, dst);
+		return t.tf.global.GMessageTransfer(source, src, msg, dst);
 	}
 }

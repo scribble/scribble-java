@@ -23,6 +23,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.ProtoKind;
+import org.scribble.del.DelFactory;
 import org.scribble.del.ScribDel;
 import org.scribble.util.RuntimeScribException;
 import org.scribble.util.ScribException;
@@ -135,14 +136,17 @@ public abstract class ScribNodeBase extends CommonTree implements ScribNode
 		return this.del;
 	}
 	
+	// Decorate with a fresh del (cf. reconstruct: dupNode, setDel)
+	public abstract void decorateDel(DelFactory df);
+	
 	// Defensive
-	@Override
+	/*@Override
 	public final ScribNodeBase del(ScribDel del)
 	{
 		ScribNodeBase clone = clone();  // Need full clone because parent field prevents immutable construction
 		clone.setDel(del);
 		return clone;
-	}
+	}*/
 	
 	// Non-defensive
 	protected final void setDel(ScribDel del)

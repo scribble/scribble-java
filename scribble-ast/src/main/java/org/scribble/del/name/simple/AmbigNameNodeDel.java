@@ -53,7 +53,7 @@ public class AmbigNameNodeDel extends ScribDelBase
 			if (parent instanceof MsgTransfer<?>)
 			{
 				throw new ScribException(a.getSource(),
-						"Invalid occurrence of data type: " + parent);
+						"Invalid occurrence of data name: " + parent);
 			}
 			List<IdNode> elems = a.getElements().stream()
 					.map(x -> disamb.job.config.af.IdNode(null, x))

@@ -13,10 +13,8 @@
  */
 package org.scribble.visit;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.DelFactory;
 import org.scribble.job.Job;
 import org.scribble.util.ScribException;
@@ -28,10 +26,10 @@ public class DelDecorator extends AstVisitor
 {
 	protected final DelFactory df;
 
-	public DelDecorator(Job job, DelFactory df)
+	protected DelDecorator(Job job)
 	{
 		super(job);
-		this.df = df;
+		this.df = job.config.df;
 	}
 	
 	// AstVisitor enter/leave typically delegates to dels -- DelDecorator is a "proto-visitor", no del to delegate to (yet)
@@ -45,7 +43,13 @@ public class DelDecorator extends AstVisitor
 	
 	protected void decorate(ScribNode n)
 	{
-		try
+		if (n.del() != null)  // Currently, only the simple name nodes "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
+		{
+			return;
+		}
+		((ScribNodeBase) n).decorateDel(this.df);
+
+		/*try
 		{
 			String cname = n.getClass().getName();
 			String mname = cname.substring(cname.lastIndexOf('.')+1, cname.length());
@@ -58,7 +62,7 @@ public class DelDecorator extends AstVisitor
 				| InvocationTargetException e)
 		{
 			throw new RuntimeException(e);
-		}
+		}*/
 	}
 
 	/*protected void decorateChildren(ScribNode n)
@@ -66,3 +70,7 @@ public class DelDecorator extends AstVisitor
 		n.getChildren().stream().forEach(x -> decorate(x));
 	}*/
 }
+
+
+
+

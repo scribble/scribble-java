@@ -18,6 +18,7 @@ import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
 public class DataDecl extends NonProtoDecl<DataKind>
@@ -48,7 +49,13 @@ public class DataDecl extends NonProtoDecl<DataKind>
 	}
 	
 	@Override
-	public boolean isDataTypeDecl()
+	public void decorateDel(DelFactory df)
+	{
+		df.DataDecl(this);
+	}
+	
+	@Override
+	public boolean isDataDecl()
 	{
 		return true;
 	}

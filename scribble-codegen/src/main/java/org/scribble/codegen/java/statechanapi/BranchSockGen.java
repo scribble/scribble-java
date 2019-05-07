@@ -85,7 +85,8 @@ public class BranchSockGen extends ScribSockGen
 			EnumBuilder eb = cb.newMemberEnum(enumClass);
 			eb.addModifiers(JavaBuilder.PUBLIC);
 			eb.addInterfaces(OPENUM_INTERFACE);
-			this.curr.getDetActions().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+			this.curr.getDetActions().forEach(
+					a -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 
 			addDirectBranchCallbackMethod(ROLE_PARAM, MESSAGE_VAR, OP, main, peer);  // Hack: callback apigen while i/o i/f's not supported for connect/accept/etc
 		}
@@ -293,14 +294,14 @@ public class BranchSockGen extends ScribSockGen
 					int i = 0;
 					for (PayElemType<?> pt : a.payload.elems)
 					{
-						DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+						DataDecl dtd = main.getTypeDeclChild((DataName) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
 			}
 			else
 			{
-				SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				SigDecl msd = main.getSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM 
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";
@@ -380,14 +381,14 @@ public class BranchSockGen extends ScribSockGen
 					int i = 0;
 					for (PayElemType<?> pt : a.payload.elems)
 					{
-						DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+						DataDecl dtd = main.getTypeDeclChild((DataName) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
 			}
 			else
 			{
-				SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				SigDecl msd = main.getSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";

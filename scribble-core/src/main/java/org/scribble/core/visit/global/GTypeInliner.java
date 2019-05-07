@@ -17,42 +17,39 @@ import org.scribble.core.job.Core;
 import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
-import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.session.Do;
-import org.scribble.core.type.session.global.GContinue;
-import org.scribble.core.type.session.global.GRecursion;
+import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.core.type.session.global.GType;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.Substitutor;
 
 public class GTypeInliner extends STypeInliner<Global, GSeq>
 {
-	public GTypeInliner(Core core)
+	protected GTypeInliner(Core core)
 	{
 		super(core);
 	}
 
 	@Override
-	public <N extends ProtoName<Global>> GType visitDo(Do<Global, GSeq, N> n)
+	public SType<Global, GSeq> visitDo(Do<Global, GSeq> n)
 	{
-		GProtoName fullname = (GProtoName) n.proto;
+		ProtoName<Global> fullname = n.proto;
 		SubprotoSig sig = new SubprotoSig(fullname, n.roles, n.args);
 		RecVar rv = getInlinedRecVar(sig);
 		if (hasSig(sig))
 		{
-			return new GContinue(n.getSource(), rv);
+			return this.core.config.tf.global.GContinue(n.getSource(), rv);
 		}
 		pushSig(sig);
 		GProtocol g = this.core.getContext().getIntermediate(fullname);
-		Substitutor<Global, GSeq> subs = new Substitutor<>(g.roles, n.roles,
-				g.params, n.args);
+		Substitutor<Global, GSeq> subs = this.core.config.vf.Substitutor(g.roles,
+				n.roles, g.params, n.args);
 		//GSeq inlined = (GSeq) g.def.visitWithNoEx(subs).visitWithNoEx(this);
 		GSeq inlined = visitSeq(subs.visitSeq(g.def));
 				// i.e. returning a GSeq -- rely on parent GSeq to inline
 		popSig();
-		return new GRecursion(null, rv, inlined);
+		return this.core.config.tf.global.GRecursion(null, rv, inlined);
 	}
 }

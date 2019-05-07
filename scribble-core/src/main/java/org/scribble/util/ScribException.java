@@ -22,14 +22,14 @@ public class ScribException extends AntlrSourceException
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ScribException()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	public ScribException(CommonTree blame, String arg0)
 	{
 		super(blame, arg0);
+	}
+
+	public ScribException()
+	{
+		// TODO Auto-generated constructor stub
 	}
 
 	public ScribException(String arg0)

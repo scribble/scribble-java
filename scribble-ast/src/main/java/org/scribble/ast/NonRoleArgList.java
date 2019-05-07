@@ -24,6 +24,7 @@ import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.SigLit;
+import org.scribble.del.DelFactory;
 
 // Cf. NonRoleParamDeclList
 public class NonRoleArgList extends DoArgList<NonRoleArg>
@@ -96,6 +97,12 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	public NonRoleArgList dupNode()
 	{
 		return new NonRoleArgList(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.NonRoleArgList(this);
 	}
 
 	@Override

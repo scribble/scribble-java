@@ -17,9 +17,12 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.DoArgNode;
 import org.scribble.core.type.kind.RoleKind;
 import org.scribble.core.type.name.Role;
+import org.scribble.del.DelFactory;
 
 public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode 
 {
+	//public static final RoleNode SELF = ...;  // No: no token info
+	
 	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
 	public RoleNode(int ttype, Token t)
@@ -37,6 +40,12 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode
 	public RoleNode dupNode()
 	{
 		return new RoleNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.RoleNode(this);
 	}
 	
 	@Override

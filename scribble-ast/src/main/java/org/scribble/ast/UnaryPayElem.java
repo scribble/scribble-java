@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.PayElemKind;
 import org.scribble.core.type.name.PayElemType;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -56,7 +57,7 @@ public class UnaryPayElem<K extends PayElemKind> extends ScribNodeBase
 	}
 
 	// "add", not "set"
-	public void addChildren1(PayElemNameNode<K> name)
+	public void addScribChildren(PayElemNameNode<K> name)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(name);
@@ -68,10 +69,16 @@ public class UnaryPayElem<K extends PayElemKind> extends ScribNodeBase
 		return new UnaryPayElem<>(this);
 	}
 
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.UnaryPayElem(this);
+	}
+
 	public UnaryPayElem<K> reconstruct(PayElemNameNode<K> name)
 	{
 		UnaryPayElem<K> dup = dupNode();
-		dup.addChildren1(name);
+		dup.addScribChildren(name);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

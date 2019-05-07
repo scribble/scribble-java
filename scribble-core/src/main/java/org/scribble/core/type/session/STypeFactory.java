@@ -18,13 +18,23 @@ import java.util.Arrays;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.PackageName;
+import org.scribble.core.type.session.global.GTypeFactory;
+import org.scribble.core.type.session.local.LTypeFactory;
 
 public class STypeFactory
 {
-	public STypeFactory()
-	{
+	public final GTypeFactory global;
+	public final LTypeFactory local;
 
+	public STypeFactory(GTypeFactory global, LTypeFactory local)
+	{
+		this.global = global;
+		this.local = local;
 	}
+	
+	
+	
+	
 
 	/*public static ModuleName parseModuleName(String name)
 	{
@@ -34,6 +44,7 @@ public class STypeFactory
 
 	// Currently used by generated Session API
 	// From fullname
+	@Deprecated
 	public static GProtoName parseGlobalProtocolName(String name)
 	{
 		String[] elems = name.split("\\.");
@@ -51,10 +62,4 @@ public class STypeFactory
 		GProtoName gpn = new GProtoName(membname);
 		return new GProtoName(modname, gpn);
 	}
-	
-	/*public static Scope parseScope(String name)
-	{
-		String[] elems = name.split("\\.");
-		return new Scope(elems);
-	}*/
 }

@@ -22,7 +22,6 @@ import org.scribble.ast.global.GProtoBlock;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.del.ChoiceDel;
-import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public class GChoiceDel extends ChoiceDel implements GCompoundSessionNodeDel
@@ -30,7 +29,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundSessionNodeDel
 	
 	@Override
 	public org.scribble.core.type.session.global.GChoice translate(ScribNode n,
-			GTypeTranslator t) throws ScribException
+			GTypeTranslator t)
 	{
 		GChoice source = (GChoice) n;
 		Role subj = source.getSubjectChild().toName();
@@ -39,7 +38,6 @@ public class GChoiceDel extends ChoiceDel implements GCompoundSessionNodeDel
 		{
 			blocks.add((GSeq) b.visitWith(t));
 		}
-		return new org.scribble.core.type.session.global.GChoice(source, subj,
-				blocks);
+		return t.tf.global.GChoice(source, subj, blocks);
 	}
 }

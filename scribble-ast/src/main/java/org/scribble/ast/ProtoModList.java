@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -34,12 +35,24 @@ public class ProtoModList extends ScribNodeBase
 	{
 		super(node);
 	}
-
-	// Cf., NameNode::getSimpleNameList
-	public List<ProtoMod> getModList()
+	
+	public List<ProtoModNode> getModChildren()
 	{
-		return ((List<?>) getChildren()).stream().map(x -> (ProtoMod) x)
+		return ((List<?>) getChildren()).stream().map(x -> (ProtoModNode) x)
 				.collect(Collectors.toList());
+	}
+	
+	// "add", not "set"
+	public void addScribChildren(List<ProtoModNode> mods)
+	{
+		addChildren(mods);
+	}
+
+  // CHECKME: deprecate? cf. getModChildren
+	// Cf., NameNode::getSimpleNameList
+	public List<ProtoModNode> getModList()
+	{
+		return getModChildren();
 	}
 	
 	public boolean hasAux()
@@ -61,6 +74,12 @@ public class ProtoModList extends ScribNodeBase
 	public ProtoModList dupNode()
 	{
 		return new ProtoModList(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.ProtoModList(this);
 	}
 	
 	@Override

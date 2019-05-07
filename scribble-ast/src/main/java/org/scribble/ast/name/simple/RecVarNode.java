@@ -16,6 +16,7 @@ package org.scribble.ast.name.simple;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.RecVarKind;
 import org.scribble.core.type.name.RecVar;
+import org.scribble.del.DelFactory;
 
 public class RecVarNode extends SimpleNameNode<RecVarKind>
 {
@@ -36,6 +37,12 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	public RecVarNode dupNode()
 	{
 		return new RecVarNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.RecVarNode(this);
 	}
 
 	@Override

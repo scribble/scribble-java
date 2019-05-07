@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
@@ -40,21 +39,32 @@ import org.scribble.core.visit.STypeVisitorNoThrow;
 // (Doing "at the time" during projection requires, e.g., recursion body projections for "inference" on recursion entry, but the body can't really be projected yet without that upfront "inference")
 public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 {
-	private Map<RecVar, Optional<Role>> recs = new HashMap<>();
+	protected final Map<RecVar, Optional<Role>> recs = new HashMap<>();
 			// Record on entering rec states, to give to InlinedEnablerInferer on nested choice states (for unguarded continues)
 			// CHECKME: Optional necessary?  InlinedEnablerInferer may not succeed due to empty/bad contexts, but should that be reflected here?
+
+	protected InlinedExtChoiceSubjFixer()
+	{
+		
+	}
+	
+	// To override for handling subproto
+	// Takes "this" (cf. this.recs), better pattern for extensibility
+	protected InlinedEnablerInferer getInferer(InlinedExtChoiceSubjFixer v)//Map<RecVar, Optional<Role>> recs)
+	{
+		return new InlinedEnablerInferer(this);
+	}
 
 	@Override
 	public Choice<Local, LSeq> visitChoice(Choice<Local, LSeq> n)
 	{
-		InlinedEnablerInferer v = new InlinedEnablerInferer(this.recs);
-		Optional<Role> subj = n.visitWithNoThrow(v);
-		return n.reconstruct(n.getSource(), subj.get(), n.blocks);
+		InlinedEnablerInferer v = getInferer(this);
+		Role subj = n.visitWithNoThrow(v).get();  // WF ensures result
+		return n.reconstruct(n.getSource(), subj, n.blocks);
 	}
 
 	@Override
-	public <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(
-			Do<Local, LSeq, N> n)
+	public SType<Local, LSeq> visitDo(Do<Local, LSeq> n)
 	{
 		throw new RuntimeException("Unsupported for Do: " + n);
 	}
@@ -62,21 +72,22 @@ public class InlinedExtChoiceSubjFixer extends STypeVisitorNoThrow<Local, LSeq>
 	@Override
 	public Recursion<Local, LSeq> visitRecursion(Recursion<Local, LSeq> n)
 	{
-		Optional<Role> r = new InlinedEnablerInferer(this.recs).visitSeq(n.body);  // this.recs necessary?
-		this.recs.put(n.recvar, r);  // null, empty or OK
-		return n.reconstruct(n.getSource(), n.recvar, visitSeq(n.body));
+		InlinedEnablerInferer v = getInferer(this);  // Pattern: Inferer to access (and copy) this.recs directly
+		Optional<Role> res = v.visitSeq(n.body);  // Can be empty or OK
+		this.recs.put(n.recvar, res);
+		LSeq body = visitSeq(n.body);
+		return n.reconstruct(n.getSource(), n.recvar, body);
 	}
 }
 
-class InlinedEnablerInferer
-		extends STypeAggNoThrow<Local, LSeq, Optional<Role>>
+class InlinedEnablerInferer extends STypeAggNoThrow<Local, LSeq, Optional<Role>>
 		// Optional.empty signifies "inference" did not succeed, either an outright bad (should be caught by WF somewhere) or an "empty" context
 {
-	private Map<RecVar, Optional<Role>> recs;
+	private final Map<RecVar, Optional<Role>> recs;
 
-	public InlinedEnablerInferer(Map<RecVar, Optional<Role>> recs)
+	public InlinedEnablerInferer(InlinedExtChoiceSubjFixer v)//Map<RecVar, Optional<Role>> recs)
 	{
-		this.recs = Collections.unmodifiableMap(recs);
+		this.recs = Collections.unmodifiableMap(v.recs);
 	}
 
 	@Override
@@ -117,8 +128,7 @@ class InlinedEnablerInferer
 	}
 
 	@Override
-	public <N extends ProtoName<Local>> Optional<Role> visitDo(
-			Do<Local, LSeq, N> n)
+	public Optional<Role> visitDo(Do<Local, LSeq> n)
 	{
 		throw new RuntimeException("Unsupported for Do: " + n);
 	}

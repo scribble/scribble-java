@@ -39,7 +39,7 @@ import org.scribble.util.ScribException;
 // Label types used to be both RecVar and SubprotocolSigs; now using inlined protocol for FSM building so just RecVar
 public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 {
-	public EState(Set<RecVar> labs)
+	protected EState(Set<RecVar> labs)
 	{
 		super(labs);
 	}
@@ -49,7 +49,7 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 	protected EState cloneNode(ModelFactory mf, Set<RecVar> labs)
 	{
 		//return ef.newEState(this.labs);
-		return mf.newEState(labs);
+		return mf.local.EState(labs);
 	}
 
 	// Fully clones the reachable graph (i.e. the "general" graph -- cf., EGraph, the specific Scribble concept of an endpoint protocol graph)

@@ -50,6 +50,16 @@ public abstract class ProtoDecl<K extends ProtoKind> extends ScribNodeBase
 	public abstract ProtoHeader<K> getHeaderChild();
 	public abstract ProtoDef<K> getDefChild();
 
+	// "add", not "set"
+	public void addScribChildren(ProtoModList mods, ProtoHeader<K> header,
+			ProtoDef<K> def)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(mods);
+		addChild(header);
+		addChild(def);
+	}
+
 	public boolean isAux()
 	{
 		return getModifierListChild().hasAux();
@@ -59,16 +69,6 @@ public abstract class ProtoDecl<K extends ProtoKind> extends ScribNodeBase
 	{
 		return getModifierListChild().hasExplicit();
 	}
-
-	// "add", not "set"
-	public void addChildren1(ProtoModList mods, ProtoHeader<K> header,
-			ProtoDef<K> def)
-	{
-		// Cf. above getters and Scribble.g children order
-		addChild(mods);
-		addChild(header);
-		addChild(def);
-	}
 	
 	public abstract ProtoDecl<K> dupNode();
 
@@ -76,7 +76,7 @@ public abstract class ProtoDecl<K extends ProtoKind> extends ScribNodeBase
 			ProtoDef<K> def)
 	{
 		ProtoDecl<K> dup = dupNode();
-		dup.addChildren1(mods, header, def);
+		dup.addScribChildren(mods, header, def);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

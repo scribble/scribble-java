@@ -23,6 +23,7 @@ import org.scribble.core.type.name.AmbigName;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Msg;
+import org.scribble.del.DelFactory;
 
 // Primitive payload type, MessageSigName or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 public class AmbigNameNode extends SimpleNameNode<AmbigKind>
@@ -45,6 +46,12 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind>
 	public AmbigNameNode dupNode()
 	{
 		return new AmbigNameNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.AmbigNameNode(this);
 	}
 	
 	@Override

@@ -13,7 +13,23 @@
  */
 package org.scribble.del.local;
 
-public class LSendDel extends LMessageTransferDel
+public class LSendDel extends LMsgTransferDel
 {
+	/*// Could make a LMsgTransferDel to factor this out with LReceiveDel
+	@Override
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	{
+		fixer.setChoiceSubject(((LSend) child).src.toName());
+	}
 	
+	@Override
+	public LMsgTransfer leaveExplicitCorrelationCheck(ScribNode parent,
+			ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited)
+			throws ScribException
+	{
+		LMsgTransfer lmt = (LMsgTransfer) visited;
+		checker.pushEnv(checker.popEnv().disableAccept());
+		return lmt;
+	}*/
 }

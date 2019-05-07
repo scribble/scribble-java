@@ -13,10 +13,23 @@
  */
 package org.scribble.del.local;
 
-import org.scribble.del.DisconnectDel;
+import org.scribble.del.ConnectionActionDel;
 
-public class LDisconnectDel extends DisconnectDel
+public class LDisconnectDel extends ConnectionActionDel
 		implements LSimpleSessionNodeDel
 {
-	
+	/*@Override
+	public LDisconnect leaveEGraphBuilding(ScribNode parent, ScribNode child, EGraphBuilder builder, ScribNode visited) throws ScribbleException
+	{
+		LDisconnect ld = (LDisconnect) visited;
+		Role peer = ld.peer.toName();
+		builder.util.addEdge(builder.util.getEntry(), builder.job.ef.newEDisconnect(peer), builder.util.getExit());
+		return (LDisconnect) super.leaveEGraphBuilding(parent, child, builder, ld);
+	}
+
+	@Override
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	{
+		fixer.setChoiceSubject(((LDisconnect) child).src.toName());
+	}*/
 }

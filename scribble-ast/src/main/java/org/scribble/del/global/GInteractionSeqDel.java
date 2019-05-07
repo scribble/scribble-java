@@ -22,7 +22,6 @@ import org.scribble.ast.global.GSessionNode;
 import org.scribble.core.type.session.global.GSeq;
 import org.scribble.core.type.session.global.GType;
 import org.scribble.del.InteractionSeqDel;
-import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public class GInteractionSeqDel extends InteractionSeqDel implements GDel
@@ -30,7 +29,6 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 	
 	@Override
 	public GSeq translate(ScribNode n, GTypeTranslator t)
-			throws ScribException
 	{
 		GInteractionSeq source = (GInteractionSeq) n;
 		List<GType> elems = new LinkedList<>();
@@ -38,6 +36,6 @@ public class GInteractionSeqDel extends InteractionSeqDel implements GDel
 		{
 			elems.add((GType) c.visitWith(t));  // throws ScribbleException
 		}
-		return new GSeq(source, elems);
+		return t.tf.global.GSeq(source, elems);
 	}
 }

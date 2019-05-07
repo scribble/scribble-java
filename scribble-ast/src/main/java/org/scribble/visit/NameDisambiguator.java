@@ -44,7 +44,7 @@ public class NameDisambiguator extends ModuleContextVisitor
 	
 	//private ProtocolDecl<?> root;  // FIXME: factor out  // Now unused (recvar renaming refactored to inlining -- don't want to mangle source AST)
 	
-	public NameDisambiguator(Job job)
+	protected NameDisambiguator(Job job)
 	{
 		super(job);
 	}

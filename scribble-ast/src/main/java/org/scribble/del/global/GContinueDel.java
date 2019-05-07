@@ -17,7 +17,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GContinue;
 import org.scribble.core.type.name.RecVar;
 import org.scribble.del.ContinueDel;
-import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public class GContinueDel extends ContinueDel
@@ -26,10 +25,10 @@ public class GContinueDel extends ContinueDel
 	
 	@Override
 	public org.scribble.core.type.session.global.GContinue translate(ScribNode n,
-			GTypeTranslator t) throws ScribException
+			GTypeTranslator t)
 	{
 		GContinue source = (GContinue) n;
 		RecVar recvar = source.getRecVarChild().toName();
-		return new org.scribble.core.type.session.global.GContinue(source, recvar);
+		return t.tf.global.GContinue(source, recvar);
 	}
 }

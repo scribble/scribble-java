@@ -18,5 +18,31 @@ import org.scribble.del.RecursionDel;
 public class LRecursionDel extends RecursionDel
 		implements LCompoundSessionNodeDel
 {
+	/*@Override
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent,
+			ScribNode child, UnguardedChoiceDoProjectionChecker checker,
+			ScribNode visited) throws ScribException
+	{
+		Recursion<?> rec = (Recursion<?>) visited;
+		UnguardedChoiceDoEnv merged = checker.popEnv()
+				.mergeContext((UnguardedChoiceDoEnv) rec.getBlockChild().del().env());
+		checker.pushEnv(merged);
+		return (Recursion<?>) super.leaveUnguardedChoiceDoProjectionCheck(parent,
+				child, checker, rec);
+	}
 
+	@Override
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	{
+		fixer.pushRec(((LRecursion) child).getRecVarChild.toName());
+	}
+
+	@Override
+	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent,
+			ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
+	{
+		fixer.popRec(((LRecursion) child).getRecVarChild().toName());
+		return visited;
+	}*/
 }

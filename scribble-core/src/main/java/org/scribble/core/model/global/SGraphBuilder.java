@@ -39,7 +39,7 @@ public class SGraphBuilder
 	public SGraphBuilder(Core core)
 	{
 		this.core = core;
-		this.util = this.core.config.mf.newSGraphBuilderUtil();
+		this.util = this.core.config.mf.global.SGraphBuilderUtil();
 	}
 
 	// Do as an initial state rather than config?
@@ -49,14 +49,14 @@ public class SGraphBuilder
 		Map<Role, EFsm> efsms = egraphs.entrySet().stream()
 				.collect(Collectors.toMap(Entry::getKey, e -> e.getValue().toFsm()));
 		SingleBuffers b0 = new SingleBuffers(efsms.keySet(), !explicit);
-		return this.core.config.mf.newSConfig(efsms, b0);
+		return this.core.config.mf.global.SConfig(efsms, b0);
 	}
 	
 	// Factory method: not fully integrated with SGraph constructor because of Job arg (debug printing)
 	// Also checks for non-deterministic payloads
 	// Maybe refactor into an SGraph builder util; cf., EGraphBuilderUtil -- but not Visitor-based building (cf. EndpointGraphBuilder), this isn't an AST algorithm
-	public SGraph build(GProtoName fullname, Map<Role, EGraph> egraphs,
-			boolean explicit) throws ScribException
+	public SGraph build(Map<Role, EGraph> egraphs, boolean explicit,
+			GProtoName fullname) throws ScribException
 	{
 		this.util.reset();
 		
@@ -120,6 +120,7 @@ public class SGraphBuilder
 			}
 		}
 
-		return this.core.config.mf.newSGraph(fullname, this.util.getStates(), init);
+		return this.core.config.mf.global.SGraph(fullname, this.util.getStates(),
+				init);
 	}
 }

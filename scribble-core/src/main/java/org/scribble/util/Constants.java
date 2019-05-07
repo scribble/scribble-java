@@ -14,7 +14,7 @@
 package org.scribble.util;
 
 
-// FIXME: cannot use AntlrConstants from org.scribble.parser due to Maven dependency restrictions
+// FIXME: cannot use Antlr constants from org.scribble.parser (e.g., ScribbleParser) due to Maven dependency restrictions
 public class Constants
 {
 	public static final String SCRIBBLE_FILE_EXTENSION = "scr";  // Used within core to obtain path from ModuleName for imports
@@ -53,4 +53,8 @@ public class Constants
 	public static final String CATCHES_KW = "catches";*/
 	public static final String DO_KW = "do";
 	//public static final String SPAWN_KW = "spawn";
+	
+	public static final String REQUEST_KW = "request";
+	public static final String CLIENTWRAP_KW = "cwrap";
+	public static final String SERVERWRAP_KW = "swrap";
 }

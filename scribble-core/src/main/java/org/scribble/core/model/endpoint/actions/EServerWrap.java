@@ -31,13 +31,13 @@ public class EServerWrap extends EAction
 	@Override
 	public EClientWrap toDual(Role self)
 	{
-		return this.mf.newEClientWrap(self);
+		return this.mf.local.EClientWrap(self);
 	}
 
 	@Override
 	public SServerWrap toGlobal(Role self)
 	{
-		return this.mf.newSServerWrap(self, this.peer);
+		return this.mf.global.SServerWrap(self, this.peer);
 	}
 	
 	@Override

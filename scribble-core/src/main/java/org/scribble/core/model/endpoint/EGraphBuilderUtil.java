@@ -64,7 +64,7 @@ public class EGraphBuilderUtil
 	// - On recursion exit, pop the list into the enacting map for the rec entry state
 	private final Map<EState, Deque<List<EAction>>> collecting = new HashMap<>();
 
-	public EGraphBuilderUtil(ModelFactory mf)
+	protected EGraphBuilderUtil(ModelFactory mf)
 	{
 		super(mf);
 		reset();
@@ -90,7 +90,7 @@ public class EGraphBuilderUtil
 	// For the util to additionally record states -- use this, don't use this.mf.newEState
 	public EState newState(Set<RecVar> labs)
 	{
-		EState s = this.mf.newEState(labs);
+		EState s = this.mf.local.EState(labs);
 		this.states.add(s);
 		return s;
 	}

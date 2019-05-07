@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.DataParamNode;
 import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.name.DataName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
 public class DataParamDecl extends NonRoleParamDecl<DataKind>
@@ -43,6 +44,12 @@ public class DataParamDecl extends NonRoleParamDecl<DataKind>
 	public DataParamDecl dupNode()
 	{
 		return new DataParamDecl(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.DataParamDecl(this);
 	}
 
 	@Override

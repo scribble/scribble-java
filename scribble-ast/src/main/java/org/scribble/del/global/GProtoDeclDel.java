@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtoDecl;
-import org.scribble.core.lang.ProtocolMod;
+import org.scribble.core.lang.ProtoMod;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.NonRoleParamKind;
@@ -27,11 +27,10 @@ import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.del.ProtocolDeclDel;
-import org.scribble.util.ScribException;
+import org.scribble.del.ProtoDeclDel;
 import org.scribble.visit.GTypeTranslator;
 
-public class GProtoDeclDel extends ProtocolDeclDel<Global> implements GDel
+public class GProtoDeclDel extends ProtoDeclDel<Global> implements GDel
 {
 	public GProtoDeclDel()
 	{
@@ -39,13 +38,12 @@ public class GProtoDeclDel extends ProtocolDeclDel<Global> implements GDel
 	}
 	
 	@Override
-	public GProtocol translate(ScribNode n, GTypeTranslator t)
-			throws ScribException
+	public GProtocol translate(ScribNode n, GTypeTranslator t) 
 	{
 		GProtoDecl source = (GProtoDecl) n;
 		Module m = (Module) n.getParent();
-		List<ProtocolMod> mods = source.getModifierListChild().getModList().stream()
-				.map(x -> ProtocolMod.fromAst(x)).collect(Collectors.toList());
+		List<ProtoMod> mods = source.getModifierListChild().getModList().stream()
+				.map(x -> x.toProtoMod()).collect(Collectors.toList());
 		GProtoName fullname = new GProtoName(m.getFullModuleName(),
 				source.getHeaderChild().getDeclName());
 		List<Role> rs = source.getRoles();

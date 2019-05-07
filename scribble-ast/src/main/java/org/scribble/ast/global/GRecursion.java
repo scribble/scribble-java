@@ -16,6 +16,7 @@ package org.scribble.ast.global;
 import org.antlr.runtime.Token;
 import org.scribble.ast.Recursion;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 
 
 public class GRecursion extends Recursion<Global>
@@ -43,5 +44,11 @@ public class GRecursion extends Recursion<Global>
 	public GRecursion dupNode()
 	{
 		return new GRecursion(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GRecursion(this);
 	}
 }

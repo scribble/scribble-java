@@ -45,7 +45,7 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	public abstract List<T> getArgChildren();
 
 	// "add", not "set"
-	public void addChildren1(List<T> args)
+	public void addScribChildren(List<T> args)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChildren(args);
@@ -57,7 +57,7 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	public DoArgList<T> reconstruct(List<T> args)
 	{
 		DoArgList<T> dup = dupNode();
-		dup.addChildren1(args);
+		dup.addScribChildren(args);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

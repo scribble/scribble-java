@@ -18,6 +18,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtoDecl;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtoName;
+import org.scribble.del.DelFactory;
 
 public class GProtoDecl extends ProtoDecl<Global> implements GScribNode
 {
@@ -50,6 +51,12 @@ public class GProtoDecl extends ProtoDecl<Global> implements GScribNode
 	public GProtoDecl dupNode()
 	{
 		return new GProtoDecl(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GProtoDecl(this);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.core.lang.context.ModuleContext;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.name.GProtoName;
+import org.scribble.del.DelFactory;
 import org.scribble.job.JobContext;
 
 public class GDo extends Do<Global> implements GSimpleSessionNode
@@ -42,11 +43,11 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	}
 
 	@Override
-	public GProtoDecl getTargetProtocolDecl(JobContext jcontext,
-			ModuleContext mcontext)
+	public GProtoDecl getTargetProtocolDecl(JobContext jobc,
+			ModuleContext modc)
 	{
-		GProtoName fullname = getTargetProtocolDeclFullName(mcontext);
-		return jcontext.getModule(fullname.getPrefix())
+		GProtoName fullname = getTargetProtoDeclFullName(modc);
+		return jobc.getModule(fullname.getPrefix())
 				.getGProtocolDeclChild(fullname.getSimpleName());
 	}
 	
@@ -55,10 +56,16 @@ public class GDo extends Do<Global> implements GSimpleSessionNode
 	{
 		return new GDo(this);
 	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GDo(this);
+	}
 
 	@Override
-	public GProtoName getTargetProtocolDeclFullName(ModuleContext mcontext)
+	public GProtoName getTargetProtoDeclFullName(ModuleContext modc)
 	{
-		return (GProtoName) super.getTargetProtocolDeclFullName(mcontext);
+		return (GProtoName) super.getTargetProtoDeclFullName(modc);
 	}
 }

@@ -41,7 +41,8 @@ public abstract class ConnectAction<K extends ProtoKind>
 		List<RoleNode> dests = getDestinationChildren();
 		if (dests.size() != 1)
 		{
-			throw new RuntimeException("Shouldn't get in here: " + this);
+			throw new RuntimeException("Shouldn't get in here: " + this);  
+					// CHECKME: don't use common src/dst pattern between global/local?
 		}
 		return dests.get(0);
 	}

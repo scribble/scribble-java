@@ -42,7 +42,7 @@ public abstract class ParamDecl<K extends ParamKind>
 	public abstract String getKeyword();
 
 	// "add", not "set"
-	public void addChildren1(NameNode<K> name)
+	public void addScribChildren(NameNode<K> name)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(name);
@@ -53,7 +53,7 @@ public abstract class ParamDecl<K extends ParamKind>
 	public ParamDecl<K> reconstruct(NameNode<K> name)  // Always a "simple" name (e.g., like Role), but Type/Sig names are not SimpleNames
 	{
 		ParamDecl<K> dup = dupNode();
-		dup.addChildren1(name);
+		dup.addScribChildren(name);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

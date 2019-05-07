@@ -117,7 +117,7 @@ public class AutGraphParser
 		}
 		//EGraphBuilderUtil util = new EGraphBuilderUtil(ef);
 		//EGraphBuilderUtil util = this.job2.newEGraphBuilderUtil2();
-		EGraphBuilderUtil util = this.core.config.mf.newEGraphBuilderUtil();
+		EGraphBuilderUtil util = this.core.config.mf.local.EGraphBuilderUtil();
 		//util.init(null);  // FIXME: arg is deprecated
 		Map<Integer, EState> map = new HashMap<>();
 		map.put(init, util.getEntry());
@@ -131,7 +131,7 @@ public class AutGraphParser
 		{
 			if (i != init && i != term)
 			{
-				map.put(i, util.mf.newEState(Collections.emptySet()));
+				map.put(i, util.mf.local.EState(Collections.emptySet()));
 			}
 		}
 		//for (int i : succs)
@@ -139,7 +139,7 @@ public class AutGraphParser
 		{
 			if (!map.containsKey(i) && i != init && i != term)
 			{
-				map.put(i, util.mf.newEState(Collections.emptySet()));
+				map.put(i, util.mf.local.EState(Collections.emptySet()));
 			}
 		}
 		//for (int i : edges.keySet())
@@ -173,7 +173,7 @@ public class AutGraphParser
 		String peer;
 		String action;
 		String msg;  // Could be an Op or a MessageSigName (affects API generation)
-		String[] pay = null;
+		String[] paySplit = null;
 		
 		/*int i = a.indexOf("!");
 		i = (i == -1) ? a.indexOf("?") : i;
@@ -240,47 +240,60 @@ public class AutGraphParser
 		String p = a.substring(k+1, a.length()-1);
 		if (!p.isEmpty())
 		{
-			pay = p.split(",");
+			paySplit = p.split(",");
 		}
 		switch (action)
 		{
 			case "!":
 			{
-				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newESend(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
+				Payload pay = (paySplit != null)
+						? new Payload(Arrays.asList(paySplit).stream()
+								.map((pe) -> new DataName(pe)).collect(Collectors.toList()))
+						: Payload.EMPTY_PAYLOAD;
+				return ef.local.ESend(new Role(peer), getMessageIdHack(msg), pay);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
 			}
 			case "?":
 			{
-				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newERecv(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
+				Payload pay = (paySplit != null)
+						? new Payload(Arrays.asList(paySplit).stream()
+								.map((pe) -> new DataName(pe)).collect(Collectors.toList()))
+						: Payload.EMPTY_PAYLOAD;
+				return ef.local.ERecv(new Role(peer), getMessageIdHack(msg), pay);  // FIXME: how about MessageSigNames?)
 			}
 			case "!!":
 			{
 				//return new Connect(new Role(peer));
-				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newEReq(new Role(peer), getMessageIdHack(msg), payload);
+				Payload pay = (paySplit != null)
+						? new Payload(Arrays.asList(paySplit).stream()
+								.map((pe) -> new DataName(pe)).collect(Collectors.toList()))
+						: Payload.EMPTY_PAYLOAD;
+				return ef.local.EReq(new Role(peer), getMessageIdHack(msg), pay);
 			}
 			case "??":
 			{
 				//return new Accept(new Role(peer));
-				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataName(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return ef.newEAcc(new Role(peer), getMessageIdHack(msg), payload);
+				Payload pay = (paySplit != null)
+						? new Payload(Arrays.asList(paySplit).stream()
+								.map((pe) -> new DataName(pe)).collect(Collectors.toList()))
+						: Payload.EMPTY_PAYLOAD;
+				return ef.local.EAcc(new Role(peer), getMessageIdHack(msg), pay);
 			}
 			case "(!!)":
 			{				
-				return ef.newEClientWrap(new Role(peer));
+				return ef.local.EClientWrap(new Role(peer));
 			}
 			case "(??)":
 			{				
-				return ef.newEServerWrap(new Role(peer));
+				return ef.local.EServerWrap(new Role(peer));
 			}
 			case "-/-":
 			{				
-				return ef.newEDisconnect(new Role(peer));
+				return ef.local.EDisconnect(new Role(peer));
 			}
 			default:
 			{
-				throw new RuntimeException("[TODO] aut parsing not supported for: " + msg);
+				throw new RuntimeException(
+						"[TODO] aut parsing not supported for: " + msg);
 			}
 		}
 	}

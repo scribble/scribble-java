@@ -84,7 +84,7 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			//addReceiveMessageSigNameParams(mb, a, msd);*/
 			mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
 						+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.obj) + ");");
@@ -168,7 +168,7 @@ public class ReceiveSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addReceiveMessageSigNameParams(mb, msd, true);
 		}
 	}
@@ -186,7 +186,7 @@ public class ReceiveSockGen extends ScribSockGen
 				{
 					throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
-				DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+				DataDecl dtd = main.getTypeDeclChild((DataName) pt);  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
 				mb.addParameters(buffSuper + dtd.getExtName() + "> " + RECEIVE_ARG_PREFIX + i++);
 			}
@@ -200,7 +200,7 @@ public class ReceiveSockGen extends ScribSockGen
 			int i = 1;
 			for (PayElemType<?> pt : a.payload.elems)  // Could factor out this loop (arg names) with addReceiveOpParams (as for send)
 			{
-				DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+				DataDecl dtd = main.getTypeDeclChild((DataName) pt);  // TODO: if not DataType
 				mb.addBodyLine(RECEIVE_ARG_PREFIX + i + "." + BUFF_VAL_FIELD + " = (" + dtd.getExtName() + ") "
 							+ RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + (i++ - 1) +"];");
 			}

@@ -13,9 +13,9 @@
  */
 package org.scribble.del.global;
 
-import org.scribble.del.ProtocolDefDel;
+import org.scribble.del.ProtoDefDel;
 
-public class GProtoDefDel extends ProtocolDefDel
+public class GProtoDefDel extends ProtoDefDel
 {
 	public GProtoDefDel()
 	{

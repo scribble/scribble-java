@@ -40,7 +40,7 @@ public abstract class ParamDeclList<K extends ParamKind> extends ScribNodeBase
 	public abstract List<? extends ParamDecl<K>> getDeclChildren();
 
 	// "add", not "set"
-	public void addChildren1(List<? extends ParamDecl<K>> ds)
+	public void addScribChildren(List<? extends ParamDecl<? extends K>> ds)
 	{
 		// Cf. above getters and Scribble.g children order
 		super.addChildren(ds);
@@ -53,7 +53,7 @@ public abstract class ParamDeclList<K extends ParamKind> extends ScribNodeBase
 			List<? extends ParamDecl<K>> ds)
 	{
 		ParamDeclList<K> dup = dupNode();
-		dup.addChildren1(ds);
+		dup.addScribChildren(ds);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

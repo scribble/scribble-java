@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.scribble.core.lang.SubprotoSig;
 import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.session.Arg;
 
@@ -40,12 +41,12 @@ public class Substitutions
 		if (rold.size() != rnew.size())
 		{
 			throw new RuntimeException(
-					"Role lists don't match: " + rold + " ; " + rnew);
+					"Role list arity mismatch: " + rold + " ; " + rnew);
 		}
 		if (aold.size() != anew.size())
 		{
 			throw new RuntimeException(
-					"Arg lists don't match: " + aold + " ; " + anew);
+					"Arg list arity mismatch: " + aold + " ; " + anew);
 		}
 		Iterator<Role> i = rnew.iterator();
 		rold.forEach(x -> this.rsubs.put(x, i.next()));
@@ -60,13 +61,39 @@ public class Substitutions
 	
 	public Role subsRole(Role old)
 	{
+		return subsRole(old, false);
+	}
+
+	public Role subsRole(Role old, boolean passive)
+	{
+		if (!this.rsubs.containsKey(old))
+		{
+			if (!passive)
+			{
+				throw new RuntimeException("Unknown role: " + old);
+			}
+			return old;
+		}
 		return this.rsubs.get(old);
 	}
 	
+	public Arg<? extends NonRoleParamKind> subsArg(MemberName<?> old)
+	{
+		return subsArg(old, false);
+	}
+	
 	public //<K extends NonRoleParamKind>
-			Arg<? extends NonRoleParamKind> subsArg(MemberName<?> old)  
+			Arg<? extends NonRoleParamKind> subsArg(MemberName<?> old, boolean passive)
 			// ? param more convenient for accepting DataType/MessageSigName params
 	{
+		if (!this.asubs.containsKey(old))
+		{
+			if (!passive)
+			{
+				throw new RuntimeException("Unknown param/arg: " + old);
+			}
+			return SubprotoSig.paramToArg(old);
+		}
 		return this.asubs.get(old);
 	}
 	

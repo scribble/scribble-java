@@ -49,6 +49,24 @@ import org.scribble.ast.global.GProtoDef;
 import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
+import org.scribble.ast.local.LAcc;
+import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LClientWrap;
+import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDisconnect;
+import org.scribble.ast.local.LDo;
+import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
+import org.scribble.ast.local.LProtoBlock;
+import org.scribble.ast.local.LProtoDecl;
+import org.scribble.ast.local.LProtoDef;
+import org.scribble.ast.local.LProtoHeader;
+import org.scribble.ast.local.LRecursion;
+import org.scribble.ast.local.LRecv;
+import org.scribble.ast.local.LReq;
+import org.scribble.ast.local.LSelfDecl;
+import org.scribble.ast.local.LSend;
+import org.scribble.ast.local.LServerWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
@@ -75,6 +93,22 @@ import org.scribble.del.global.GProtoDeclDel;
 import org.scribble.del.global.GProtoDefDel;
 import org.scribble.del.global.GRecursionDel;
 import org.scribble.del.global.GWrapDel;
+import org.scribble.del.local.LAccDel;
+import org.scribble.del.local.LChoiceDel;
+import org.scribble.del.local.LClientWrapDel;
+import org.scribble.del.local.LContinueDel;
+import org.scribble.del.local.LDisconnectDel;
+import org.scribble.del.local.LDoDel;
+import org.scribble.del.local.LInteractionSeqDel;
+import org.scribble.del.local.LProjectionDeclDel;
+import org.scribble.del.local.LProtoBlockDel;
+import org.scribble.del.local.LProtoDeclDel;
+import org.scribble.del.local.LProtoDefDel;
+import org.scribble.del.local.LRecursionDel;
+import org.scribble.del.local.LRecvDel;
+import org.scribble.del.local.LReqDel;
+import org.scribble.del.local.LSendDel;
+import org.scribble.del.local.LServerWrapDel;
 import org.scribble.del.name.qualified.DataNameNodeDel;
 import org.scribble.del.name.qualified.SigNameNodeDel;
 import org.scribble.del.name.simple.AmbigNameNodeDel;
@@ -83,8 +117,6 @@ import org.scribble.del.name.simple.RecVarNodeDel;
 import org.scribble.del.name.simple.RoleNodeDel;
 
 
-//CHECKME: refactor decoration methods into AST interface, to ensure they are implemented and called?
-//CHECKME: to what extent are del's still needed?
 public class DelFactoryImpl implements DelFactory
 {
 	public DelFactoryImpl()
@@ -324,6 +356,12 @@ public class DelFactoryImpl implements DelFactory
 	}*/
 
 	@Override
+	public void GMsgTransfer(GMsgTransfer n)
+	{
+		setDel(n, new GMessageTransferDel());
+	}
+
+	@Override
 	public void GConnect(GConnect n)
 	{
 		setDel(n, new GConnectDel());
@@ -333,12 +371,6 @@ public class DelFactoryImpl implements DelFactory
 	public void GDisconnect(GDisconnect n)
 	{
 		setDel(n, new GDisconnectDel());
-	}
-
-	@Override
-	public void GMsgTransfer(GMsgTransfer n)
-	{
-		setDel(n, new GMessageTransferDel());
 	}
 
 	@Override
@@ -394,202 +426,118 @@ public class DelFactoryImpl implements DelFactory
 	{
 		setDel(n, new GRecursionDel());
 	}
-}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@Override
+	public void LProtoDecl(LProtoDecl n)
+	{
+		setDel(n, new LProtoDeclDel());
+	}
+
+	@Override
+	public void LProjectionDecl(LProjectionDecl n)
+	{
+		setDel(n, new LProjectionDeclDel());
+	}
+
+	@Override
+	public void LProtoHeader(LProtoHeader n)
+	{
+		setDel(n, createDefaultDel());
+	}
+
+	@Override
+	public void LSelfDecl(LSelfDecl n)
+	{
+		setDel(n, new RoleDeclDel());
+	}
+
+	@Override
+	public void LProtoDef(LProtoDef n)
+	{
+		setDel(n, new LProtoDefDel());
+	}
+
+	@Override
+	public void LProtoBlock(LProtoBlock n)
+	{
+		setDel(n, new LProtoBlockDel());
+	}
+
+	@Override
+	public void LInteractionSeq(LInteractionSeq n)
+	{
+		setDel(n, new LInteractionSeqDel());
+	}
+
 	/*@Override
-	public DummyProjectionRoleNode DummyProjectionRoleNode()
+	public void LDelegElem(LDelegElem n)
 	{
-		DummyProjectionRoleNode dprn = new DummyProjectionRoleNode();
-		dprn = (DummyProjectionRoleNode) dprn.del(createDefaultDelegate());
-		return dprn;
+		setDel(n, new LDelegElemDel());
 	}*/
 
-	/*@Override  // Called from LProtocolDecl::clone, but currently never used  -- local proto decls only projected, not parsed
-	public LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> mods, LProtocolHeader header, LProtocolDef def)
+	@Override
+	public void LSend(LSend n)
 	{
-		LProtocolDecl lpd = new LProtocolDecl(source, mods, header, def);
-		lpd = setDel(lpd, new LProtocolDeclDel());
-		return lpd;
+		setDel(n, new LSendDel());
 	}
 
 	@Override
-	public LProjectionDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> mods, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
+	public void LRecv(LRecv n)
 	{
-		LProjectionDecl lpd = new LProjectionDecl(source, mods, header, def);
-		lpd = ScribNodeBase.setDel(lpd, new LProjectionDeclDel(fullname, self));
-		return lpd;
+		setDel(n, new LRecvDel());
 	}
 
 	@Override
-	public LProtocolHeader LProtocolHeader(CommonTree source, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
+	public void LAcc(LAcc n)
 	{
-		LProtocolHeader lph = new LProtocolHeader(source, name, roledecls, paramdecls);
-		lph = setDel(lph, createDefaultDelegate());
-		return lph;
+		setDel(n, new LAccDel());
 	}
 
 	@Override
-	public SelfRoleDecl SelfRoleDecl(CommonTree source, RoleNode namenode)
+	public void LReq(LReq n)
 	{
-		SelfRoleDecl rd = new SelfRoleDecl(source, namenode);
-		rd = setDel(rd, new RoleDeclDel());
-		return rd;
+		setDel(n, new LReqDel());
 	}
 
 	@Override
-	public LProtocolDef LProtocolDef(CommonTree source, LProtocolBlock block)
+	public void LDisconnect(LDisconnect n)
 	{
-		LProtocolDef lpd = new LProtocolDef(source, block);
-		lpd = setDel(lpd, new LProtocolDefDel());
-		return lpd;
+		setDel(n, new LDisconnectDel());
 	}
 
 	@Override
-	public LProtocolBlock LProtocolBlock(CommonTree source, LInteractionSeq seq)
+	public void LClientWrap(LClientWrap n)
 	{
-		LProtocolBlock lpb = new LProtocolBlock(source, seq);
-		lpb = setDel(lpb, new LProtocolBlockDel());
-		return lpb;
+		setDel(n, new LClientWrapDel());
 	}
 
 	@Override
-	public LInteractionSeq LInteractionSeq(CommonTree source, List<LInteractionNode> actions)
+	public void LServerWrap(LServerWrap n)
 	{
-		LInteractionSeq lis = new LInteractionSeq(source, actions);
-		lis = setDel(lis, new LInteractionSeqDel());
-		return lis;
+		setDel(n, new LServerWrapDel());
 	}
 
 	@Override
-	public LSend LSend(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public void LContinue(LContinue n)
 	{
-		LSend ls = new LSend(source, src, msg, dests);
-		ls = setDel(ls, new LSendDel());
-		return ls;
+		setDel(n, new LContinueDel());
 	}
 
 	@Override
-	public LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public void LDo(LDo n)
 	{
-		LReceive ls = new LReceive(source, src, msg, dests);
-		ls = setDel(ls, new LReceiveDel());
-		return ls;
-	}
-	
-	@Override
-	public LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
-	//public LConnect LConnect(RoleNode src, RoleNode dest)
-	{
-		LRequest lc = new LRequest(source, src, msg, dest);
-		//LConnect lc = new LConnect(src, dest);
-		lc = setDel(lc, new LRequestDel());
-		return lc;
+		setDel(n, new LDoDel());
 	}
 
 	@Override
-	public LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest)
-	//public LAccept LAccept(RoleNode src, RoleNode dest)
+	public void LChoice(LChoice n)
 	{
-		LAccept la = new LAccept(source, src, msg, dest);
-		//LAccept la = new LAccept(src, dest);
-		la = setDel(la, new LAcceptDel());
-		return la;
+		setDel(n, new LChoiceDel());
 	}
 
 	@Override
-	public LDisconnect LDisconnect(CommonTree source, RoleNode self, RoleNode peer)
+	public void LRecursion(LRecursion n)
 	{
-		LDisconnect lc = new LDisconnect(source, UnitMessageSigNode(), self, peer);
-		lc = setDel(lc, new LDisconnectDel());
-		return lc;
+		setDel(n, new LRecursionDel());
 	}
-
-	@Override
-	public LWrapClient LWrapClient(CommonTree source, RoleNode self, RoleNode peer)
-	{
-		LWrapClient lwc = new LWrapClient(source, UnitMessageSigNode(), self, peer);
-		lwc = setDel(lwc, new LWrapClientDel());
-		return lwc;
-	}
-
-	@Override
-	public LWrapServer LWrapServer(CommonTree source, RoleNode self, RoleNode peer)
-	{
-		LWrapServer lws = new LWrapServer(source, UnitMessageSigNode(), self, peer);
-		lws = setDel(lws, new LWrapServerDel());
-		return lws;
-	}
-
-	@Override
-	public LChoice LChoice(CommonTree source, RoleNode subj, List<LProtocolBlock> blocks)
-	{
-		LChoice lc = new LChoice(source, subj, blocks);
-		lc = setDel(lc, new LChoiceDel());
-		return lc;
-	}
-
-	@Override
-	public LRecursion LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block)
-	{
-		LRecursion lr = new LRecursion(source, recvar, block);
-		lr = setDel(lr, new LRecursionDel());
-		return lr;
-	}
-
-	@Override
-	public LContinue LContinue(CommonTree source, RecVarNode recvar)
-	{
-		LContinue lc = new LContinue(source, recvar);
-		lc = setDel(lc, new LContinueDel());
-		return lc;
-	}
-
-	@Override
-	public LDo LDo(CommonTree source, RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)
-	{
-		LDo ld = new LDo(source, roleinstans, arginstans, proto);
-		ld = setDel(ld, new LDoDel());
-		return ld;
-	}*/
+}

@@ -22,29 +22,32 @@ import org.scribble.core.type.kind.NonRoleParamKind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
-import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Seq;
 import org.scribble.core.visit.STypeInliner;
 import org.scribble.core.visit.STypeUnfolder;
 import org.scribble.util.Constants;
 
-public abstract class Protocol<K extends ProtoKind, N extends ProtoName<K>, B extends Seq<K, B>>
-		implements SNode
+public abstract class Protocol
+		<K extends ProtoKind, N extends ProtoName<K>, B extends Seq<K, B>>
+		implements SNode<K>
 {
 	private final CommonTree source;  // CHECKME: factor out with SType(Base) ?
 	
-	public final List<ProtocolMod> mods;
+	public final List<ProtoMod> mods;
 	public final N fullname;
 	public final List<Role> roles;  // Ordered role params; pre: size >= 2
-	public final List<MemberName<? extends NonRoleParamKind>> params;
+	public final List<MemberName<? extends NonRoleParamKind>> params;  
+			// N.B. there is no Data/SigParamName  // CHECKME: always simple names?
 			// NonRoleParamKind, not NonRoleArgKind, because latter includes AmbigKind due to parsing requirements
 			// CHECKME: make a ParamName? or at least SimpleName?
 	public final B def;
 
-	public Protocol(CommonTree source, List<ProtocolMod> mods, N fullname,
-			List<Role> roles, List<MemberName<? extends NonRoleParamKind>> params, B def)
+	public Protocol(CommonTree source, List<ProtoMod> mods, N fullname,
+			List<Role> roles, List<MemberName<? extends NonRoleParamKind>> params,
+			B def)
 	{
 		this.source = source;  // CHECKME: factor out with SType(Base) ?
 		this.mods = Collections.unmodifiableList(mods);
@@ -54,22 +57,21 @@ public abstract class Protocol<K extends ProtoKind, N extends ProtoName<K>, B ex
 		this.def = def;
 	}
 	
-	/*public abstract Protocol<K, N, B> reconstruct(ProtocolDecl<K> source,
-			List<ProtocolMod> mods, N fullname, List<Role> roles,
-			List<MemberName<? extends NonRoleParamKind>> params, B def);*/
+	// N.B. LProtocol has an additional "self" field, reconstruct pattern not perfect
+	public abstract Protocol<K, N, B> reconstruct(CommonTree source,
+			List<ProtoMod> mods, N fullname, List<Role> roles,
+			List<MemberName<? extends NonRoleParamKind>> params, B def);
 	
 	public boolean isAux()
 	{
-		return this.mods.contains(ProtocolMod.AUX);
+		return this.mods.contains(ProtoMod.AUX);
 	}
 
 	public boolean isExplicit()
 	{
-		return this.mods.contains(ProtocolMod.EXPLICIT);
+		return this.mods.contains(ProtoMod.EXPLICIT);
 	}
 
-	//public abstract Protocol<K, N, B> getInlined(STypeInliner v);
-	//public abstract Protocol<K, N, B> unfoldAllOnce(STypeUnfolder<K> u);
 	public abstract Protocol<K, N, B> getInlined(STypeInliner<K, B> v);
 	public abstract Protocol<K, N, B> unfoldAllOnce(STypeUnfolder<K, B> v);
 

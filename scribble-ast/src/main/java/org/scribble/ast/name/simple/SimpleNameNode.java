@@ -13,9 +13,8 @@
  */
 package org.scribble.ast.name.simple;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.NameNode;
@@ -47,6 +46,6 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 	@Override
 	public List<String> getElements()
 	{
-		return Stream.of(getText()).collect(Collectors.toList());
+		return Arrays.asList(getText());
 	}
 }

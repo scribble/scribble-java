@@ -14,8 +14,9 @@
 package org.scribble.core.lang.local;
 
 import org.scribble.core.lang.SNode;
+import org.scribble.core.type.kind.Local;
 
-public interface LNode extends SNode
+public interface LNode extends SNode<Local>
 {
 	
 }

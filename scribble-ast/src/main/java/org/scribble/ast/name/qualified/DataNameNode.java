@@ -18,6 +18,7 @@ import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.session.Arg;
+import org.scribble.del.DelFactory;
 
 //public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
 public class DataNameNode extends MemberNameNode<DataKind>
@@ -39,6 +40,12 @@ public class DataNameNode extends MemberNameNode<DataKind>
 	public DataNameNode dupNode()
 	{
 		return new DataNameNode(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.DataNameNode(this);
 	}
 
 	@Override

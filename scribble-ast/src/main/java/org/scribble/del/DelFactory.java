@@ -47,6 +47,24 @@ import org.scribble.ast.global.GProtoDef;
 import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GWrap;
+import org.scribble.ast.local.LAcc;
+import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LClientWrap;
+import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDisconnect;
+import org.scribble.ast.local.LDo;
+import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
+import org.scribble.ast.local.LProtoBlock;
+import org.scribble.ast.local.LProtoDecl;
+import org.scribble.ast.local.LProtoDef;
+import org.scribble.ast.local.LProtoHeader;
+import org.scribble.ast.local.LRecursion;
+import org.scribble.ast.local.LRecv;
+import org.scribble.ast.local.LReq;
+import org.scribble.ast.local.LSelfDecl;
+import org.scribble.ast.local.LSend;
+import org.scribble.ast.local.LServerWrap;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
 import org.scribble.ast.name.qualified.LProtoNameNode;
@@ -62,14 +80,15 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.SigParamNode;
 
 
+// A little bit more than a "plain" factory, methods do the decoration via ScribNodeBase.setDel
 // Use after ANTLR parsing (specifically, ScribTreeAdaptor) -- not needed for AstFactory constructions
 // (Perhaps could integrate with ScribTreeAdaptor, but easier to do after -- AST construction technically may further create/dup nodes during the ongoing pass)
 // A dec method for each AST class -- method name must be the same as target class name
 // Implementations (DelDecoratorImpl) in scribble-parser, can depend on parser implementation
-// E.g., DelDecoratorImpl: each method named after the class name -- currently dispatched by reflection
+// E.g., DelDecoratorImpl: each method named after the class name
 public interface DelFactory
 {
-	// Currently a bit more than plain factory, calls setDel
+	// Names
 	void IdNode(IdNode n);
 	void ExtIdNode(ExtIdNode n);
 
@@ -86,6 +105,8 @@ public interface DelFactory
 	void ModuleNameNode(ModuleNameNode n);
 	void SigNameNode(SigNameNode n);
 	
+
+	// General and globals
 	void Module(Module m);
 	void ModuleDecl(ModuleDecl n);
 	void ImportModule(ImportModule n);
@@ -113,16 +134,15 @@ public interface DelFactory
 	void PayElemList(PayElemList n);
 	void UnaryPayElem(UnaryPayElem<?> n);
 	void GDelegPayElem(GDelegPayElem n);
-	//void LDelegationElem(CommonTree source, LProtocolNameNode name);
 
+	void GMsgTransfer(GMsgTransfer n);
 	void GConnect(GConnect n);
 	void GDisconnect(GDisconnect n);
-	void GMsgTransfer(GMsgTransfer n);
 	void GWrap(GWrap n);
 
 	void GContinue(GContinue n);
 	void GDo(GDo n);
-	
+
 	void RoleArgList(RoleArgList n);
 	void RoleArg(RoleArg r);
 	void NonRoleArgList(NonRoleArgList n);
@@ -130,48 +150,35 @@ public interface DelFactory
 
 	void GChoice(GChoice n);
 	void GRecursion(GRecursion n);
+
+	
+	// Locals
+	void LProtoDecl(LProtoDecl n);
+	void LProjectionDecl(LProjectionDecl n);
+
+	void LProtoHeader(LProtoHeader n);
+	
+	void LSelfDecl(LSelfDecl n);
+
+	void LProtoDef(LProtoDef n);
+	void LProtoBlock(LProtoBlock n);
+	void LInteractionSeq(LInteractionSeq n);
+
+	//void LDelegElem(LDelegElem n);
+
+	void LSend(LSend n);
+	void LRecv(LRecv n);
+	void LAcc(LAcc n);
+	void LReq(LReq n);
+	void LDisconnect(LDisconnect n);
+	void LClientWrap(LClientWrap n);
+	void LServerWrap(LServerWrap n);
+
+	void LContinue(LContinue n);
+	void LDo(LDo n);
+
+	void LChoice(LChoice n);
+	void LRecursion(LRecursion n);
 }
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*DummyProjectionRoleNode DummyProjectionRoleNode();
-
-	LProtocolDecl LProtocolDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, LProtocolHeader header, LProtocolDef def);  // Not currently used -- local protos not parsed, only projected
-	LProjectionDecl LProjectionDecl(CommonTree source, List<ProtocolDecl.Modifiers> modifiers, GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def);  // del extends that of LProtocolDecl 
-
-	LProtocolHeader LProtocolHeader(CommonTree source, LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
-	SelfRoleDecl SelfRoleDecl(CommonTree source, RoleNode namenode);
-	LProtocolDef LProtocolDef(CommonTree source, LProtocolBlock block);
-	LProtocolBlock LProtocolBlock(CommonTree source, LInteractionSeq seq);
-	LInteractionSeq LInteractionSeq(CommonTree source, List<LInteractionNode> actions);
-
-	LSend LSend(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LReceive LReceive(CommonTree source, RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LRequest LRequest(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
-	LAccept LAccept(CommonTree source, RoleNode src, MessageNode msg, RoleNode dest);
-	LDisconnect LDisconnect(CommonTree source, RoleNode self, RoleNode peer);
-	LWrapClient LWrapClient(CommonTree source, RoleNode self, RoleNode peer);
-	LWrapServer LWrapServer(CommonTree source, RoleNode self, RoleNode peer);
-	LChoice LChoice(CommonTree source, RoleNode subj, List<LProtocolBlock> blocks);
-	LRecursion LRecursion(CommonTree source, RecVarNode recvar, LProtocolBlock block);
-	LContinue LContinue(CommonTree source, RecVarNode recvar);
-	LDo LDo(CommonTree source, RoleArgList roles, NonRoleArgList args, LProtocolNameNode proto);*/

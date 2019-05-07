@@ -24,7 +24,7 @@ public class LAcc extends ConnectAction<Local, LSeq> implements LType
 {
 
 	// this.dst == Role.SELF
-	public LAcc(CommonTree source,
+	protected LAcc(CommonTree source,
 			Role src, Msg msg)
 	{
 		super(source, msg, src, Role.SELF);

@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.PackageName;
+import org.scribble.del.DelFactory;
 
 public class ModuleNameNode extends QualNameNode<ModuleKind>
 {
@@ -36,6 +37,12 @@ public class ModuleNameNode extends QualNameNode<ModuleKind>
 	public ModuleNameNode dupNode()
 	{
 		return new ModuleNameNode(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.ModuleNameNode(this);
 	}
 	
 	@Override

@@ -23,17 +23,17 @@ import org.scribble.core.visit.STypeAggNoThrow;
 import org.scribble.util.ScribException;
 
 
-// B needed(?) to factor up several methods from G/L compounds to bases, e.g., getInlined and unfoldAllOnce
-// Generic works to "specialise" G/L subclasses (and works with immutable pattern) -- cf. not supported by contravariant method parameter subtyping for getters/setters
+// B used (needed?) to factor up several methods from G/L compounds to bases, e.g., getInlined and unfoldAllOnce
+// Generic param works to "specialise" G/L subclasses (and works with immutable pattern) -- cf. not supported by contravariant method parameter subtyping for getters/setters
 // N.B. Taking G/LSeq as the B param "limits" the "cast-freeness" of this hierarchy at this point -- i.e., potential G/LSeq subclasses would be beyond that point
 // However, the framework is mainly intended to be extended "horizontally" w.r.t. node types (additional types), and "vertically" (subclasses) for behaviour only via Visitors
-// In case of "vertical" extension of node types (e.g., additional node fields), still considering extension of Seq necessary less often
+// In case of "vertical" extension of node types (e.g., additional node fields), still consider that extension of Seq is less often necessary 
 public interface SType<K extends ProtoKind, B extends Seq<K, B>>
-		extends SNode
+		extends SNode<K>
 {
-	// N.B. visitWith should be considered a "top-level" entry point only
-	// i.e., do not assume visitWith is called (or not) again during the recursive traversal
-	// (Typically, visitWith is called enroute to each visitNode, except for Seq, which is "entered directly" via visitSeq due to a generic typing issue)
+	// N.B. visitWith should be considered a "top-level" entry point only, i.e., do not assume visitWith is called (or not) again during the recursive traversal
+	// (visitWith may be called enroute to each visitNode, except for Seq, which is "entered directly" via visitSeq due to its generic typing)
+	// (However, visitWith is used by Seq to visit its elems -- main point of visitWith is to be agnostic to node type)
 	<T> T visitWith(STypeAgg<K, B, T> v) throws ScribException;
 	<T> T visitWithNoThrow(STypeAggNoThrow<K, B, T> v);
 

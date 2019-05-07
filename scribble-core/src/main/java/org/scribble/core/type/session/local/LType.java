@@ -19,7 +19,7 @@ import org.scribble.core.type.session.SType;
 
 public interface LType extends SType<Local, LSeq>, LNode
 {
-	//Role getSelf();  // CHECKME: useful?
+	//Role getSelf();  // CHECKME: useful?  maybe only specifically for interactions
 	
 	//void buildGraph(EGraphBuilderUtil2 b);
 }

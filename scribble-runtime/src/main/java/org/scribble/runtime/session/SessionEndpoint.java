@@ -174,7 +174,7 @@ public abstract class SessionEndpoint<S extends Session, R extends Role> impleme
 			{
 				this.closed = true;
 				this.sel.close();
-				this.servs.values().stream().forEach((ss) -> ss.unbind());
+				this.servs.values().forEach(ss -> ss.unbind());
 			}
 			finally
 			{

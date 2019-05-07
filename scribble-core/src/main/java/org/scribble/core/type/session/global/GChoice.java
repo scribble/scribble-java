@@ -22,7 +22,7 @@ import org.scribble.core.type.session.Choice;
 
 public class GChoice extends Choice<Global, GSeq> implements GType
 {
-	public GChoice(CommonTree source, Role subj,
+	protected GChoice(CommonTree source, Role subj,
 			List<GSeq> blocks)
 	{
 		super(source, subj, blocks);

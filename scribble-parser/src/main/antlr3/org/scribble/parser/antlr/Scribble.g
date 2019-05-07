@@ -10,7 +10,7 @@
  * $ mv scribble-parser/target/generated-sources/antlr3/org/scribble/parser/antlr/Scribble.tokens scribble-parser/target/generated-sources/antlr3/
  */
 
-/**
+/* * -- ** not allowed here.....
  * Pattern: most nodes have "imaginary token types".  
  * Where token attributes are not "inherited" from a concrete token, the default is to use textual name of the token type field as its text
  * e.g., gprotodecl: ... -> ^(GPROTODECL ...).  I.e., each token will be equivalent to, e.g., new CommonToken(ScribbleParser.GPROTODECL, "GPROTODECL").
@@ -86,6 +86,7 @@ tokens
 
 	// Compound names
   GPROTO_NAME = 'GPROTO_NAME';  // Parse specifically as GProto, for ScribTreeAdaptor.create
+  LPROTO_NAME = 'LPROTO_NAME';
   MODULE_NAME = 'MODULE_NAME';
   DATA_NAME = 'DATA_NAME';   // N.B. distinct from DATAPARAM_NAME
   SIG_NAME = 'SIG_NAME';   // N.B. distinct from SIGPARAM_NAME
@@ -119,9 +120,9 @@ tokens
  	// Scribble "session nodes" -- cf. org.scribble.core.type.session vs. org.scribble.core.lang
   GINTERSEQ = 'GINTERSEQ';
 
-  GCONNECT = 'GCONNECT';
-  GDCONN = 'GDCONN';
   GMSGTRANSFER = 'GMSGTRANSFER';
+  GCONNECT = 'GCONNECT';
+  GDCONN = 'GDCONN';  // TODO: rename GDISCONN
   GWRAP = 'GWRAP';
 
   GCONTINUE = 'GCONTINUE';
@@ -134,6 +135,31 @@ tokens
 
   GCHOICE = 'GCHOICE';
   GRECURSION = 'GRECURSION';
+
+  // Locals: currently not directly parsed, but needed for, e.g., projection
+  LPROTODECL = 'LPROTODECL';
+
+  LPROTOHEADER = 'LPROTOHEADER';
+  LSELFROLEDECL = 'LSELFROLEDECL';
+  
+  LPROTODEF = 'LPROTODEF';
+  LPROTOBLOCK = 'LPROTOBLOCK';
+  
+  LINTERSEQ = 'LINTERSEQ';
+
+  LSEND = 'LSEND';
+  LRECV = 'LRECV';
+  LACC = 'LACC';
+  LREQ = 'LREQ';
+  LDCONN = 'LDCONN';
+  LCLIENTWRAP = 'LCLIENTWRAP';
+  LSERVERWRAP = 'LSERVERWRAP';
+
+  LCONTINUE = 'LCONTINUE';
+  LDO = 'LDO';
+
+  LCHOICE = 'LCHOICE';
+  LRECURSION = 'LRECURSION';
 }
 
 
@@ -196,6 +222,7 @@ tokens
   	return id;
   }
 }
+
 
 
 /****************************************************************************
@@ -274,7 +301,7 @@ fragment UNDERSCORE:
  * Chapter 3 Syntax (Parser rules)
  ***************************************************************************/
 
-/*  // Double star here not accepted by ANTLR...
+/* * // Double star here not accepted by ANTLR...
  * Section 3.1 Primitive Names
  */
 //simplename: id=ID -> { checkId($id.tree) } ;  // How to integrate with ID<RoleNode>[$t] ?
@@ -282,12 +309,12 @@ fragment UNDERSCORE:
 // "The TreeAdaptor is not called; instead [the] constructors are invoked directly."
 // "Note that parameters are not allowed on token references to the left of ->:"
 // "Use imaginary nodes as you normally would, but with the addition of the node type:"  // But currently, ID token itself unchanged and ttype int ends up discarded
-ambigname: t=ID -> ID<AmbigNameNode>[$t];
-dataparamname: t=ID -> ID<DataParamNode>[$t]; 
+ambigname: t=ID -> ID<AmbigNameNode>[$t] ;
+dataparamname: t=ID -> ID<DataParamNode>[$t] ; 
 opname: -> ^(EMPTY_OP) | t=ID -> ID<OpNode>[$t] ;
-recvarname: t=ID -> ID<RecVarNode>[$t];
-rolename: t=ID -> ID<RoleNode>[$t];
-sigparamname: t=ID -> ID<SigParamNode>[$t];
+recvarname: t=ID -> ID<RecVarNode>[$t] ;
+rolename: t=ID -> ID<RoleNode>[$t] ;
+sigparamname: t=ID -> ID<SigParamNode>[$t] ;
 
 
 /**
@@ -297,9 +324,8 @@ sigparamname: t=ID -> ID<SigParamNode>[$t];
 gprotoname: t=ID ('.' ID)* -> ^(GPROTO_NAME[$t] ID+) ;
 modulename: t=ID ('.' ID)* -> ^(MODULE_NAME[$t] ID+) ;
 
-// Compound only
+// Compound only (cf., e.g., gprotoname; cf. simpledataname)
 qualifieddataname: t=ID '.' ID ('.' ID)* -> ^(DATA_NAME[$t] ID+) ;
-
 
 // Cf. primitive names, above
 simpledataname: t=ID -> ^(DATA_NAME[$t] ID) ;

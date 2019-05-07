@@ -74,43 +74,204 @@ module tmp.Test;
 	//...remove Token args from af constructors -- removed, and re-added
 	//refactor reconstructs to use af? -- refactored af and reconstruct to use addChildren1 -- FIXME
 		//...fix simp node constructors and af (no IdNode child) --- fix ambignodel to use af -- separate af methods
+// done: For model build/check refactoring:
 	// add exp conn checks to model validation, maybe just as estatevisitor?  (cf. prev syntactic connection checks) -- now done as global syntax visitor
-
-
-// For model build/check refactoring:
+	// ...refactor -spin as an ext -- dropped -spin from master
 
 		// Outstanding:
-			// ...disallow/check for reserved __ -- do in gtype translation?
+			// ...disallow/check for reserved __ -- do in gtype translation? is mainly for codegen though? maybe also inlining?
 			// FIXME: qualifed sig name as non-role do-arg
-			// TODO: rename addChildren1
-			// CHECKME: duplicate proto mods
-			// ...check ad hoc ScribNode constructions go through af properly
-			// ...refactor -spin as an ext
-			// TODO: fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles
+			// CHECKME: duplicate proto mods (unit tests)
 
 // parser/ast re-refactoring
-	// use stypefactory in core -- also make visitorfactorys (both core and ast)
-	// check G/LType casts vs. SType<Global/Local, ...> (favour latter)
-	// refactor Set<SState> to Map<Integer, SState>
+	// split mf to global/local subcomps, make protected constrs -- done
+	// check G/LType casts vs. SType<Global/Local, ...> (favour latter) -- done: simplified Seq elems, removed Do.proto N param
+	// ...store unfoldings in Context -- done
+	// use stypefactory in core -- also make visitorfactorys (both core and ast) -- done
+	// factor out all config factory methods more centrally? -- done a bit: mainly general factory method refactoring above
+	// rename addChildren1 -- done: addScribChildren
+	// ...make ad hoc ScribNode constructions go through af properly -- done
+	// rename ProtoMod, ProtocolMod -- rename core Protocol? -- done: ast renamed ProtoModNode
+	// explicit self roles/decls (core and ast) -- currently, self decls in protocols (in core) are purely cosmetic in toString -- done: just lselfdecl, basically for printing
+	// fix *imed*-projection (Job) choice subjects -- inlined-projection is a single proto with all roles -- done in core for now (and needs tidying)
+	// refactor doarg pruning, do pruning and extchoicesubj-fixing vistor passes (cf., entry methods into LProjection) -- done: for current uniformity, but TODO: actually should do the opposite
+	// fix self in ast locals, astfactory -- done: "self" rolenode is just a constant instance, only LSelfDecl is a special subclass
+	// wrap base class, more global base classes (maybe in del's) -- done: just wrap base classes -- TODO: further factoring, e.g., LDirectedInteraction getSelf/Peer
+	// Job Module projection, projected imports/nonprotodecls -- locals import globals for nonprotos? (better for "projects" clause?) -- done: basic, but nonprotos "copied" from globals -- TODO: import global?
+
+	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
+	// fully refactor imed/module projection to Job: old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
+	// refactor imed projection role pruning? currently done once for globals, which is done for locals once and then pruning done again for do-args
+			// no?  now only pruned?
+	// CHECKME: TODO: proto-param and do-nonrole-arg pruning?
 	
 // Job/codegen refactoring:
-	// old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
-	// also do-arg pruning, for role-pruned projection decls
+	// refactor G/LProtocol visitor entry methods back into visitors
+	// Check (minimise) Maven deps
 	// choice-specific fairness annotations
 	// fix codegen when -fair
 	// CHECKME: accept branching on messages (and safety properties) -- connection should not be established if message stuck? (cf. reception error) -- issue is implementation: what is a realistic semantics for sync-connect-branching (i.e., prevent client from async progressing after messaging) -- consider reversing client/server branching side? i.e. client requests, but then receives? (and consider serverside-branching a sugar?)
+	// fix state numbering?  also numbering mismatch between outputs, e.g., minlts
+	// wrap API gen (and refactor wrap AST hierarchy, e.g., base classes)
 
 // Later:
 	// re-check disamb pass -- e.g., do-target disamb done by translation (CHECKME: DoDel disamb -- should use af?) -- check, e.g., message transfer message disamb (signames, payloads)
 			// sort out full name expansion between disamb and translation -- fix modulecontextcollector for imported module member fullnames
 	// refactor additional disamb syntactic checks into core?  e.g., do-calls, distinct roledecls, protodecls, etc.
 		// -- otoh, ast errors give source feedback -- maybe implement both
+	// Refactor PayElemNameNode
 
 // Test refactoring:
 	// refactor test to use main instead of cli
+	// add checking between projected-inlined against inlined-projected-imeds, graph building, etc.
+	// add finer-grained result verification
 
 
 data <java> "..." from "..." as T;
+
+
+//*
+global protocol Proto1(role A, role B)
+{
+	1(T) from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	do Proto1Aux(A, B);
+}
+
+aux global protocol Proto1Aux(role C, role D)
+{
+	2() from C to D;  // Testing LDoArgPruner, do role pruning
+	//do Proto1(C, D);
+	do Proto1(D, C);  // Testing -project output, proto deps
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	do Proto1Aux(B, A);	
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	2() from A to B;
+	do Proto1(B, A);	 // Testing LDoArgPruner, this.self vs. target.self
+	//do Proto1(A, B);
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		do Proto1Aux(A, B);
+	}
+	or
+	{
+		2() from A to B;
+	}	
+	4() from A to C;
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	3() from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	1() from B to C;
+	choice at A
+	{
+		2() from A to B;
+		2() from B to C;
+	}
+	or
+	{
+		do Proto1Aux(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, both "forwards" and "reverse" do-refs
+	}
+}
+
+aux global protocol Proto1Aux(role A, role B, role C)
+{
+	do Proto1(A, B, C);
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		do Proto1Aux(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, "forward" do-ref
+	}
+}
+
+aux global protocol Proto1Aux(role A, role B, role C)
+{
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	2() from A to B; 
+	2() from B to C; 
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		do Proto1(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, need do-pruning as pre-req -- TODO: add unit test (cf. bad.liveness.roleprog.unfair.Test06)
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	1() from B to C;
+	choice at A
+	{
+		2() from A to B;
+		2() from B to C;
+	}
+	or
+	{
+		do Proto1(A, B, C);  // Testing SubprotoExtChoiceSubjFixer, "reverse" do-ref
+	}
+}
+//*/
 
 
 /*
@@ -175,6 +336,8 @@ global protocol Proto1(role A, role B, role C)
 	do Proto1(A, B, C);
 }
 //*/
+
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -279,7 +442,7 @@ global protocol Proto1(role A, role B, role C)
 /*
 global protocol Proto1(role A, role B, role C)
 {
-	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C) -- already exists?
+	choice at A  // TODO: add junit test, testing core inlined projection choice subjects (for C) -- test already exists?  // Also testing imed projections
 	{
 		1() from A to B;
 		1() from B to C;
@@ -449,7 +612,7 @@ explicit global protocol Foo(role A, role B)
 /*
 global protocol Foo(role A, role B, role C)
 {
-	1() from A to B;	
+	1() from A to B;	// Testing LProjectionTranslator, onto B
 	do Bar(A, C);
 }
 
@@ -467,6 +630,7 @@ explicit global protocol Foo(role A, role B, role C)
 	choice at A
 	{
 		1() from A to B;
+		//disconnect A and B;
 		do Foo(A, B, C);
 	}
 	or

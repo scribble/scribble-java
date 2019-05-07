@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.core.type.kind.ModuleKind;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
@@ -46,14 +47,14 @@ public class ImportModule extends ImportDecl<ModuleKind>
 
 	// Pre: hasAlias -- no alias means no child
 	// Simple name
-	// No child (null) if no alias
+	// No child if no alias (cf. hasAlias) -- cf. addScribChildren, alias == null
 	public ModuleNameNode getAliasNameNodeChild()
 	{
 		return (ModuleNameNode) getChild(ALIAS_CHILD);
 	}
 
 	// "add", not "set"
-	public void addChildren1(ModuleNameNode modname, ModuleNameNode alias)
+	public void addScribChildren(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(modname);
@@ -70,11 +71,17 @@ public class ImportModule extends ImportDecl<ModuleKind>
 		return new ImportModule(this);
 	}
 	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.ImportModule(this);
+	}
+	
 	// alias == null if no alias
 	public ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		ImportModule dup = dupNode();
-		dup.addChildren1(modname, alias);
+		dup.addScribChildren(modname, alias);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

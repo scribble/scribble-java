@@ -20,6 +20,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 
 public class GChoice extends Choice<Global> implements GCompoundSessionNode
 {
@@ -39,7 +40,7 @@ public class GChoice extends Choice<Global> implements GCompoundSessionNode
 	public List<GProtoBlock> getBlockChildren()
 	{
 		List<? extends ScribNode> cs = getChildren();
-		return cs.subList(GChoice.BLOCK_CHILDREN_START_INDEX, cs.size()).stream()
+		return cs.subList(Choice.BLOCK_CHILDREN_START_INDEX, cs.size()).stream()
 				.map(x -> (GProtoBlock) x).collect(Collectors.toList());
 	}
 	
@@ -47,5 +48,11 @@ public class GChoice extends Choice<Global> implements GCompoundSessionNode
 	public GChoice dupNode()
 	{
 		return new GChoice(this);
+	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GChoice(this);
 	}
 }

@@ -38,7 +38,7 @@ public abstract class Continue<K extends ProtoKind>
 	}
 	
 	// "add", not "set"
-	public void addChildren1(RecVarNode rv)
+	public void addScribChildren(RecVarNode rv)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(rv);
@@ -54,7 +54,7 @@ public abstract class Continue<K extends ProtoKind>
 	public Continue<K> reconstruct(RecVarNode rv)
 	{
 		Continue<K> dup = dupNode();
-		dup.addChildren1(rv);
+		dup.addScribChildren(rv);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

@@ -43,7 +43,7 @@ public class GConnectDel extends ConnectionActionDel
 	
 	@Override
 	public org.scribble.core.type.session.global.GConnect translate(ScribNode n,
-			GTypeTranslator t) throws ScribException
+			GTypeTranslator t)
 	{
 		GConnect source = (GConnect) n;
 		Role src = source.getSourceChild().toName();
@@ -54,6 +54,6 @@ public class GConnectDel extends ConnectionActionDel
 		}
 		Role dst = ds.get(0).toName();
 		Msg msg = source.getMessageNodeChild().toMsg();
-		return new org.scribble.core.type.session.global.GConnect(source, src, msg, dst);
+		return t.tf.global.GConnect(source, src, msg, dst);
 	}
 }

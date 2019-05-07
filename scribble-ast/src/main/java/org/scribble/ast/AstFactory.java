@@ -31,9 +31,28 @@ import org.scribble.ast.global.GProtoHeader;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.global.GSessionNode;
 import org.scribble.ast.global.GWrap;
+import org.scribble.ast.local.LAcc;
+import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LClientWrap;
+import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDisconnect;
+import org.scribble.ast.local.LDo;
+import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProjectionDecl;
+import org.scribble.ast.local.LProtoBlock;
+import org.scribble.ast.local.LProtoDef;
+import org.scribble.ast.local.LProtoHeader;
+import org.scribble.ast.local.LRecursion;
+import org.scribble.ast.local.LRecv;
+import org.scribble.ast.local.LReq;
+import org.scribble.ast.local.LSelfDecl;
+import org.scribble.ast.local.LSend;
+import org.scribble.ast.local.LServerWrap;
+import org.scribble.ast.local.LSessionNode;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.ast.name.qualified.DataNameNode;
 import org.scribble.ast.name.qualified.GProtoNameNode;
+import org.scribble.ast.name.qualified.LProtoNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
@@ -66,14 +85,18 @@ public interface AstFactory
 
 	DataNameNode DataNameNode(Token t, List<IdNode> elems);
 	GProtoNameNode GProtoNameNode(Token t, List<IdNode> elems);
+	LProtoNameNode LProtoNameNode(Token t, List<IdNode> elems);
 	ModuleNameNode ModuleNameNode(Token t, List<IdNode> elems);
 	SigNameNode SigNameNode(Token t, List<IdNode> elems);
 	
-	Module Module(Token t, ModuleDecl mdecl, List<ImportDecl<?>> imports,
-			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos);
+	Module Module(Token t, ModuleDecl mdecl,
+			List<? extends ImportDecl<?>> imports,
+			List<? extends NonProtoDecl<?>> nonprotos,
+			List<? extends ProtoDecl<?>> protos);
+
 	ModuleDecl ModuleDecl(Token t, ModuleNameNode fullname);
 	ImportModule ImportModule(Token t, ModuleNameNode modname,
-			ModuleNameNode alias);
+			ModuleNameNode alias);  // alias == null for no alias (child not added)
 
 	DataDecl DataDecl(Token t, IdNode schema, ExtIdNode extName,
 			ExtIdNode extSource, DataNameNode name);
@@ -82,20 +105,23 @@ public interface AstFactory
 	GProtoDecl GProtoDecl(Token t, ProtoModList mods, GProtoHeader header,
 			GProtoDef def);
 
-	// TODO: add ProtoModList, etc.
+	// TODO: refactor to use ProtoModList, etc.
+	ProtoModList ProtoModList(Token t, List<ProtoModNode> mods);
+	AuxMod AuxMod(Token t);
+	ExplicitMod ExplicitMod(Token t);
 
 	GProtoHeader GProtocolHeader(Token t, GProtoNameNode name, RoleDeclList rs,
 			NonRoleParamDeclList ps);
 	RoleDeclList RoleDeclList(Token t, List<RoleDecl> ds);
 	RoleDecl RoleDecl(Token t, RoleNode r);
 	NonRoleParamDeclList NonRoleParamDeclList(Token t, 
-			List<NonRoleParamDecl<NonRoleParamKind>> ds);
+			List<NonRoleParamDecl<? extends NonRoleParamKind>> ds);
 	DataParamDecl DataParamDecl(Token t, DataParamNode p);
 	SigParamDecl SigParamDecl(Token t, SigParamNode p);
 
 	GProtoDef GProtoDef(Token t, GProtoBlock block);
 	GProtoBlock GProtoBlock(Token t, GInteractionSeq seq);
-	GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems);
+	GInteractionSeq GInteractionSeq(Token t, List<GSessionNode> elems);  // CHECKME: ? extends GSessionNode ? -- and similar others?
 
 	SigLitNode SigLitNode(Token t, OpNode op, PayElemList pay);
 	PayElemList PayElemList(Token t, List<PayElem<?>> elems);
@@ -103,23 +129,52 @@ public interface AstFactory
 			PayElemNameNode<K> name);
 	GDelegPayElem GDelegPayElem(Token t, GProtoNameNode name, RoleNode r);
 
-	GConnect GConnect(Token t, RoleNode src, MsgNode msg, RoleNode dst);
-	GDisconnect GDisconnect(Token t, RoleNode src, RoleNode dst);
 	GMsgTransfer GMsgTransfer(Token t, RoleNode src, MsgNode msg,
 			List<RoleNode> dsts);
-	GWrap GWrap(Token t, RoleNode src, RoleNode dst);
+	GConnect GConnect(Token t, RoleNode src, MsgNode msg, RoleNode dst);
+	GDisconnect GDisconnect(Token t, RoleNode left, RoleNode right);
+	GWrap GWrap(Token t, RoleNode client, RoleNode server);
 
 	GContinue GContinue(Token t, RecVarNode rv);
-	GDo GDo(Token t, RoleArgList rs, NonRoleArgList args,
-			GProtoNameNode proto);
-
-	GChoice GChoice(Token t, RoleNode subj, List<GProtoBlock> blocks);
-	GRecursion GRecursion(Token t, RecVarNode rv, GProtoBlock block);
+	GDo GDo(Token t, GProtoNameNode proto, NonRoleArgList args, RoleArgList rs);
 
 	RoleArgList RoleArgList(Token t, List<RoleArg> rs);
 	RoleArg RoleArg(Token t, RoleNode r);
 	NonRoleArgList NonRoleArgList(Token t, List<NonRoleArg> args);
 	NonRoleArg NonRoleArg(Token t, NonRoleArgNode arg);
+
+	GChoice GChoice(Token t, RoleNode subj, List<GProtoBlock> blocks);
+	GRecursion GRecursion(Token t, RecVarNode rv, GProtoBlock block);
+
+	/*LProtoDecl LProtoDecl(Token t, ProtoModList mods,
+			LProtoHeader header, LProtoDef def);  // Not currently used -- local protos not yet parsed, only projected*/
+
+	LProjectionDecl LProjectionDecl(Token t, ProtoModList mods,
+			LProtoHeader header, LProtoDef def, GProtoNameNode fullname,
+			RoleNode self);  // del extends that of LProtoDecl
+
+	LProtoHeader LProtoHeader(Token t, LProtoNameNode name, RoleDeclList rs,
+			NonRoleParamDeclList ps);
+	LSelfDecl LSelfDecl(Token t, RoleNode r);
+
+	LProtoDef LProtoDef(Token t, LProtoBlock block);
+	LProtoBlock LProtoBlock(Token t, LInteractionSeq seq);
+	LInteractionSeq LInteractionSeq(Token t, List<LSessionNode> elems);
+
+	// Following take "self" param in case of parsed Token (not actually supported yet)
+	LSend LSend(Token t, RoleNode self, MsgNode msg, RoleNode dst);
+	LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode self);
+	LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode self);
+	LReq LReq(Token t, RoleNode self, MsgNode msg, RoleNode dst);
+	LDisconnect LDisconnect(Token t, RoleNode self, RoleNode peer); 
+	LClientWrap LClientWrap(Token t, RoleNode client, RoleNode server);
+	LServerWrap LServerWrap(Token t, RoleNode client, RoleNode server);
+
+	LContinue LContinue(Token t, RecVarNode rv); 
+	LDo LDo(Token t, LProtoNameNode proto, NonRoleArgList as, RoleArgList rs);
+
+	LChoice LChoice(Token t, RoleNode subj, List<LProtoBlock> blocks);
+	LRecursion LRecursion(Token t, RecVarNode rv, LProtoBlock block);
 }
 
 

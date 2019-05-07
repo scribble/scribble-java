@@ -66,14 +66,7 @@ public class CBEndpointApiGenerator3
 			boolean subtypes)
 	{
 		this.job = job;
-		try
-		{
-			this.core = job.getCore();
-		}
-		catch (ScribException e)  // TODO: refactor
-		{
-			throw new RuntimeException(e);
-		}
+		this.core = job.getCore();
 		this.proto = fullname;
 		this.self = self;
 		
@@ -564,13 +557,14 @@ public class CBEndpointApiGenerator3
 								.map(a -> "__" + this.getCallbackSuffix.apply(a)).collect(Collectors.joining());  // FIXME: factor out
 				messageIf.addInterfaces(iface);
 			}
-			s.getActions().stream().map(a -> a.peer).distinct().forEach(r ->
+			s.getActions().stream().map(a -> a.peer).distinct().forEachOrdered(r ->
 			{
 				ClassBuilder roleClass = stateClass.newMemberClass(r.toString());
 				roleClass.addModifiers("public", "static");
 				ConstructorBuilder roleCons = roleClass.newConstructor();
 				roleCons.addModifiers("private");
-				s.getActions().stream().filter(a -> a.peer.equals(r)).forEach(a ->
+				s.getActions().stream().filter(a -> a.peer.equals(r))
+						.forEachOrdered(a ->
 				{
 					String opName = SessionApiGenerator.getOpClassName(a.mid);
 					ClassBuilder opClass = roleClass.newMemberClass(opName);
@@ -609,7 +603,7 @@ public class CBEndpointApiGenerator3
 					else 
 					{
 						opCons = opClass.newConstructor(a.payload.elems.stream().map(e ->
-									main.getDataTypeDeclChild((DataName) e).getExtName() + " arg" + i[0]++
+									main.getTypeDeclChild((DataName) e).getExtName() + " arg" + i[0]++
 							).collect(Collectors.joining(", ")));
 					}
 					opCons.addModifiers("public");
@@ -717,7 +711,7 @@ public class CBEndpointApiGenerator3
 			int i = 0;
 			for (PayElemType<?> pet : a.payload.elems)
 			{
-				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataName) pet);
+				DataDecl dtd = jc.getMainModule().getTypeDeclChild((DataName) pet);
 				branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
 			}
 			branchAbstract += "); break;\n";
@@ -755,7 +749,7 @@ public class CBEndpointApiGenerator3
 			int i = 1;
 			for (PayElemType<?> pet : a.payload.elems)
 			{
-				DataDecl dtd = jc.getMainModule().getDataTypeDeclChild((DataName) pet);
+				DataDecl dtd = jc.getMainModule().getTypeDeclChild((DataName) pet);
 				receiveInterface += ", " + dtd.getExtName() + " arg" + i++;
 			}
 		}
@@ -1008,7 +1002,7 @@ public class CBEndpointApiGenerator3
 	//protected final Function<PayloadElemType<?>, String> getExtName = e ->
 	protected String getExtName(PayElemType<?> e)
 	{
-		String extName = this.job.getContext().getMainModule().getDataTypeDeclChild((DataName) e).getExtName();
+		String extName = this.job.getContext().getMainModule().getTypeDeclChild((DataName) e).getExtName();
 		return (extName.indexOf(".") != -1)
 				? extName.substring(extName.lastIndexOf(".")+1, extName.length())
 				: extName;

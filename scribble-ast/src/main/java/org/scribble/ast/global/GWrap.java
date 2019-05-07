@@ -14,20 +14,18 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.BasicInteraction;
+import org.scribble.ast.WrapAction;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-// TODO: factor out base Wrap (cf. Disconnect)
-public class GWrap extends BasicInteraction<Global>
+// TODO: factor out base Wrap (cf. Disconnect) -- Wrap is a ConnectionAction?
+public class GWrap extends WrapAction<Global>
 		implements GSimpleSessionNode
 {
-	public static final int CLIENT_CHILD_INDEX = 0;
-	public static final int SERVER_CHILD_INDEX = 1;
-
 	// ScribTreeAdaptor#create constructor
 	public GWrap(Token t)
 	{
@@ -40,34 +38,22 @@ public class GWrap extends BasicInteraction<Global>
 		super(node);
 	}
 	
-	public RoleNode getClientChild()
-	{
-		return (RoleNode) getChild(CLIENT_CHILD_INDEX);
-	}
-
-	public RoleNode getServerChild()
-	{
-		return (RoleNode) getChild(SERVER_CHILD_INDEX);
-	}
-
-	// "add", not "set"
-	public void addChildren1(RoleNode client, RoleNode server)
-	{
-		// Cf. above getters and Scribble.g children order
-		addChild(client);
-		addChild(server);
-	}
-	
 	@Override
 	public GWrap dupNode()
 	{
 		return new GWrap(this);
 	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GWrap(this);
+	}
 
 	public GWrap reconstruct(RoleNode client, RoleNode server)
 	{
 		GWrap n = dupNode();
-		n.addChildren1(client, server);
+		n.addScribChildren(client, server);
 		n.setDel(del());  // No copy
 		return n;
 	}

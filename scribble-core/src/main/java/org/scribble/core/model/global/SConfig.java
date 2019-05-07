@@ -48,7 +48,7 @@ public class SConfig
 	public final Map<Role, EFsm> efsms;
 	public final SingleBuffers queues;  // N.B. currently hardcoded to capacity one
 	
-	public SConfig(ModelFactory mf, Map<Role, EFsm> state, SingleBuffers queues)
+	protected SConfig(ModelFactory mf, Map<Role, EFsm> state, SingleBuffers queues)
 	{
 		this.mf = mf;
 		this.efsms = Collections.unmodifiableMap(state);
@@ -183,7 +183,7 @@ public class SConfig
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
-			res.add(this.mf.newSConfig(efsms, queues));
+			res.add(this.mf.global.SConfig(efsms, queues));
 		}
 		return res;
 	}
@@ -222,7 +222,7 @@ public class SConfig
 				{
 					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
 				}
-				res.add(this.mf.newSConfig(efsms, queues));
+				res.add(this.mf.global.SConfig(efsms, queues));
 			}
 		}
 		return res;
@@ -317,7 +317,7 @@ public class SConfig
 				return null;
 			}
 			waitingFor.stream().filter(x -> !cycle.contains(x))  // Only more than one when client-sync cases
-					.forEach(x -> todo.add(x));  // todo is a Set, so re-add existing doesn't matter
+					.forEachOrdered(x -> todo.add(x));  // todo is a Set, so re-add existing doesn't matter
 		}
 		return cycle;
 	}
@@ -398,7 +398,7 @@ public class SConfig
 				this.efsms.keySet().stream()
 						.filter(x -> !r.equals(x) && !this.queues.isConnected(r, x))  // !isConnected(r, x), means r considers its side closed
 						.map(x -> this.queues.getQueue(r).get(x)).filter(x -> x != null)  // r's side is closed, but remaining message(s) in r's buff
-						.forEach(x -> orphs.add(x));
+						.forEachOrdered(x -> orphs.add(x));
 			}
 			if (!orphs.isEmpty())
 			{

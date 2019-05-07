@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 import org.scribble.core.job.Core;
 import org.scribble.core.type.kind.Global;
 import org.scribble.core.type.kind.Local;
-import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtoName;
@@ -38,17 +37,11 @@ import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.global.GConnect;
 import org.scribble.core.type.session.global.GSeq;
-import org.scribble.core.type.session.local.LAcc;
-import org.scribble.core.type.session.local.LChoice;
 import org.scribble.core.type.session.local.LContinue;
-import org.scribble.core.type.session.local.LDisconnect;
-import org.scribble.core.type.session.local.LRecursion;
-import org.scribble.core.type.session.local.LRecv;
-import org.scribble.core.type.session.local.LReq;
-import org.scribble.core.type.session.local.LSend;
 import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LSkip;
 import org.scribble.core.type.session.local.LType;
+import org.scribble.core.type.session.local.LTypeFactory;
 import org.scribble.core.visit.STypeAggNoThrow;
 
 // Pre: use on inlined (i.e., Do inlined, roles pruned)
@@ -64,7 +57,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	public final Core core;
 	public final Role self;
 
-	public InlinedProjector(Core core, Role self)
+	protected InlinedProjector(Core core, Role self)
 	{
 		this.core = core;
 		this.self = self;
@@ -97,14 +90,14 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		{
 			return LSkip.SKIP; // CHECKME: OK, or "empty" choice at subj still important?
 		}
-		//this.unguarded.clear();  // At least one block is non-empty, consider continues guarded -- done in Seq
+		this.unguarded.clear();  // At least one block is non-empty, consider continues guarded -- must clear here, blocks visited using dup's
 		
 		//InlinedEnablerInferer v = new InlinedEnablerInferer(this.unguarded);
 		Role subj = n.subj.equals(this.self) 
 				? Role.SELF  // i.e., internal choice
 				: n.subj;//v.visitSeq(blocks.get(0)).get();  // CHECKME: consistent ext choice means can infer from any one seq?
 				// CHECKME: "self" also explcitily used for Do, but implicitly for MessageTransfer, inconsistent?
-		return new LChoice(null, subj, blocks);
+		return this.core.config.tf.local.LChoice(null, subj, blocks);
 	}
 	
 	// N.B. won't prune unguarded continues that have a bad sequence, will be caught later by reachability checking (e.g., bad.reach.globals.gdo.Test04)
@@ -122,7 +115,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 	@Override
 	public LType visitContinue(Continue<Global, GSeq> n)
 	{
-		return new LContinue(null, n.recvar);
+		return this.core.config.tf.local.LContinue(null, n.recvar);
 	}
 
 	@Override
@@ -132,16 +125,17 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		{
 				// CHECKME: already checked?
 		}*/
+		LTypeFactory lf = this.core.config.tf.local;
 		if (n instanceof GConnect)  // FIXME
 		{
-			return n.src.equals(self) ? new LReq(null, n.msg, n.dst)
-					: n.dst.equals(self)  ? new LAcc(null, n.src, n.msg)
+			return n.src.equals(self) ? lf.LReq(null, n.msg, n.dst)
+					: n.dst.equals(self)  ? lf.LAcc(null, n.src, n.msg)
 					: LSkip.SKIP;
 		}
 		else //if (n instanceof GMessageTransfer)
 		{
-			return n.src.equals(self) ? new LSend(null, n.msg, n.dst)
-					: n.dst.equals(self)  ? new LRecv(null, n.src, n.msg)
+			return n.src.equals(self) ? lf.LSend(null, n.msg, n.dst)
+					: n.dst.equals(self)  ? lf.LRecv(null, n.src, n.msg)
 					: LSkip.SKIP;
 		}
 	}
@@ -153,13 +147,14 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		{
 				// CHECKME: already checked?
 		}*/
-		return (n.left.equals(self)) ? new LDisconnect(null, n.right)
-				: (n.right.equals(self)) ? new LDisconnect(null, n.left)
+		LTypeFactory lf = this.core.config.tf.local;
+		return (n.left.equals(self)) ? lf.LDisconnect(null, n.right)
+				: (n.right.equals(self)) ? lf.LDisconnect(null, n.left)
 				: LSkip.SKIP;
 	}
 
 	@Override
-	public <N extends ProtoName<Global>> LType visitDo(Do<Global, GSeq, N> n)
+	public LType visitDo(Do<Global, GSeq> n)
 	{
 		throw new RuntimeException("Unsupported for Do: " + n + " ,, " + this.getClass());
 	}
@@ -186,7 +181,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 			}
 		}
 		this.unguarded.remove(n.recvar);
-		return new LRecursion(null, n.recvar, body);
+		return this.core.config.tf.local.LRecursion(null, n.recvar, body);
 	}
 
 	// Param "hardcoded" to B (cf. Seq, or SType return) -- this visitor pattern depends on B for Choice/Recursion/etc reconstruction
@@ -197,32 +192,30 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 		for (SType<Global, GSeq> e : n.elems)
 		{
 			LType e1 = e.visitWithNoThrow(this);
-			elems.add(e1);
 			if (!(e1 instanceof LSkip))
 			{
+				elems.add(e1);
 				this.unguarded.clear();
 			}
 		}
-		elems = elems.stream().filter(x -> !x.equals(LSkip.SKIP))
-				.collect(Collectors.toList());
-		return new LSeq(null, elems);
+		return this.core.config.tf.local.LSeq(null, elems);
 				// Empty seqs converted to LSkip by GChoice/Recursion projection
 				// And a WF top-level protocol cannot produce empty LSeq
 				// So a projection never contains an empty LSeq -- i.e., "empty choice/rec" pruning unnecessary
 	}
 
 	// CHECKME: relocate?
-	public static LProtoName getSimpledProjectionName(GProtoName simpname,
+	public static LProtoName getSimpledProjectionName(ProtoName<Global> simpname,
 			Role role)
 	{
 		return new LProtoName(simpname.toString() + "_" + role.toString());
 	}
 
 	// Role is the target subprotocol parameter (not the current projector self -- actually the self just popped) -- ?
-	public static LProtoName getFullProjectionName(GProtoName fullname,
+	public static LProtoName getFullProjectionName(ProtoName<Global> fullname,
 			Role role)
 	{
-		LProtoName simplename = InlinedProjector.getSimpledProjectionName(
+		ProtoName<Local> simplename = InlinedProjector.getSimpledProjectionName(
 				fullname.getSimpleName(), role);
 		ModuleName modname = getProjectionModuleName(fullname.getPrefix(),
 				simplename);
@@ -231,7 +224,7 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 
 	// fullname is the un-projected name; localname is the already projected simple name
 	public static ModuleName getProjectionModuleName(ModuleName fullname,
-			LProtoName localname)
+			ProtoName<Local> localname)
 	{
 		ModuleName simpname = new ModuleName(
 				fullname.getSimpleName().toString() + "_" + localname.toString());

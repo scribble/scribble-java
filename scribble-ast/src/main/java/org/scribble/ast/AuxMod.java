@@ -14,8 +14,9 @@
 package org.scribble.ast;
 
 import org.antlr.runtime.Token;
+import org.scribble.del.DelFactory;
 
-public class AuxMod extends ProtoMod
+public class AuxMod extends ProtoModNode
 {
 	// ScribTreeAdaptor#create constructor
 	public AuxMod(Token t)
@@ -33,6 +34,12 @@ public class AuxMod extends ProtoMod
 	public AuxMod dupNode()
 	{
 		return new AuxMod(this);  // return this also OK, since no children
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.AuxMod(this);
 	}
 
 	@Override

@@ -16,7 +16,6 @@ package org.scribble.core.visit;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -38,7 +37,6 @@ public abstract class STypeAggNoThrow<K extends ProtoKind, B extends Seq<K, B>, 
 	// Pre: agg(Stream.of(unit())) = unit()
 	protected abstract T agg(SType<K, B> n, Stream<T> ts);  // Cf. generic varargs, heap pollution issue
 	
-	// SType return for extensibility/flexibility
 	public T visitContinue(Continue<K, B> n)
 	{
 		return unit(n);
@@ -59,7 +57,7 @@ public abstract class STypeAggNoThrow<K extends ProtoKind, B extends Seq<K, B>, 
 		return unit(n);
 	}
 
-	public <N extends ProtoName<K>> T visitDo(Do<K, B, N> n)
+	public T visitDo(Do<K, B> n)
 	{
 		return unit(n);
 	}

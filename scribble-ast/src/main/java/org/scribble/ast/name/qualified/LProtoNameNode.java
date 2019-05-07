@@ -18,6 +18,7 @@ import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.LProtoName;
 import org.scribble.core.type.session.Arg;
+import org.scribble.del.DelFactory;
 
 public class LProtoNameNode extends ProtoNameNode<Local>
 		implements PayElemNameNode<Local>
@@ -38,6 +39,12 @@ public class LProtoNameNode extends ProtoNameNode<Local>
 	public LProtoNameNode dupNode()
 	{
 		return new LProtoNameNode(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.LProtoNameNode(this);
 	}
 	
 	@Override

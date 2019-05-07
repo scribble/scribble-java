@@ -17,6 +17,7 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.PayElemNameNode;
 import org.scribble.core.type.kind.DataKind;
 import org.scribble.core.type.name.DataName;
+import org.scribble.del.DelFactory;
 
 public class DataParamNode extends NonRoleParamNode<DataKind>
 		implements PayElemNameNode<DataKind>  // As a payload, can only be a DataType (so hardcode)
@@ -40,6 +41,13 @@ public class DataParamNode extends NonRoleParamNode<DataKind>
 		return new DataParamNode(this);
 	}
 	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.DataParamNode(this);
+	}
+	
+  // N.B. no "DataParamName"
 	@Override
 	public DataName toName()
 	{

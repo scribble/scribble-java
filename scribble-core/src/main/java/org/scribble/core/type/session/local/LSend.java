@@ -24,7 +24,7 @@ public class LSend extends MsgTransfer<Local, LSeq>
 {
 
 	// this.src == Role.SELF
-	public LSend(CommonTree source,
+	protected LSend(CommonTree source,
 			Msg msg, Role dst)
 	{
 		super(source, msg, Role.SELF, dst);

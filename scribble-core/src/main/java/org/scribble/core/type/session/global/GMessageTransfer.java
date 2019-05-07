@@ -23,15 +23,13 @@ public class GMessageTransfer extends MsgTransfer<Global, GSeq>
 		implements GType
 {
 
-	public GMessageTransfer(CommonTree source,
-			Role src, Msg msg, Role dst)
+	protected GMessageTransfer(CommonTree source, Role src, Msg msg, Role dst)
 	{
 		super(source, msg, src, dst);
 	}
 
 	@Override
-	public GMessageTransfer reconstruct(
-			CommonTree source, Msg msg, Role src,
+	public GMessageTransfer reconstruct(CommonTree source, Msg msg, Role src,
 			Role dst)
 	{
 		return new GMessageTransfer(source, src, msg, dst);

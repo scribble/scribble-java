@@ -16,6 +16,7 @@ package org.scribble.ast.global;
 import org.antlr.runtime.Token;
 import org.scribble.ast.Continue;
 import org.scribble.core.type.kind.Global;
+import org.scribble.del.DelFactory;
 
 public class GContinue extends Continue<Global> implements GSimpleSessionNode
 {
@@ -35,5 +36,11 @@ public class GContinue extends Continue<Global> implements GSimpleSessionNode
 	public GContinue dupNode()
 	{
 		return new GContinue(this);
+	}
+
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GContinue(this);
 	}
 }

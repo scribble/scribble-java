@@ -21,6 +21,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.SimpleAstVisitor;
+import org.scribble.visit.SimpleAstVisitorNoThrows;
 
 /**
  * This is the generic object from which all Scribble AST objects
@@ -28,7 +29,9 @@ import org.scribble.visit.SimpleAstVisitor;
  */
 public interface ScribNode extends Tree
 {
-	CommonTree getSource();   // TODO: deprecate
+	CommonTree getSource();   
+			// Can explicitly track an "original" source, cf. always using the "current" node as its own source
+			// Can be better for some error messages, e.g., during/after some AST transfomations
 
 	@Override
 	ScribNode getParent();
@@ -39,13 +42,18 @@ public interface ScribNode extends Tree
 	ScribNode clone();
 
 	ScribDel del();
-	ScribNode del(ScribDel del);
+	//ScribNode del(ScribDel del);
 
 	ScribNode accept(AstVisitor nv) throws ScribException;  // The "top-level" method, e.g., module.accept(v)  (cf. Job::runVisitorOnModule)
 	ScribNode visitChildren(AstVisitor nv) throws ScribException;
 	
-	// "Simpler" version than above
+	// For "simpler" visiting patterns than above
 	default <T> T visitWith(SimpleAstVisitor<T> v) throws ScribException  // "Top-level" visitor entry method
+	{
+		return v.visit(this);  // N.B. ScribNode has getParent
+	}
+
+	default <T> T visitWith(SimpleAstVisitorNoThrows<T> v)  // "Top-level" visitor entry method, c.f. STypeAggNoThrow
 	{
 		return v.visit(this);  // N.B. ScribNode has getParent
 	}

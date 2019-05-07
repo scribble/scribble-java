@@ -3,11 +3,18 @@ module scribble.examples.GDo;
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
 type <xsd> "{http://www.acme.com/financial}Receipt" from "http://www.acme.com/schemas/Receipt.xsd" as Receipt;
 
-global protocol GDoTest(role Buyer,role Seller) {
-	do OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
-	do myscope: OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
-	do a.b.c.OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
-	do OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
-	do a.b.c.OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
-	do myscope: a.b.c.OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
+global protocol GDoTest(role Buyer, role Seller) {
+	do OtherProtocol(Buyer, Seller);
+	do a.b.c.OtherProtocol(Buyer, Seller);
+	do AnotherProtocol<buy(Order),confirm(Receipt)>(Buyer, Seller);
+	do a.b.c.AnotherProtocol<buy(Order),confirm(Receipt)>(Buyer, Seller);
+}
+
+aux global protocol OtherProtocol(role OtherBuyer, role OtherSeller) {
+	dummy() from OtherBuyer to OtherSeller;
+}
+
+aux global protocol AnotherProtocol<sig Buy, sig Confirm>(role OtherBuyer, role OtherSeller) {
+	Buy from OtherBuyer to OtherSeller;
+	Confirm from OtherSeller to OtherBuyer;
 }

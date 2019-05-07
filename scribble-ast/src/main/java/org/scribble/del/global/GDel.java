@@ -16,10 +16,9 @@ package org.scribble.del.global;
 import org.scribble.ast.ScribNode;
 import org.scribble.core.lang.global.GNode;
 import org.scribble.del.ScribDel;
-import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 
 public interface GDel extends ScribDel
 {
-	GNode translate(ScribNode n, GTypeTranslator t) throws ScribException;
+	GNode translate(ScribNode n, GTypeTranslator t);
 }

@@ -2,7 +2,7 @@ module scribble.examples.GRecursion;
 
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
 
-global protocol GRecursionTest(role Buyer,role Seller) {
+global protocol GRecursionTest(role Buyer, role Seller) {
 	rec MyLabel {
 		buy(Order) from Buyer to Seller;
 		continue MyLabel;

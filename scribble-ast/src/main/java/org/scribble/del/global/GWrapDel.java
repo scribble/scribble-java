@@ -16,13 +16,13 @@ package org.scribble.del.global;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GWrap;
 import org.scribble.core.lang.global.GNode;
-import org.scribble.del.ConnectionActionDel;
+import org.scribble.del.BasicInteractionDel;
 import org.scribble.util.ScribException;
 import org.scribble.visit.GTypeTranslator;
 import org.scribble.visit.NameDisambiguator;
 
 // TODO: make WrapDel (cf., G/LMessageTransferDel)
-public class GWrapDel extends ConnectionActionDel
+public class GWrapDel extends BasicInteractionDel //ConnectionActionDel
 		implements GSimpleSessionNodeDel
 {
 	public GWrapDel()
@@ -39,7 +39,7 @@ public class GWrapDel extends ConnectionActionDel
 	}
 
 	@Override
-	public GNode translate(ScribNode n, GTypeTranslator t) throws ScribException
+	public GNode translate(ScribNode n, GTypeTranslator t)
 	{
 		throw new RuntimeException("[TODO] :" + n);
 	}

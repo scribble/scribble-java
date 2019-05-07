@@ -17,5 +17,28 @@ import org.scribble.del.InteractionSeqDel;
 
 public class LInteractionSeqDel extends InteractionSeqDel implements LDel
 {
-
+	/*@Override
+	public ScribNode leaveProjectedChoiceDoPruning(ScribNode parent,
+			ScribNode child, ProjectedChoiceDoPruner pruner, ScribNode visited)
+			throws ScribException
+	{
+		LInteractionSeq lc = (LInteractionSeq) visited;
+		List<LSessionNode> actions = lc.getInteractionChildren().stream()
+				.filter(li -> li != null).collect(Collectors.toList());
+		return lc.reconstruct(actions);
+	}*/
+	
+	/*// Duplicated from GInteractionSeq
+	@Override
+	public LInteractionSeq leaveRecRemoval(ScribNode parent, ScribNode child, RecRemover rem, ScribNode visited)
+			throws ScribException
+	{
+		LInteractionSeq lis = (LInteractionSeq) visited;
+		List<LSessionNode> lins = lis.getInteractions().stream().flatMap((li) -> 
+					(li instanceof LRecursion && rem.toRemove(((LRecursion) li).recvar.toName()))
+						? ((LRecursion) li).getBlock().getInteractionSeq().getInteractions().stream()
+						: Stream.of(li)
+				).collect(Collectors.toList());
+		return rem.job.af.LInteractionSeq(lis.getSource(), lins);
+	}*/
 }

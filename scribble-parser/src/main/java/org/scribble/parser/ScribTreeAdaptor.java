@@ -33,6 +33,7 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNil;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.SigDecl;
 import org.scribble.ast.SigLitNode;
 import org.scribble.ast.SigParamDecl;
@@ -57,11 +58,19 @@ import org.scribble.ast.name.qualified.SigNameNode;
 import org.scribble.ast.name.simple.ExtIdNode;
 import org.scribble.ast.name.simple.IdNode;
 import org.scribble.ast.name.simple.OpNode;
+import org.scribble.del.DelFactory;
 import org.scribble.parser.antlr.ScribbleParser;
 
+// CHECKME: do del setting directly here (or use af?), instead of DelDecorator
 // get/setType don't seem to be really used
 public class ScribTreeAdaptor extends CommonTreeAdaptor
 {
+	protected final DelFactory df;  // N.B. not af -- here, create nodes "manually" (with del setting) to preserve original tokens
+
+	public ScribTreeAdaptor(DelFactory df)
+	{
+		this.df = df;
+	}
 	
 	// Generated parser seems to use nil to create "blank" nodes and then "fill them in"
 	@Override
@@ -76,69 +85,76 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 	{
 		// Switching on ScribbleParser int type constants -- generated from Scribble.g tokens
 		// Previously: String tname = t.getText(); -- by convention of Scribble.g, type constant name given as node text, e.g., module: ... -> ^(MODULE ...)
+		ScribNodeBase n;
 		switch (t.getType())
 		{
-			case ScribbleParser.ID: return new IdNode(t);
-			case ScribbleParser.EXTID: return new ExtIdNode(t);
+			case ScribbleParser.ID: n = new IdNode(t); break;
+			case ScribbleParser.EXTID: n = new ExtIdNode(t); break;
 			
-			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
+			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] -- N.B. DelDecorator pass needed for them (CHECKME: also do those here instead? to deprecate DelDecorator)
 
-			case ScribbleParser.GPROTO_NAME: return new GProtoNameNode(t);
-			case ScribbleParser.MODULE_NAME: return new ModuleNameNode(t);
-			case ScribbleParser.DATA_NAME: return new DataNameNode(t);
-			case ScribbleParser.SIG_NAME: return new SigNameNode(t);
+			// Compound names 
+			case ScribbleParser.GPROTO_NAME: n = new GProtoNameNode(t); break;
+			case ScribbleParser.MODULE_NAME: n = new ModuleNameNode(t); break;
+			case ScribbleParser.DATA_NAME: n = new DataNameNode(t); break;
+			case ScribbleParser.SIG_NAME: n = new SigNameNode(t); break;
 
-			case ScribbleParser.MODULE: return new Module(t);
-			case ScribbleParser.MODULEDECL: return new ModuleDecl(t);
-			case ScribbleParser.IMPORTMODULE: return new ImportModule(t);
+			// Non-name (i.e., general) AST nodes
+			case ScribbleParser.MODULE: n = new Module(t); break;
+			case ScribbleParser.MODULEDECL: n = new ModuleDecl(t); break;
+			case ScribbleParser.IMPORTMODULE: n = new ImportModule(t); break;
 
-			case ScribbleParser.DATADECL: return new DataDecl(t);
-			case ScribbleParser.SIGDECL: return new SigDecl(t);
-			case ScribbleParser.GPROTODECL: return new GProtoDecl(t);
+			case ScribbleParser.DATADECL: n = new DataDecl(t); break;
+			case ScribbleParser.SIGDECL: n = new SigDecl(t); break;
+			case ScribbleParser.GPROTODECL: n = new GProtoDecl(t); break;
  
 			// CHECKME: refactor into header?
-			case ScribbleParser.PROTOMOD_LIST: return new ProtoModList(t);
-			case ScribbleParser.AUX_KW: return new AuxMod(t);  // FIXME: KW return by parser directly (cf. other tokens are imaginary)
-			case ScribbleParser.EXPLICIT_KW: return new ExplicitMod(t);
+			case ScribbleParser.PROTOMOD_LIST: n = new ProtoModList(t); break;
+			case ScribbleParser.AUX_KW: n = new AuxMod(t); break;  // FIXME: KW return by parser directly (cf. other tokens are imaginary)
+			case ScribbleParser.EXPLICIT_KW: n = new ExplicitMod(t); break;
 
-			case ScribbleParser.GPROTOHEADER: return new GProtoHeader(t);
-			case ScribbleParser.ROLEDECL_LIST: return new RoleDeclList(t);
-			case ScribbleParser.ROLEDECL: return new RoleDecl(t);
-			case ScribbleParser.PARAMDECL_LIST: return new NonRoleParamDeclList(t);
-			case ScribbleParser.DATAPARAMDECL: return new DataParamDecl(t);
-			case ScribbleParser.SIGPARAMDECL: return new SigParamDecl(t);
+			case ScribbleParser.GPROTOHEADER: n = new GProtoHeader(t); break;
+			case ScribbleParser.ROLEDECL_LIST: n = new RoleDeclList(t); break;
+			case ScribbleParser.ROLEDECL: n = new RoleDecl(t); break;
+			case ScribbleParser.PARAMDECL_LIST:
+				n = new NonRoleParamDeclList(t);
+				break;
+			case ScribbleParser.DATAPARAMDECL: n = new DataParamDecl(t); break;
+			case ScribbleParser.SIGPARAMDECL: n = new SigParamDecl(t); break;
 
-			case ScribbleParser.GPROTODEF: return new GProtoDef(t);
-			case ScribbleParser.GPROTOBLOCK: return new GProtoBlock(t);
-			case ScribbleParser.GINTERSEQ: return new GInteractionSeq(t);
+			case ScribbleParser.GPROTODEF: n = new GProtoDef(t); break;
+			case ScribbleParser.GPROTOBLOCK: n = new GProtoBlock(t); break;
+			case ScribbleParser.GINTERSEQ: n = new GInteractionSeq(t); break;
 
-			case ScribbleParser.SIG_LIT: return new SigLitNode(t);
-			case ScribbleParser.PAYELEM_LIST: return new PayElemList(t);
-			case ScribbleParser.UNARY_PAYELEM: return new UnaryPayElem<>(t);
+			case ScribbleParser.SIG_LIT: n = new SigLitNode(t); break;
+			case ScribbleParser.PAYELEM_LIST: n = new PayElemList(t); break;
+			case ScribbleParser.UNARY_PAYELEM: n = new UnaryPayElem<>(t); break;
 
-			case ScribbleParser.GCONNECT: return new GConnect(t);
-			case ScribbleParser.GDCONN: return new GDisconnect(t);
-			case ScribbleParser.GMSGTRANSFER: return new GMsgTransfer(t);
-			case ScribbleParser.GWRAP: return new GWrap(t);
+			case ScribbleParser.GMSGTRANSFER: n = new GMsgTransfer(t); break;
+			case ScribbleParser.GCONNECT: n = new GConnect(t); break;
+			case ScribbleParser.GDCONN: n = new GDisconnect(t); break;
+			case ScribbleParser.GWRAP: n = new GWrap(t); break;
 
-			case ScribbleParser.GCONTINUE: return new GContinue(t);
-			case ScribbleParser.GDO: return new GDo(t);
-				
-			case ScribbleParser.ROLEARG_LIST: return new RoleArgList(t);
-			case ScribbleParser.ROLEARG: return new RoleArg(t);
-			case ScribbleParser.NONROLEARG_LIST: return new NonRoleArgList(t);
-			case ScribbleParser.NONROLEARG: return new NonRoleArg(t);
+			case ScribbleParser.GCONTINUE: n = new GContinue(t); break;
+			case ScribbleParser.GDO: n = new GDo(t); break;
 
-			case ScribbleParser.GCHOICE: return new GChoice(t);
-			case ScribbleParser.GRECURSION: return new GRecursion(t);
+			case ScribbleParser.ROLEARG_LIST: n = new RoleArgList(t); break;
+			case ScribbleParser.ROLEARG: n = new RoleArg(t); break;
+			case ScribbleParser.NONROLEARG_LIST: n = new NonRoleArgList(t); break;
+			case ScribbleParser.NONROLEARG: n = new NonRoleArg(t); break;
+
+			case ScribbleParser.GCHOICE: n = new GChoice(t); break;
+			case ScribbleParser.GRECURSION: n = new GRecursion(t); break;
 
 			// Special cases
-			case ScribbleParser.EMPTY_OP: return new OpNode(t);  // From Scribble.g, token (t) text is OpNode.EMPTY_OP_TOKEN_TEXT
+			case ScribbleParser.EMPTY_OP: n = new OpNode(t); break;  // From Scribble.g, token (t) text is OpNode.EMPTY_OP_TOKEN_TEXT*/
 
 			default:
 			{
 				throw new RuntimeException("[TODO] Unknown token type (cf. ScribbleParser): " + t);
 			}
 		}
+		n.decorateDel(this.df);
+		return n;
 	}
 }

@@ -21,6 +21,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GDelegType;
 import org.scribble.core.type.name.PayElemType;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -56,7 +57,7 @@ public class GDelegPayElem extends ScribNodeBase implements PayElem<Local>
 	}
 
 	// "add", not "set"
-	public void addChildren1(GProtoNameNode proto, RoleNode role)
+	public void addScribChildren(GProtoNameNode proto, RoleNode role)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(proto);
@@ -68,12 +69,18 @@ public class GDelegPayElem extends ScribNodeBase implements PayElem<Local>
 	{
 		return new GDelegPayElem(this);
 	}
+	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.GDelegPayElem(this);
+	}
 
 	public GDelegPayElem reconstruct(GProtoNameNode proto, RoleNode role)
 	{
 		GDelegPayElem dup = dupNode();
-		addChildren1(proto, role);
-		dup = (GDelegPayElem) dup.del(del());
+		addScribChildren(proto, role);
+		dup.setDel(del());  // No copy
 		return dup;
 	}
 

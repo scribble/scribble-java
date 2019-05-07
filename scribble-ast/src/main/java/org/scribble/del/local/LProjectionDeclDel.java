@@ -13,7 +13,35 @@
  */
 package org.scribble.del.local;
 
-public class LProjectionDeclDel extends LProtocolDeclDel
+public class LProjectionDeclDel extends LProtoDeclDel
 {
+	public LProjectionDeclDel()
+	{
 
+	}
+
+	/*@Override
+	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent,
+			ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited)
+			throws ScribException
+	{
+		LProjectionDecl lpd = (LProjectionDecl) visited;
+		LProtoHeader hdrtmp = lpd.getHeaderChild();
+		// FIXME: ensure all role params are used, to avoid empty roledecllist
+		Set<Role> occs = ((LProtoDeclDel) lpd.del()).getProtoDeclContext()
+				.getRoleOccurrences();
+		List<RoleDecl> rds = hdrtmp.getRoleDeclListChild().getDeclChildren()
+				.stream().filter(rd -> occs.contains(rd.getDeclName()))
+				.collect(Collectors.toList());
+		RoleDeclList rdl = fixer.job.af
+				.RoleDeclList(hdrtmp.getRoleDeclListChild().getSource(), rds);
+		LProtoHeader hdr = (LProtoHeader) hdrtmp.reconstruct(hdrtmp.getNameNodeChild(),
+				hdrtmp.getParamDeclListChild(), rdl);
+		LProjectionDecl fixed = (LProjectionDecl) lpd.reconstruct(lpd.getModifierListChild(), hdr, lpd.getDefChild());
+		
+		fixer.job.debugPrintln("\n[DEBUG] Projected " + lpd//.getParentChild()
+				+ " for " + lpd.getSelfRole() + ":\n" + fixed);
+		
+		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, fixed);
+	}*/
 }

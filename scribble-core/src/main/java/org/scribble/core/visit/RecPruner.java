@@ -24,11 +24,17 @@ import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Recursion;
 import org.scribble.core.type.session.SType;
 import org.scribble.core.type.session.Seq;
+import org.scribble.core.visit.gather.RecVarGatherer;
 
 // Assumes no shadowing, e.g., use after inlining recvar disamb (also used after projection)
 public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>
 		extends STypeVisitorNoThrow<K, B>
 {
+	protected RecPruner()
+	{
+		
+	}
+
 	@Override
 	public SType<K, B> visitChoice(Choice<K, B> n)
 	{
@@ -61,7 +67,7 @@ public class RecPruner<K extends ProtoKind, B extends Seq<K, B>>
 			SType<K, B> e1 = (SType<K, B>) e.visitWithNoThrow(this);
 			if (e1 instanceof Seq<?, ?>)  // cf. visitRecursion  (also cf. LSkip)
 			{
-				elems.addAll(((Seq<K, B>) e1).getElements());  // Handles empty Seq case
+				elems.addAll(((Seq<K, B>) e1).elems);//getElements());  // Handles empty Seq case
 			}
 			else
 			{

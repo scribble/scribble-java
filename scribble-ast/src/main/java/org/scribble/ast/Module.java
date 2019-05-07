@@ -22,12 +22,17 @@ import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.global.GProtoDecl;
+import org.scribble.ast.local.LProtoDecl;
 import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
-import org.scribble.core.type.name.SigName;
+import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.core.type.name.ProtoName;
+import org.scribble.core.type.name.SigName;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -87,8 +92,9 @@ public class Module extends ScribNodeBase
 	}
 
 	// "add", not "set"
-	public void addChildren1(ModuleDecl moddecl, List<ImportDecl<?>> imports,
-			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
+	public void addScribChildren(ModuleDecl moddecl,
+			List<? extends ImportDecl<?>> imports,
+			List<? extends NonProtoDecl<?>> data, List<? extends ProtoDecl<?>> protos)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(moddecl);
@@ -104,12 +110,18 @@ public class Module extends ScribNodeBase
 		return new Module(this);
 	}
 	
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.Module(this);
+	}
+	
 	// Set args as children on a dup of this -- children *not* cloned
 	protected Module reconstruct(ModuleDecl moddecl, List<ImportDecl<?>> imports,
 			List<NonProtoDecl<?>> data, List<ProtoDecl<?>> protos)
 	{
 		Module dup = dupNode();
-		dup.addChildren1(moddecl, imports, data, protos);
+		dup.addScribChildren(moddecl, imports, data, protos);
 		dup.setDel(del());  // No copy
 		return dup;
 	}
@@ -127,62 +139,79 @@ public class Module extends ScribNodeBase
 				.visitChildListWithClassEqualityCheck(this, getProtoDeclChildren(), nv);
 		return reconstruct(moddecl, imports, data, protos);
 	}
-	
-	public DataDecl getDataTypeDeclChild(DataName simpname)  // Simple name (as for getProtocolDecl)
+
+	public DataDecl getTypeDeclChild(DataName simpname)
 	{
-		Optional<DataDecl> res = getNonProtoDeclChildren().stream()
-				.filter(x -> (x instanceof DataDecl)
-						&& x.getDeclName().equals(simpname))
-				.map(x -> (DataDecl) x).findFirst();  // No duplication check, rely on WF
-		if (!res.isPresent())
-		{
-			throw new RuntimeException("Type decl not found: " + simpname);
-		}
-		return res.get();
+		return (DataDecl) getNonProtoDeclChild(simpname, NonProtoDecl::isDataDecl);
 	}
 
-	// CHECKME: allow sig and type decls with same decl name in same module?
-	public SigDecl getMessageSigDeclChild(SigName simpname)
+	public SigDecl getSigDeclChild(SigName simpname)
 	{
-		Optional<SigDecl> res = getNonProtoDeclChildren().stream()
-				.filter(x -> (x instanceof SigDecl)
-						&& x.getDeclName().equals(simpname))
-				.map(x -> (SigDecl) x).findFirst();  // No duplication check, rely on WF
+		return (SigDecl) getNonProtoDeclChild(simpname, NonProtoDecl::isSigDecl);
+	}
+
+	private NonProtoDecl<?> getNonProtoDeclChild(MemberName<?> simpname,
+			Predicate<NonProtoDecl<?>> f)
+	{
+		Optional<NonProtoDecl<?>> res = getNonProtoDeclChildren().stream()
+				.filter(x -> f.test(x) && x.getDeclName().equals(simpname))
+				.findFirst();  // No duplication check, rely on WF
 		if (!res.isPresent())
 		{
-			throw new RuntimeException("Sig decl not found: " + simpname);
+			throw new RuntimeException("Data decl not found: " + simpname);
 		}
 		return res.get();
 	}
 	
 	public List<GProtoDecl> getGProtoDeclChildren()
 	{
-		/*return getChildren().stream().filter(IS_GPROTOCOLDECL).map(TO_GPROTOCOLDECL)
-				.collect(Collectors.toList());*/
 		return getProtoDeclChildren().stream().filter(x -> x.isGlobal())
 				.map(x -> (GProtoDecl) x).collect(Collectors.toList());
+						// Less efficient, but smaller code
+	}
+	
+	public List<LProtoDecl> getLProtoDeclChildren()
+	{
+		return getProtoDeclChildren().stream().filter(x -> x.isLocal())
+				.map(x -> (LProtoDecl) x).collect(Collectors.toList());
 						// Less efficient, but smaller code
 	}
 	
 	// CHECKME: allow global and local protocols with same simpname in same module? -- currently, no?
 	public boolean hasGProtocolDecl(GProtoName simpname)
 	{
-		return getGProtoDeclChildren().stream()
-				.anyMatch(x -> x.getHeaderChild().getDeclName().equals(simpname));
+		return hasProtocolDeclChild(simpname, ProtoDecl::isGlobal).isPresent();
 	}
 	
-	// Pre: hasProtocolDecl(simpname)
-	public GProtoDecl getGProtocolDeclChild(
-			GProtoName simpname)
+	// Pre: hasGProtocolDecl(simpname)
+	public GProtoDecl getGProtocolDeclChild(GProtoName simpname)
 	{
-		Optional<GProtoDecl> res = getGProtoDeclChildren().stream()
-				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
-				.findFirst();  // No duplication check, rely on WF
+		Optional<ProtoDecl<?>> res = hasProtocolDeclChild(simpname,
+				ProtoDecl::isGlobal);
 		if (!res.isPresent())
 		{
-			throw new RuntimeException("Proto decl not found: " + simpname);
+			throw new RuntimeException("Global proto decl not found: " + simpname);
 		}
-		return res.get();
+		return (GProtoDecl) res.get();
+	}
+
+	public LProtoDecl getLProtocolDeclChild(LProtoName simpname)
+	{
+		Optional<ProtoDecl<?>> res = hasProtocolDeclChild(simpname,
+				ProtoDecl::isLocal);
+		if (!res.isPresent())
+		{
+			throw new RuntimeException("Local proto decl not found: " + simpname);
+		}
+		return (LProtoDecl) res.get();
+	}
+
+	private Optional<ProtoDecl<?>> hasProtocolDeclChild(
+			ProtoName<?> simpname, Predicate<ProtoDecl<?>> f)
+	{
+		return getProtoDeclChildren().stream()
+				.filter(x -> f.test(x) && x.getHeaderChild().getDeclName().equals(simpname))
+				.findFirst();  // No duplication check, rely on WF
 	}
 
 	public ModuleName getFullModuleName()

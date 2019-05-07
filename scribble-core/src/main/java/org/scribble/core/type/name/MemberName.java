@@ -31,6 +31,7 @@ public abstract class MemberName<K extends Kind> extends QualName<K>
 		super(kind, Name.compileElements(ModuleName.EMPTY_MODULENAME.getElements(), simplename));
 	}
 	
+	@Override
 	public ModuleName getPrefix()
 	{
 		return new ModuleName(getPrefixElements());

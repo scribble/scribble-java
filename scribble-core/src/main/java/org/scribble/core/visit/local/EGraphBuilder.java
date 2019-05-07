@@ -25,7 +25,6 @@ import org.scribble.core.model.endpoint.EState;
 import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.MsgId;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
@@ -56,10 +55,10 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 
 	private EGraphBuilderUtil util;
 
-	public EGraphBuilder(Core core)
+	protected EGraphBuilder(Core core)
 	{
 		this.core = core;
-		this.util = core.config.mf.newEGraphBuilderUtil();
+		this.util = core.config.mf.local.EGraphBuilderUtil();
 	}
 	
 	public EGraph finalise()
@@ -120,7 +119,8 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 
 			util.setEntry(nestedExit);  // Must be non null
 			util.setExit(exit);
-			LSeq tail = new LSeq(null, elems.subList(1, elems.size()));
+			LSeq tail = this.core.config.tf.local.LSeq(null,
+					elems.subList(1, elems.size()));
 			tail.visitWithNoThrow(this);  // nestedExit to exit
 		}
 
@@ -163,7 +163,7 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public SType<Local, LSeq> visitDirectedInteraction(
 			DirectedInteraction<Local, LSeq> n)
 	{
-		Role peer = ((n instanceof LSend) || (n instanceof LReq)) ? n.dst
+		Role peer = ((n instanceof LSend) || (n instanceof LReq)) ? n.dst  // CHECKME: refactor LType getSelf/Peer? cf. ast
 				: ((n instanceof LRecv) || (n instanceof LAcc)) ? n.src
 				: null;
 		if (peer == null)
@@ -175,11 +175,11 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 				? ((SigLit) n.msg).payload
 				: Payload.EMPTY_PAYLOAD;
 		// TODO: add toAction method to BasicInteraction (cf. toName methods of NameNodes)
-		EAction a = (n instanceof LSend) ? this.util.mf.newESend(peer, mid, pay)
-				: (n instanceof LRecv) ? this.util.mf.newERecv(peer, mid, pay)
-				: (n instanceof LReq) ? this.util.mf.newEReq(peer, mid, pay)
+		EAction a = (n instanceof LSend) ? this.util.mf.local.ESend(peer, mid, pay)
+				: (n instanceof LRecv) ? this.util.mf.local.ERecv(peer, mid, pay)
+				: (n instanceof LReq) ? this.util.mf.local.EReq(peer, mid, pay)
 				: //(n instanceof LAcc) ? 
-					this.util.mf.newEAcc(peer, mid, pay);  // Action type already checked above
+					this.util.mf.local.EAcc(peer, mid, pay);  // Action type already checked above
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
 	}
@@ -188,14 +188,13 @@ public class EGraphBuilder extends STypeVisitorNoThrow<Local, LSeq>
 	public SType<Local, LSeq> visitDisconnect(DisconnectAction<Local, LSeq> n)
 	{
 		Role peer = ((LDisconnect) n).getPeer();  // CHECKME -- ?
-		EAction a = this.util.mf.newEDisconnect(peer);  // TODO: add toAction method to BasicInteraction
+		EAction a = this.util.mf.local.EDisconnect(peer);  // TODO: add toAction method to BasicInteraction
 		this.util.addEdge(this.util.getEntry(), a, this.util.getExit());
 		return n;
 	}
 
 	@Override
-	public final <N extends ProtoName<Local>> SType<Local, LSeq> visitDo(
-			Do<Local, LSeq, N> n)
+	public final SType<Local, LSeq> visitDo(Do<Local, LSeq> n)
 	{
 		throw new RuntimeException(this.getClass() + " unsupported for Do: " + n);
 	}

@@ -16,24 +16,32 @@ package org.scribble.core.type.session.local;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.core.job.Core;
+import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.kind.NonRoleParamKind;
-import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Do;
 
-public class LDo extends Do<Local, LSeq, LProtoName> implements LType
+public class LDo extends Do<Local, LSeq> implements LType
 {
-	public LDo(CommonTree source, LProtoName proto,
+	protected LDo(CommonTree source, ProtoName<Local> proto,
 			List<Role> roles, List<Arg<? extends NonRoleParamKind>> args)
 	{
 		super(source, proto, roles, args);
 	}
+	
+	@Override
+	public LProtocol getTarget(Core core)
+	{
+		return core.getContext().getProjection(this.proto);  // CHECKME: hardcoded to projections -- factor out "getLocal" (parsed or projected)
+	}
 
 	@Override
 	public LDo reconstruct(CommonTree source,
-			LProtoName proto, List<Role> roles,
+			ProtoName<Local> proto, List<Role> roles,
 			List<Arg<? extends NonRoleParamKind>> args)
 	{
 		return new LDo(source, proto, roles, args);
@@ -77,7 +85,14 @@ public class LDo extends Do<Local, LSeq, LProtoName> implements LType
 	
 	
 
-	/*// CHECKME: factor up to base?
+	/*
+	@Override
+	public LProtoName getProto()
+	{
+		return (LProtoName) this.proto;
+	}
+
+	// CHECKME: factor up to base?
 	@Override
 	public LType getInlined(STypeInliner v)
 	{

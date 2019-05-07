@@ -54,14 +54,7 @@ public class CBEndpointApiGenerator
 	public CBEndpointApiGenerator(Job job, GProtoName fullname, Role self, boolean subtypes)
 	{
 		this.job = job;
-		try
-		{
-			this.core = job.getCore();
-		}
-		catch (ScribException e)  // TODO: refactor
-		{
-			throw new RuntimeException(e);
-		}
+		this.core = job.getCore();
 		this.proto = fullname;
 		this.self = self;
 		
@@ -299,7 +292,7 @@ public class CBEndpointApiGenerator
 						int i = 1;
 						for (PayElemType<?> pet : a.payload.elems)
 						{
-							DataDecl dtd = main.getDataTypeDeclChild((DataName) pet);
+							DataDecl dtd = main.getTypeDeclChild((DataName) pet);
 							messageClass += ", " + dtd.getExtName() + " arg" + i++;
 						}
 					}
@@ -443,7 +436,7 @@ public class CBEndpointApiGenerator
 						int i = 1;
 						for (PayElemType<?> pet : a.payload.elems)
 						{
-							DataDecl dtd = main.getDataTypeDeclChild((DataName) pet);
+							DataDecl dtd = main.getTypeDeclChild((DataName) pet);
 							receiveInterface += ", " + dtd.getExtName() 
 							+ " arg" + i++;
 						}
@@ -480,7 +473,7 @@ public class CBEndpointApiGenerator
 					int i = 0;
 					for (PayElemType<?> pet : a.payload.elems)
 					{
-						DataDecl dtd = main.getDataTypeDeclChild((DataName) pet);
+						DataDecl dtd = main.getTypeDeclChild((DataName) pet);
 						branchAbstract += ", (" + dtd.getExtName() + ") m.payload[" + i++ + "]";
 					}
 					branchAbstract += "); break;\n";

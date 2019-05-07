@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.antlr.runtime.Token;
 import org.scribble.core.type.name.PayElemType;
 import org.scribble.core.type.session.Payload;
+import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
@@ -44,7 +45,7 @@ public class PayElemList extends ScribNodeBase
 	}
 
 	// "add", not "set"
-	public void addChildren1(List<PayElem<?>> elems)
+	public void addScribChildren(List<PayElem<?>> elems)
 	{
 		// Cf. above getters and Scribble.g children order
 		super.addChildren(elems);
@@ -56,10 +57,16 @@ public class PayElemList extends ScribNodeBase
 		return new PayElemList(this);
 	}
 
+	@Override
+	public void decorateDel(DelFactory df)
+	{
+		df.PayElemList(this);
+	}
+
 	protected PayElemList reconstruct(List<PayElem<?>> elems)
 	{
 		PayElemList dup = dupNode();
-		dup.addChildren1(elems);
+		dup.addScribChildren(elems);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

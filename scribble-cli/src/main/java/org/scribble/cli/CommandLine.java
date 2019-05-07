@@ -30,15 +30,16 @@ import org.scribble.ast.ProtoDecl;
 import org.scribble.ast.global.GProtoDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
 import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
-import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.job.CoreContext;
-import org.scribble.core.lang.local.LProtocol;
 import org.scribble.core.model.endpoint.EGraph;
 import org.scribble.core.model.global.SGraph;
+import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.job.Job;
 import org.scribble.job.JobContext;
 import org.scribble.main.Main;
@@ -104,7 +105,7 @@ public class CommandLine
 	// A Scribble extension should override as appropriate
 	protected Main newMain() throws ScribParserException, ScribException
 	{
-		Map<CoreArgs, Boolean> args = Collections.unmodifiableMap(parseJobArgs());
+		Map<CoreArgs, Boolean> args = Collections.unmodifiableMap(parseCoreArgs());
 		if (hasFlag(CLFlags.INLINE_MAIN_MOD_FLAG))
 		{
 			String inline = getUniqueFlagArgs(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
@@ -124,7 +125,7 @@ public class CommandLine
 	}
 	
 	// A Scribble extension should override as appropriate
-	protected Map<CoreArgs, Boolean> parseJobArgs()
+	protected Map<CoreArgs, Boolean> parseCoreArgs()
 	{
 		Map<CoreArgs, Boolean> args = new HashMap<>();
 		args.put(CoreArgs.VERBOSE, hasFlag(CLFlags.VERBOSE_FLAG));
@@ -137,7 +138,6 @@ public class CommandLine
 		args.put(CoreArgs.NO_ACC_CORRELATION_CHECK,
 				hasFlag(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG));
 		args.put(CoreArgs.NO_VALIDATION, hasFlag(CLFlags.NO_VALIDATION_FLAG));
-		args.put(CoreArgs.SPIN, hasFlag(CLFlags.SPIN_FLAG));
 		return args;
 	}
 
@@ -306,15 +306,24 @@ public class CommandLine
 			throws CommandLineException, ScribException
 	{
 		JobContext jobc = job.getContext();
-		Core core = job.getCore();
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtoName fullname = checkGlobalProtocolArg(jobc, args[i]);
-			Role role = checkRoleArg(jobc, fullname, args[i+1]);
-			Map<LProtoName, LProtocol> projections = core.getProjections(fullname,
-					role);  // FIXME: generate and output Module container -- should be done via Lang?
-			System.out.println("\n" + projections.values().stream()
-					.map(p -> p.toString()).collect(Collectors.joining("\n\n")));
+			Role self = checkRoleArg(jobc, fullname, args[i+1]);
+			Map<ProtoName<Local>, Module> projs = job.getProjections(fullname, self);
+			LProtoName rootFullname = InlinedProjector.getFullProjectionName(fullname,
+					self);
+			Module root = projs.get(rootFullname);
+			System.out.println(
+					"\nProjection modules for " + fullname + "@" + self + ":\n\n" + root);
+			for (ProtoName<Local> pfullname : projs.keySet())
+			{
+				// CHECKME: projection decl name is currently *compound* full name (not simple name), OK?
+				if (!pfullname.equals(rootFullname))
+				{
+					System.out.println("\n" + projs.get(pfullname));
+				}
+			}
 		}
 	}
 
@@ -473,7 +482,7 @@ public class CommandLine
 		{
 			f = path -> { System.out.println(path + ":\n" + classes.get(path)); };
 		}
-		classes.keySet().stream().forEach(f);
+		classes.keySet().forEach(f);
 	}
 
 	protected static void runDot(String dot, String png)

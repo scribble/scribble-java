@@ -20,8 +20,7 @@ import org.scribble.core.type.session.Continue;
 
 public class GContinue extends Continue<Global, GSeq> implements GType
 {
-	public GContinue(//org.scribble.ast.Continue<Global> source, 
-			CommonTree source,  // Due to inlining, do -> continue
+	protected GContinue(CommonTree source,  // Due to inlining, do -> continue
 			RecVar recvar)
 	{
 		super(source, recvar);

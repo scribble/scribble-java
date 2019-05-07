@@ -87,7 +87,7 @@ public class ModuleContextBuilder
 		names.modules.put(modname, mod.getFullModuleName());
 		for (NonProtoDecl<?> npd : mod.getNonProtoDeclChildren())
 		{
-			if (npd.isDataTypeDecl())
+			if (npd.isDataDecl())
 			{
 				DataDecl dtd = (DataDecl) npd;
 				DataName qualif = new DataName(modname, dtd.getDeclName());
@@ -170,7 +170,7 @@ public class ModuleContextBuilder
 		
 		for (NonProtoDecl<?> npd : root.getNonProtoDeclChildren())
 		{
-			if (npd.isDataTypeDecl())
+			if (npd.isDataDecl())
 			{
 				DataDecl dtd = (DataDecl) npd;
 				DataName visname = new DataName(dtd.getDeclName().toString());

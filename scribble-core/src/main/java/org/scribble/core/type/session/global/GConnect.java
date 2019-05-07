@@ -23,16 +23,14 @@ public class GConnect extends ConnectAction<Global, GSeq>
 		implements GType
 {
 
-	public GConnect(CommonTree source,  // DirectedInteraction not ideal (imprecise)
+	protected GConnect(CommonTree source,  // DirectedInteraction not ideal (imprecise)
 			Role src, Msg msg, Role dst)
 	{
 		super(source, msg, src, dst);
 	}
 
 	@Override
-	public GConnect reconstruct(
-			CommonTree source, Msg msg, Role src,
-			Role dst)
+	public GConnect reconstruct(CommonTree source, Msg msg, Role src, Role dst)
 	{
 		return new GConnect(source, src, msg, dst);
 	}

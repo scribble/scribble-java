@@ -50,7 +50,8 @@ public abstract class Choice<K extends ProtoKind>
 	public abstract List<? extends ProtoBlock<K>> getBlockChildren();
 	
 	// "add", not "set"
-	public void addChildren1(RoleNode subj, List<? extends ProtoBlock<K>> blocks)
+	public void addScribChildren(RoleNode subj,
+			List<? extends ProtoBlock<K>> blocks)
 	{
 		// Cf. above getters and Scribble.g children order
 		addChild(subj);
@@ -64,7 +65,7 @@ public abstract class Choice<K extends ProtoKind>
 			List<? extends ProtoBlock<K>> blocks)
 	{
 		Choice<K> dup = dupNode();
-		dup.addChildren1(subj, blocks);
+		dup.addScribChildren(subj, blocks);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

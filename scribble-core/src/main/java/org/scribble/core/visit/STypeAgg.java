@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.scribble.core.type.kind.ProtoKind;
-import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.session.Choice;
 import org.scribble.core.type.session.Continue;
 import org.scribble.core.type.session.DirectedInteraction;
@@ -66,8 +65,7 @@ public abstract class STypeAgg<K extends ProtoKind, B extends Seq<K, B>, T>
 		return unit(n);
 	}
 
-	public <N extends ProtoName<K>> T visitDo(Do<K, B, N> n)
-			throws ScribException
+	public T visitDo(Do<K, B> n) throws ScribException
 	{
 		return unit(n);
 	}

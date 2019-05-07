@@ -25,7 +25,7 @@ public abstract class EAction extends MAction<Local>
 {
 	public final Role peer;
 
-	protected final ModelFactory mf;
+	protected final ModelFactory mf;  // Internalising better ensures all constructions points (in a Scrib extension) consistently use the same ef/sf
 
 	protected EAction(ModelFactory mf, Role peer, MsgId<?> mid, Payload pay)
 	{

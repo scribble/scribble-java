@@ -13,12 +13,22 @@
  */
 package org.scribble.util;
 
+import org.antlr.runtime.tree.CommonTree;
+
 public class RuntimeScribException extends RuntimeException
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	public RuntimeScribException(CommonTree blame, String arg0)
+	{
+		// Duplicated from AntlrSourceException
+		super(AntlrSourceException.getRootModuleName(blame) + "(line "
+				+ blame.getLine() + ":" + (blame.getCharPositionInLine()) + "): "
+				+ arg0);
+	}
 
 	public RuntimeScribException()
 	{
