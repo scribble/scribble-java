@@ -19,23 +19,32 @@ import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.ProtoKind;
 
-// TODO CHECKME: factor with MessageTransfer?
-public abstract class ConnectAction<K extends ProtoKind>
+public abstract class WrapAction<K extends ProtoKind>
 		extends DirectedInteraction<K>
 {
 	// ScribTreeAdaptor#create constructor
-	public ConnectAction(Token t)
+	public WrapAction(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public ConnectAction(ConnectAction<K> node)
+	public WrapAction(WrapAction<K> node)
 	{
 		super(node);
 	}
 	
-	// TODO: refactor
+	public RoleNode getClientChild()
+	{
+		return (RoleNode) getSourceChild();
+	}
+
+	public RoleNode getServerChild()
+	{
+		return getDestinationChild();
+	}
+
+	// Cf. ConnectAction
 	public RoleNode getDestinationChild()
 	{
 		List<RoleNode> dests = getDestinationChildren();
@@ -46,16 +55,19 @@ public abstract class ConnectAction<K extends ProtoKind>
 		}
 		return dests.get(0);
 	}
-	
-	// CHECKME: currently only used for toString, because current syntax allows "connect" with no explicit message ?
-	protected boolean isUnitMessage()
+
+	@Override
+	public void addScribChildren(MsgNode msg, RoleNode src, List<RoleNode> dsts)
 	{
-		MsgNode n = getMessageNodeChild();
-		if (!n.isSigLitNode())
-		{
-			return false;
-		}
-		SigLitNode msn = (SigLitNode) n;
-		return msn.getOpChild().isEmpty() && msn.getPayloadListChild().isEmpty();
+		throw new RuntimeException("Unsupported for LWrapAction: " + msg);
+	}
+
+	// "add", not "set"
+	// "Overrides" DirectedInteraction::addScribChildren
+	public void addScribChildren(RoleNode client, RoleNode server)
+	{
+		// Cf. above getters and Scribble.g children order
+		addChild(client);
+		addChild(server);
 	}
 }

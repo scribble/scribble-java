@@ -14,7 +14,7 @@
 package org.scribble.ast.global;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.BasicInteraction;
+import org.scribble.ast.WrapAction;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Global;
 import org.scribble.del.DelFactory;
@@ -23,13 +23,9 @@ import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
 // TODO: factor out base Wrap (cf. Disconnect) -- Wrap is a ConnectionAction?
-public class GWrap extends BasicInteraction<Global>
+public class GWrap extends WrapAction<Global>
 		implements GSimpleSessionNode
 {
-	// TODO: move to a base Wrap -- N.B. DirectedInteraction has its own children indices
-	public static final int CLIENT_CHILD_INDEX = 0;
-	public static final int SERVER_CHILD_INDEX = 1;
-
 	// ScribTreeAdaptor#create constructor
 	public GWrap(Token t)
 	{
@@ -40,24 +36,6 @@ public class GWrap extends BasicInteraction<Global>
 	public GWrap(GWrap node)
 	{
 		super(node);
-	}
-	
-	public RoleNode getClientChild()
-	{
-		return (RoleNode) getChild(CLIENT_CHILD_INDEX);
-	}
-
-	public RoleNode getServerChild()
-	{
-		return (RoleNode) getChild(SERVER_CHILD_INDEX);
-	}
-
-	// "add", not "set"
-	public void addScribChildren(RoleNode client, RoleNode server)
-	{
-		// Cf. above getters and Scribble.g children order
-		addChild(client);
-		addChild(server);
 	}
 	
 	@Override

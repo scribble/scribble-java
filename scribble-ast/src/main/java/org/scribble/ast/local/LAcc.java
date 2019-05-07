@@ -13,8 +13,6 @@
  */
 package org.scribble.ast.local;
 
-import java.util.List;
-
 import org.antlr.runtime.Token;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DelFactory;
@@ -38,12 +36,7 @@ public class LAcc extends LConnectAction implements LSimpleSessionNode
 	@Override
 	public RoleNode getSelfChild()
 	{
-		List<RoleNode> dsts = getDestinationChildren();
-		if (dsts.size() > 1)
-		{
-			throw new RuntimeException("Shouldn't get in here: " + this);  // CHECKME: don't use common src/dst pattern between global/local?
-		}
-		return dsts.get(0);
+		return getDestinationChild();  // CHECKME: don't use common src/dst pattern between global/local?
 	}
 
 	@Override

@@ -14,17 +14,13 @@
 package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
-import org.scribble.ast.BasicInteraction;
-import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.core.type.kind.Local;
 import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 import org.scribble.util.ScribException;
 import org.scribble.visit.AstVisitor;
 
-// TODO: factor out base Wrap (cf. Disconnect)
-public class LClientWrap extends BasicInteraction<Local> // Wrap, ConnectionAction?
+public class LClientWrap extends LWrapAction
 		implements LSimpleSessionNode
 {
 	// ScribTreeAdaptor#create constructor
@@ -38,24 +34,18 @@ public class LClientWrap extends BasicInteraction<Local> // Wrap, ConnectionActi
 	{
 		super(node);
 	}
-	
-	// TOOD: factor out a base
-	public RoleNode getClientChild()
+
+	// CHECKME: factor out implementations with LSend as default methods 
+	@Override
+	public RoleNode getSelfChild()
 	{
-		return (RoleNode) getChild(GWrap.CLIENT_CHILD_INDEX);  // Assuming local will inherit both sides from some base (cf. base ConnectAction)
+		return getSourceChild();
 	}
 
-	public RoleNode getServerChild()
+	@Override
+	public RoleNode getPeerChild()
 	{
-		return (RoleNode) getChild(GWrap.SERVER_CHILD_INDEX);
-	}
-
-	// "add", not "set"
-	public void addScribChildren(RoleNode client, RoleNode server)
-	{
-		// Cf. above getters and Scribble.g children order
-		addChild(client);
-		addChild(server);
+		return getDestinationChild();  // Multi-connect/req not supported
 	}
 	
 	@Override

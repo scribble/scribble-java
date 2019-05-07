@@ -14,53 +14,25 @@
 package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
+import org.scribble.ast.WrapAction;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.DelFactory;
-import org.scribble.util.Constants;
+import org.scribble.core.type.kind.Local;
 
-public class LReq extends LConnectAction implements LSimpleSessionNode
+public abstract class LWrapAction extends WrapAction<Local>
 {
 	// ScribTreeAdaptor#create constructor
-	public LReq(Token t)
+	public LWrapAction(Token t)
 	{
 		super(t);
 	}
 
 	// Tree#dupNode constructor
-	public LReq(LReq node)
+	public LWrapAction(LWrapAction node)
 	{
 		super(node);
 	}
-
-	// CHECKME: factor out implementations with LSend as default methods 
-	@Override
-	public RoleNode getSelfChild()
-	{
-		return getSourceChild();
-	}
-
-	@Override
-	public RoleNode getPeerChild()
-	{
-		return getDestinationChild();  // Multi-connect/req not supported
-	}
 	
-	@Override
-	public LReq dupNode()
-	{
-		return new LReq(this);
-	}
-	
-	@Override
-	public void decorateDel(DelFactory df)
-	{
-		df.LReq(this);
-	}
-
-	@Override
-	public String toString()
-	{
-		return (isUnitMessage() ? "" : getMessageNodeChild() + " ")  // TODO: deprecate ommitted "()" special case
-				+ Constants.REQUEST_KW + " " + getDestinationChild() + ";";
-	}
+	// CHECKME: make an LDirectedAction interface?  cf. LMsgTransfer -- CHECKME: factor out implementations as default methods with Send/Recv?
+	public abstract RoleNode getSelfChild();  // Post: "self" RoleNode
+	public abstract RoleNode getPeerChild();
 }

@@ -341,7 +341,7 @@ public class LProjectionTranslator
 		}
 		else
 		{
-			throw new RuntimeException("[TODO] Unknown LType: " + t.getClass() + "\n" + t);
+			throw new RuntimeException("[TODO] Unhandled LType: " + t.getClass() + "\n" + t);
 		}
 	}
 }
