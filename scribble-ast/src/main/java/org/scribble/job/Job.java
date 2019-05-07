@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,15 +35,23 @@ import org.scribble.core.job.Core;
 import org.scribble.core.job.CoreArgs;
 import org.scribble.core.lang.global.GProtocol;
 import org.scribble.core.lang.local.LProjection;
+import org.scribble.core.type.kind.DataKind;
+import org.scribble.core.type.kind.Kind;
 import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.kind.SigKind;
+import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ModuleName;
 import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.Role;
+import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.STypeFactory;
 import org.scribble.core.type.session.global.GTypeFactoryImpl;
+import org.scribble.core.type.session.local.LSeq;
 import org.scribble.core.type.session.local.LTypeFactoryImpl;
+import org.scribble.core.visit.gather.NonProtoDepsGatherer;
 import org.scribble.core.visit.global.InlinedProjector;
 import org.scribble.del.DelFactory;
 import org.scribble.util.LProjectionTranslator;
@@ -146,6 +155,7 @@ public class Job
 	public Map<LProtoName, Module> getProjections(GProtoName fullname,
 			Role self) throws ScribException
 	{
+		AstFactory af = this.config.af;
 		LProjectionTranslator t = new LProjectionTranslator(this);
 
 		Map<ProtoName<Local>, LProjection> projs = getCore()
@@ -155,13 +165,37 @@ public class Job
 		{
 			LProjection proj = projs.get(pfullname);
 
-			ModuleNameNode modn = this.config.af.ModuleNameNode(null,
-					IdNode.from(this.config.af, pfullname.getPrefix().getElements()));
-			ModuleDecl modd = this.config.af.ModuleDecl(null, modn);
+			LinkedHashSet<MemberName<?>> nonpros = new LinkedHashSet<>();
+			proj.def.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
+					.forEachOrdered(x -> nonpros.add(x));  // setify while preserving order
+
+			ModuleNameNode modn = af.ModuleNameNode(null,
+					IdNode.from(af, pfullname.getPrefix().getElements()));
+			ModuleDecl modd = af.ModuleDecl(null, modn);
 			List<ImportDecl<?>> imports = Collections.emptyList();  // FIXME TODO
-			List<NonProtoDecl<?>> nonprotos = Collections.emptyList();  // FIXME TODO
+			List<NonProtoDecl<?>> nonprods = Collections.emptyList();  // FIXME TODO
+			
+			//GProtoDecl global = this.context.getParsed(fullname);
+			Module m = this.context.getModule(fullname.getPrefix());
+			for (MemberName<?> nonpro : nonpros)
+			{
+				Kind kind = nonpro.getKind();
+				if (kind.equals(DataKind.KIND))
+				{
+					nonprods.add(m.getTypeDeclChild(((DataName) nonpro).getSimpleName()));
+				}
+				else if (kind.equals(SigKind.KIND))
+				{
+					nonprods.add(m.getSigDeclChild(((SigName) nonpro).getSimpleName()));
+				}
+				else
+				{
+					throw new RuntimeException("Unhandled: " + kind + "\n\t" + nonpro);
+				}
+			}
+			
 			List<LProjectionDecl> protos = Arrays.asList(t.translate(proj));
-			Module mod = this.config.af.Module(null, modd, imports, nonprotos, protos);
+			Module mod = af.Module(null, modd, imports, nonprods, protos);
 			projmods.put(pfullname, mod);
 		}
 

@@ -55,7 +55,7 @@ public class DataDecl extends NonProtoDecl<DataKind>
 	}
 	
 	@Override
-	public boolean isDataTypeDecl()
+	public boolean isDataDecl()
 	{
 		return true;
 	}

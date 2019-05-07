@@ -62,12 +62,12 @@ public abstract class NonProtoDecl<K extends NonProtoKind>
 	}
 	
 	// CHECKME: maybe move to ModuleMember
-	public boolean isDataTypeDecl()
+	public boolean isDataDecl()
 	{
 		return false;
 	}
 
-	public boolean isMessageSigNameDecl()
+	public boolean isSigDecl()
 	{
 		return false;
 	}

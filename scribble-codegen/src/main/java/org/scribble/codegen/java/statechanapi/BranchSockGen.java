@@ -294,14 +294,14 @@ public class BranchSockGen extends ScribSockGen
 					int i = 0;
 					for (PayElemType<?> pt : a.payload.elems)
 					{
-						DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+						DataDecl dtd = main.getTypeDeclChild((DataName) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
 			}
 			else
 			{
-				SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				SigDecl msd = main.getSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM 
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";
@@ -381,14 +381,14 @@ public class BranchSockGen extends ScribSockGen
 					int i = 0;
 					for (PayElemType<?> pt : a.payload.elems)
 					{
-						DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // TODO: if not DataType
+						DataDecl dtd = main.getTypeDeclChild((DataName) pt);  // TODO: if not DataType
 						ln += ", " + buffSuper + "(" + dtd.getExtName() + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
 					}
 				}
 			}
 			else
 			{
-				SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				SigDecl msd = main.getSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.getExtName() + ") " +  RECEIVE_MESSAGE_PARAM
 						//+ "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0]"  // CHECKME: betty16.lec2.smtp.SmtpC4
 						+ ")";

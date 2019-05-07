@@ -403,7 +403,7 @@ public class Core
 			ProtoName<Global> fullname, Role self) throws ScribException
 	{
 		Map<ProtoName<Local>, LProjection> res = new HashMap<>();
-		Set<MemberName<?>> nonprotos = new LinkedHashSet<>();
+		//Set<MemberName<?>> nonprotos = new LinkedHashSet<>();
 		LProjection root = this.context.getProjection(fullname, self);
 
 		List<ProtoName<Local>> todo = new LinkedList<>();
@@ -415,17 +415,17 @@ public class Core
 			res.put(pfullname, proj);
 			proj.def.gather(new ProtoDepsCollector<Local, LSeq>()::visit)
 					.filter(x -> !res.containsKey(x)).forEachOrdered(x -> todo.add(x));
-			proj.def.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
-					.forEachOrdered(x -> nonprotos.add(x));
+			/*proj.def.gather(new NonProtoDepsGatherer<Local, LSeq>()::visit)
+					.forEachOrdered(x -> nonprotos.add(x));*/
 		}
 
-		if (!nonprotos.isEmpty())  
+		/*if (!nonprotos.isEmpty())  
 				// CHECKME: best way to handle mixtured of proto and nonproto dependencies?  
 				// nonprotos should refer to source global module?  i.e., projection modules should import globals?  maybe consistent with "projects" clause
 		{
 			throw new RuntimeException(
 					"[TODO] Non-proto dependencies: " + nonprotos + "\n\t" + root);
-		}
+		}*/
 		return res;
 	}
 	

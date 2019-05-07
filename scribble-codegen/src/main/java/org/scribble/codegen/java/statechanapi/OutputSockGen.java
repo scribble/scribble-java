@@ -170,7 +170,7 @@ public class OutputSockGen extends ScribSockGen
 		}
 		else //if (a.mid.isMessageSigName())
 		{
-			SigDecl msd = main.getMessageSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			SigDecl msd = main.getSigDeclChild(((SigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addSendMessageSigNameParams(mb, msd);
 		}
 	}
@@ -222,7 +222,7 @@ public class OutputSockGen extends ScribSockGen
 				{
 					throw new ScribException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
-				DataDecl dtd = main.getDataTypeDeclChild((DataName) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
+				DataDecl dtd = main.getTypeDeclChild((DataName) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
 				ScribSockGen.checkJavaDataTypeDecl(dtd);
 				mb.addParameters(dtd.getExtName() + " " + as.next());
 			}

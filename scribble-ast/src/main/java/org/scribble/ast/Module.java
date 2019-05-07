@@ -28,7 +28,9 @@ import org.scribble.core.type.kind.ProtoKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.ModuleName;
+import org.scribble.core.type.name.ProtoName;
 import org.scribble.core.type.name.SigName;
 import org.scribble.del.DelFactory;
 import org.scribble.util.ScribException;
@@ -137,44 +139,37 @@ public class Module extends ScribNodeBase
 				.visitChildListWithClassEqualityCheck(this, getProtoDeclChildren(), nv);
 		return reconstruct(moddecl, imports, data, protos);
 	}
-	
-	public DataDecl getDataTypeDeclChild(DataName simpname)  // Simple name (as for getProtocolDecl)
+
+	public DataDecl getTypeDeclChild(DataName simpname)
 	{
-		Optional<DataDecl> res = getNonProtoDeclChildren().stream()
-				.filter(x -> (x instanceof DataDecl)
-						&& x.getDeclName().equals(simpname))
-				.map(x -> (DataDecl) x).findFirst();  // No duplication check, rely on WF
-		if (!res.isPresent())
-		{
-			throw new RuntimeException("Type decl not found: " + simpname);
-		}
-		return res.get();
+		return (DataDecl) getNonProtoDeclChild(simpname, NonProtoDecl::isDataDecl);
 	}
 
-	// CHECKME: allow sig and type decls with same decl name in same module?
-	public SigDecl getMessageSigDeclChild(SigName simpname)
+	public SigDecl getSigDeclChild(SigName simpname)
 	{
-		Optional<SigDecl> res = getNonProtoDeclChildren().stream()
-				.filter(x -> (x instanceof SigDecl)
-						&& x.getDeclName().equals(simpname))
-				.map(x -> (SigDecl) x).findFirst();  // No duplication check, rely on WF
+		return (SigDecl) getNonProtoDeclChild(simpname, NonProtoDecl::isSigDecl);
+	}
+
+	private NonProtoDecl<?> getNonProtoDeclChild(MemberName<?> simpname,
+			Predicate<NonProtoDecl<?>> f)
+	{
+		Optional<NonProtoDecl<?>> res = getNonProtoDeclChildren().stream()
+				.filter(x -> f.test(x) && x.getDeclName().equals(simpname))
+				.findFirst();  // No duplication check, rely on WF
 		if (!res.isPresent())
 		{
-			throw new RuntimeException("Sig decl not found: " + simpname);
+			throw new RuntimeException("Data decl not found: " + simpname);
 		}
 		return res.get();
 	}
 	
 	public List<GProtoDecl> getGProtoDeclChildren()
 	{
-		/*return getChildren().stream().filter(IS_GPROTOCOLDECL).map(TO_GPROTOCOLDECL)
-				.collect(Collectors.toList());*/
 		return getProtoDeclChildren().stream().filter(x -> x.isGlobal())
 				.map(x -> (GProtoDecl) x).collect(Collectors.toList());
 						// Less efficient, but smaller code
 	}
 	
-	// TODO: factor out with above
 	public List<LProtoDecl> getLProtoDeclChildren()
 	{
 		return getProtoDeclChildren().stream().filter(x -> x.isLocal())
@@ -189,26 +184,22 @@ public class Module extends ScribNodeBase
 				.anyMatch(x -> x.getHeaderChild().getDeclName().equals(simpname));
 	}
 	
-	// Pre: hasProtocolDecl(simpname)
-	public GProtoDecl getGProtocolDeclChild(
-			GProtoName simpname)
+	// Pre: hasGProtocolDecl(simpname)
+	public GProtoDecl getGProtocolDeclChild(GProtoName simpname)
 	{
-		Optional<GProtoDecl> res = getGProtoDeclChildren().stream()
-				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
-				.findFirst();  // No duplication check, rely on WF
-		if (!res.isPresent())
-		{
-			throw new RuntimeException("Proto decl not found: " + simpname);
-		}
-		return res.get();
+		return (GProtoDecl) getProtocolDeclChild(simpname, ProtoDecl::isGlobal);
 	}
 
-	// Pre: hasProtocolDecl(simpname)  // TODO: factor out with above
-	public LProtoDecl getLProtocolDeclChild(
-			LProtoName simpname)
+	public LProtoDecl getLProtocolDeclChild(LProtoName simpname)
 	{
-		Optional<LProtoDecl> res = getLProtoDeclChildren().stream()
-				.filter(x -> x.getHeaderChild().getDeclName().equals(simpname))
+		return (LProtoDecl) getProtocolDeclChild(simpname, ProtoDecl::isLocal);
+	}
+
+	private ProtoDecl<?> getProtocolDeclChild(
+			ProtoName<?> simpname, Predicate<ProtoDecl<?>> f)
+	{
+		Optional<ProtoDecl<?>> res = getProtoDeclChildren().stream()
+				.filter(x -> f.test(x) && x.getHeaderChild().getDeclName().equals(simpname))
 				.findFirst();  // No duplication check, rely on WF
 		if (!res.isPresent())
 		{
