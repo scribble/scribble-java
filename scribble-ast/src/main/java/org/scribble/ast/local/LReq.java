@@ -13,7 +13,10 @@
  */
 package org.scribble.ast.local;
 
+import java.util.List;
+
 import org.antlr.runtime.Token;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
@@ -29,6 +32,24 @@ public class LReq extends LConnectAction implements LSimpleSessionNode
 	public LReq(LReq node)
 	{
 		super(node);
+	}
+
+	// CHECKME: factor out implementations with LSend as default methods 
+	@Override
+	public RoleNode getSelfChild()
+	{
+		return getSourceChild();
+	}
+
+	@Override
+	public RoleNode getPeerChild()
+	{
+		List<RoleNode> dsts = getDestinationChildren();
+		if (dsts.size() > 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this);  // Multi-connect/req not supported
+		}
+		return dsts.get(0);
 	}
 	
 	@Override

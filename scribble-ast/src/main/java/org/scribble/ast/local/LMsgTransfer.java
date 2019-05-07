@@ -15,6 +15,7 @@ package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.MsgTransfer;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
 
 public abstract class LMsgTransfer extends MsgTransfer<Local>
@@ -31,4 +32,8 @@ public abstract class LMsgTransfer extends MsgTransfer<Local>
 	{
 		super(node);
 	}
+	
+	// CHECKME: make an LDirectedAction interface?  cf. LConnectAction -- CHECKME: factor out implementations as default methods with Acc/Req?
+	public abstract RoleNode getSelfChild();  // Post: "self" RoleNode
+	public abstract RoleNode getPeerChild();
 }

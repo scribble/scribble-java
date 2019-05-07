@@ -13,7 +13,10 @@
  */
 package org.scribble.ast.local;
 
+import java.util.List;
+
 import org.antlr.runtime.Token;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
@@ -29,6 +32,23 @@ public class LRecv extends LMsgTransfer
 	public LRecv(LRecv node)
 	{
 		super(node);
+	}
+
+	@Override
+	public RoleNode getSelfChild()
+	{
+		List<RoleNode> dsts = getDestinationChildren();
+		if (dsts.size() > 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this);  // CHECKME: don't use common src/dst pattern between global/local?
+		}
+		return dsts.get(0);
+	}
+
+	@Override
+	public RoleNode getPeerChild()
+	{
+		return getSourceChild();
 	}
 	
 	@Override

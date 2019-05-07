@@ -13,9 +13,11 @@
  */
 package org.scribble.ast.local;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.runtime.Token;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
 
@@ -31,6 +33,23 @@ public class LSend extends LMsgTransfer
 	public LSend(LSend node)
 	{
 		super(node);
+	}
+
+	@Override
+	public RoleNode getSelfChild()
+	{
+		return getSourceChild();
+	}
+
+	@Override
+	public RoleNode getPeerChild()
+	{
+		List<RoleNode> dsts = getDestinationChildren();
+		if (dsts.size() > 1)
+		{
+			throw new RuntimeException("[TODO] Multi-send: " + this);
+		}
+		return dsts.get(0);
 	}
 	
 	@Override

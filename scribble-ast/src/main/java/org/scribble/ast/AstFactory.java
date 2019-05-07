@@ -147,12 +147,11 @@ public interface AstFactory
 	GRecursion GRecursion(Token t, RecVarNode rv, GProtoBlock block);
 
 	/*LProtoDecl LProtoDecl(Token t, ProtoModList mods,
-			LProtoHeader header, LProtoDef def);  // Not currently used -- local protos not parsed, only projected*/
+			LProtoHeader header, LProtoDef def);  // Not currently used -- local protos not yet parsed, only projected*/
 
 	LProjectionDecl LProjectionDecl(Token t, ProtoModList mods,
 			LProtoHeader header, LProtoDef def, GProtoNameNode fullname,
-			RoleNode self);
-	// del extends that of LProtoDecl
+			RoleNode self);  // del extends that of LProtoDecl
 
 	LProtoHeader LProtoHeader(Token t, LProtoNameNode name, RoleDeclList rs,
 			NonRoleParamDeclList ps);
@@ -162,12 +161,12 @@ public interface AstFactory
 	LProtoBlock LProtoBlock(Token t, LInteractionSeq seq);
 	LInteractionSeq LInteractionSeq(Token t, List<LSessionNode> elems);
 
-	// CHECKME: refactor with self arg? -- cf. core local types -- yes: FIXME
-	LSend LSend(Token t, RoleNode src, MsgNode msg, RoleNode dst);
-	LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode dst);
-	LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode dst);
-	LReq LReq(Token t, RoleNode src, MsgNode msg, RoleNode dst);
-	LDisconnect LDisconnect(Token t, RoleNode left, RoleNode right); 
+	// Following take "self" param in case of parsed Token (not actually supported yet)
+	LSend LSend(Token t, RoleNode self, MsgNode msg, RoleNode dst);
+	LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode self);
+	LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode self);
+	LReq LReq(Token t, RoleNode self, MsgNode msg, RoleNode dst);
+	LDisconnect LDisconnect(Token t, RoleNode self, RoleNode peer); 
 	LClientWrap LClientWrap(Token t, RoleNode client, RoleNode server);
 	LServerWrap LServerWrap(Token t, RoleNode client, RoleNode server);
 

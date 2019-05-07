@@ -54,6 +54,7 @@ public class SubprotoSig
 	public SubprotoSig(LProtocol n)
 	{
 		this(n.fullname, n.roles.stream().map(x -> x.equals(n.self) ? Role.SELF : x)
+						// N.B. role decls (cf. do-args) don't feature self (cf. LSelfDecl), even after pruning/fixing
 						// FIXME: (implicit) self role mess
 				.collect(Collectors.toList()), paramsToArgs(n.params));
 	}

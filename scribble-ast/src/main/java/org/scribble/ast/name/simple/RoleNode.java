@@ -21,6 +21,8 @@ import org.scribble.del.DelFactory;
 
 public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode 
 {
+	//public static final RoleNode SELF = ...;  // No: no token info
+	
 	// Scribble.g, IDENTIFIER<...Node>[$IDENTIFIER]
 	// N.B. ttype (an "imaginary node" type) is discarded, t is a ScribbleParser.ID token type
 	public RoleNode(int ttype, Token t)

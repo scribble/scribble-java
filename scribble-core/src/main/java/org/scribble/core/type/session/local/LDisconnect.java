@@ -29,6 +29,11 @@ public class LDisconnect extends DisconnectAction<Local, LSeq>
 		super(source, Role.SELF, peer);
 	}
 	
+	public Role getSelf()
+	{
+		return this.left;
+	}
+	
 	public Role getPeer()
 	{
 		return this.right;

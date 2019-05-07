@@ -54,6 +54,7 @@ import org.scribble.core.type.kind.SigKind;
 import org.scribble.core.type.name.DataName;
 import org.scribble.core.type.name.MemberName;
 import org.scribble.core.type.name.PayElemType;
+import org.scribble.core.type.name.Role;
 import org.scribble.core.type.name.SigName;
 import org.scribble.core.type.session.Arg;
 import org.scribble.core.type.session.Msg;
@@ -77,11 +78,14 @@ public class LProjectionTranslator
 {
 	public final Job job;
 	private final AstFactory af;
+	
+	private final RoleNode SELF_NODE;  // translate LChoice/LDo currently make their own self RoleNodes
 
 	public LProjectionTranslator(Job job)
 	{
 		this.job = job;
 		this.af = job.config.af;
+		SELF_NODE = this.af.RoleNode(null, Role.SELF.toString());
 	}
 
 	public LProjectionDecl translate(LProjection proj)
@@ -171,45 +175,40 @@ public class LProjectionTranslator
 		}
 	}
 
-  // FIXME: in following, special "self" nodes?
-
-	protected org.scribble.ast.local.LAcc translate(LAcc t)
-	{
-		RoleNode src = this.af.RoleNode(null, t.src.toString());
-		RoleNode dst = this.af.RoleNode(null, t.dst.toString());
-		MsgNode msg = translate(t.msg);
-		return this.af.LAcc(null, src, msg, dst);
-	}
-
-	protected org.scribble.ast.local.LReq translate(LReq t)
-	{
-		RoleNode src = this.af.RoleNode(null, t.src.toString());
-		RoleNode dst = this.af.RoleNode(null, t.dst.toString());
-		MsgNode msg = translate(t.msg);
-		return this.af.LReq(null, src, msg, dst);
-	}
+	// N.B. in the following, "self" are just regular Role names, and translated to regular RoleNode (cf. LSelfDecl)
 
 	protected org.scribble.ast.local.LSend translate(LSend t)
 	{
-		RoleNode src = this.af.RoleNode(null, t.src.toString());
 		RoleNode dst = this.af.RoleNode(null, t.dst.toString());
 		MsgNode msg = translate(t.msg);
-		return this.af.LSend(null, src, msg, dst);
+		return this.af.LSend(null, SELF_NODE, msg, dst);  // Ignoring t.src, but it's "self"
 	}
 
 	protected org.scribble.ast.local.LRecv translate(LRecv t)
 	{
 		RoleNode src = this.af.RoleNode(null, t.src.toString());
+		MsgNode msg = translate(t.msg);
+		return this.af.LRecv(null, src, msg, SELF_NODE);  // Ignoring t.src, but it's "self"
+	}
+
+	protected org.scribble.ast.local.LAcc translate(LAcc t)
+	{
+		RoleNode src = this.af.RoleNode(null, t.src.toString());
+		MsgNode msg = translate(t.msg);
+		return this.af.LAcc(null, src, msg, SELF_NODE);  // Ignoring t.src, but it's "self"
+	}
+
+	protected org.scribble.ast.local.LReq translate(LReq t)
+	{
 		RoleNode dst = this.af.RoleNode(null, t.dst.toString());
 		MsgNode msg = translate(t.msg);
-		return this.af.LRecv(null, src, msg, dst);
+		return this.af.LReq(null, SELF_NODE, msg, dst);  // Ignoring t.src, but it's "self"
 	}
 
 	protected org.scribble.ast.local.LDisconnect translate(LDisconnect t)
 	{
-		RoleNode self = this.af.RoleNode(null, t.left.toString());  // FIXME: remove explicit self parsing from all I/O actions
 		RoleNode peer = this.af.RoleNode(null, t.getPeer().toString());
-		return this.af.LDisconnect(null, self, peer);
+		return this.af.LDisconnect(null, SELF_NODE, peer);  // Ignoring t.src, but it's "self"
 	}
 
 	protected org.scribble.ast.local.LContinue translate(LContinue t)
@@ -274,14 +273,14 @@ public class LProjectionTranslator
 				IdNode.from(this.af, t.proto.getElements()));
 		RoleArgList rs = this.af.RoleArgList(null,  // Cf. translate(LProjectionDecl)
 				t.roles.stream().map(
-						x -> this.af.RoleArg(null, this.af.RoleNode(null, x.toString())))  // FIXME: special "self" node?
+						x -> this.af.RoleArg(null, this.af.RoleNode(null, x.toString())))  // Includes "self"
 						.collect(Collectors.toList()));
 		return this.af.LDo(null, proto, as, rs);
 	}
 
 	protected org.scribble.ast.local.LChoice translate(LChoice t)
 	{
-		RoleNode subj = this.af.RoleNode(null, t.subj.toString());  // CHECKME: subj's already always fixed?
+		RoleNode subj = this.af.RoleNode(null, t.subj.toString());  // Includes "self"
 		List<LProtoBlock> blocks = t.blocks.stream().map(x -> translate(x))
 				.collect(Collectors.toList());
 		return this.af.LChoice(null, subj, blocks);

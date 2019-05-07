@@ -15,6 +15,7 @@ package org.scribble.ast.local;
 
 import org.antlr.runtime.Token;
 import org.scribble.ast.DisconnectAction;
+import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.core.type.kind.Local;
 import org.scribble.del.DelFactory;
 import org.scribble.util.Constants;
@@ -32,6 +33,17 @@ public class LDisconnect extends DisconnectAction<Local>
 	public LDisconnect(LDisconnect node)
 	{
 		super(node);
+	}
+
+	// Cf. core LDisconnect
+	public RoleNode getSelfChild()
+	{
+		return getLeftChild();
+	}
+
+	public RoleNode getPeerChild()
+	{
+		return getRightChild();
 	}
 	
 	@Override

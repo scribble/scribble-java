@@ -48,17 +48,19 @@ public class LRoleDeclAndDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 	}
 	
 	// CHECKME: vf?
-	protected PreSubprotoRoleCollector newRoleCollector()  // N.B. "Pre" role collector
+	protected PreSubprotoRoleCollector newPreRoleCollector()  // N.B. "Pre" role collector
 	{
 		return new PreSubprotoRoleCollector(this.core);
 	}
 	
 	public LProtocol visitLProtocol(LProtocol n)
 	{
-		Set<Role> used = n.def.visitWithNoThrow(newRoleCollector());  // CHECKME: vf?
+		// N.B. must use PreRoleCollector (on orig), standard subproto traversal not possible yet because target proto role decls not yet fixed (being done now)
+		Set<Role> used = n.def.visitWithNoThrow(newPreRoleCollector());  // CHECKME: vf?
 		List<Role> rs = n.roles.stream()
 				.filter(x -> used.contains(x) || x.equals(n.self))  // FIXME: self roledecl not actually being a self role is a mess
 				.collect(Collectors.toList());
+		// N.B. *role decls* (cf. do-args) don't feature "self" (cf. LSelfDecl)
 		LSeq pruned = visitSeq(n.def);
 		return n.reconstruct(n.getSource(), n.mods, n.fullname, rs, n.self,
 				n.params, pruned);  // CHECKME: prune params?
@@ -67,7 +69,7 @@ public class LRoleDeclAndDoArgPruner extends STypeVisitorNoThrow<Local, LSeq>
 	public Do<Local, LSeq> visitDo(Do<Local, LSeq> n)
 	{
 		List<Role> fixed = new LinkedList<>();
-		Set<Role> rs = n.visitWithNoThrow(newRoleCollector());  // N.B. does subproto visiting, unlike RoleGatherer
+		Set<Role> rs = n.visitWithNoThrow(newPreRoleCollector());  // N.B. does subproto visiting, unlike RoleGatherer
 		fixed = n.roles.stream()
 				/*.filter(x -> rs.contains(x) || x.equals(this.self))
 				.map(x -> x.equals(this.self) ? Role.SELF : x)		// FIXME: self roledecl not actually being a self role is a mess*/

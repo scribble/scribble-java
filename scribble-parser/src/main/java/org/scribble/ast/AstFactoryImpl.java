@@ -705,51 +705,51 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LSend LSend(Token t, RoleNode src, MsgNode msg, RoleNode dst)
+	public LSend LSend(Token t, RoleNode self, MsgNode msg, RoleNode dst)
 	{
 		t = newToken(t, ScribbleParser.LSEND);
 		LSend n = new LSend(t);
-		n.addScribChildren(msg, src, Arrays.asList(dst));
+		n.addScribChildren(msg, self, Arrays.asList(dst));
 		n.decorateDel(this.df);
 		return n;
 	}
 
 	@Override
-	public LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode dst)
+	public LRecv LRecv(Token t, RoleNode src, MsgNode msg, RoleNode self)
 	{
 		t = newToken(t, ScribbleParser.LRECV);
 		LRecv n = new LRecv(t);
-		n.addScribChildren(msg, src, Arrays.asList(dst));
+		n.addScribChildren(msg, src, Arrays.asList(self));
 		n.decorateDel(this.df);
 		return n;
 	}
 
 	@Override
-	public LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode dst)
+	public LAcc LAcc(Token t, RoleNode src, MsgNode msg, RoleNode self)
 	{
 		t = newToken(t, ScribbleParser.LACC);
 		LAcc n = new LAcc(t);
-		n.addScribChildren(msg, src, Arrays.asList(dst));
+		n.addScribChildren(msg, src, Arrays.asList(self));
 		n.decorateDel(this.df);
 		return n;
 	}
 
 	@Override
-	public LReq LReq(Token t, RoleNode src, MsgNode msg, RoleNode dst)
+	public LReq LReq(Token t, RoleNode self, MsgNode msg, RoleNode dst)
 	{
 		t = newToken(t, ScribbleParser.LREQ);
 		LReq n = new LReq(t);
-		n.addScribChildren(msg, src, Arrays.asList(dst));
+		n.addScribChildren(msg, self, Arrays.asList(dst));
 		n.decorateDel(this.df);
 		return n;
 	}
 
 	@Override
-	public LDisconnect LDisconnect(Token t, RoleNode left, RoleNode right)
+	public LDisconnect LDisconnect(Token t, RoleNode self, RoleNode peer)
 	{
 		t = newToken(t, ScribbleParser.LDCONN);
 		LDisconnect n = new LDisconnect(t);
-		n.addScribChildren(left, right);
+		n.addScribChildren(self, peer);
 		n.decorateDel(this.df);
 		return n;
 	}

@@ -64,6 +64,39 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 	{
 		return new GProtocol(source, mods, fullname, roles, params, def);
 	}
+	
+	// Cf. (e.g.) checkRoleEnabling, that takes Core
+	// CHECKME: drop from Protocol (after removing Protocol from SType?)
+	// Pre: stack.peek is the sig for the calling Do (or top-level entry), i.e., it gives the roles/args at the call-site
+	@Override
+	public GProtocol getInlined(STypeInliner<Global, GSeq> v)
+	{
+		SubprotoSig sig = new SubprotoSig(this);
+		v.pushSig(sig);
+
+		Substitutor<Global, GSeq> subs = v.core.config.vf.Substitutor(this.roles, sig.roles,
+				this.params, sig.args);
+		GSeq inlined = v.visitSeq(subs.visitSeq(this.def));
+		RecVar rv = v.getInlinedRecVar(sig);
+		GRecursion rec = v.core.config.tf.global.GRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
+		GSeq seq = v.core.config.tf.global.GSeq(null, Arrays.asList(rec));
+		GSeq def = v.core.config.vf.<Global, GSeq>RecPruner().visitSeq(seq);
+		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
+				.collect(Collectors.toSet());
+		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls -- CHECKME: what is an example? was this from before unused role checking?
+				.collect(Collectors.toList());
+		return //new GProtocol
+				reconstruct(getSource(), this.mods, this.fullname, rs,
+				this.params, def);
+	}
+	
+	@Override
+	public GProtocol unfoldAllOnce(STypeUnfolder<Global, GSeq> v)
+	{
+		GSeq unf = v.visitSeq(this.def);
+		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
+				this.params, unf);
+	}
 
 	// Cf. (e.g.) getInlined, that takes the Visitor (not Core)
 	public void checkRoleEnabling(Core core) throws ScribException
@@ -128,45 +161,11 @@ public class GProtocol extends Protocol<Global, GProtoName, GSeq>
 				.getFullProjectionName(this.fullname, self);
 		List<MemberName<? extends NonRoleParamKind>> params =
 				new LinkedList<>(this.params);  // CHECKME: filter params by usage?
-		LProjection proj = new LProjection(this.mods, fullname, this.roles, self, params,
-				this.fullname, pruned);
+		// N.B. also not using PreRoleCollector here for role decl pruning (cf. LRoleDeclAndDoArgPruner), "initial" projection pass not complete yet, so cannot traverse all needed subprotos
+		LProjection proj = new LProjection(this.mods, fullname, this.roles, self,
+				params, this.fullname, pruned);
 		// TODO: fully refactor ext choice subj fixing, do pruning, etc to Job and use AstVisitor?
 		return proj;
-	}
-	
-	// Cf. (e.g.) checkRoleEnabling, that takes Core
-	// CHECKME: drop from Protocol (after removing Protocol from SType?)
-	// Pre: stack.peek is the sig for the calling Do (or top-level entry), i.e., it gives the roles/args at the call-site
-	@Override
-	public GProtocol getInlined(STypeInliner<Global, GSeq> v)
-	{
-		SubprotoSig sig = new SubprotoSig(this);
-		v.pushSig(sig);
-
-		Substitutor<Global, GSeq> subs = v.core.config.vf.Substitutor(this.roles, sig.roles,
-				this.params, sig.args);
-		/*GSeq body = (GSeq) this.def.visitWithNoThrow(subs).visitWithNoThrow(v)
-				.visitWithNoThrow(new RecPruner<>());*/
-		GSeq inlined = v.visitSeq(subs.visitSeq(this.def));
-		RecVar rv = v.getInlinedRecVar(sig);
-		GRecursion rec = v.core.config.tf.global.GRecursion(null, rv, inlined);  // CHECKME: or protodecl source?
-		GSeq seq = v.core.config.tf.global.GSeq(null, Arrays.asList(rec));
-		GSeq def = v.core.config.vf.<Global, GSeq>RecPruner().visitSeq(seq);
-		Set<Role> used = def.gather(new RoleGatherer<Global, GSeq>()::visit)
-				.collect(Collectors.toSet());
-		List<Role> rs = this.roles.stream().filter(x -> used.contains(x))  // Prune role decls -- CHECKME: what is an example? was this from before unused role checking?
-				.collect(Collectors.toList());
-		return //new GProtocol
-				reconstruct(getSource(), this.mods, this.fullname, rs,
-				this.params, def);
-	}
-	
-	@Override
-	public GProtocol unfoldAllOnce(STypeUnfolder<Global, GSeq> v)
-	{
-		GSeq unf = v.visitSeq(this.def);
-		return reconstruct(getSource(), this.mods, this.fullname, this.roles,
-				this.params, unf);
 	}
 	
 	@Override
