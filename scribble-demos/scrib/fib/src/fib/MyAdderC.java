@@ -13,22 +13,23 @@
  */
 package fib;
 
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
 
 import fib.Fib.Adder.Adder;
-import fib.Fib.Adder.channels.C.Adder_C_1;
 import fib.Fib.Adder.roles.C;
+import fib.Fib.Adder.statechans.C.Adder_C_1;
 
 public class MyAdderC
 {
 	public static void main(String[] args) throws Exception
 	{
 		Adder adder = new Adder();
-		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, Adder.C,
+				new ObjectStreamFormatter()))
 		{
-			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
+			se.request(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			Adder_C_1 s1 = new Adder_C_1(se);
 			
