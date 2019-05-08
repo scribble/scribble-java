@@ -16,26 +16,26 @@ package test.test1;
 import java.io.IOException;
 
 import org.scribble.main.ScribRuntimeException;
-import org.scribble.runtime.util.Buf;
 import org.scribble.runtime.message.ObjectStreamFormatter;
 import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.net.SocketChannelServer;
 import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import test.test1.Test1.Proto1.Proto1;
-import test.test1.Test1.Proto1.channels.S.EndSocket;
-import test.test1.Test1.Proto1.channels.S.Proto1_S_1;
-import test.test1.Test1.Proto1.channels.S.Proto1_S_2_Handler;
-import test.test1.Test1.Proto1.channels.S.Proto1_S_3;
-import test.test1.Test1.Proto1.channels.S.ioifaces.Branch_S_C_2_Integer__C_4;
-import test.test1.Test1.Proto1.channels.S.ioifaces.Handle_S_C_2_Integer__C_4;
-import test.test1.Test1.Proto1.channels.S.ioifaces.Receive_S_C_1;
-import test.test1.Test1.Proto1.channels.S.ioifaces.Select_S_C_3_Integer;
-import test.test1.Test1.Proto1.channels.S.ioifaces.Succ_In_C_2_Integer;
-import test.test1.Test1.Proto1.channels.S.ioifaces.Succ_In_C_4;
 import test.test1.Test1.Proto1.ops._2;
 import test.test1.Test1.Proto1.ops._4;
 import test.test1.Test1.Proto1.roles.S;
+import test.test1.Test1.Proto1.statechans.S.EndSocket;
+import test.test1.Test1.Proto1.statechans.S.Proto1_S_1;
+import test.test1.Test1.Proto1.statechans.S.Proto1_S_2_Handler;
+import test.test1.Test1.Proto1.statechans.S.Proto1_S_3;
+import test.test1.Test1.Proto1.statechans.S.ioifaces.Branch_S_C_2_Integer__C_4;
+import test.test1.Test1.Proto1.statechans.S.ioifaces.Handle_S_C_2_Integer__C_4;
+import test.test1.Test1.Proto1.statechans.S.ioifaces.Receive_S_C_1;
+import test.test1.Test1.Proto1.statechans.S.ioifaces.Select_S_C_3_Integer;
+import test.test1.Test1.Proto1.statechans.S.ioifaces.Succ_In_C_2_Integer;
+import test.test1.Test1.Proto1.statechans.S.ioifaces.Succ_In_C_4;
 
 public class MyS
 {
@@ -80,7 +80,7 @@ class Handler implements Proto1_S_2_Handler
 	}
 
 	@Override
-	public void receive(Proto1_S_3 schan, _2 op, Buf<? super Integer> b)
+	public void receive(Proto1_S_3 schan, _2 op, Buf<Integer> b)
 			throws ScribRuntimeException, IOException
 	{
 		System.out.println("Redo: " + b.val);
@@ -101,10 +101,10 @@ class Handler2
 {
 	@Override
 	public void receive(Succ_In_C_2_Integer schan, _2 op,
-			Buf<? super Integer> arg1)
+			Buf<Integer> b)
 			throws ScribRuntimeException, IOException, ClassNotFoundException
 	{
-		System.out.println("Redo: " + arg1.val);
+		System.out.println("Redo: " + b.val);
 		schan
 			.to(Select_S_C_3_Integer.cast).send(Proto1.C, Proto1._3, 123)
 			.to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1)

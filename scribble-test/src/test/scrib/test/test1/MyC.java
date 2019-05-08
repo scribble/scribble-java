@@ -16,15 +16,15 @@
 
 package test.test1;
 
-import org.scribble.runtime.util.Buf;
 import org.scribble.runtime.message.ObjectStreamFormatter;
 import org.scribble.runtime.net.SocketChannelEndpoint;
 import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import test.test1.Test1.Proto1.Proto1;
-import test.test1.Test1.Proto1.channels.C.Proto1_C_1;
-import test.test1.Test1.Proto1.channels.C.Proto1_C_2;
 import test.test1.Test1.Proto1.roles.C;
+import test.test1.Test1.Proto1.statechans.C.Proto1_C_1;
+import test.test1.Test1.Proto1.statechans.C.Proto1_C_2;
 
 public class MyC
 {

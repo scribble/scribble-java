@@ -13,6 +13,7 @@
  */
 package org.scribble.parser;
 
+import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.scribble.ast.AuxMod;
@@ -89,7 +90,12 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 		switch (t.getType())
 		{
 			case ScribbleParser.ID: n = new IdNode(t); break;
-			case ScribbleParser.EXTID: n = new ExtIdNode(t); break;
+			case ScribbleParser.EXTID:
+				t = new CommonToken(t);
+				String text = t.getText();
+				t.setText(text.substring(1, text.length()-1));  // N.B. remove surrounding quotes "..."
+				n = new ExtIdNode(t);
+				break;
 			
 			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] -- N.B. DelDecorator pass needed for them (CHECKME: also do those here instead? to deprecate DelDecorator)
 
