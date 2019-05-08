@@ -53,6 +53,13 @@ public class GDelegType implements PayElemType<Local>, Serializable
 	{
 		return Local.KIND;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return this.proto + "@" + this.role;
+	}
+	
 
 	@Override
 	public boolean equals(Object o)

@@ -42,6 +42,7 @@ import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
@@ -135,6 +136,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.SIG_LIT: n = new SigLitNode(t); break;
 			case ScribbleParser.PAYELEM_LIST: n = new PayElemList(t); break;
 			case ScribbleParser.UNARY_PAYELEM: n = new UnaryPayElem<>(t); break;
+			case ScribbleParser.GDELEG_PAYELEM: n = new GDelegPayElem(t); break;
 
 			case ScribbleParser.GMSGTRANSFER: n = new GMsgTransfer(t); break;
 			case ScribbleParser.GCONNECT: n = new GConnect(t); break;
@@ -161,6 +163,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			}
 		}
 		n.decorateDel(this.df);
+		
 		return n;
 	}
 }
