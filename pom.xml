@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
-<!--  mvn [clean] install [-Dmaven.test.skip=true] [-Dlicense.skip]  -->
-
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--  mvn [clean] install [-Dmaven.test.skip=true] [-Dlicense.skip]  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
@@ -77,14 +71,16 @@
 
 	<modules>
 		<module>scribble-core</module>
-		<module>scribble-parser</module>
-		<module>scribble-cli</module>
-		<module>scribble-codegen</module>
 		<module>scribble-runtime</module>
+    <module>scribble-ast</module>
+		<module>scribble-parser</module>
+		<module>scribble-codegen</module>
+    <module>scribble-main</module>
+		<module>scribble-cli</module>
 		<module>scribble-test</module>
 		<module>scribble-dist</module>
 		<module>scribble-demos</module>
-	</modules>
+  </modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -100,6 +96,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.scribble</groupId>
+				<artifactId>scribble-ast</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scribble</groupId>
 				<artifactId>scribble-cli</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -111,6 +112,11 @@
 			<dependency>
 				<groupId>org.scribble</groupId>
 				<artifactId>scribble-codegen</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scribble</groupId>
+				<artifactId>scribble-main</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -244,7 +250,7 @@
 					<consoleOutput>false</consoleOutput>
 					<suppressionsLocation>checkstyle/suppressions.xml</suppressionsLocation>
 					<failsOnError>false</failsOnError>
-					<useFile />
+					<useFile/>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -285,6 +291,7 @@
 						<exclude>bin/*.sh</exclude>
 						<exclude>scribblec.sh</exclude>
 						<exclude>**/*.swp</exclude>
+						<exclude>scribble-test/**/*.*</exclude>  <!-- CHECKME: not working; doing inside child module pom works though -->
 						<!-- FIXME: "extension" module excludes -->
 						<exclude>scribble-f17/**/*</exclude>
 					</excludes>

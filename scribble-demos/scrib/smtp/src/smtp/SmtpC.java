@@ -12,7 +12,7 @@
  * the License.
  */
 
-//$ java -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/target/classes smtp.SmtpC smtp.cc.ic.ac.uk recipient@foo.com sender@bar.com subj body
+//$ java -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/target/classes smtp.SmtpC smtp.cc.ic.ac.uk sender@bar.com recipient@foo.com subj body
 
 
 package smtp;
@@ -33,25 +33,26 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Base64;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import smtp.Smtp.Smtp.Smtp;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_10;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_11_Cases;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_12;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_2;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_3;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_3_Cases;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_4;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_6;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_7;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_7_Cases;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_8;
-import smtp.Smtp.Smtp.channels.C.Smtp_C_9_Cases;
+import smtp.Smtp.Smtp.statechans.C.EndSocket;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_1;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_10;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_11_Cases;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_12;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_2;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_3;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_3_Cases;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_4;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_6;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_7;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_7_Cases;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_8;
+import smtp.Smtp.Smtp.statechans.C.Smtp_C_9_Cases;
 import smtp.Smtp.Smtp.roles.C;
 import smtp.message.SmtpMessageFormatter;
 import smtp.message.client.Auth;
@@ -70,16 +71,16 @@ public class SmtpC
 	private static final int PORT = 25;
 
 	private final String server;    // e.g., smtp.cc.ic.ac.uk;
-	private final String mailTo;    // recipient@foo.com
-	private final String rcptFrom;  // sender@bar.com
+	private final String mailFrom;  // sender@bar.com
+	private final String rcptTo;    // recipient@foo.com
 	private final String subj;
 	private final String body;
 	
-	public SmtpC(String server, String mailTo, String rcptFrom, String subj, String body) throws Exception
+	public SmtpC(String server, String mailFrom, String rcptTo, String subj, String body) throws Exception
 	{
 		this.server = server;
-		this.mailTo = mailTo;
-		this.rcptFrom = rcptFrom;
+		this.mailFrom = mailFrom;
+		this.rcptTo = rcptTo;
 		this.subj = subj;
 		this.body = body;
 
@@ -97,7 +98,7 @@ public class SmtpC
 		try (MPSTEndpoint<Smtp, C> se =
 				new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
-			se.connect(S, SocketChannelEndpoint::new, this.server, SmtpC.PORT);
+			se.request(S, SocketChannelEndpoint::new, this.server, SmtpC.PORT);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			Smtp_C_2 s2 = s1.receive(S, _220, new Buf<>());
@@ -110,7 +111,7 @@ public class SmtpC
 					)));
 
 			Smtp_C_11_Cases s11cases =
-					s10.send(S, new Mail(this.mailTo))
+					s10.send(S, new Mail(this.mailFrom))
 					   .branch(S);
 			switch (s11cases.op)
 			{
@@ -212,18 +213,19 @@ public class SmtpC
 		}
 	}
 
-	private void sendMail(Smtp_C_12 s12) throws Exception
+	private EndSocket sendMail(Smtp_C_12 s12) throws Exception
 	{
-		s12.send(S, new Rcpt(this.rcptFrom))
-			 .async(S, _250)
-			 .send(S, new Data()) 
-			 .async(S, _354)
-			 .send(S, new Subject(this.subj))
-			 .send(S, new DataLine(this.body))
-			 .send(S, new EndOfData())
-			 .receive(S, _250, new Buf<>()) 
-			 .send(S, new Quit())
-			 .receive(S, _221, new Buf<>());
+		return
+			s12.send(S, new Rcpt(this.rcptTo))
+				 .async(S, _250)
+				 .send(S, new Data()) 
+				 .async(S, _354)
+				 .send(S, new Subject(this.subj))
+				 .send(S, new DataLine(this.body))
+				 .send(S, new EndOfData())
+				 .receive(S, _250, new Buf<>()) 
+				 .send(S, new Quit())
+				 .receive(S, _221, new Buf<>());
 	}
 	
 

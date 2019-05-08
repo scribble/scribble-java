@@ -13,7 +13,7 @@
  */
 package org.scribble.codegen.statetype;
 
-import org.scribble.model.endpoint.EState;
+import org.scribble.core.model.endpoint.EState;
 
 public abstract class STBranchStateBuilder extends STStateChanBuilder
 {
@@ -30,7 +30,7 @@ public abstract class STBranchStateBuilder extends STStateChanBuilder
 		String out = getPreamble(api, s);
 		
 		out += "\n\n";
-		out += this.bb.build(api, s, s.getActions().get(1));  // Getting 1 checks non-unary
+		out += this.bb.build(api, s, s.getDetActions().get(1));  // Getting 1 checks non-unary
 
 		return out;
 	}

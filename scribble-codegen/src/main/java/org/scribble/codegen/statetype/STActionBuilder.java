@@ -13,8 +13,8 @@
  */
 package org.scribble.codegen.statetype;
 
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
 
 public abstract class STActionBuilder
 {

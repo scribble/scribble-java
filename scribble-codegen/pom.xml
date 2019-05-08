@@ -20,5 +20,9 @@
 			<groupId>org.scribble</groupId>
 			<artifactId>scribble-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-ast</artifactId>
+		</dependency>
 	</dependencies>
 </project>

@@ -13,9 +13,9 @@
  */
 package org.scribble.codegen.statetype;
 
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
-import org.scribble.model.endpoint.actions.EReceive;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
+import org.scribble.core.model.endpoint.actions.ERecv;
 
 public abstract class STCaseBuilder extends STStateChanBuilder  // Is a distinct type but not a state -- OK for now
 {
@@ -31,10 +31,10 @@ public abstract class STCaseBuilder extends STStateChanBuilder  // Is a distinct
 	{
 		String out = getPreamble(api, s);
 		
-		for (EAction a : s.getActions())
+		for (EAction a : s.getDetActions())
 		{
 			out += "\n\n";
-			if (a instanceof EReceive)  // FIXME: factor out action kind
+			if (a instanceof ERecv)  // FIXME: factor out action kind
 			{
 				out += this.cb.build(api, s, a);
 			}

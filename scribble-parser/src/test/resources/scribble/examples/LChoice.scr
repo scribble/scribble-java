@@ -3,8 +3,8 @@ module scribble.examples.LChoice;
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
 type <xsd> "{http://www.acme.com/financial}QuoteRequest" from "http://www.acme.com/schemas/QuoteRequest.xsd" as QuoteRequest;
 
-local protocol LChoiceTest at Buyer(role Buyer,role Seller) {
-	choice at Buyer {
+local protocol LChoiceTest(self Buyer, role Seller) {
+	choice at self {
 		buy(Order) to Seller;
 	} or {
 		buy(QuoteRequest) to Seller;

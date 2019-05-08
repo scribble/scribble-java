@@ -22,15 +22,15 @@ import static bettybook.math.scrib.Math.MathService.MathService.S;
 import static bettybook.math.scrib.Math.MathService.MathService.Sum;
 import static bettybook.math.scrib.Math.MathService.MathService.Val;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import bettybook.math.scrib.Math.MathService.MathService;
-import bettybook.math.scrib.Math.MathService.channels.C.EndSocket;
-import bettybook.math.scrib.Math.MathService.channels.C.MathService_C_1;
 import bettybook.math.scrib.Math.MathService.roles.C;
+import bettybook.math.scrib.Math.MathService.statechans.C.EndSocket;
+import bettybook.math.scrib.Math.MathService.statechans.C.MathService_C_1;
 
 public class MathC
 {
@@ -44,9 +44,9 @@ public class MathC
 	{
 		Buf<Integer> i = new Buf<>(n), res = new Buf<>(i.val);
 		MathService sess = new MathService();
-		try (MPSTEndpoint<MathService, C> se = new MPSTEndpoint<>(sess, C, new ObjectStreamFormatter()))
-		{
-			se.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
+		try (MPSTEndpoint<MathService, C> se = new MPSTEndpoint<>(sess, C,
+				new ObjectStreamFormatter())) {
+			se.request(S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			MathService_C_1 s1 = new MathService_C_1(se);
 
@@ -86,7 +86,7 @@ public class MathC
 		MathService sess = new MathService();
 		try (MPSTEndpoint<MathService, C> se = new MPSTEndpoint<>(sess, C, new ObjectStreamFormatter()))
 		{
-			se.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
+			se.request(S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			fibo(new MathService_C_1(se), i1, i2, new Buf<>(i));
 

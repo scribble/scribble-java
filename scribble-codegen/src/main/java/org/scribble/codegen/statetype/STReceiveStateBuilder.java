@@ -15,8 +15,8 @@ package org.scribble.codegen.statetype;
 
 import java.util.List;
 
-import org.scribble.model.endpoint.EState;
-import org.scribble.model.endpoint.actions.EAction;
+import org.scribble.core.model.endpoint.EState;
+import org.scribble.core.model.endpoint.actions.EAction;
 
 public abstract class STReceiveStateBuilder extends STStateChanBuilder
 {
@@ -32,7 +32,7 @@ public abstract class STReceiveStateBuilder extends STStateChanBuilder
 	{
 		String out = getPreamble(api, s);
 		
-		List<EAction> as = s.getActions();
+		List<EAction> as = s.getDetActions();
 		if (as.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + as);

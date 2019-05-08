@@ -14,111 +14,243 @@
 package org.scribble.cli;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.ProtoDecl;
+import org.scribble.ast.global.GProtoDecl;
 import org.scribble.codegen.java.JEndpointApiGenerator;
-import org.scribble.main.AntlrSourceException;
-import org.scribble.main.Job;
-import org.scribble.main.JobContext;
-import org.scribble.main.MainContext;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
-import org.scribble.main.resource.DirectoryResourceLocator;
-import org.scribble.main.resource.ResourceLocator;
-import org.scribble.model.endpoint.EGraph;
-import org.scribble.model.global.SGraph;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.LProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.codegen.java.callbackapi.CBEndpointApiGenerator3;
+import org.scribble.core.job.CoreArgs;
+import org.scribble.core.job.CoreContext;
+import org.scribble.core.model.endpoint.EGraph;
+import org.scribble.core.model.global.SGraph;
+import org.scribble.core.type.kind.Local;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.LProtoName;
+import org.scribble.core.type.name.ProtoName;
+import org.scribble.core.type.name.Role;
+import org.scribble.core.visit.global.InlinedProjector;
+import org.scribble.job.Job;
+import org.scribble.job.JobContext;
+import org.scribble.main.Main;
+import org.scribble.main.resource.locator.DirectoryResourceLocator;
+import org.scribble.main.resource.locator.ResourceLocator;
+import org.scribble.util.AntlrSourceException;
+import org.scribble.util.Pair;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
 
+/**
+ * A Scribble extension should override newCLFlags, newCLArgParser, newMain,
+ * parseJobArgs, doValidationTasks, tryNonBarrierTask and tryBarrierTask as
+ * appropriate
+ * 
+ * @author rhu1
+ */
 public class CommandLine
 {
-	protected final Map<CLArgFlag, String[]> args;  // Maps each flag to list of associated argument values
+	protected final CLFlags flags;
+	protected final List<Pair<String, String[]>> args; 
+			// left = CLFlags String constant, right = flag args (if any) -- ordered by parsing order
 
-	protected CommandLine(CLArgParser p) throws CommandLineException
+	public CommandLine(String... args)
 	{
-		p.parse();
-		this.args = p.getArgs();
-	}
-
-	public CommandLine(String... args) throws CommandLineException
-	{
-		//this.args = new CLArgParser(args).getArgs();
-		this(new CLArgParser(args));
-		if (!this.args.containsKey(CLArgFlag.MAIN_MOD) && !this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
+		this.flags = newCLFlags();
+		try
 		{
-			throw new CommandLineException("No main module has been specified\r\n");
+			this.args = newCLArgParser(this.flags, args).getParsed();
+		}
+		catch (CommandLineException e)
+		{
+			System.err.println(e.getMessage());
+			System.exit(1);
+			throw new RuntimeException("Dummy");  // Already exited above
 		}
 	}
-
-	// A Scribble extension should override newMainContext as appropriate.
-	protected MainContext newMainContext() throws ScribParserException, ScribbleException
+	
+	private boolean hasFlag(String flag)
 	{
-		//boolean jUnit = this.args.containsKey(ArgFlag.JUNIT);
-		boolean debug = this.args.containsKey(CLArgFlag.VERBOSE);  // TODO: factor out (cf. MainContext fields)
-		boolean useOldWF = this.args.containsKey(CLArgFlag.OLD_WF);
-		boolean noLiveness = this.args.containsKey(CLArgFlag.NO_LIVENESS);
-		boolean minEfsm = this.args.containsKey(CLArgFlag.LTSCONVERT_MIN);
-		boolean fair = this.args.containsKey(CLArgFlag.FAIR);
-		boolean noLocalChoiceSubjectCheck = this.args.containsKey(CLArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
-		boolean noAcceptCorrelationCheck = this.args.containsKey(CLArgFlag.NO_ACCEPT_CORRELATION_CHECK);
-		boolean noValidation = this.args.containsKey(CLArgFlag.NO_VALIDATION);
+		return this.args.stream().anyMatch(x -> x.left.equals(flag));
+	}
 
-		List<Path> impaths = this.args.containsKey(CLArgFlag.IMPORT_PATH)
-				? CommandLine.parseImportPaths(this.args.get(CLArgFlag.IMPORT_PATH)[0])
-				: Collections.emptyList();
-		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		if (this.args.containsKey(CLArgFlag.INLINE_MAIN_MOD))
+	private String[] getUniqueFlagArgs(String flag)
+	{
+		return this.args.stream().filter(x -> x.left.equals(flag)).findAny()
+				.get().right;
+	}
+	
+	protected CLFlags newCLFlags()
+	{
+		return new CLFlags();
+	}
+
+	// A Scribble extension should override as appropriate
+	protected CLArgParser newCLArgParser(CLFlags flags, String[] args)
+	{
+		return new CLArgParser(flags, args);
+	}
+
+	// A Scribble extension should override as appropriate
+	protected Main newMain() throws ScribParserException, ScribException
+	{
+		Map<CoreArgs, Boolean> args = Collections.unmodifiableMap(parseCoreArgs());
+		if (hasFlag(CLFlags.INLINE_MAIN_MOD_FLAG))
 		{
-			return new MainContext(debug, locator, this.args.get(CLArgFlag.INLINE_MAIN_MOD)[0], useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+			String inline = getUniqueFlagArgs(CLFlags.INLINE_MAIN_MOD_FLAG)[0];
+			return new Main(inline, args);
 		}
 		else
 		{
-			Path mainpath = CommandLine.parseMainPath(this.args.get(CLArgFlag.MAIN_MOD)[0]);
-			//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
-			return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair,
-					noLocalChoiceSubjectCheck, noAcceptCorrelationCheck, noValidation);
+			List<Path> impaths = hasFlag(CLFlags.IMPORT_PATH_FLAG)
+					? CommandLine
+							.parseImportPaths(getUniqueFlagArgs(CLFlags.IMPORT_PATH_FLAG)[0])
+					: Collections.emptyList();
+			ResourceLocator locator = new DirectoryResourceLocator(impaths);
+			Path mainpath = CommandLine
+					.parseMainPath(getUniqueFlagArgs(CLFlags.MAIN_MOD_FLAG)[0]);
+			return new Main(locator, mainpath, args);
+		}
+	}
+	
+	// A Scribble extension should override as appropriate
+	protected Map<CoreArgs, Boolean> parseCoreArgs()
+	{
+		Map<CoreArgs, Boolean> args = new HashMap<>();
+		args.put(CoreArgs.VERBOSE, hasFlag(CLFlags.VERBOSE_FLAG));
+		args.put(CoreArgs.OLD_WF, hasFlag(CLFlags.OLD_WF_FLAG));
+		args.put(CoreArgs.NO_PROGRESS, hasFlag(CLFlags.NO_PROGRESS_FLAG));
+		args.put(CoreArgs.MIN_EFSM, hasFlag(CLFlags.LTSCONVERT_MIN_FLAG));
+		args.put(CoreArgs.FAIR, hasFlag(CLFlags.FAIR_FLAG));
+		args.put(CoreArgs.NO_LCHOICE_SUBJ_CHECK,
+				hasFlag(CLFlags.NO_LOCAL_CHOICE_SUBJECT_CHECK_FLAG));
+		args.put(CoreArgs.NO_ACC_CORRELATION_CHECK,
+				hasFlag(CLFlags.NO_ACCEPT_CORRELATION_CHECK_FLAG));
+		args.put(CoreArgs.NO_VALIDATION, hasFlag(CLFlags.NO_VALIDATION_FLAG));
+		return args;
+	}
+
+	// AntlrSourceException super of ScribbleException -- needed for, e.g., AssrtCoreSyntaxException
+	// A Scribble extension should override as appropriate
+	protected void doValidationTasks(Job job) 
+			throws AntlrSourceException, ScribParserException,  // Latter in case needed by subclasses
+				CommandLineException
+	{
+		job.runPasses();
+		job.getCore().runPasses();
+	}
+
+	// A Scribble extension should override as appropriate
+	// TODO: rename, barrier misleading (sounds like a sync)
+	protected void tryNonBarrierTask(Job job, Pair<String, String[]> task)
+			throws CommandLineException, ScribException
+	{
+		switch (task.left)  // Flag lab (CLFlags String constants)
+		{
+			case CLFlags.PROJECT_FLAG:
+				printProjection(job, task.right);
+				break;
+			case CLFlags.EFSM_FLAG:
+				outputEGraph(job, task.right, true, true, false);
+				break;
+			case CLFlags.EFSM_PNG_FLAG:
+				outputEGraph(job, task.right, true, true, true);
+				break;
+			case CLFlags.SGRAPH_FLAG:
+				outputSGraph(job, task.right, true, false);
+				break;
+			case CLFlags.SGRAPH_PNG_FLAG:
+				outputSGraph(job, task.right, true, true);
+				break;
+				
+			// CHECKME: -unfair needs to be barrier-ed on syntactic WF? (unfair-transform graph building may crash, e.g., bad.wfchoice.enabling.threeparty.Test02)
+			// Currently, "construction-on-demand" CoreContext getters will still cause these to be attempted even if syntactic WF fails
+			case CLFlags.VALIDATION_EFSM_FLAG:
+				outputEGraph(job, task.right, false, true, false);
+				break;
+			case CLFlags.VALIDATION_EFSM_PNG_FLAG:
+				outputEGraph(job, task.right, false, true, true);
+				break;
+			case CLFlags.UNFAIR_EFSM_FLAG:
+				outputEGraph(job, task.right, false, false, false);
+				break;
+			case CLFlags.UNFAIR_EFSM_PNG_FLAG:
+				outputEGraph(job, task.right, false, false, true);
+				break;
+			case CLFlags.UNFAIR_SGRAPH_FLAG:
+				outputSGraph(job, task.right, false, false);
+				break;
+			case CLFlags.UNFAIR_SGRAPH_PNG_FLAG:
+				outputSGraph(job, task.right, false, true);
+				break;
+
+			default:
+				throw new RuntimeException("Shouldn't get here: " + task.left);
+				// Bad flag should be caught by CLArgParser
 		}
 	}
 
-	public static void main(String[] args) throws CommandLineException, AntlrSourceException
+	// A Scribble extension should override as appropriate
+	// TODO: rename, barrier misleading (sounds like a sync)
+	protected void tryBarrierTask(Job job,
+			Pair<String, String[]> task) throws ScribException, CommandLineException
+	{
+		switch (task.left)
+		{
+			case CLFlags.SESSION_API_GEN_FLAG:
+				outputEndpointApi(job, task.right, true, false, false);
+				break;
+			case CLFlags.STATECHAN_API_GEN_FLAG:
+				outputEndpointApi(job, task.right, false, true, false);
+				break;
+			case CLFlags.API_GEN_FLAG:
+				outputEndpointApi(job, task.right, true, true, false);
+				break;
+			case CLFlags.EVENTDRIVEN_API_GEN_FLAG:
+				outputEndpointApi(job, task.right, false, true, true);  // FIXME: currently need to gen sess API separately?
+				break;
+			default:
+				throw new RuntimeException("Shouldn't get here: " + task.left);
+					// Bad flag should be caught by CLArgParser
+		}
+	}
+
+	public static void main(String[] args)
+			throws CommandLineException, AntlrSourceException
 	{
 		new CommandLine(args).run();
 	}
 
-	public void run() throws CommandLineException, AntlrSourceException  // ScribbleException is for JUnit testing
+	public void run() throws CommandLineException, 
+			AntlrSourceException  // For JUnit harness (ScribException)
 	{
 		try
 		{
 			try
 			{
-				runBody();
+				runTasks();
 			}
-			catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
+			catch (ScribException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 			{
-				if (this.args.containsKey(CLArgFlag.JUNIT) || this.args.containsKey(CLArgFlag.VERBOSE))
+				if (hasFlag(CLFlags.JUNIT_FLAG)  // JUnit harness looks for an exception
+						|| hasFlag(CLFlags.VERBOSE_FLAG))  // Also print full trace for -V
 				{
-					/*RuntimeScribbleException ee = new RuntimeScribbleException(e.getMessage());
-					ee.setStackTrace(e.getStackTrace());
-					throw ee;*/
 					throw e;
 				}
 				else
 				{
-					System.err.println(e.getMessage());  // JUnit harness looks for an exception
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -128,336 +260,253 @@ public class CommandLine
 			System.err.println(e.getMessage());  // No need to give full stack trace, even for debug, for command line errors
 			System.exit(1);
 		}
-		catch (RuntimeScribbleException e)
+		catch (RuntimeScribException e)
 		{
 			System.err.println(e.getMessage());
 			System.exit(1);
 		}
 	}
 
-	protected void runBody() throws ScribParserException, AntlrSourceException, CommandLineException
+	protected void runTasks()
+			throws AntlrSourceException, ScribParserException, CommandLineException
 	{
-		MainContext mc = newMainContext();
-		Job job = mc.newJob();
-		ScribbleException fail = null;
-		try
+		Main mc = newMain();  // Represents current instance of tooling for given CL args
+		Job job = mc.newJob();  // A Job is some series of passes performed on each Module in the MainContext (e.g., cf. Job::runVisitorPass)
+		ScribException err = null;
+		try { doValidationTasks(job); } catch (ScribException x) { err = x; }
+		for (Pair<String, String[]> a : this.args)
 		{
-			doValidationTasks(job);
-		}
-		catch (ScribbleException x)
-		{
-			fail = x;
-		}
-
-		// Attempt certain "output tasks" even if above failed, in case can still do some useful output (hacky)
-		try
-		{
-			tryOutputTasks(job);
-		}
-		catch (ScribbleException x)
-		{
-			if (fail == null)
+			CLFlag flag = this.flags.explicit.get(a.left);  // null for CLFlags.MAIN_MOD_FLAG
+			if (a.left.equals(CLFlags.MAIN_MOD_FLAG) || !flag.enact)
 			{
-				fail = x;
+				continue;
+			}
+			if (!flag.barrier)
+			{
+				try { tryNonBarrierTask(job, a); }
+				catch (ScribException x) { if (err == null) { err = x; } }
+			}
+			else
+			{
+				if (err == null)
+				{
+					try { tryBarrierTask(job, a); }
+					catch (ScribException x) { err = x; }
+				}
 			}
 		}
-
-		if (fail != null)  // Well-formedness check and/or an "attemptable output task" failed
+		if (err != null)
 		{
-			throw fail;
-		}
-
-		// "Non-attemptable" output tasks: should not attempt these if any previous failure
-		doNonAttemptableOutputTasks(job);
-	}
-
-	// AntlrSourceException super of ScribbleException -- needed for, e.g., AssrtCoreSyntaxException
-	protected void doValidationTasks(Job job) throws AntlrSourceException, ScribParserException,  // Latter in case needed by subclasses
-			CommandLineException
-	{
-		/*// Scribble extensions (custom Job passes)
-		if (this.args.containsKey(F17CLArgFlag.F17))
-		{
-			GProtocolName simpname = new GProtocolName(this.args.get(ArgFlag.F17)[0]);
-			F17Main.parseAndCheckWF(job, simpname);  // Includes base passes
-		}
-
-		// Base Scribble
-		else*/
-		{
-			job.checkWellFormedness();
+			throw err;
 		}
 	}
 
-	protected void tryOutputTasks(Job job) throws CommandLineException, ScribbleException
+	// TODO: option to write to file, like API classes
+	private void printProjection(Job job, String[] args)
+			throws CommandLineException, ScribException
 	{
-		// Following must be ordered appropriately -- ?
-		if (this.args.containsKey(CLArgFlag.PROJECT))
-		{
-			printProjections(job);
-		}
-		if (this.args.containsKey(CLArgFlag.EFSM))
-		{
-			printEGraph(job, true, true);
-		}
-		if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM))
-		{
-			printEGraph(job, false, true);
-		}
-		if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM))
-		{
-			printEGraph(job, false, false);
-		}
-		if (this.args.containsKey(CLArgFlag.EFSM_PNG))
-		{
-			drawEGraph(job, true, true);
-		}
-		if (this.args.containsKey(CLArgFlag.VALIDATION_EFSM_PNG))
-		{
-			drawEGraph(job, false, true);
-		}
-		if (this.args.containsKey(CLArgFlag.UNFAIR_EFSM_PNG))
-		{
-			drawEGraph(job, false, false);
-		}
-		if (this.args.containsKey(CLArgFlag.SGRAPH) || this.args.containsKey(CLArgFlag.SGRAPH_PNG)
-				|| this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH) || this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
-		{
-			if (job.useOldWf)
-			{
-				throw new CommandLineException("Global model flag(s) incompatible with: "  + CLArgParser.OLD_WF_FLAG);
-			}
-			if (this.args.containsKey(CLArgFlag.SGRAPH))
-			{
-				printSGraph(job, true);
-			}
-			if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH))
-			{
-				printSGraph(job, false);
-			}
-			if (this.args.containsKey(CLArgFlag.SGRAPH_PNG))
-			{
-				drawSGraph(job, true);
-			}
-			if (this.args.containsKey(CLArgFlag.UNFAIR_SGRAPH_PNG))
-			{
-				drawSGraph(job, false);
-			}
-		}
-	}
-
-	// FIXME: rename
-	protected void doNonAttemptableOutputTasks(Job job) throws ScribbleException, CommandLineException
-	{
-		if (this.args.containsKey(CLArgFlag.SESS_API_GEN))
-		{
-			outputSessionApi(job);
-		}
-		if (this.args.containsKey(CLArgFlag.SCHAN_API_GEN))
-		{
-			outputStateChannelApi(job);
-		}
-		if (this.args.containsKey(CLArgFlag.API_GEN))
-		{
-			outputEndpointApi(job);
-		}
-	}
-
-	// FIXME: option to write to file, like classes
-	private void printProjections(Job job) throws CommandLineException, ScribbleException
-	{
-		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(CLArgFlag.PROJECT);
+		JobContext jobc = job.getContext();
 		for (int i = 0; i < args.length; i += 2)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<LProtocolName, Module> projections = job.getProjections(fullname, role);
-			System.out.println("\n" + projections.values().stream().map((p) -> p.toString()).collect(Collectors.joining("\n\n")));
+			GProtoName fullname = checkGlobalProtocolArg(jobc, args[i]);
+			Role self = checkRoleArg(jobc, fullname, args[i+1]);
+			Map<ProtoName<Local>, Module> projs = job.getProjections(fullname, self);
+			LProtoName rootFullname = InlinedProjector.getFullProjectionName(fullname,
+					self);
+			Module root = projs.get(rootFullname);
+			System.out.println(
+					"\nProjection modules for " + fullname + "@" + self + ":\n\n" + root);
+			for (ProtoName<Local> pfullname : projs.keySet())
+			{
+				// CHECKME: projection decl name is currently *compound* full name (not simple name), OK?
+				if (!pfullname.equals(rootFullname))
+				{
+					System.out.println("\n" + projs.get(pfullname));
+				}
+			}
 		}
 	}
 
 	// dot/aut text output
 	// forUser: true means for API gen and general user info (may be minimised), false means for validation (non-minimised, fair or unfair)
 	// (forUser && !fair) should not hold, i.e. unfair doesn't make sense if forUser
-	private void printEGraph(Job job, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
+	private void outputEGraph(Job job, String[] args, boolean forUser,
+			boolean fair, boolean draw) throws ScribException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
-		String[] args = forUser ? this.args.get(CLArgFlag.EFSM) : (fair ? this.args.get(CLArgFlag.VALIDATION_EFSM) : this.args.get(CLArgFlag.UNFAIR_EFSM));
-		for (int i = 0; i < args.length; i += 2)
-		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+		JobContext jobc = job.getContext();
+		
+			GProtoName fullname = checkGlobalProtocolArg(jobc, args[0]);
+			Role role = checkRoleArg(jobc, fullname, args[1]);
 			EGraph fsm = getEGraph(job, fullname, role, forUser, fair);
-			String out = this.args.containsKey(CLArgFlag.AUT) ? fsm.toAut() : fsm.toDot();
-			System.out.println("\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
+			if (draw)
+			{
+				String png = args[2];
+				runDot(fsm.toDot(), png);
+			}
+			else // print
+			{
+				String out = hasFlag(CLFlags.AUT_FLAG) 
+						? fsm.toAut()
+						: fsm.toDot();  // default: dot
+				System.out.println("\n" + out);  // Endpoint graphs are "inlined" (a single graph is built)
+			}
+	}
+
+	private void outputSGraph(Job job, String[] args, boolean fair,
+			boolean draw) throws ScribException, CommandLineException
+	{
+		JobContext jobc = job.getContext();
+		{
+			GProtoName fullname = checkGlobalProtocolArg(jobc, args[0]);
+			SGraph model = getSGraph(job, fullname, fair);
+			if (draw)
+			{
+				String png = args[1];
+				runDot(model.toDot(), png);
+			}
+			else // print
+			{
+				String out = hasFlag(CLFlags.AUT_FLAG) 
+						? model.toAut()
+						: model.toDot();
+				System.out.println("\n" + out);
+			}
 		}
 	}
 
-	private void drawEGraph(Job job, boolean forUser, boolean fair) throws ScribbleException, CommandLineException
+	private void outputEndpointApi(Job job, String[] args, boolean sess,
+			boolean schan, boolean cb) throws ScribException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
-		String[] args = forUser ? this.args.get(CLArgFlag.EFSM_PNG) : (fair ? this.args.get(CLArgFlag.VALIDATION_EFSM_PNG) : this.args.get(CLArgFlag.UNFAIR_EFSM_PNG));
-		for (int i = 0; i < args.length; i += 3)
+		JobContext jobc = job.getContext();
+		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
 		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			String png = args[i+2];
-			EGraph fsm = getEGraph(job, fullname, role, forUser, fair);
-			runDot(fsm.toDot(), png);
+			GProtoName fullname = checkGlobalProtocolArg(jobc, args[0]);
+			if (sess)
+			{
+				Map<String, String> out = jgen.generateSessionApi(fullname);
+				outputClasses(out);
+			}
+			if (schan)  // CHECKME: does not implicitly generate sess API?
+			{
+				Role self = checkRoleArg(jobc, fullname, args[1]);
+				if (cb)
+				{
+					CBEndpointApiGenerator3 cbgen = new CBEndpointApiGenerator3(job,
+							fullname, self, hasFlag(CLFlags.STATECHAN_SUBTYPES_FLAG));
+					Map<String, String> out = cbgen.build();
+					outputClasses(out);
+				}
+				else
+				{
+					Map<String, String> out = jgen.generateStateChannelApi(fullname,
+							self, hasFlag(CLFlags.STATECHAN_SUBTYPES_FLAG));
+					outputClasses(out);
+				}
+			}
 		}
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	private EGraph getEGraph(Job job, GProtocolName fullname, Role role, boolean forUser, boolean fair)
-			throws ScribbleException, CommandLineException
+	private EGraph getEGraph(Job job, GProtoName fullname, Role role,
+			boolean forUser, boolean fair)
+			throws ScribException, CommandLineException
 	{
-		JobContext jcontext = job.getContext();
-		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
-		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
+		JobContext jobc = job.getContext();
+		CoreContext corec = job.getCore().getContext();
+		GProtoDecl gpd = jobc.getMainModule()
+				.getGProtocolDeclChild(fullname.getSimpleName());
+		if (gpd == null || !gpd.getHeaderChild().getRoleDeclListChild().getRoles()
+				.contains(role))
 		{
-			throw new CommandLineException("Bad FSM construction args: " + Arrays.toString(this.args.get(CLArgFlag.DOT)));
+			throw new CommandLineException("Bad FSM construction args: "
+					+ gpd + ", " + role);
 		}
 		EGraph graph;
 		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
 		{
-			graph = this.args.containsKey(CLArgFlag.LTSCONVERT_MIN)
-					? jcontext.getMinimisedEGraph(fullname, role) : jcontext.getEGraph(fullname, role);
+			graph = hasFlag(CLFlags.LTSCONVERT_MIN_FLAG)
+					? corec.getMinimisedEGraph(fullname, role)
+					: corec.getEGraph(fullname, role);
 		}
 		else  // The (possibly unfair-transformed) internal EFSM for validation
 		{
 			graph = //(!this.args.containsKey(ArgFlag.FAIR) && !this.args.containsKey(ArgFlag.NO_LIVENESS))  // Cf. GlobalModelChecker.getEndpointFSMs
 					!fair
-					? jcontext.getUnfairEGraph(fullname, role) : jcontext.getEGraph(fullname, role);
+					? corec.getUnfairEGraph(fullname, role) 
+					: corec.getEGraph(fullname, role);
 		}
 		if (graph == null)
 		{
-			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+			throw new RuntimeScribException("Shouldn't see this: " + fullname);
+					// Should be caught by some earlier failure
 		}
 		return graph;
 	}
 
-	private void printSGraph(Job job, boolean fair) throws ScribbleException, CommandLineException
+	private SGraph getSGraph(Job job, GProtoName fullname, boolean fair)
+			throws ScribException
 	{
-		JobContext jcontext = job.getContext();
-		String[] args = fair ? this.args.get(CLArgFlag.SGRAPH) : this.args.get(CLArgFlag.UNFAIR_SGRAPH);
-		for (int i = 0; i < args.length; i += 1)
-		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			SGraph model = getSGraph(job, fullname, fair);
-			String out = this.args.containsKey(CLArgFlag.AUT) ? model.toAut() : model.toDot();
-			System.out.println("\n" + out);
-		}
-	}
-
-	private void drawSGraph(Job job, boolean fair) throws ScribbleException, CommandLineException
-	{
-		JobContext jcontext = job.getContext();
-		String[] args = fair ? this.args.get(CLArgFlag.SGRAPH_PNG) : this.args.get(CLArgFlag.UNFAIR_SGRAPH_PNG);
-		for (int i = 0; i < args.length; i += 2)
-		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			String png = args[i+1];
-			SGraph model = getSGraph(job, fullname, fair);
-			runDot(model.toDot(), png);
-		}
-	}
-
-	private static SGraph getSGraph(Job job, GProtocolName fullname, boolean fair) throws ScribbleException
-	{
-		JobContext jcontext = job.getContext();
-		SGraph model = fair ? jcontext.getSGraph(fullname) : jcontext.getUnfairSGraph(fullname);
+		CoreContext jobc2 = job.getCore().getContext();
+		SGraph model = fair 
+				? jobc2.getSGraph(fullname)
+				: jobc2.getUnfairSGraph(fullname);
 		if (model == null)
 		{
-			throw new RuntimeScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+			throw new RuntimeScribException("Shouldn't see this: " + fullname);
+					// Should be caught by some earlier failure
 		}
 		return model;
 	}
 
-	private void outputEndpointApi(Job job) throws ScribbleException, CommandLineException
-	{
-		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(CLArgFlag.API_GEN);
-		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
-		for (int i = 0; i < args.length; i += 2)
-		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Map<String, String> sessClasses = jgen.generateSessionApi(fullname);
-			outputClasses(sessClasses);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<String, String> scClasses = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
-			outputClasses(scClasses);
-		}
-	}
-
-	private void outputSessionApi(Job job) throws ScribbleException, CommandLineException
-	{
-		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(CLArgFlag.SESS_API_GEN);
-		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
-		for (String fullname : args)
-		{
-			GProtocolName gpn = checkGlobalProtocolArg(jcontext, fullname);
-			Map<String, String> classes = jgen.generateSessionApi(gpn);
-			outputClasses(classes);
-		}
-	}
-
-	private void outputStateChannelApi(Job job) throws ScribbleException, CommandLineException
-	{
-		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(CLArgFlag.SCHAN_API_GEN);
-		JEndpointApiGenerator jgen = new JEndpointApiGenerator(job);  // FIXME: refactor (generalise -- use new API)
-		for (int i = 0; i < args.length; i += 2)
-		{
-			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<String, String> classes = jgen.generateStateChannelApi(fullname, role, this.args.containsKey(CLArgFlag.SCHAN_API_SUBTYPES));
-			outputClasses(classes);
-		}
-	}
-
-	// filepath -> class source
-	protected void outputClasses(Map<String, String> classes) throws ScribbleException
+	// classes: filepath -> class source
+	protected void outputClasses(Map<String, String> classes)
+			throws ScribException
 	{
 		Consumer<String> f;
-		if (this.args.containsKey(CLArgFlag.API_OUTPUT))
+		if (hasFlag(CLFlags.API_OUTPUT_DIR_FLAG))
 		{
-			String dir = this.args.get(CLArgFlag.API_OUTPUT)[0];
+			String dir = getUniqueFlagArgs(CLFlags.API_OUTPUT_DIR_FLAG)[0];
 			f = path -> { ScribUtil.handleLambdaScribbleException(() ->
-							{
-								String tmp = dir + "/" + path;
-								if (this.args.containsKey(CLArgFlag.VERBOSE))
-								{
-									System.out.println("[DEBUG] Writing to: " + tmp);
-								}
-								ScribUtil.writeToFile(tmp, classes.get(path)); return null;
-							}); };
+					{
+						String tmp = dir + "/" + path;
+						if (hasFlag(CLFlags.VERBOSE_FLAG))
+						{
+							System.out.println("[DEBUG] Writing to: " + tmp);
+						}
+						ScribUtil.writeToFile(tmp, classes.get(path));
+						return null;
+					});
+			};
 		}
 		else
 		{
 			f = path -> { System.out.println(path + ":\n" + classes.get(path)); };
 		}
-		classes.keySet().stream().forEach(f);
+		classes.keySet().forEach(f);
 	}
 
-	protected static void runDot(String dot, String png) throws ScribbleException, CommandLineException
+	protected static void runDot(String dot, String png)
+			throws ScribException, CommandLineException
 	{
-		String tmpName = png + ".tmp";
-		File tmp = new File(tmpName);
-		if (tmp.exists())
-		{
-			throw new CommandLineException("Cannot overwrite: " + tmpName);
-		}
+		File tmp = null;
 		try
 		{
+			tmp = File.createTempFile(png, ".tmp");
+			String tmpName = tmp.getAbsolutePath();				
 			ScribUtil.writeToFile(tmpName, dot);
 			String[] res = ScribUtil.runProcess("dot", "-Tpng", "-o" + png, tmpName);
 			System.out.print(!res[1].isEmpty() ? res[1] : res[0]);  // already "\n" terminated
 		}
+		catch (IOException e)
+		{
+			throw new CommandLineException(e);
+		}
 		finally
 		{
-			tmp.delete();
+			if (tmp != null)
+			{
+				tmp.delete();
+			}
 		}
 	}
 
@@ -468,36 +517,42 @@ public class CommandLine
 
 	protected static List<Path> parseImportPaths(String paths)
 	{
-		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
+		return Arrays.stream(paths.split(File.pathSeparator)).map(s -> Paths.get(s))
+				.collect(Collectors.toList());
 	}
 
-	protected static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname) throws CommandLineException
+	protected static GProtoName checkGlobalProtocolArg(JobContext jobc,
+			String simpname) throws CommandLineException
 	{
-		GProtocolName simpgpn = new GProtocolName(simpname);
-		Module main = jcontext.getMainModule();
-		if (!main.hasProtocolDecl(simpgpn))
+		GProtoName simpgpn = new GProtoName(simpname);
+		Module main = jobc.getMainModule();
+		if (!main.hasGProtocolDecl(simpgpn))
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
 		}
-		ProtocolDecl<?> pd = main.getProtocolDecl(simpgpn);
+		ProtoDecl<?> pd = main.getGProtocolDeclChild(simpgpn);
 		if (pd == null || !pd.isGlobal())
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
 		}
-		if (pd.isAuxModifier())  // CHECKME: maybe don't check for all, e.g. -project
+		if (pd.isAux())  // CHECKME: maybe don't check for all, e.g. -project
 		{
-			throw new CommandLineException("Invalid aux protocol specified as root: " + simpname);
+			throw new CommandLineException(
+					"Invalid aux protocol specified as root: " + simpname);
 		}
-		return new GProtocolName(jcontext.main, simpgpn);
+		return new GProtoName(jobc.job.config.main, simpgpn);  // TODO: take Job param instead of Jobcontext
 	}
 
-	protected static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename) throws CommandLineException
+	protected static Role checkRoleArg(JobContext jobc,
+			GProtoName fullname, String rolename) throws CommandLineException
 	{
-		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
+		ProtoDecl<?> pd = jobc.getMainModule()
+				.getGProtocolDeclChild(fullname.getSimpleName());
 		Role role = new Role(rolename);
-		if (!pd.header.roledecls.getRoles().contains(role))
+		if (!pd.getHeaderChild().getRoleDeclListChild().getRoles().contains(role))
 		{
-			throw new CommandLineException("Role not declared for " + fullname + ": " + role);
+			throw new CommandLineException(
+					"Role not declared for " + fullname + ": " + role);
 		}
 		return role;
 	}

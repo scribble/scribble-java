@@ -19,15 +19,15 @@ import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.apply
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.reject;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.requestConfirmation;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.Applicant.BuyerBrokerSupplier_Applicant_1;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.Applicant.BuyerBrokerSupplier_Applicant_2_Cases;
 import loan.LoanApplication.BuyerBrokerSupplier.roles.Applicant;
+import loan.LoanApplication.BuyerBrokerSupplier.statechans.Applicant.BuyerBrokerSupplier_Applicant_1;
+import loan.LoanApplication.BuyerBrokerSupplier.statechans.Applicant.BuyerBrokerSupplier_Applicant_2_Cases;
 
 public class LoanApplicant
 {
@@ -37,7 +37,7 @@ public class LoanApplicant
 		try (MPSTEndpoint<BuyerBrokerSupplier, Applicant> se
 				= new MPSTEndpoint<>(sess, Applicant, new ObjectStreamFormatter()))
 		{
-			se.connect(ApplicationPortal, SocketChannelEndpoint::new, "localhost", 8888);
+			se.request(ApplicationPortal, SocketChannelEndpoint::new, "localhost", 8888);
 			
 			BuyerBrokerSupplier_Applicant_2_Cases branch
 				= new BuyerBrokerSupplier_Applicant_1(se)

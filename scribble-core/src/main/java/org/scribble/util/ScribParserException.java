@@ -13,7 +13,7 @@
  */
 package org.scribble.util;
 
-// FIXME: should be in parser module -- maybe make a ModuleLoadingException wrapper?
+// CHECKME: should be in parser module? -- maybe make a ModuleLoadingException wrapper?
 public class ScribParserException extends Exception
 {
 	/**

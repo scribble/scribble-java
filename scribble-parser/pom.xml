@@ -19,6 +19,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-ast</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr-runtime</artifactId>
 		</dependency>

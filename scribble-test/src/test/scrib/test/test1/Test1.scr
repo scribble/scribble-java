@@ -1,0 +1,32 @@
+//http://sandbox.kidstrythisathome.com/erdos/
+
+//$ bin/scribblec.sh scribble-test/src/test/scrib/test/test1/Test1.scr -ip scribble-test/src/test/scrib/ -d scribble-test/src/test/scrib/ -api Proto1 C -V
+//$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib modules/core/src/test/scrib/test/test1/Proto1*.java -d test/doc/test1
+
+module test.test1.Test1;
+
+type <java> "java.lang.Integer" from "rt.jar" as Integer;
+
+global protocol Proto1(role C, role S)
+{
+	rec X
+	{
+		1() from C to S;
+		choice at C
+		{
+			2(Integer) from C to S;
+			3(Integer) from S to C;
+			continue X;
+		}
+		or
+		{
+			4() from C to S;
+		}
+	}
+}
+
+global protocol Proto2(role C, role S)
+{
+	1() from C to S;
+	2() from C to S;
+}

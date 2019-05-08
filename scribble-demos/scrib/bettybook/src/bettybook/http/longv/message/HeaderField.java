@@ -13,7 +13,7 @@
  */
 package bettybook.http.longv.message;
 
-import org.scribble.sesstype.name.Op;
+import org.scribble.core.type.name.Op;
 
 public abstract class HeaderField extends HttpLongMessage
 {

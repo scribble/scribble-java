@@ -19,14 +19,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.type.name.MessageId;
-import org.scribble.type.name.Role;
+import org.scribble.core.type.name.MsgId;
+import org.scribble.core.type.name.Role;
 
 // Mutable
 public class MessageIdMap
 {
 	// dest -> (src -> mids)
-	private Map<Role, Map<Role, Set<MessageId<?>>>> map = new HashMap<>();
+	private Map<Role, Map<Role, Set<MsgId<?>>>> map = new HashMap<>();
 	
 	public MessageIdMap()
 	{
@@ -55,7 +55,7 @@ public class MessageIdMap
 		}
 	}*/
 
-	public void putMessage(Role dest, Role src, MessageId<?> msg)
+	public void putMessage(Role dest, Role src, MsgId<?> msg)
 	{
 		addRolePair(dest, src);
 		this.map.get(dest).get(src).add(msg);
@@ -75,7 +75,7 @@ public class MessageIdMap
 		}
 	}*/
 
-	public void putMessages(Role dest, Role src, Set<MessageId<?>> msgs)
+	public void putMessages(Role dest, Role src, Set<MsgId<?>> msgs)
 	{
 		addRolePair(dest, src);
 		this.map.get(dest).get(src).addAll(msgs);
@@ -108,14 +108,14 @@ public class MessageIdMap
 		return srcs;
 	}*/
 	
-	public Set<MessageId<?>> getMessages(Role dest, Role src)
+	public Set<MsgId<?>> getMessages(Role dest, Role src)
 	{
 		return this.map.get(dest).get(src);
 	}
 
-	public Set<MessageId<?>> getMessages(Role dest)
+	public Set<MsgId<?>> getMessages(Role dest)
 	{
-		Set<MessageId<?>> tmp = new HashSet<>();
+		Set<MsgId<?>> tmp = new HashSet<>();
 		getSources(dest).forEach((src) -> tmp.addAll(getMessages(dest, src)));
 		return tmp;
 	}
@@ -139,7 +139,7 @@ public class MessageIdMap
 	{
 		if (!this.map.containsKey(dest))
 		{
-			Map<Role, Set<MessageId<?>>> map = new HashMap<>();
+			Map<Role, Set<MsgId<?>>> map = new HashMap<>();
 			this.map.put(dest, map);
 			map.put(src, new HashSet<>());
 		}

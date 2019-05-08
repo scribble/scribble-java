@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import org.scribble.runtime.net.ScribMessage;
-import org.scribble.runtime.net.ScribMessageFormatter;
+import org.scribble.runtime.message.ScribMessage;
+import org.scribble.runtime.message.ScribMessageFormatter;
 
 import betty16.lec2.smtp.message.server._220;
 import betty16.lec2.smtp.message.server._250;

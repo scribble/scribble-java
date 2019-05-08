@@ -19,22 +19,22 @@ import static betty16.lec2.smtp.Smtp.Smtp.Smtp._220;
 import static betty16.lec2.smtp.Smtp.Smtp.Smtp._250;
 import static betty16.lec2.smtp.Smtp.Smtp.Smtp._250d;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.LinearSocket;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.statechans.LinearSocket;
+import org.scribble.runtime.util.Buf;
 
 import betty16.lec2.smtp.Smtp.Smtp.Smtp;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.EndSocket;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_6;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import betty16.lec2.smtp.Smtp.Smtp.roles.C;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.EndSocket;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_1;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_4;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_6;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.ioifaces.Branch_C_S_250__S_250d;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.ioifaces.Case_C_S_250__S_250d;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.ioifaces.Select_C_S_Ehlo;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.ioifaces.Succ_In_S_250;
 import betty16.lec2.smtp.message.SmtpMessageFormatter;
 import betty16.lec2.smtp.message.client.Ehlo;
 import betty16.lec2.smtp.message.client.Quit;
@@ -47,8 +47,9 @@ public class SmtpC3 {
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (MPSTEndpoint<Smtp, C> client = new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter())) {
-			client.connect(S, SocketChannelEndpoint::new, host, port);
+		try (MPSTEndpoint<Smtp, C> client = new MPSTEndpoint<>(smtp, C,
+				new SmtpMessageFormatter())) {
+			client.request(S, SocketChannelEndpoint::new, host, port);
 			new SmtpC3().run(new Smtp_C_1(client));
 		}
 	}

@@ -18,17 +18,17 @@ import static coco.fibo.Fibo.Fibonacci.Fibonacci.B;
 import static coco.fibo.Fibo.Fibonacci.Fibonacci.fibonacci;
 import static coco.fibo.Fibo.Fibonacci.Fibonacci.stop;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import coco.fibo.Fibo.Fibonacci.Fibonacci;
-import coco.fibo.Fibo.Fibonacci.channels.B.EndSocket;
-import coco.fibo.Fibo.Fibonacci.channels.B.Fibonacci_B_1;
-import coco.fibo.Fibo.Fibonacci.channels.B.Fibonacci_B_1_Cases;
 import coco.fibo.Fibo.Fibonacci.roles.B;
+import coco.fibo.Fibo.Fibonacci.statechans.B.EndSocket;
+import coco.fibo.Fibo.Fibonacci.statechans.B.Fibonacci_B_1;
+import coco.fibo.Fibo.Fibonacci.statechans.B.Fibonacci_B_1_Cases;
 
 public class FiboB extends Thread
 {
@@ -45,7 +45,8 @@ public class FiboB extends Thread
 	{
 		try (
 			ScribServerSocket ss = new SocketChannelServer(8888);
-			MPSTEndpoint<Fibonacci, B> se = new MPSTEndpoint<>(this.fib, B, new ObjectStreamFormatter()))
+				MPSTEndpoint<Fibonacci, B> se = new MPSTEndpoint<>(this.fib, B,
+						new ObjectStreamFormatter()))
 		{
 			se.accept(ss, A);
 			run(new Fibonacci_B_1(se));

@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import org.scribble.runtime.net.ScribMessage;
-import org.scribble.runtime.net.ScribMessageFormatter;
+import org.scribble.runtime.message.ScribMessage;
+import org.scribble.runtime.message.ScribMessageFormatter;
 
 import fase16.smtp.message.server._220;
 import fase16.smtp.message.server._250;
@@ -48,7 +48,8 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 	}
 
 	@Override
-	public ScribMessage fromBytes(ByteBuffer bb) throws IOException, ClassNotFoundException
+	public ScribMessage fromBytes(ByteBuffer bb)
+			throws IOException, ClassNotFoundException
 	{
 		bb.flip();
 		//byte[] bs = new byte[2];

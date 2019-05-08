@@ -29,6 +29,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.scribble</groupId>
+			<artifactId>scribble-ast</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
 			<artifactId>scribble-parser</artifactId>
 		</dependency>
 		<dependency>

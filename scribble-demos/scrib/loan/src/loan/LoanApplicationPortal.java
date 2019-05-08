@@ -25,17 +25,17 @@ import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.reque
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.respond;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.sendLoanAmount;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.ApplicationPortal.BuyerBrokerSupplier_ApplicationPortal_1;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.ApplicationPortal.BuyerBrokerSupplier_ApplicationPortal_4;
 import loan.LoanApplication.BuyerBrokerSupplier.roles.ApplicationPortal;
+import loan.LoanApplication.BuyerBrokerSupplier.statechans.ApplicationPortal.BuyerBrokerSupplier_ApplicationPortal_1;
+import loan.LoanApplication.BuyerBrokerSupplier.statechans.ApplicationPortal.BuyerBrokerSupplier_ApplicationPortal_4;
 
 public class LoanApplicationPortal
 {
@@ -45,11 +45,12 @@ public class LoanApplicationPortal
 		try (
 			ScribServerSocket ss = new SocketChannelServer(8888);
 			MPSTEndpoint<BuyerBrokerSupplier, ApplicationPortal> se
-					= new MPSTEndpoint<>(sess, ApplicationPortal, new ObjectStreamFormatter()))
+						= new MPSTEndpoint<>(sess, ApplicationPortal,
+								new ObjectStreamFormatter()))
 		{
 			se.accept(ss, Applicant);
-			se.connect(ProcessingDept, SocketChannelEndpoint::new, "localhost", 7777);
-			se.connect(FinanceDept, SocketChannelEndpoint::new, "localhost", 9999);
+			se.request(ProcessingDept, SocketChannelEndpoint::new, "localhost", 7777);
+			se.request(FinanceDept, SocketChannelEndpoint::new, "localhost", 9999);
 			
 			Buf<String> customerName = new Buf<>();
 			Buf<String> dateOfBirth = new Buf<>();
@@ -58,10 +59,11 @@ public class LoanApplicationPortal
 			Buf<Boolean> response = new Buf<>();
 			BuyerBrokerSupplier_ApplicationPortal_4 s4
 				= new BuyerBrokerSupplier_ApplicationPortal_1(se)
-					.receive(Applicant, applyForLoan, customerName, dateOfBirth, annualSalary, creditRating)
-					.send(ProcessingDept, checkEligibility, customerName.val, dateOfBirth.val, annualSalary.val, creditRating.val)
-					.receive(ProcessingDept
-							, respond, response);
+							.receive(Applicant, applyForLoan, customerName, dateOfBirth,
+									annualSalary, creditRating)
+							.send(ProcessingDept, checkEligibility, customerName.val,
+									dateOfBirth.val, annualSalary.val, creditRating.val)
+							.receive(ProcessingDept, respond, response);
 			if (response.val)
 			{
 				Buf<Integer> loan = new Buf<>();

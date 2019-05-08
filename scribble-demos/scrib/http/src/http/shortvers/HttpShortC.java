@@ -17,12 +17,12 @@ import static http.shortvers.HttpShort.Http.Http.C;
 import static http.shortvers.HttpShort.Http.Http.RESPONSE;
 import static http.shortvers.HttpShort.Http.Http.S;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.util.Buf;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.net.SocketChannelEndpoint;
 
 import http.shortvers.HttpShort.Http.Http;
-import http.shortvers.HttpShort.Http.channels.C.Http_C_1;
+import http.shortvers.HttpShort.Http.statechans.C.Http_C_1;
 import http.shortvers.HttpShort.Http.roles.C;
 import http.shortvers.message.HttpShortMessageFormatter;
 import http.shortvers.message.client.Request;
@@ -45,14 +45,15 @@ public class HttpShortC
 		Http http = new Http();
 		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C, new HttpShortMessageFormatter()))
 		{
-			String host = "www.doc.ic.ac.uk"; int port = 80;
-			//String host = "localhost"; int port = 8080;
+			//String host = "www.doc.ic.ac.uk";  int port = 80;  String file = "/~rhu/";
+			//String host = "example.com";  int port = 80;  String file = "/";
+			String host = "localhost"; int port = 8080;  String file = "/";
 		
-			client.connect(S, SocketChannelEndpoint::new, host, port);
+			client.request(S, SocketChannelEndpoint::new, host, port);
 			
 			Buf<Response> buf = new Buf<>();
 			new Http_C_1(client)
-				.send(S, new Request("/~rhu/", "1.1", host))
+				.send(S, new Request(file, "1.1", host))
 				.receive(S, RESPONSE, buf);
 			
 			System.out.println("Response:\n" + buf.val);

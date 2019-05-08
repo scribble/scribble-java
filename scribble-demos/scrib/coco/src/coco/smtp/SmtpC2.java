@@ -21,23 +21,23 @@ import static coco.smtp.Smtp.Smtp.Smtp._220;
 import static coco.smtp.Smtp.Smtp.Smtp._250;
 import static coco.smtp.Smtp.Smtp.Smtp._250d;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.LinearSocket;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.statechans.LinearSocket;
+import org.scribble.runtime.util.Buf;
 
 import coco.smtp.Smtp.Smtp.Smtp;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Quit;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_StartTls;
-import coco.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import coco.smtp.Smtp.Smtp.roles.C;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_1;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_1_Future;
+import coco.smtp.Smtp.Smtp.statechans.C.ioifaces.Branch_C_S_250__S_250d;
+import coco.smtp.Smtp.Smtp.statechans.C.ioifaces.Case_C_S_250__S_250d;
+import coco.smtp.Smtp.Smtp.statechans.C.ioifaces.Receive_C_S_220;
+import coco.smtp.Smtp.Smtp.statechans.C.ioifaces.Select_C_S_Ehlo;
+import coco.smtp.Smtp.Smtp.statechans.C.ioifaces.Select_C_S_Quit;
+import coco.smtp.Smtp.Smtp.statechans.C.ioifaces.Select_C_S_StartTls;
+import coco.smtp.Smtp.Smtp.statechans.C.ioifaces.Succ_In_S_250;
 import coco.smtp.message.SmtpMessageFormatter;
 import coco.smtp.message.client.Ehlo;
 import coco.smtp.message.client.Quit;
@@ -63,9 +63,9 @@ public class SmtpC2
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
-		{
-			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
+		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, Smtp.C,
+				new SmtpMessageFormatter())) {
+			se.request(Smtp.S, SocketChannelEndpoint::new, host, port);
 
 			Buf<Smtp_C_1_Future> b1 = new Buf<>();
 			Smtp_C_1 s1 = new Smtp_C_1(se);

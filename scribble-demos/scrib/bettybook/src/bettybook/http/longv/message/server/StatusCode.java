@@ -13,7 +13,7 @@
  */
 package bettybook.http.longv.message.server;
 
-import org.scribble.sesstype.name.Op;
+import org.scribble.core.type.name.Op;
 
 import bettybook.http.longv.message.HttpLongMessage;
 

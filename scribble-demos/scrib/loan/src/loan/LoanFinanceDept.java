@@ -19,16 +19,16 @@ import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.getLo
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.reject;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.sendLoanAmount;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.FinanceDept.BuyerBrokerSupplier_FinanceDept_1;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.FinanceDept.BuyerBrokerSupplier_FinanceDept_1_Cases;
 import loan.LoanApplication.BuyerBrokerSupplier.roles.FinanceDept;
+import loan.LoanApplication.BuyerBrokerSupplier.statechans.FinanceDept.BuyerBrokerSupplier_FinanceDept_1;
+import loan.LoanApplication.BuyerBrokerSupplier.statechans.FinanceDept.BuyerBrokerSupplier_FinanceDept_1_Cases;
 
 public class LoanFinanceDept
 {

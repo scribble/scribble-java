@@ -13,7 +13,7 @@
  */
 package http.longvers.message.server;
 
-import org.scribble.type.name.Op;
+import org.scribble.core.type.name.Op;
 
 import http.longvers.message.HttpLongMessage;
 

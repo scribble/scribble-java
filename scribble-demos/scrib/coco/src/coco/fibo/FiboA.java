@@ -18,20 +18,20 @@ import static coco.fibo.Fibo.Fibonacci.Fibonacci.B;
 import static coco.fibo.Fibo.Fibonacci.Fibonacci.fibonacci;
 import static coco.fibo.Fibo.Fibonacci.Fibonacci.stop;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import coco.fibo.Fibo.Fibonacci.Fibonacci;
-import coco.fibo.Fibo.Fibonacci.channels.A.EndSocket;
-import coco.fibo.Fibo.Fibonacci.channels.A.Fibonacci_A_1;
-import coco.fibo.Fibo.Fibonacci.channels.A.ioifaces.In_B_fibonacci_Long;
-import coco.fibo.Fibo.Fibonacci.channels.A.ioifaces.Out_B_fibonacci_Long;
-import coco.fibo.Fibo.Fibonacci.channels.A.ioifaces.Out_B_stop;
-import coco.fibo.Fibo.Fibonacci.channels.A.ioifaces.Succ_In_B_fibonacci_Long;
-import coco.fibo.Fibo.Fibonacci.channels.A.ioifaces.Succ_Out_B_fibonacci_Long;
 import coco.fibo.Fibo.Fibonacci.roles.A;
+import coco.fibo.Fibo.Fibonacci.statechans.A.EndSocket;
+import coco.fibo.Fibo.Fibonacci.statechans.A.Fibonacci_A_1;
+import coco.fibo.Fibo.Fibonacci.statechans.A.ioifaces.In_B_fibonacci_Long;
+import coco.fibo.Fibo.Fibonacci.statechans.A.ioifaces.Out_B_fibonacci_Long;
+import coco.fibo.Fibo.Fibonacci.statechans.A.ioifaces.Out_B_stop;
+import coco.fibo.Fibo.Fibonacci.statechans.A.ioifaces.Succ_In_B_fibonacci_Long;
+import coco.fibo.Fibo.Fibonacci.statechans.A.ioifaces.Succ_Out_B_fibonacci_Long;
 
 public class FiboA extends Thread
 {
@@ -47,9 +47,10 @@ public class FiboA extends Thread
 	public void run()
 	{
 		int n = 19;
-		try (MPSTEndpoint<Fibonacci, A> se = new MPSTEndpoint<>(this.fib, A, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Fibonacci, A> se = new MPSTEndpoint<>(this.fib, A,
+				new ObjectStreamFormatter()))
 		{
-			se.connect(B, SocketChannelEndpoint::new, "localhost", 8888);
+			se.request(B, SocketChannelEndpoint::new, "localhost", 8888);
 			run(new Fibonacci_A_1(se), n);  // 4184
 			System.out.println("A #" + n + ": " + this.b.val);
 		}

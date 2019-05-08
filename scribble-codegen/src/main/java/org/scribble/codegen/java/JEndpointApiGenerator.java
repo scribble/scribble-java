@@ -16,14 +16,14 @@ package org.scribble.codegen.java;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
-import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
-import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
-import org.scribble.main.Job;
-import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleException;
-import org.scribble.type.name.GProtocolName;
-import org.scribble.type.name.Role;
+import org.scribble.codegen.java.sessionapi.SessionApiGenerator;
+import org.scribble.codegen.java.statechanapi.StateChannelApiGenerator;
+import org.scribble.codegen.java.statechanapi.ioifaces.IOInterfacesGenerator;
+import org.scribble.core.type.name.GProtoName;
+import org.scribble.core.type.name.Role;
+import org.scribble.job.Job;
+import org.scribble.util.RuntimeScribException;
+import org.scribble.util.ScribException;
 
 public class JEndpointApiGenerator
 {
@@ -34,33 +34,39 @@ public class JEndpointApiGenerator
 		this.job = job;
 	}
 
-	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
+	public Map<String, String> generateSessionApi(GProtoName fullname)
+			throws ScribException
 	{
-		this.job.debugPrintln("\n[Java API gen] Running " + SessionApiGenerator.class + " for " + fullname);
+		this.job.verbosePrintln("\n[Java API gen] Running "
+				+ SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this.job, fullname);  // FIXME: reuse?
 		Map<String, String> map = sg.generateApi();  // filepath -> class source
 		return map;
 	}
 	
-	// FIXME: refactor an EndpointApiGenerator -- ?
-	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
+	// CHECKME: refactor an EndpointApiGenerator -- ?
+	public Map<String, String> generateStateChannelApi(GProtoName fullname,
+			Role self, boolean subtypes) throws ScribException
 	{
 		/*JobContext jc = this.job.getContext();
 		if (jc.getEndpointGraph(fullname, self) == null)
 		{
 			buildGraph(fullname, self);
 		}*/
-		job.debugPrintln("\n[Java API gen] Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
-		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this.job, fullname, self);
+		job.verbosePrintln("\n[Java API gen] Running "
+				+ StateChannelApiGenerator.class + " for " + fullname + "@" + self);
+		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this.job,
+				fullname, self);
 		IOInterfacesGenerator iogen = null;
 		try
 		{
 			iogen = new IOInterfacesGenerator(apigen, subtypes);
 		}
-		catch (RuntimeScribbleException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
+		catch (RuntimeScribException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
 		{
 			//System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring: " + fullname);
-			this.job.warningPrintln("Skipping I/O Interface generation for: " + fullname + "\n  Cause: " + e.getMessage());
+			this.job.warningPrintln("Skipping I/O Interface generation for: "
+					+ fullname + "\n  Cause: " + e.getMessage());
 		}
 		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
 		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?

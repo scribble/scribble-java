@@ -16,22 +16,23 @@ package fib;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import fib.Fib.Adder.Adder;
-import fib.Fib.Adder.channels.S.Adder_S_1;
-import fib.Fib.Adder.channels.S.Adder_S_1_Cases;
-import fib.Fib.Adder.channels.S.Adder_S_3;
 import fib.Fib.Adder.roles.S;
+import fib.Fib.Adder.statechans.S.Adder_S_1;
+import fib.Fib.Adder.statechans.S.Adder_S_1_Cases;
+import fib.Fib.Adder.statechans.S.Adder_S_3;
 
 public class AdderServer
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException
+	public static void main(String[] args) throws IOException,
+			ScribRuntimeException, ExecutionException, InterruptedException
 	{
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
@@ -41,13 +42,14 @@ public class AdderServer
 			while (true)
 			{
 				Adder foo = new Adder();
-				try (MPSTEndpoint<Adder, S> se = new MPSTEndpoint<>(foo, Adder.S, new ObjectStreamFormatter()))
+				try (MPSTEndpoint<Adder, S> se = new MPSTEndpoint<>(foo, Adder.S,
+						new ObjectStreamFormatter()))
 				{
 					se.accept(ss, Adder.C);
 
 					X(new Adder_S_1(se), i1, i2).send(Adder.C, Adder.BYE);
 				}
-				catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
+				catch (ScribRuntimeException | IOException | ClassNotFoundException e)
 				{
 					e.printStackTrace();
 				}
@@ -55,7 +57,9 @@ public class AdderServer
 		}
 	}
 	
-	private static Adder_S_3 X(Adder_S_1 s1, Buf<Integer> i1, Buf<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException, ExecutionException, InterruptedException
+	private static Adder_S_3 X(Adder_S_1 s1, Buf<Integer> i1, Buf<Integer> i2)
+			throws ClassNotFoundException, ScribRuntimeException, IOException,
+			ExecutionException, InterruptedException
 	{
 		Adder_S_1_Cases cases = s1.branch(Adder.C);
 		switch (cases.op)

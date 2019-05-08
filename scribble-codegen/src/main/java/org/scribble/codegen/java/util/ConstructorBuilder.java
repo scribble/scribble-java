@@ -13,7 +13,7 @@
  */
 package org.scribble.codegen.java.util;
 
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.util.RuntimeScribException;
 
 public class ConstructorBuilder extends MethodBuilder
 {
@@ -25,12 +25,12 @@ public class ConstructorBuilder extends MethodBuilder
 	@Override
 	public void setName(String name)
 	{
-		throw new RuntimeScribbleException("Invalid for constructor");
+		throw new RuntimeScribException("Invalid for constructor");
 	}
 	
 	@Override
 	public void setReturn(String ret)
 	{
-		throw new RuntimeScribbleException("Invalid for constructor");
+		throw new RuntimeScribException("Invalid for constructor");
 	}
 }

@@ -1,10 +1,8 @@
 module scribble.examples.LDo;
 
-local protocol LDoTest at Buyer(role Seller) {
-	do OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
-	do myscope: OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
-	do a.b.c.OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
-	do OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
-	do a.b.c.OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
-	do myscope: a.b.c.OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
+local protocol LDoTest(self Buyer, role Seller) {
+	do OtherProtocol(self, Seller);
+	do a.b.c.OtherProtocol(self, Seller);
+	do OtherProtocol<buy(Order), confirm(Receipt)>(self, Seller);
+	do a.b.c.OtherProtocol<buy(Order), confirm(Receipt)>(self, Seller);
 }

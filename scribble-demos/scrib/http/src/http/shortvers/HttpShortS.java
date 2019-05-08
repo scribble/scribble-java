@@ -19,16 +19,16 @@ import static http.shortvers.HttpShort.Http.Http.S;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import http.shortvers.HttpShort.Http.Http;
-import http.shortvers.HttpShort.Http.channels.S.Http_S_1;
-import http.shortvers.HttpShort.Http.channels.S.Http_S_2;
 import http.shortvers.HttpShort.Http.roles.S;
+import http.shortvers.HttpShort.Http.statechans.S.Http_S_1;
+import http.shortvers.HttpShort.Http.statechans.S.Http_S_2;
 import http.shortvers.message.HttpShortMessageFormatter;
 import http.shortvers.message.client.Request;
 import http.shortvers.message.server.Response;
@@ -48,7 +48,8 @@ public class HttpShortS
 			while (true)	
 			{
 				Http http = new Http();
-				try (MPSTEndpoint<Http, S> se = new MPSTEndpoint<>(http, S, new HttpShortMessageFormatter()))
+				try (MPSTEndpoint<Http, S> se = new MPSTEndpoint<>(http, S,
+						new HttpShortMessageFormatter()))
 				{
 					se.accept(ss, C);
 				
@@ -59,7 +60,7 @@ public class HttpShortS
 
 					s2.send(C, new Response("1.1", "<html><body>Hello</body></html>"));
 				}
-				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
+				catch (IOException | ClassNotFoundException | ScribRuntimeException e)
 				{
 					e.printStackTrace();
 				}

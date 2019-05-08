@@ -18,22 +18,22 @@ import static betty16.lec2.smtp.Smtp.Smtp.Smtp._220;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.LinearSocket;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.net.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.statechans.LinearSocket;
+import org.scribble.runtime.util.Buf;
 
 import betty16.lec2.smtp.Smtp.Smtp.Smtp;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Handler;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_7;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_7_Handler;
-import betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_8;
 import betty16.lec2.smtp.Smtp.Smtp.roles.C;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_1;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_3;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_3_Handler;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_4;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_7;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_7_Handler;
+import betty16.lec2.smtp.Smtp.Smtp.statechans.C.Smtp_C_8;
 import betty16.lec2.smtp.message.SmtpMessageFormatter;
 import betty16.lec2.smtp.message.client.Ehlo;
 import betty16.lec2.smtp.message.client.Quit;
@@ -49,9 +49,10 @@ public class SmtpC4 {
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (MPSTEndpoint<Smtp, C> client = new MPSTEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (MPSTEndpoint<Smtp, C> client = new MPSTEndpoint<>(smtp, Smtp.C,
+				new SmtpMessageFormatter()))
 		{
-			client.connect(S, SocketChannelEndpoint::new, host, port);
+			client.request(S, SocketChannelEndpoint::new, host, port);
 			new SmtpC4().run(new Smtp_C_1(client));
 		}
 	}
@@ -67,7 +68,7 @@ public class SmtpC4 {
 class MySmtp_C_3Handler implements Smtp_C_3_Handler {
 
 	@Override
-	public void receive(Smtp_C_3 s3, betty16.lec2.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	public void receive(Smtp_C_3 s3, betty16.lec2.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("250-: " + arg.val.getBody());
 
@@ -75,7 +76,7 @@ class MySmtp_C_3Handler implements Smtp_C_3_Handler {
 	}
 
 	@Override
-	public void receive(Smtp_C_4 s4, betty16.lec2.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	public void receive(Smtp_C_4 s4, betty16.lec2.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("250: " + arg.val.getBody());
 
@@ -89,7 +90,7 @@ class MySmtp_C_3Handler implements Smtp_C_3_Handler {
 class MySmtp_C_8Handler implements Smtp_C_7_Handler {
 
 	@Override
-	public void receive(Smtp_C_7 s7, betty16.lec2.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	public void receive(Smtp_C_7 s7, betty16.lec2.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("(TLS) 250-: " + arg.val.getBody());
 
@@ -97,7 +98,7 @@ class MySmtp_C_8Handler implements Smtp_C_7_Handler {
 	}
 
 	@Override
-	public void receive(Smtp_C_8 s8, betty16.lec2.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	public void receive(Smtp_C_8 s8, betty16.lec2.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("(TLS) 250: " + arg.val.getBody());
 

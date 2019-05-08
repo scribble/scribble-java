@@ -1,0 +1,22 @@
+module bad.reach.globals.grecursion.Recursion19b;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			continue X;  
+					// CHECKME: was previously considered bad -- but now, projection implicitly removes this continue so the 1() is not a bad continuation any more...
+					// TODO: check as global WF instead?  unguarded continue? (cf. reachability)
+					// Or consider good?  maybe consistent with, e.g., rec X { continue X; }, already being discarded
+		}
+		or
+		{
+			2() from A to B;
+		}
+		1() from A to B;  // Reachability error -- comes out as a global model error if that pass is done first (tail recursion needed as syntactic check prior to model checking)  // Reachability now done before model check
+	}
+}
+

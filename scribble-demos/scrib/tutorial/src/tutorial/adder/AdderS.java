@@ -21,17 +21,17 @@ import static tutorial.adder.Adder.Adder.Adder.S;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import tutorial.adder.Adder.Adder.Adder;
-import tutorial.adder.Adder.Adder.channels.S.Adder_S_1;
-import tutorial.adder.Adder.Adder.channels.S.Adder_S_1_Cases;
 import tutorial.adder.Adder.Adder.roles.S;
+import tutorial.adder.Adder.Adder.statechans.S.Adder_S_1;
+import tutorial.adder.Adder.Adder.statechans.S.Adder_S_1_Cases;
 
 public class AdderS {
 
@@ -43,7 +43,7 @@ public class AdderS {
 							= new MPSTEndpoint<>(adder, S, new ObjectStreamFormatter())) {
 					server.accept(ss, C);
 					new AdderS().run(new Adder_S_1(server));
-				} catch (ScribbleRuntimeException | IOException | ClassNotFoundException e) {
+				} catch (ScribRuntimeException | IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}

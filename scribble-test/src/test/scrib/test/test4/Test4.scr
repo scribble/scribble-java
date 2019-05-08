@@ -1,0 +1,20 @@
+//$ bin/scribblec.sh scribble-test/src/test/scrib/test/test4/Test4.scr -d scribble-test/src/test/scrib/ -cbapi Proto1 A -cbapi Proto1 B
+//$ javadoc -cp scribble-cli/target/classes/';'scribble-test/target/classes';'scribble-parser/target/classes';'scribble-parser/lib/antlr-3.5.2-complete.jar';'scrib-core/src/test/scrib scrib-core/src/test/scrib/test/test4/Proto1*.java -d test/doc/test4
+
+module test.test4.Test4;
+
+sig <java> "test.test4.sig.Foo" from "test/test4/sig/Foo.java" as Foo;
+sig <java> "test.test4.sig.Bar" from "test/test4/sig/Bar.java" as Bar;
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		Foo from A to B;
+		do Proto1(A, B);
+	}
+	or
+	{
+		Bar from A to B;
+	}
+}

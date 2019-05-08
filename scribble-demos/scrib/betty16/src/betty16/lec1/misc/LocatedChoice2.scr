@@ -1,5 +1,6 @@
 module betty16.lec1.misc.LocatedChoice2;
 
+data <java> "java.lang.Integer" from "rt.jar" as Int;
 
 global protocol Proto1(role A, role B, role C) {
 	choice at A {

@@ -9,7 +9,7 @@ global protocol Proto1(role A, role B)
 		1() from A to B;
 		choice at A
 		{
-			continue X;  // Not "isomorphic" to a single continue X, because non-det not bisim equiv (cf. language equiv) -- so no "syntatic collapse" to single case
+			continue X;  // Not "isomorphic" to a single continue X, because (in general) non-det not bisim equiv (cf. language equiv) -- so no "syntatic collapse" to single case
 		}
 		or
 		{

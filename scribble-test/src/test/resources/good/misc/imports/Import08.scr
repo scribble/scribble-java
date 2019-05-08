@@ -1,6 +1,8 @@
 //Raymond@HZHL2 ~/code/python/scribble-tools
 //$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import8.scr
 
+//$ bin/scribblec.sh -ip scribble-test/src/test/resources scribble-test/src/test/resources/good/misc/imports/Import08.scr
+
 module good.misc.imports.Import08;
 
 import good.misc.imports.pack1.Pack08;

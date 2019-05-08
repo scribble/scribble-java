@@ -25,24 +25,24 @@ import static fase16.smtp.Smtp.Smtp.Smtp._250d;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.LinearSocket;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.net.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.statechans.LinearSocket;
+import org.scribble.runtime.util.Buf;
 
 import fase16.smtp.Smtp.Smtp.Smtp;
-import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
-import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
-import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Handler;
-import fase16.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
-import fase16.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import fase16.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
-import fase16.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
-import fase16.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import fase16.smtp.Smtp.Smtp.roles.C;
+import fase16.smtp.Smtp.Smtp.statechans.C.Smtp_C_1;
+import fase16.smtp.Smtp.Smtp.statechans.C.Smtp_C_1_Future;
+import fase16.smtp.Smtp.Smtp.statechans.C.Smtp_C_3;
+import fase16.smtp.Smtp.Smtp.statechans.C.Smtp_C_3_Handler;
+import fase16.smtp.Smtp.Smtp.statechans.C.Smtp_C_4;
+import fase16.smtp.Smtp.Smtp.statechans.C.ioifaces.Branch_C_S_250__S_250d;
+import fase16.smtp.Smtp.Smtp.statechans.C.ioifaces.Case_C_S_250__S_250d;
+import fase16.smtp.Smtp.Smtp.statechans.C.ioifaces.Select_C_S_Ehlo;
+import fase16.smtp.Smtp.Smtp.statechans.C.ioifaces.Succ_In_S_250;
 import fase16.smtp.message.SmtpMessageFormatter;
 import fase16.smtp.message.client.Ehlo;
 import fase16.smtp.message.client.Quit;
@@ -68,9 +68,10 @@ public class SmtpC
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, Smtp.C,
+				new SmtpMessageFormatter()))
 		{
-			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
+			se.request(Smtp.S, SocketChannelEndpoint::new, host, port);
 
 			Buf<Smtp_C_1_Future> f1 = new Buf<>();
 			Smtp_C_1 s1 = new Smtp_C_1(se);
@@ -157,13 +158,17 @@ public class SmtpC
 	class MySmtpC3Handler implements Smtp_C_3_Handler
 	{
 		@Override
-		public void receive(Smtp_C_3 s3, fase16.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+		public void receive(Smtp_C_3 s3, fase16.smtp.Smtp.Smtp.ops._250d op,
+				Buf<_250d> arg)
+				throws ScribRuntimeException, IOException, ClassNotFoundException
 		{
 			s3.branch(S, this);
 		}
 
 		@Override
-		public void receive(Smtp_C_4 s4, fase16.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+		public void receive(Smtp_C_4 s4, fase16.smtp.Smtp.Smtp.ops._250 op,
+				Buf<_250> arg)
+				throws ScribRuntimeException, IOException, ClassNotFoundException
 		{
 			try
 			{
@@ -175,13 +180,13 @@ public class SmtpC
 				)
 				.send(S, new Quit());
 			}
-			catch (ScribbleRuntimeException | IOException | ClassNotFoundException x)
+			catch (ScribRuntimeException | IOException | ClassNotFoundException x)
 			{
 				throw x;
 			}
 			catch (Exception x)
 			{
-				throw new ScribbleRuntimeException(x);
+				throw new ScribRuntimeException(x);
 			}
 		}
 	}

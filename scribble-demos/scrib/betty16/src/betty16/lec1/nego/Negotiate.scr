@@ -8,7 +8,7 @@
 module betty16.lec1.nego.Negotiate;
 
 
-type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
+data <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
 
 
 // C = Consumer, P = Producer

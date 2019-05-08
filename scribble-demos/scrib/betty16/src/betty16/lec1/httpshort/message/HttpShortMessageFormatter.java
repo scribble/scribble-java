@@ -20,8 +20,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import org.scribble.runtime.net.ScribMessage;
-import org.scribble.runtime.net.ScribMessageFormatter;
+import org.scribble.runtime.message.ScribMessage;
+import org.scribble.runtime.message.ScribMessageFormatter;
 
 import betty16.lec1.httpshort.message.client.Request;
 import betty16.lec1.httpshort.message.server.Response;
@@ -43,7 +43,8 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 	}
 
 	@Override
-	public ScribMessage fromBytes(ByteBuffer bb) throws IOException, ClassNotFoundException
+	public ScribMessage fromBytes(ByteBuffer bb)
+			throws IOException, ClassNotFoundException
 	{
 		bb.flip();
 		int rem = bb.remaining();
@@ -53,7 +54,8 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 			return null;
 		}
 
-		String curr = new String(Arrays.copyOf(bb.array(), bb.remaining()), HttpShortMessageFormatter.cs);
+		String curr = new String(Arrays.copyOf(bb.array(), bb.remaining()),
+				HttpShortMessageFormatter.cs);
 		String endOfHeaders = HttpShortMessage.CRLF + HttpShortMessage.CRLF;
 		if (!curr.contains(endOfHeaders))
 		{
@@ -69,8 +71,11 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 				bb.compact();
 				return null;
 			}
-			String contentLenSplit = curr.substring(curr.indexOf(Response.CONTENT_LENGTH));
-			int len = Integer.parseInt(contentLenSplit.substring(Response.CONTENT_LENGTH.length()+2, contentLenSplit.indexOf('\r')).trim());
+			String contentLenSplit = curr
+					.substring(curr.indexOf(Response.CONTENT_LENGTH));
+			int len = Integer.parseInt(
+					contentLenSplit.substring(Response.CONTENT_LENGTH.length() + 2,
+							contentLenSplit.indexOf('\r')).trim());
 			if (curr.length() < eoh+4)
 			{
 				bb.compact();
@@ -160,7 +165,8 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 		{
 			throw new RuntimeException("Shouldn't get in here: " + msg);
 		}
-		return new Request(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR, cookie);
+		return new Request(get, http, host, userA, accept, acceptL, acceptE, dnt,
+				connection, upgradeIR, cookie);
 	}
 	
 	private static HttpShortMessage parseResponse(String msg)
@@ -231,18 +237,24 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 					case Response.VIA: via = msg.substring(i+1, j).trim(); break;
 					default:
 						//throw new RuntimeException("Cannot parse header field: " + msg.substring(0, msg.indexOf('\r')));
-						System.err.println("[Warning] Attempting to skip over response field: " + header + "\n" + msg.substring(i+1, j).trim());
+						System.err
+								.println("[Warning] Attempting to skip over response field: "
+										+ header + "\n" + msg.substring(i + 1, j).trim());
 				}
 				msg = msg.substring(j+2);
 			}
 		}
 		body = msg;
-		return new Response(httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body);
+		return new Response(httpv, ack, date, server, strictTS, lastMod, eTag,
+				acceptR, contentL, vary, contentT, via, body);
 	}
 
 	
 
-	// FIXME: delete
+	
+	
+	
+	// TODO: delete
 	@Deprecated @Override
 	public void writeMessage(DataOutputStream dos, ScribMessage m) throws IOException
 	{

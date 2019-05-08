@@ -19,32 +19,36 @@ import static bettybook.http.shortv.HttpShort.Http.Http.S;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import bettybook.http.shortv.HttpShort.Http.Http;
-import bettybook.http.shortv.HttpShort.Http.channels.S.Http_S_1;
-import bettybook.http.shortv.HttpShort.Http.channels.S.Http_S_2;
 import bettybook.http.shortv.HttpShort.Http.roles.S;
+import bettybook.http.shortv.HttpShort.Http.statechans.S.Http_S_1;
+import bettybook.http.shortv.HttpShort.Http.statechans.S.Http_S_2;
 import bettybook.http.shortv.message.HttpShortMessageFormatter;
 import bettybook.http.shortv.message.client.Req;
 import bettybook.http.shortv.message.server.Resp;
 
 public class HttpShortS {
 
-	public static void main(String[] args) throws IOException {
-		try (ScribServerSocket ss = new SocketChannelServer(8080)) {
-			while (true)	{
+	public static void main(String[] args) throws IOException
+	{
+		try (ScribServerSocket ss = new SocketChannelServer(8080))
+		{
+			while (true)
+			{
 				Http http = new Http();
-				try (MPSTEndpoint<Http, S> server = new MPSTEndpoint<>(http, S, new HttpShortMessageFormatter())) {
+				try (MPSTEndpoint<Http, S> server = new MPSTEndpoint<>(http, S,
+						new HttpShortMessageFormatter())) {
 					server.accept(ss, C);
 				
 					run(new Http_S_1(server));
 				}
-				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
+				catch (IOException | ClassNotFoundException | ScribRuntimeException e)
 				{
 					e.printStackTrace();
 				}
@@ -52,7 +56,9 @@ public class HttpShortS {
 		}
 	}
 	
-	private static void run(Http_S_1 s1) throws ClassNotFoundException, ScribbleRuntimeException, IOException {
+	private static void run(Http_S_1 s1)
+			throws ClassNotFoundException, ScribRuntimeException, IOException
+	{
 		Buf<Req> buf = new Buf<>();
 
 		Http_S_2 s2 = s1.receive(C, Req, buf);

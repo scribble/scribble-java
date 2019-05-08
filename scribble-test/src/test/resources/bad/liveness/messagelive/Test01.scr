@@ -1,3 +1,5 @@
+//$ bin/scribblec.sh -ip scribble-test/src/test/resources scribble-test/src/test/resources/bad/liveness/messagelive/Test01.scr
+
 module bad.liveness.messagelive.Test01;
 
 

@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import org.scribble.runtime.net.ScribMessage;
-import org.scribble.runtime.net.ScribMessageFormatter;
+import org.scribble.runtime.message.ScribMessage;
+import org.scribble.runtime.message.ScribMessageFormatter;
 
 import smtp.message.server._220;
 import smtp.message.server._221;
@@ -275,6 +275,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 		}
 	}*/
 
+	@Deprecated
 	@Override
 	public void writeMessage(DataOutputStream dos, ScribMessage m) throws IOException
 	{
@@ -282,6 +283,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 		dos.flush();
 	}
 
+	@Deprecated
 	@Override
 	public SmtpMessage readMessage(DataInputStream dis) throws IOException
 	{
