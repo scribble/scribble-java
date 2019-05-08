@@ -16,21 +16,22 @@ package travel;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
 
 import travel.Travel.Booking.Booking;
-import travel.Travel.Booking.channels.A.Booking_A_1;
-import travel.Travel.Booking.channels.A.Booking_A_1_Cases;
 import travel.Travel.Booking.roles.A;
+import travel.Travel.Booking.statechans.A.Booking_A_1;
+import travel.Travel.Booking.statechans.A.Booking_A_1_Cases;
 
 public class BookingA
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException
+	public static void main(String[] args) throws IOException,
+			ScribRuntimeException, ExecutionException, InterruptedException
 	{
 		try (ScribServerSocket ss_C = new SocketChannelServer(7777))
 		{
@@ -39,13 +40,14 @@ public class BookingA
 				int quote = 1000;
 
 				Booking booking = new Booking();
-				try (MPSTEndpoint<Booking, A> se = new MPSTEndpoint<>(booking, Booking.A, new ObjectStreamFormatter()))
+				try (MPSTEndpoint<Booking, A> se = new MPSTEndpoint<>(booking,
+						Booking.A, new ObjectStreamFormatter()))
 				{
 					se.accept(ss_C, Booking.C);
 					
-					//Thread.sleep(1000);  // FIXME: ensure S is ready
+					//Thread.sleep(1000);  // CHECKME: ensure S is ready
 					
-					se.connect(Booking.S, SocketChannelEndpoint::new, "localhost", 9999);
+					se.request(Booking.S, SocketChannelEndpoint::new, "localhost", 9999);
 
 					Booking_A_1 s1 = new Booking_A_1(se);
 					Booking_A_1_Cases s1cases;

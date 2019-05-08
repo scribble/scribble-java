@@ -19,15 +19,15 @@ import static tutorial.adder.Adder.Adder.Adder.C;
 import static tutorial.adder.Adder.Adder.Adder.Res;
 import static tutorial.adder.Adder.Adder.Adder.S;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import tutorial.adder.Adder.Adder.Adder;
-import tutorial.adder.Adder.Adder.channels.C.Adder_C_1;
-import tutorial.adder.Adder.Adder.channels.C.Adder_C_2;
 import tutorial.adder.Adder.Adder.roles.C;
+import tutorial.adder.Adder.Adder.statechans.C.Adder_C_1;
+import tutorial.adder.Adder.Adder.statechans.C.Adder_C_2;
 
 public class AdderC {
 
@@ -35,7 +35,7 @@ public class AdderC {
 		Adder adder = new Adder();
 		try (MPSTEndpoint<Adder, C> client =
 					new MPSTEndpoint<>(adder, C, new ObjectStreamFormatter())) {	
-			client.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
+			client.request(S, SocketChannelEndpoint::new, "localhost", 8888);
 			int n = 10;
 			System.out.println(n + "th Fibonacci number: "
 					+ fibo(new Adder_C_1(client), n));

@@ -18,15 +18,15 @@ import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.Proce
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.checkEligibility;
 import static loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier.respond;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import loan.LoanApplication.BuyerBrokerSupplier.BuyerBrokerSupplier;
-import loan.LoanApplication.BuyerBrokerSupplier.channels.ProcessingDept.BuyerBrokerSupplier_ProcessingDept_1;
 import loan.LoanApplication.BuyerBrokerSupplier.roles.ProcessingDept;
+import loan.LoanApplication.BuyerBrokerSupplier.statechans.ProcessingDept.BuyerBrokerSupplier_ProcessingDept_1;
 
 public class LoanProcessingDept
 {
@@ -36,7 +36,8 @@ public class LoanProcessingDept
 		try (
 			ScribServerSocket ss = new SocketChannelServer(7777);
 			MPSTEndpoint<BuyerBrokerSupplier, ProcessingDept> se
-					= new MPSTEndpoint<>(sess, ProcessingDept, new ObjectStreamFormatter()))
+						= new MPSTEndpoint<>(sess, ProcessingDept,
+								new ObjectStreamFormatter()))
 		{
 			se.accept(ss, ApplicationPortal);
 			
@@ -45,8 +46,9 @@ public class LoanProcessingDept
 			Buf<Integer> annualSalary = new Buf<>();
 			Buf<Integer> creditRating = new Buf<>();
 			new BuyerBrokerSupplier_ProcessingDept_1(se)
-				.receive(ApplicationPortal, checkEligibility, customerName, dateOfBirth, annualSalary, creditRating)
-				.send(ApplicationPortal, respond, true);
+					.receive(ApplicationPortal, checkEligibility, customerName,
+							dateOfBirth, annualSalary, creditRating)
+					.send(ApplicationPortal, respond, true);
 		}
 	}
 }

@@ -17,29 +17,32 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import travel.Travel.Booking.Booking;
-import travel.Travel.Booking.channels.C.Booking_C_1;
-import travel.Travel.Booking.channels.C.Booking_C_5;
 import travel.Travel.Booking.roles.C;
+import travel.Travel.Booking.statechans.C.Booking_C_1;
+import travel.Travel.Booking.statechans.C.Booking_C_5;
 
 
 public class BookingC
 {
 	static int MAX = 500;
-	static List<String> QUERIES = IntStream.range(97, 122).mapToObj((i) -> new Character((char) i).toString()).collect(Collectors.toList());
+	static List<String> QUERIES = IntStream.range(97, 122)
+			.mapToObj(i -> new Character((char) i).toString())
+			.collect(Collectors.toList());
 
 	public static void main(String[] args) throws Exception
 	{
 		Booking booking = new Booking();
-		try (MPSTEndpoint<Booking, C> se = new MPSTEndpoint<>(booking, Booking.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Booking, C> se = new MPSTEndpoint<>(booking, Booking.C,
+				new ObjectStreamFormatter()))
 		{
-			se.connect(Booking.A, SocketChannelEndpoint::new, "localhost", 7777);
-			se.connect(Booking.S, SocketChannelEndpoint::new, "localhost", 8888);
+			se.request(Booking.A, SocketChannelEndpoint::new, "localhost", 7777);
+			se.request(Booking.S, SocketChannelEndpoint::new, "localhost", 8888);
 			Booking_C_1 s1 = new Booking_C_1(se);
 
 			Buf<Integer> quote = new Buf<>();
