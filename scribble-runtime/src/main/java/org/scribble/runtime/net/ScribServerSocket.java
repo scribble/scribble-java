@@ -15,7 +15,7 @@ package org.scribble.runtime.net;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.session.SessionEndpoint;
 
 public abstract class ScribServerSocket implements AutoCloseable
@@ -32,11 +32,11 @@ public abstract class ScribServerSocket implements AutoCloseable
 	//public abstract BinaryChannelEndpoint accept(MPSTEndpoint<?, ?> se) throws IOException;  // synchronize
 	public abstract BinaryChannelEndpoint accept(SessionEndpoint<?, ?> se) throws IOException;  // synchronize
 	
-	public synchronized void bind() throws ScribbleRuntimeException
+	public synchronized void bind() throws ScribRuntimeException
 	{
 		if (this.reg)
 		{
-			throw new ScribbleRuntimeException("Server socket already registered.");
+			throw new ScribRuntimeException("Server socket already registered.");
 		}
 		this.reg = true;
 	}

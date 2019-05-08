@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 
 import org.scribble.core.type.name.Op;
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.net.BinaryChannelEndpoint;
 import org.scribble.runtime.session.MPSTEndpoint;
@@ -34,12 +34,12 @@ public abstract class OutputSocket<S extends Session, R extends Role> extends Li
 		super(ep);
 	}
 
-	protected void writeScribMessage(Role peer, Op op, Object... payload) throws IOException, ScribbleRuntimeException
+	protected void writeScribMessage(Role peer, Op op, Object... payload) throws IOException, ScribRuntimeException
 	{
 		writeScribMessage(peer, new ScribMessage(op, payload));
 	}
 
-	protected void writeScribMessage(Role peer, ScribMessage msg) throws IOException, ScribbleRuntimeException
+	protected void writeScribMessage(Role peer, ScribMessage msg) throws IOException, ScribRuntimeException
 	{
 		use();
 		/*SocketEndpoint se = this.ep.getSocketEndpoint(peer);
@@ -48,7 +48,7 @@ public abstract class OutputSocket<S extends Session, R extends Role> extends Li
 	}
 
 	// FIXME: check if MPST/ExplicitEndpoint
-	protected void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	protected void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribRuntimeException, UnknownHostException, IOException
 	{
 		use();
 		//this.se.connect(role, cons, host, port);
@@ -56,7 +56,7 @@ public abstract class OutputSocket<S extends Session, R extends Role> extends Li
 	}
 
 	// FIXME: check if MPST/ExplicitEndpoint
-	protected void disconnect(Role role) throws ScribbleRuntimeException, UnknownHostException, IOException
+	protected void disconnect(Role role) throws ScribRuntimeException, UnknownHostException, IOException
 	{
 		use();
 		//this.se.disconnect(role);

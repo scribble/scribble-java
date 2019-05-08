@@ -18,7 +18,7 @@ import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.message.ScribMessageFormatter;
 import org.scribble.runtime.net.BinaryChannelEndpoint;
 import org.scribble.runtime.net.ScribServerSocket;
@@ -27,30 +27,30 @@ import org.scribble.runtime.net.ScribServerSocket;
 //.. initiator and joiner endpoints
 public class MPSTEndpoint<S extends Session, R extends Role> extends SessionEndpoint<S, R>
 {
-	public MPSTEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
+	public MPSTEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribRuntimeException
 	{
 		super(sess, self, smf);
 	}
 
-	public void request(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	public void request(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribRuntimeException, UnknownHostException, IOException
 	{
 		MPSTEndpoint.request(this, role, cons, host, port);
 	}
 
 	// HACK FIXME: refactor (location, protected, etc)
-	public static void request(SessionEndpoint<?, ?> se, Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	public static void request(SessionEndpoint<?, ?> se, Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribRuntimeException, UnknownHostException, IOException
 	{
 		// Can connect unlimited, as long as not already used via init
 		//if (this.init)
 		if (se.init)
 		{
 			//throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
-			throw new ScribbleRuntimeException("Socket already initialised: " + se.getClass());
+			throw new ScribRuntimeException("Socket already initialised: " + se.getClass());
 		}
 		//if (this.chans.containsKey(role))
 		if (se.chans.containsKey(role))
 		{
-			throw new ScribbleRuntimeException("Already connected to: " + role);
+			throw new ScribRuntimeException("Already connected to: " + role);
 		}
 		try
 		{
@@ -70,40 +70,40 @@ public class MPSTEndpoint<S extends Session, R extends Role> extends SessionEndp
 		}
 	}
 
-	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribRuntimeException
 	{
 		accept(this, ss, role);
 	}
 
 	//public static void accept(SessionEndpoint<?, ?> se, ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
-	public static void accept(SessionEndpoint<?, ?> se, ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	public static void accept(SessionEndpoint<?, ?> se, ScribServerSocket ss, Role role) throws IOException, ScribRuntimeException
 	{
 		//if (this.init)
 		if (se.init)
 		{
 			//throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
-			throw new ScribbleRuntimeException("Socket already initialised: " + se.getClass());
+			throw new ScribRuntimeException("Socket already initialised: " + se.getClass());
 		}
 		//if (this.chans.containsKey(role))
 		if (se.chans.containsKey(role))
 		{
-			throw new ScribbleRuntimeException("Already connected to: " + role);
+			throw new ScribRuntimeException("Already connected to: " + role);
 		}
 		//register(role, ss.accept(this));  // FIXME: serv map in SessionEndpoint not currently used
 		se.register(role, ss.accept(se));  // FIXME: serv map in SessionEndpoint not currently used
 	}
 	
-	public void disconnect(Role role) throws IOException, ScribbleRuntimeException
+	public void disconnect(Role role) throws IOException, ScribRuntimeException
 	{
 		MPSTEndpoint.disconnect(this, role);
 	}
 
-	public static void disconnect(SessionEndpoint<?, ?> se, Role role) throws IOException, ScribbleRuntimeException
+	public static void disconnect(SessionEndpoint<?, ?> se, Role role) throws IOException, ScribRuntimeException
 	{
 		//if (!this.chans.containsKey(role))
 		if (!se.chans.containsKey(role))
 		{
-			throw new ScribbleRuntimeException("Not connected to: " + role);
+			throw new ScribRuntimeException("Not connected to: " + role);
 		}
 		//deregister(role);
 		se.deregister(role);

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.handlers.ScribBranch;
 import org.scribble.runtime.handlers.ScribOutputEvent;
 import org.scribble.runtime.handlers.ScribSigMessage;
@@ -44,14 +44,14 @@ public class CBEndpoint<S extends Session, R extends Role, D> extends MPSTEndpoi
 	
 	protected final Map<String, ScribState> states = new HashMap<>();  // Bypass problem of mutual references and static field initialisation (class loading)
 
-	public CBEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init, D data) throws IOException, ScribbleRuntimeException
+	public CBEndpoint(S sess, R self, ScribMessageFormatter smf, ScribState init, D data) throws IOException, ScribRuntimeException
 	{
 		super(sess, self, smf);
 		this.init = init;
 		this.data = data;
 	}
 	
-	public Future<Void> run() throws ScribbleRuntimeException
+	public Future<Void> run() throws ScribRuntimeException
 	{
 		Object[] res = new Object[1];
 

@@ -44,11 +44,6 @@ public class EGraph implements MPrettyPrint
 	{
 		return this.init.toAut();
 	}
-	
-	public String toPml(Role r)
-	{
-		return this.init.toPml(r);
-	}
 
 	@Override
 	public String toString()

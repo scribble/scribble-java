@@ -262,6 +262,11 @@ public class Job
 		this.context.replaceModule(visited);
 	}
 	
+	public JobContext getContext()
+	{
+		return this.context;
+	}
+	
 	public boolean isVerbose()
 	{
 		return this.config.args.get(CoreArgs.VERBOSE);
@@ -283,10 +288,5 @@ public class Job
 	public void warningPrintln(String s)
 	{
 		System.err.println("[Warning] " + s);
-	}
-	
-	public JobContext getContext()
-	{
-		return this.context;
 	}
 }

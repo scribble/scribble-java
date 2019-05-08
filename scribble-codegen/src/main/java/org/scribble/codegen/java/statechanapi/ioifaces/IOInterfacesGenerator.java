@@ -71,7 +71,8 @@ public class IOInterfacesGenerator extends ApiGen
 	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
 	private final Map<String, List<EAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
 	
-	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribException, ScribException
+	public IOInterfacesGenerator(StateChannelApiGenerator apigen,
+			boolean subtypes) throws RuntimeScribException, ScribException
 	{
 		super(apigen.getJob(), apigen.getGProtocolName());
 		this.apigen = apigen;
@@ -84,12 +85,11 @@ public class IOInterfacesGenerator extends ApiGen
 		EState init = this.job.config.args.get(CoreArgs.MIN_EFSM)
 				? corec.getMinimisedEGraph(fullname, self).init
 				: corec.getEGraph(fullname, self).init;
-		
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
 			// FIXME: factor out with skipIOInterfacesGeneration
 			Set<EAction> as = init.getReachableActions();
-			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+			if (as.stream().anyMatch(a -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 			{
 				throw new RuntimeScribException(
 						"[TODO] I/O Interface generation not supported for: "
