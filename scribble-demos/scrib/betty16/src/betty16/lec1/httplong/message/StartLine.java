@@ -13,7 +13,7 @@
  */
 package betty16.lec1.httplong.message;
 
-import org.scribble.type.name.Op;
+import org.scribble.core.type.name.Op;
 
 public abstract class StartLine extends HttpLongMessage
 {

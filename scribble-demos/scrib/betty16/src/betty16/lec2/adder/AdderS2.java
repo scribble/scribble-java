@@ -20,21 +20,21 @@ import static betty16.lec2.adder.Adder.Adder.Adder.S;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import betty16.lec2.adder.Adder.Adder.Adder;
-import betty16.lec2.adder.Adder.Adder.channels.S.Adder_S_1;
-import betty16.lec2.adder.Adder.Adder.channels.S.Adder_S_1_Handler;
-import betty16.lec2.adder.Adder.Adder.channels.S.Adder_S_2;
-import betty16.lec2.adder.Adder.Adder.channels.S.Adder_S_3;
 import betty16.lec2.adder.Adder.Adder.ops.Add;
 import betty16.lec2.adder.Adder.Adder.ops.Bye;
 import betty16.lec2.adder.Adder.Adder.roles.S;
+import betty16.lec2.adder.Adder.Adder.statechans.S.Adder_S_1;
+import betty16.lec2.adder.Adder.Adder.statechans.S.Adder_S_1_Handler;
+import betty16.lec2.adder.Adder.Adder.statechans.S.Adder_S_2;
+import betty16.lec2.adder.Adder.Adder.statechans.S.Adder_S_3;
 
 public class AdderS2 implements Adder_S_1_Handler {
 
@@ -42,11 +42,12 @@ public class AdderS2 implements Adder_S_1_Handler {
 		try (ScribServerSocket ss = new SocketChannelServer(8888)) {
 			while (true) {
 				Adder adder = new Adder();
-				try (MPSTEndpoint<Adder, S> server = new MPSTEndpoint<>(adder, S, new ObjectStreamFormatter())) {
+				try (MPSTEndpoint<Adder, S> server = new MPSTEndpoint<>(adder, S,
+						new ObjectStreamFormatter())) {
 					server.accept(ss, C);
 
 					new Adder_S_1(server).branch(C, new AdderS2());
-				} catch (ScribbleRuntimeException | IOException | ClassNotFoundException e) {
+				} catch (ScribRuntimeException | IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
@@ -54,12 +55,15 @@ public class AdderS2 implements Adder_S_1_Handler {
 	}
 
 	@Override
-	public void receive(Adder_S_2 s2, Add op, Buf<Integer> arg1, Buf<Integer> arg2) throws ScribbleRuntimeException, IOException, ClassNotFoundException {
+	public void receive(Adder_S_2 s2, Add op, Buf<Integer> arg1,
+			Buf<Integer> arg2)
+			throws ScribRuntimeException, IOException, ClassNotFoundException
+	{
 		s2.send(C, Res, arg1.val + arg2.val).branch(C, this);
 	}
 
 	@Override
-	public void receive(Adder_S_3 s3, Bye op) throws ScribbleRuntimeException, IOException {
+	public void receive(Adder_S_3 s3, Bye op) throws ScribRuntimeException, IOException {
 		s3.send(C, Bye);
 	}
 }

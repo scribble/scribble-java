@@ -21,17 +21,17 @@ import static betty16.lec2.adder.Adder.Adder.Adder.S;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import betty16.lec2.adder.Adder.Adder.Adder;
-import betty16.lec2.adder.Adder.Adder.channels.S.Adder_S_1;
-import betty16.lec2.adder.Adder.Adder.channels.S.Adder_S_1_Cases;
 import betty16.lec2.adder.Adder.Adder.roles.S;
+import betty16.lec2.adder.Adder.Adder.statechans.S.Adder_S_1;
+import betty16.lec2.adder.Adder.Adder.statechans.S.Adder_S_1_Cases;
 
 public class MyAdderS {
 
@@ -39,10 +39,11 @@ public class MyAdderS {
 		try (ScribServerSocket ss = new SocketChannelServer(8888)) {
 			while (true) {
 				Adder adder = new Adder();
-				try (MPSTEndpoint<Adder, S> server = new MPSTEndpoint<>(adder, S, new ObjectStreamFormatter())) {
+				try (MPSTEndpoint<Adder, S> server = new MPSTEndpoint<>(adder, S,
+						new ObjectStreamFormatter())) {
 					server.accept(ss, C);
 					new MyAdderS().run(new Adder_S_1(server));
-				} catch (ScribbleRuntimeException | IOException | ClassNotFoundException e) {
+				} catch (ScribRuntimeException | IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}

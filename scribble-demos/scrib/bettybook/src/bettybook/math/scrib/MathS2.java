@@ -20,26 +20,26 @@ import static bettybook.math.scrib.Math.MathService.MathService.Sum;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import bettybook.math.scrib.Math.MathService.MathService;
-import bettybook.math.scrib.Math.MathService.channels.S.EndSocket;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_1;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_1_Handler;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_2;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_2_Handler;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_3;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_4;
 import bettybook.math.scrib.Math.MathService.ops.Add;
 import bettybook.math.scrib.Math.MathService.ops.Bye;
 import bettybook.math.scrib.Math.MathService.ops.Mult;
 import bettybook.math.scrib.Math.MathService.ops.Val;
 import bettybook.math.scrib.Math.MathService.roles.S;
+import bettybook.math.scrib.Math.MathService.statechans.S.EndSocket;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_1;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_1_Handler;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_2;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_2_Handler;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_3;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_4;
 
 public class MathS2
 {
@@ -50,8 +50,8 @@ public class MathS2
 			while (true)
 			{
 				MathService sess = new MathService();
-				try (MPSTEndpoint<MathService, S> se = new MPSTEndpoint<>(sess, S, new ObjectStreamFormatter()))
-				{
+				try (MPSTEndpoint<MathService, S> se = new MPSTEndpoint<>(sess, S,
+						new ObjectStreamFormatter())) {
 					se.accept(ss, C);
 
 					MathService_S_1 s1 = new MathService_S_1(se);
@@ -69,14 +69,14 @@ class MathSHandler implements MathService_S_1_Handler, MathService_S_2_Handler
 
 	@Override
 	public void receive(MathService_S_2 s2, Val op, Buf<Integer> b1)
-			throws ScribbleRuntimeException, IOException, ClassNotFoundException
+			throws ScribRuntimeException, IOException, ClassNotFoundException
 	{
 		this.b1 = b1;
 		s2.branch(C, this);
 	}
 
 	@Override
-	public void receive(EndSocket end, Bye op) throws ScribbleRuntimeException,
+	public void receive(EndSocket end, Bye op) throws ScribRuntimeException,
 			IOException, ClassNotFoundException
 	{
 		
@@ -84,14 +84,14 @@ class MathSHandler implements MathService_S_1_Handler, MathService_S_2_Handler
 
 	@Override
 	public void receive(MathService_S_3 s3, Add op, Buf<Integer> b2)
-			throws ScribbleRuntimeException, IOException, ClassNotFoundException
+			throws ScribRuntimeException, IOException, ClassNotFoundException
 	{
 		s3.send(C, Sum, this.b1.val + b2.val).branch(C, this);
 	}
 
 	@Override
 	public void receive(MathService_S_4 s4, Mult op, Buf<Integer> b2)
-			throws ScribbleRuntimeException, IOException, ClassNotFoundException
+			throws ScribRuntimeException, IOException, ClassNotFoundException
 	{
 		s4.send(C, Prod, this.b1.val * b2.val).branch(C, this);
 	}

@@ -19,33 +19,42 @@ import static betty16.lec1.httplong.HttpLong.Http.Http.ACCEPTL;
 import static betty16.lec1.httplong.HttpLong.Http.Http.BODY;
 import static betty16.lec1.httplong.HttpLong.Http.Http.C;
 import static betty16.lec1.httplong.HttpLong.Http.Http.CONNECTION;
+import static betty16.lec1.httplong.HttpLong.Http.Http.COOKIE;
 import static betty16.lec1.httplong.HttpLong.Http.Http.DNT;
 import static betty16.lec1.httplong.HttpLong.Http.Http.HOST;
 import static betty16.lec1.httplong.HttpLong.Http.Http.REQUESTL;
 import static betty16.lec1.httplong.HttpLong.Http.Http.S;
 import static betty16.lec1.httplong.HttpLong.Http.Http.UPGRADEIR;
-import static betty16.lec1.httplong.HttpLong.Http.Http.COOKIE;
 import static betty16.lec1.httplong.HttpLong.Http.Http.USERA;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import betty16.lec1.httplong.HttpLong.Http.Http;
-import betty16.lec1.httplong.HttpLong.Http.channels.S.EndSocket;
-import betty16.lec1.httplong.HttpLong.Http.channels.S.Http_S_1;
-import betty16.lec1.httplong.HttpLong.Http.channels.S.Http_S_2;
-import betty16.lec1.httplong.HttpLong.Http.channels.S.Http_S_2_Cases;
 import betty16.lec1.httplong.HttpLong.Http.roles.S;
+import betty16.lec1.httplong.HttpLong.Http.statechans.S.EndSocket;
+import betty16.lec1.httplong.HttpLong.Http.statechans.S.Http_S_1;
+import betty16.lec1.httplong.HttpLong.Http.statechans.S.Http_S_2;
+import betty16.lec1.httplong.HttpLong.Http.statechans.S.Http_S_2_Cases;
 import betty16.lec1.httplong.message.Body;
 import betty16.lec1.httplong.message.HttpLongMessageFormatter;
 import betty16.lec1.httplong.message.server.ContentLength;
 import betty16.lec1.httplong.message.server.HttpVersion;
 import betty16.lec1.httplong.message.server._200;
+
+
+/** TODO:
+ * Cannot parse header field: Pragma: no-cache
+ *         at betty16.lec1.httplong.message.HttpLongMessageFormatter.fromBytes(HttpLongMessageFormatter.java:197)
+ *
+ * java.lang.RuntimeException: Cannot parse header field: Cache-Control: max-age=0
+ *         at betty16.lec1.httplong.message.HttpLongMessageFormatter.fromBytes(HttpLongMessageFormatter.java:197) 
+ */
 
 public class HttpLongS
 {
@@ -54,12 +63,14 @@ public class HttpLongS
 		try (ScribServerSocket ss = new SocketChannelServer(8080)) {
 			while (true)	{
 				Http http = new Http();
-				try (MPSTEndpoint<Http, S> server = new MPSTEndpoint<>(http, S, new HttpLongMessageFormatter())) {
+				try (MPSTEndpoint<Http, S> server = new MPSTEndpoint<>(http, S,
+						new HttpLongMessageFormatter())) {
 					server.accept(ss, C);
 				
 					run(new Http_S_1(server));
 				}
-				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
+				catch (IOException | ClassNotFoundException
+						| ScribRuntimeException e)
 				{
 					e.printStackTrace();
 				}
@@ -67,7 +78,8 @@ public class HttpLongS
 		}
 	}
 	
-	private static EndSocket run(Http_S_1 s1) throws ClassNotFoundException, ScribbleRuntimeException, IOException {
+	private static EndSocket run(Http_S_1 s1)
+			throws ClassNotFoundException, ScribRuntimeException, IOException {
 		Buf<Object> buf = new Buf<>();
 		
 		Http_S_2 s2 = s1.receive(C, REQUESTL, buf);

@@ -22,17 +22,17 @@ import static bettybook.math.scrib.Math.MathService.MathService.S;
 import static bettybook.math.scrib.Math.MathService.MathService.Sum;
 import static bettybook.math.scrib.Math.MathService.MathService.Val;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import bettybook.math.scrib.Math.MathService.MathService;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_1;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_1_Cases;
-import bettybook.math.scrib.Math.MathService.channels.S.MathService_S_2_Cases;
 import bettybook.math.scrib.Math.MathService.roles.S;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_1;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_1_Cases;
+import bettybook.math.scrib.Math.MathService.statechans.S.MathService_S_2_Cases;
 
 public class MathS1
 {
@@ -48,8 +48,8 @@ public class MathS1
 			while (true)
 			{
 				MathService sess = new MathService();
-				try (MPSTEndpoint<MathService, S> se = new MPSTEndpoint<>(sess, S, new ObjectStreamFormatter()))
-				{
+				try (MPSTEndpoint<MathService, S> se = new MPSTEndpoint<>(sess, S,
+						new ObjectStreamFormatter())) {
 					se.accept(ss, C);
 					Buf<Integer> b1 = new Buf<>();
 					Buf<Integer> b2 = new Buf<>();

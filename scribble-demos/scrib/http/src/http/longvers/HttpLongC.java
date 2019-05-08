@@ -52,6 +52,13 @@ import http.longvers.message.server.ContentType;
 import http.longvers.message.server.HttpVersion;
 import http.longvers.message.server.Server;
 
+
+/** TODO
+ * 
+ * Cannot parse header field: Cache-Control: max-age=604800
+ *     at http.longvers.message.HttpLongMessageFormatter.fromBytes(HttpLongMessageFormatter.java:198) 
+ */
+
 public class HttpLongC
 {
 	public HttpLongC() throws Exception
@@ -67,22 +74,24 @@ public class HttpLongC
 	public void run() throws Exception
 	{
 		Http http = new Http();
-		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C, new HttpLongMessageFormatter()))
-		{
-			String host = "www.doc.ic.ac.uk"; int port = 80;
-			//String host = "localhost"; int port = 8080;
+		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C,
+				new HttpLongMessageFormatter())) {
+			
+			String host = "www.doc.ic.ac.uk";  int port = 80;  String file = "/~rhu/";
+			//String host = "example.com";  int port = 80;  String file = "/~rhu/";
+			//String host = "localhost"; int port = 8080;  String file = "/";
 		
 			client.request(S, SocketChannelEndpoint::new, host, port);
 
 			doResponse(
-					doRequest(new Http_C_1(client), host)
+					doRequest(new Http_C_1(client), host, file)
 			);
 		}
 	}
 	
-	private Http_C_3 doRequest(Http_C_1 s1, String host) throws Exception
+	private Http_C_3 doRequest(Http_C_1 s1, String host, String file) throws Exception
 	{
-		return s1.send(S, new RequestLine("/~rhu/", "1.1"))
+		return s1.send(S, new RequestLine(file, "1.1"))
 			.send(S, new Host(host))
 			.send(S, new Body(""));
 	}

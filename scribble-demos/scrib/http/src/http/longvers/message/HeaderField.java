@@ -13,7 +13,7 @@
  */
 package http.longvers.message;
 
-import org.scribble.type.name.Op;
+import org.scribble.core.type.name.Op;
 
 public abstract class HeaderField extends HttpLongMessage
 {

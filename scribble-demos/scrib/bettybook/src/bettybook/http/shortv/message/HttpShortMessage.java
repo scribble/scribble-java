@@ -13,8 +13,8 @@
  */
 package bettybook.http.shortv.message;
 
-import org.scribble.runtime.net.ScribMessage;
-import org.scribble.sesstype.name.Op;
+import org.scribble.core.type.name.Op;
+import org.scribble.runtime.message.ScribMessage;
 
 import bettybook.http.shortv.HttpShort.Http.Http;
 

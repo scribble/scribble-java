@@ -13,8 +13,8 @@
  */
 package betty16.lec1.httplong.message;
 
-import org.scribble.runtime.net.ScribMessage;
-import org.scribble.type.name.Op;
+import org.scribble.runtime.message.ScribMessage;
+import org.scribble.core.type.name.Op;
 
 import betty16.lec1.httplong.HttpLong.Http.Http;
 
@@ -69,7 +69,9 @@ public abstract class HttpLongMessage extends ScribMessage
 
 	public byte[] toBytes()
 	{
-		return (getOpString(this.op) + getBody() + HttpLongMessage.CRLF).getBytes(HttpLongMessageFormatter.cs);  // Can give "utf-8" as arg directly
+		return (getOpString(this.op) + getBody() + HttpLongMessage.CRLF)
+				.getBytes(HttpLongMessageFormatter.cs);
+				// Can give "utf-8" as arg directly
 	}
 	
 	@Override

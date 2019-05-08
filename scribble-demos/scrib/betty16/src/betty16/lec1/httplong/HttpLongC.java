@@ -30,57 +30,50 @@ import static betty16.lec1.httplong.HttpLong.Http.Http.VIA;
 import static betty16.lec1.httplong.HttpLong.Http.Http._200;
 import static betty16.lec1.httplong.HttpLong.Http.Http._404;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import betty16.lec1.httplong.HttpLong.Http.Http;
-import betty16.lec1.httplong.HttpLong.Http.channels.C.EndSocket;
-import betty16.lec1.httplong.HttpLong.Http.channels.C.Http_C_1;
-import betty16.lec1.httplong.HttpLong.Http.channels.C.Http_C_3;
-import betty16.lec1.httplong.HttpLong.Http.channels.C.Http_C_4_Cases;
-import betty16.lec1.httplong.HttpLong.Http.channels.C.Http_C_5;
-import betty16.lec1.httplong.HttpLong.Http.channels.C.Http_C_5_Cases;
 import betty16.lec1.httplong.HttpLong.Http.roles.C;
+import betty16.lec1.httplong.HttpLong.Http.statechans.C.EndSocket;
+import betty16.lec1.httplong.HttpLong.Http.statechans.C.Http_C_1;
+import betty16.lec1.httplong.HttpLong.Http.statechans.C.Http_C_3;
+import betty16.lec1.httplong.HttpLong.Http.statechans.C.Http_C_4_Cases;
+import betty16.lec1.httplong.HttpLong.Http.statechans.C.Http_C_5;
+import betty16.lec1.httplong.HttpLong.Http.statechans.C.Http_C_5_Cases;
 import betty16.lec1.httplong.message.Body;
 import betty16.lec1.httplong.message.HttpLongMessageFormatter;
 import betty16.lec1.httplong.message.client.Host;
 import betty16.lec1.httplong.message.client.RequestLine;
 
+
+/** TODO
+ * Cannot parse header field: Cache-Control: max-age=604800
+ *     at betty16.lec1.httplong.message.HttpLongMessageFormatter.fromBytes(HttpLongMessageFormatter.java:197) 
+ */
+
 public class HttpLongC {
 
 	public static void main(String[] args) throws Exception {
 		Http http = new Http();
-		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C, new HttpLongMessageFormatter())) {
-			String host = "www.doc.ic.ac.uk"; int port = 80;
-			//String host = "localhost"; int port = 8080;
+		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C,
+				new HttpLongMessageFormatter())) {
+			String host = "www.doc.ic.ac.uk";  int port = 80;  String file = "/~rhu/";
+			//String host = "example.com";  int port = 80;  String file = "/";
+			//String host = "localhost";  int port = 8080;  String file = "/";
 		
-			client.connect(S, SocketChannelEndpoint::new, host, port);
-			new HttpLongC().run(new Http_C_1(client), host);
+			client.request(S, SocketChannelEndpoint::new, host, port);
+			new HttpLongC().run(new Http_C_1(client), host, file);
 		}
 	}
-
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public EndSocket run(Http_C_1 c, String host) throws Exception {
-			return doResponse(doRequest(c, host));
+	public EndSocket run(Http_C_1 c, String host, String file) throws Exception {
+			return doResponse(doRequest(c, host, file));
 	}
 	
-	private Http_C_3 doRequest(Http_C_1 c1, String host) throws Exception {
-		return c1.send(S, new RequestLine("/~rhu/", "1.1"))
+	private Http_C_3 doRequest(Http_C_1 c1, String host, String file) throws Exception {
+		return c1.send(S, new RequestLine(file, "1.1"))
 		         .send(S, new Host(host))
 		         .send(S, new Body(""));
 	}

@@ -1,8 +1,8 @@
 module betty16.lec1.misc.Messaging;
 
 
-type <java> "java.lang.Integer" from "rt.jar" as Int;
-type <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.String" from "rt.jar" as String;
 
 
 global protocol Proto1(role A, role B) {

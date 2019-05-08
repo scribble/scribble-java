@@ -30,18 +30,18 @@ import static bettybook.http.longv.HttpLong.Http.Http.Via;
 import static bettybook.http.longv.HttpLong.Http.Http._200;
 import static bettybook.http.longv.HttpLong.Http.Http._404;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import bettybook.http.longv.HttpLong.Http.Http;
-import bettybook.http.longv.HttpLong.Http.channels.C.EndSocket;
-import bettybook.http.longv.HttpLong.Http.channels.C.Http_C_1;
-import bettybook.http.longv.HttpLong.Http.channels.C.Http_C_3;
-import bettybook.http.longv.HttpLong.Http.channels.C.Http_C_4_Cases;
-import bettybook.http.longv.HttpLong.Http.channels.C.Http_C_5;
-import bettybook.http.longv.HttpLong.Http.channels.C.Http_C_5_Cases;
 import bettybook.http.longv.HttpLong.Http.roles.C;
+import bettybook.http.longv.HttpLong.Http.statechans.C.EndSocket;
+import bettybook.http.longv.HttpLong.Http.statechans.C.Http_C_1;
+import bettybook.http.longv.HttpLong.Http.statechans.C.Http_C_3;
+import bettybook.http.longv.HttpLong.Http.statechans.C.Http_C_4_Cases;
+import bettybook.http.longv.HttpLong.Http.statechans.C.Http_C_5;
+import bettybook.http.longv.HttpLong.Http.statechans.C.Http_C_5_Cases;
 import bettybook.http.longv.message.Body;
 import bettybook.http.longv.message.HttpLongMessageFormatter;
 import bettybook.http.longv.message.client.Host;
@@ -51,21 +51,23 @@ public class HttpLongC {
 
 	public static void main(String[] args) throws Exception {
 		Http http = new Http();
-		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C, new HttpLongMessageFormatter())) {
-			String host = "www.doc.ic.ac.uk"; int port = 80;
-			//String host = "localhost"; int port = 8080;
+		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C,
+				new HttpLongMessageFormatter())) {
+			String host = "www.doc.ic.ac.uk";  int port = 80;  String file = "/~rhu/";
+			//String host = "example.com";  int port = 80;  String file = "/";
+			//String host = "localhost";  int port = 8080;  String file = "/";
 		
-			client.connect(S, SocketChannelEndpoint::new, host, port);
-			new HttpLongC().run(new Http_C_1(client), host);
+			client.request(S, SocketChannelEndpoint::new, host, port);
+			new HttpLongC().run(new Http_C_1(client), host, file);
 		}
 	}
 
-	public void run(Http_C_1 s1, String host) throws Exception {
-			doResponse(doRequest(s1, host));
+	public void run(Http_C_1 s1, String host, String file) throws Exception {
+			doResponse(doRequest(s1, host, file));
 	}
 	
-	private Http_C_3 doRequest(Http_C_1 s1, String host) throws Exception {
-		return s1.send(S, new RequestLine("/~rhu/", "1.1"))
+	private Http_C_3 doRequest(Http_C_1 s1, String host, String file) throws Exception {
+		return s1.send(S, new RequestLine(file, "1.1"))
 		         .send(S, new Host(host))
 		         .send(S, new Body(""));
 	}

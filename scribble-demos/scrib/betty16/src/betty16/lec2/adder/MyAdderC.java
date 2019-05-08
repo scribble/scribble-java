@@ -16,21 +16,22 @@ package betty16.lec2.adder;
 import static betty16.lec2.adder.Adder.Adder.Adder.C;
 import static betty16.lec2.adder.Adder.Adder.Adder.S;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import betty16.lec2.adder.Adder.Adder.Adder;
-import betty16.lec2.adder.Adder.Adder.channels.C.Adder_C_1;
 import betty16.lec2.adder.Adder.Adder.roles.C;
+import betty16.lec2.adder.Adder.Adder.statechans.C.Adder_C_1;
 
 public class MyAdderC {
 
 	public static void main(String[] args) throws Exception {
 		Adder adder = new Adder();
-		try (MPSTEndpoint<Adder, C> client = new MPSTEndpoint<>(adder, C, new ObjectStreamFormatter())) {	
-			client.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
+		try (MPSTEndpoint<Adder, C> client = new MPSTEndpoint<>(adder, C,
+				new ObjectStreamFormatter())) {
+			client.request(S, SocketChannelEndpoint::new, "localhost", 8888);
 			System.out.println("C: " + new MyAdderC().run(client));
 		}
 	}
