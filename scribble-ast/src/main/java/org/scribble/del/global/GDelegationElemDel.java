@@ -46,6 +46,9 @@ public class GDelegationElemDel extends ScribDelBase
 		ModuleContext mc = disamb.getModuleContext();
 		GDelegPayElem de = (GDelegPayElem) child;
 		GProtoNameNode proto = de.getProtocolChild();
+		
+		System.out.println("aaa: " + proto);
+		
 		GProtoName gpn = proto.toName();
 		if (!mc.isVisibleProtocolDeclName(gpn))
 		{

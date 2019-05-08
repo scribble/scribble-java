@@ -16,24 +16,25 @@
 
 package test.test1;
 
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.MPSTEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import test.test1.Test1.Proto1.Proto1;
-import test.test1.Test1.Proto1.channels.C.Proto1_C_1;
-import test.test1.Test1.Proto1.channels.C.Proto1_C_2;
 import test.test1.Test1.Proto1.roles.C;
+import test.test1.Test1.Proto1.statechans.C.Proto1_C_1;
+import test.test1.Test1.Proto1.statechans.C.Proto1_C_2;
 
 public class MyC
 {
 	public static void main(String[] args) throws Exception
 	{
 		Proto1 adder = new Proto1();
-		try (MPSTEndpoint<Proto1, C> se = new MPSTEndpoint<>(adder, Proto1.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Proto1, C> se = new MPSTEndpoint<>(adder, Proto1.C,
+				new ObjectStreamFormatter()))
 		{
-			se.connect(Proto1.S, SocketChannelEndpoint::new, "localhost", 8888);
+			se.request(Proto1.S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			Proto1_C_2 s2 = new Proto1_C_1(se).send(Proto1.S, Proto1._1);
 			for (int i = 0; i < 3; i++)

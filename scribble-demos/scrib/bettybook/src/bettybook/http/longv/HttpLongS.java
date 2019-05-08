@@ -28,17 +28,17 @@ import static bettybook.http.longv.HttpLong.Http.Http.UserA;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import bettybook.http.longv.HttpLong.Http.Http;
-import bettybook.http.longv.HttpLong.Http.channels.S.Http_S_1;
-import bettybook.http.longv.HttpLong.Http.channels.S.Http_S_2;
-import bettybook.http.longv.HttpLong.Http.channels.S.Http_S_2_Cases;
 import bettybook.http.longv.HttpLong.Http.roles.S;
+import bettybook.http.longv.HttpLong.Http.statechans.S.Http_S_1;
+import bettybook.http.longv.HttpLong.Http.statechans.S.Http_S_2;
+import bettybook.http.longv.HttpLong.Http.statechans.S.Http_S_2_Cases;
 import bettybook.http.longv.message.Body;
 import bettybook.http.longv.message.HttpLongMessageFormatter;
 import bettybook.http.longv.message.server.ContentLength;
@@ -52,12 +52,13 @@ public class HttpLongS
 		try (ScribServerSocket ss = new SocketChannelServer(8080)) {
 			while (true)	{
 				Http http = new Http();
-				try (MPSTEndpoint<Http, S> server = new MPSTEndpoint<>(http, S, new HttpLongMessageFormatter())) {
+				try (MPSTEndpoint<Http, S> server = new MPSTEndpoint<>(http, S,
+						new HttpLongMessageFormatter())) {
 					server.accept(ss, C);
 				
 					run(new Http_S_1(server));
 				}
-				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
+				catch (IOException | ClassNotFoundException | ScribRuntimeException e)
 				{
 					e.printStackTrace();
 				}
@@ -65,7 +66,8 @@ public class HttpLongS
 		}
 	}
 	
-	private static void run(Http_S_1 s1) throws ClassNotFoundException, ScribbleRuntimeException, IOException {
+	private static void run(Http_S_1 s1)
+			throws ClassNotFoundException, ScribRuntimeException, IOException {
 		Buf<Object> buf = new Buf<>();
 		
 		Http_S_2 s2 = s1.receive(C, RequestL, buf);

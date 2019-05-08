@@ -234,12 +234,13 @@ public class CoreContext
 	// N.B. graphs built from inlined (not unfolded)
 	public EGraph getEGraph(ProtoName<Global> fullname, Role self)
 	{
-		EGraph graph = this.fEGraphs.get(fullname);
+		LProtoName projFullname = InlinedProjector.getFullProjectionName(fullname, self);
+		EGraph graph = this.fEGraphs.get(projFullname);
 		if (graph == null)
 		{
 			LProjection inlined = getProjectedInlined(fullname, self);
 			graph = inlined.toEGraph(this.core);
-			addEGraph(inlined.fullname, graph);
+			addEGraph(inlined.fullname, graph);  // inlined.fullname.equals(projFullname)
 		}
 		return graph;
 	}

@@ -32,19 +32,8 @@ public class STypeFactory
 		this.local = local;
 	}
 	
-	
-	
-	
-
-	/*public static ModuleName parseModuleName(String name)
-	{
-		String[] elems = name.split("\\.");
-		return new ModuleName(elems);
-	}*/
-
-	// Currently used by generated Session API
+	// N.B. targetted by generated Session API
 	// From fullname
-	@Deprecated
 	public static GProtoName parseGlobalProtocolName(String name)
 	{
 		String[] elems = name.split("\\.");
@@ -62,4 +51,16 @@ public class STypeFactory
 		GProtoName gpn = new GProtoName(membname);
 		return new GProtoName(modname, gpn);
 	}
+	
+	
+	
+	
+	
+	
+
+	/*public static ModuleName parseModuleName(String name)
+	{
+		String[] elems = name.split("\\.");
+		return new ModuleName(elems);
+	}*/
 }

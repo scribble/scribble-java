@@ -13,26 +13,31 @@
  */
 package fase16.adder;
 
-import static fase16.adder.Adder.Adder.Adder.*;
+import static fase16.adder.Adder.Adder.Adder.Add;
+import static fase16.adder.Adder.Adder.Adder.Bye;
+import static fase16.adder.Adder.Adder.Adder.C;
+import static fase16.adder.Adder.Adder.Adder.Res;
+import static fase16.adder.Adder.Adder.Adder.S;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import fase16.adder.Adder.Adder.Adder;
-import fase16.adder.Adder.Adder.channels.C.Adder_C_1;
-import fase16.adder.Adder.Adder.channels.C.Adder_C_2;
-import fase16.adder.Adder.Adder.channels.C.Adder_C_3;
 import fase16.adder.Adder.Adder.roles.C;
+import fase16.adder.Adder.Adder.statechans.C.Adder_C_1;
+import fase16.adder.Adder.Adder.statechans.C.Adder_C_3;
 
 public class MyAdderC
 {
 	public static void main(String[] args) throws Exception
 	{
 		Adder adder = new Adder();
-		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, C, new ObjectStreamFormatter())) {	
-			se.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
+		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, C,
+				new ObjectStreamFormatter()))
+		{
+			se.request(S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			
 			Buf<Integer> i = new Buf<>();
@@ -50,7 +55,8 @@ public class MyAdderC
 		
 	private static final int N = 10;
 
-	private static Adder_C_3 fib(Adder_C_1 s1, Buf<Integer> i1, Buf<Integer> i2, int i) throws Exception
+	private static Adder_C_3 fib(Adder_C_1 s1, Buf<Integer> i1, Buf<Integer> i2,
+			int i) throws Exception
 	{
 		return null;
 	}

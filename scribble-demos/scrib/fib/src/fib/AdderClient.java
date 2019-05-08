@@ -20,32 +20,35 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import fib.Fib.Adder.Adder;
-import fib.Fib.Adder.channels.C.Adder_C_1;
-import fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_BYE;
-import fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_RES_Int;
-import fib.Fib.Adder.channels.C.ioifaces.Select_C_S_ADD_Int_Int__S_BYE;
-import fib.Fib.Adder.channels.C.ioifaces.Succ_Out_S_BYE;
 import fib.Fib.Adder.roles.C;
+import fib.Fib.Adder.statechans.C.Adder_C_1;
+import fib.Fib.Adder.statechans.C.ioifaces.Receive_C_S_BYE;
+import fib.Fib.Adder.statechans.C.ioifaces.Receive_C_S_RES_Int;
+import fib.Fib.Adder.statechans.C.ioifaces.Select_C_S_ADD_Int_Int__S_BYE;
+import fib.Fib.Adder.statechans.C.ioifaces.Succ_Out_S_BYE;
 
 
 public class AdderClient
 {
-	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	public static void main(String[] args)
+			throws UnknownHostException, ScribRuntimeException, IOException,
+			ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		Buf<Integer> i1 = new Buf<>(1);
 		//Buf<Integer> i2 = new Buf<>(2);
 
 		Adder adder = new Adder();
-		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, Adder.C,
+				new ObjectStreamFormatter()))
 		{	
-			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
+			se.request(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			Adder_C_1 s1 = new Adder_C_1(se);
 
@@ -72,8 +75,8 @@ public class AdderClient
 		}
 	}
 	
-	private static Succ_Out_S_BYE foo(Select_C_S_ADD_Int_Int__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
-	//private static EndSocket foo(Select_C_S_ADD_Integer_Integer__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	private static Succ_Out_S_BYE foo(Select_C_S_ADD_Int_Int__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribRuntimeException, IOException
+	//private static EndSocket foo(Select_C_S_ADD_Integer_Integer__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribRuntimeException, IOException
 	{
 		return (i.val < 100)
 				? foo(
@@ -85,7 +88,7 @@ public class AdderClient
 				: s.send(Adder.S, Adder.BYE);
 	}
 
-	/*private static EndSocket<Adder, C> fib(Buf<Integer> i1, Buf<Integer> i2, Adder_C_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	/*private static EndSocket<Adder, C> fib(Buf<Integer> i1, Buf<Integer> i2, Adder_C_1 s1) throws ScribRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		return (i1.val < 100)
 				? fib(i1, i2,

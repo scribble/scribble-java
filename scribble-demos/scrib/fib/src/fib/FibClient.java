@@ -17,29 +17,32 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import fib.Fib.Adder.Adder;
-import fib.Fib.Adder.channels.C.Adder_C_1;
-import fib.Fib.Adder.channels.C.Adder_C_2;
-import fib.Fib.Adder.channels.C.Adder_C_3;
 import fib.Fib.Adder.roles.C;
+import fib.Fib.Adder.statechans.C.Adder_C_1;
+import fib.Fib.Adder.statechans.C.Adder_C_2;
+import fib.Fib.Adder.statechans.C.Adder_C_3;
 
 public class FibClient
 {
-	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	public static void main(String[] args)
+			throws UnknownHostException, ScribRuntimeException, IOException,
+			ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		Buf<Integer> i1 = new Buf<>(0);
 		Buf<Integer> i2 = new Buf<>(1);
 		
 		Adder adder = new Adder();
-		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, Adder.C,
+				new ObjectStreamFormatter()))
 		{
-			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
+			se.request(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			Adder_C_1 s1 = new Adder_C_1(se);
 
@@ -47,7 +50,9 @@ public class FibClient
 		}
 	}
 
-	private static Adder_C_3 fib(Adder_C_1 s1, Buf<Integer> i1, Buf<Integer> i2, int i) throws ClassNotFoundException, ScribbleRuntimeException, IOException, ExecutionException, InterruptedException
+	private static Adder_C_3 fib(Adder_C_1 s1, Buf<Integer> i1, Buf<Integer> i2,
+			int i) throws ClassNotFoundException, ScribRuntimeException, IOException,
+			ExecutionException, InterruptedException
 	{
 		return (i < 20)
 			//? fib(side(s1.send(Adder.S, Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)

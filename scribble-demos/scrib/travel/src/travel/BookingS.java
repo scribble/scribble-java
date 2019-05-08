@@ -16,21 +16,22 @@ package travel;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.MPSTEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.util.Buf;
 
 import travel.Travel.Booking.Booking;
-import travel.Travel.Booking.channels.S.Booking_S_1;
-import travel.Travel.Booking.channels.S.Booking_S_1_Cases;
 import travel.Travel.Booking.roles.S;
+import travel.Travel.Booking.statechans.S.Booking_S_1;
+import travel.Travel.Booking.statechans.S.Booking_S_1_Cases;
 
 public class BookingS
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException
+	public static void main(String[] args) throws IOException,
+			ScribRuntimeException, ExecutionException, InterruptedException
 	{
 		try (ScribServerSocket ss_C = new SocketChannelServer(8888);
 				 ScribServerSocket ss_A = new SocketChannelServer(9999))
@@ -38,7 +39,8 @@ public class BookingS
 			while (true)
 			{
 				Booking booking = new Booking();
-				try (MPSTEndpoint<Booking, S> se = new MPSTEndpoint<>(booking, Booking.S, new ObjectStreamFormatter()))
+				try (MPSTEndpoint<Booking, S> se = new MPSTEndpoint<>(booking,
+						Booking.S, new ObjectStreamFormatter()))
 				{
 					//S.register(Booking.A, ss_A);
 				

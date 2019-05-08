@@ -1,4 +1,4 @@
-//$ bin/scribblec.sh -ip scribble-demos/scrib/loan/src -d scribble-demos/scrib/loan/src scribble-demos/scrib/loan/src/loan/LoanApplication.scr -api BuyerBrokerSupplier Applicant
+//$ ./scribblec.sh -ip scribble-demos/scrib/loan/src -d scribble-demos/scrib/loan/src scribble-demos/scrib/loan/src/loan/LoanApplication.scr -api BuyerBrokerSupplier Applicant
 //$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/loan/src scribble-demos/scrib/loan/src/loan/*.java -subpackages loan.LoanApplication.BuyerBrokerSupplier -d scribble-demos/scrib/loan/javadoc
 
 module loan.LoanApplication;

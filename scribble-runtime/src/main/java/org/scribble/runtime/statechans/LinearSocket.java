@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.net.BinaryChannelWrapper;
 import org.scribble.runtime.session.Session;
 import org.scribble.runtime.session.SessionEndpoint;
@@ -39,22 +39,22 @@ public abstract class LinearSocket<S extends Session, R extends Role> extends Sc
 	}
 	
 	//protected synchronized void use() throws ScribbleRuntimeException
-	protected void use() throws ScribbleRuntimeException
+	protected void use() throws ScribRuntimeException
 	{
 		if (this.used)
 		{
-			throw new ScribbleRuntimeException("Linear socket resource already used: " + this.getClass());
+			throw new ScribRuntimeException("Linear socket resource already used: " + this.getClass());
 		}
 		this.used = true;
 	}
 	
 	//protected  // FIXME: generate API operation
-	public void wrapClient(Role peer, Callable<? extends BinaryChannelWrapper> cons) throws IOException, ScribbleRuntimeException 
+	public void wrapClient(Role peer, Callable<? extends BinaryChannelWrapper> cons) throws IOException, ScribRuntimeException 
 	{
 		//use();  // FIXME: should be use for proper API operation
 		if (this.used)
 		{
-			throw new ScribbleRuntimeException("Linear socket resource already used: " + this.getClass());
+			throw new ScribRuntimeException("Linear socket resource already used: " + this.getClass());
 		}
 		try
 		{
@@ -72,7 +72,7 @@ public abstract class LinearSocket<S extends Session, R extends Role> extends Sc
 
 	// FIXME: refactor
 	// FIXME: State supertype of T
-	public static <T> T wrapClient(T s, Role peer, Callable<? extends BinaryChannelWrapper> cons) throws IOException, ScribbleRuntimeException 
+	public static <T> T wrapClient(T s, Role peer, Callable<? extends BinaryChannelWrapper> cons) throws IOException, ScribRuntimeException 
 	{
 		((LinearSocket<?, ?>) s).wrapClient(peer, cons);
 		return s;

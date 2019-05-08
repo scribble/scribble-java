@@ -16,7 +16,7 @@ package org.scribble.runtime.statechans;
 import java.io.IOException;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.session.MPSTEndpoint;
 import org.scribble.runtime.session.Session;
@@ -36,7 +36,7 @@ public abstract class AcceptSocket<S extends Session, R extends Role> extends Li
 		this.ep.register(role, ss.accept());
 	}*/
 
-	protected void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	protected void accept(ScribServerSocket ss, Role role) throws IOException, ScribRuntimeException
 	{
 		use();
 		//this.se.accept(ss, role);  // FIXME: csat

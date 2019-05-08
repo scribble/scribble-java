@@ -513,7 +513,7 @@ public class AstFactoryImpl implements AstFactory
 	public GDelegPayElem GDelegPayElem(Token t, GProtoNameNode proto,
 			RoleNode role)
 	{
-		t = newToken(t, ScribbleParser.DELEG_PAYELEM);  
+		t = newToken(t, ScribbleParser.GDELEG_PAYELEM);  
 		GDelegPayElem n = new GDelegPayElem(t);
 		n.addScribChildren(proto, role);
 		n.decorateDel(this.df);

@@ -95,7 +95,7 @@ tokens
   SIG_LIT = 'SIG_LIT';
   PAYELEM_LIST = 'PAYELEM_LIST';
   UNARY_PAYELEM = 'UNARY_PAYELEM';
-  DELEG_PAYELEM = 'DELEG_PAYELEM';
+  GDELEG_PAYELEM = 'GDELEG_PAYELEM';
 
 	// Scribble "language" nodes, i.e., the nodes that are not "session nodes" (see below)
   MODULE = 'MODULE';
@@ -409,7 +409,7 @@ payelem:
 	// Payload element must be a data kind, cannot be a sig name
 	// Qualified name must be a data type name
 	// Also subsumes simple names, could be a data *param*
-	gprotoname '@' rolename -> ^(DELEG_PAYELEM rolename gprotoname)
+	gprotoname '@' rolename -> ^(GDELEG_PAYELEM gprotoname rolename)
 |
 	ambigname -> ^(UNARY_PAYELEM ambigname)
 |

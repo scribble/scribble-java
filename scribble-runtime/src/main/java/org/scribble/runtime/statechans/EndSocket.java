@@ -14,7 +14,7 @@
 package org.scribble.runtime.statechans;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.session.Session;
 import org.scribble.runtime.session.SessionEndpoint;
 
@@ -27,7 +27,7 @@ public abstract class EndSocket<S extends Session, R extends Role> extends Scrib
 		super(se);
 	}
 
-	public void end() throws ScribbleRuntimeException
+	public void end() throws ScribRuntimeException
 	{
 		/*super.use();
 		this.se.setCompleted();*/

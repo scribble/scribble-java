@@ -21,7 +21,7 @@ import java.util.Random;
 
 import org.scribble.core.type.name.GProtoName;
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.util.ScribException;
 
 public abstract class Session
@@ -73,15 +73,15 @@ public abstract class Session
 	}*/
 	//protected <P extends Session, R extends Role> SessionEndpoint<P, R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
 	//protected void project(MPSTEndpoint<?, ?> se) throws ScribbleRuntimeException, IOException
-	protected void project(SessionEndpoint<?, ?> se) throws ScribbleRuntimeException, IOException
+	protected void project(SessionEndpoint<?, ?> se) throws ScribRuntimeException, IOException
 	{
 		if (!getRoles().contains(se.self))
 		{
-			throw new ScribbleRuntimeException("Invalid role: " + se.self);
+			throw new ScribRuntimeException("Invalid role: " + se.self);
 		}
 		if (this.endpoints.containsKey(se.self))
 		{
-			throw new ScribbleRuntimeException("Session endpoint already created for: " + se.self);
+			throw new ScribRuntimeException("Session endpoint already created for: " + se.self);
 		}
 		//SessionEndpoint<P, R> ep = new SessionEndpoint<>(this, role, smf);
 		this.endpoints.put(se.self, se);

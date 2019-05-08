@@ -53,23 +53,12 @@ public abstract class NonProtoDecl<K extends NonProtoKind>
 
 	public ExtIdNode getExtNameChild()
 	{
-		return (ExtIdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
+		return (ExtIdNode) getChild(EXTNAME_NODE_CHILD_INDEX);
 	}
 
 	public ExtIdNode getExtSourceChild()
 	{
 		return (ExtIdNode) getChild(EXTSOURCE_NODE_CHILD_INDEX);
-	}
-	
-	// CHECKME: maybe move to ModuleMember
-	public boolean isDataDecl()
-	{
-		return false;
-	}
-
-	public boolean isSigDecl()
-	{
-		return false;
 	}
 
 	// "add", not "set"
@@ -81,6 +70,17 @@ public abstract class NonProtoDecl<K extends NonProtoKind>
 		addChild(schema);
 		addChild(extName);
 		addChild(extSource);
+	}
+	
+	// CHECKME: maybe move to ModuleMember
+	public boolean isDataDecl()
+	{
+		return false;
+	}
+
+	public boolean isSigDecl()
+	{
+		return false;
 	}
 	
 	@Override
@@ -103,7 +103,7 @@ public abstract class NonProtoDecl<K extends NonProtoKind>
 				getNameNodeChild(), nv);
 		IdNode schema = getSchemaChild();
 		ExtIdNode extName = getExtNameChild();
-		ExtIdNode extSource = getExtNameChild();
+		ExtIdNode extSource = getExtSourceChild();
 		return reconstruct(name, schema, extName, extSource);
 	}
 

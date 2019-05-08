@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.message.ScribMessageFormatter;
 import org.scribble.runtime.net.BinaryChannelEndpoint;
 import org.scribble.runtime.net.BinaryChannelWrapper;
@@ -51,7 +51,7 @@ public abstract class SessionEndpoint<S extends Session, R extends Role> impleme
 	private final ScribInputSelector sel;
 	private final Map<Role, SelectionKey> keys = new HashMap<>();
 	
-	public SessionEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
+	public SessionEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribRuntimeException
 	{
 		this.sess = sess;
 		this.self = self;
@@ -166,7 +166,7 @@ public abstract class SessionEndpoint<S extends Session, R extends Role> impleme
 	}
 	
 	@Override
-	public synchronized void close() throws ScribbleRuntimeException
+	public synchronized void close() throws ScribRuntimeException
 	{
 		if (!this.closed)
 		{
@@ -180,7 +180,7 @@ public abstract class SessionEndpoint<S extends Session, R extends Role> impleme
 			{
 				if (!isCompleted())  // Subsumes use -- must be used for sess to be completed
 				{
-					throw new ScribbleRuntimeException("Session not completed: " + this.self);
+					throw new ScribRuntimeException("Session not completed: " + this.self);
 				}
 			}
 		}
@@ -262,7 +262,7 @@ public abstract class SessionEndpoint<S extends Session, R extends Role> impleme
 	}*/
 	
 	//public void bind() throws ScribbleRuntimeException
-	public void init() throws ScribbleRuntimeException
+	public void init() throws ScribRuntimeException
 	{
 		/*if (this.bound)
 		{
@@ -271,7 +271,7 @@ public abstract class SessionEndpoint<S extends Session, R extends Role> impleme
 		//if (!this.initialised)
 		if (this.init)
 		{
-			throw new ScribbleRuntimeException("Session endpoint already initialised.");
+			throw new ScribRuntimeException("Session endpoint already initialised.");
 		}
 		//this.bound = true;
 		this.init = true;

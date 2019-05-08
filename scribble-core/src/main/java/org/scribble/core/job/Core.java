@@ -310,8 +310,8 @@ public class Core
 			{
 				// Seems to be OK even if runSyntaxWfPasses does not succeed (cf. unfair transform)
 				EGraph graph = this.context.getEGraph(fullname, self);
-				verbosePrintPass(
-						"Built EFSM: " + inlined.fullname + "\n" + graph.toDot());
+				verbosePrintPass("Built EFSM: " + inlined.fullname + "@" + self
+						+ "\n" + graph.toDot());
 			}
 		}
 				
@@ -326,8 +326,8 @@ public class Core
 				{
 					// Pre: runGlobalSyntaxWfPasses -- e.g., bad.wfchoice.enabling.threeparty.Test02
 					EGraph graph = this.context.getUnfairEGraph(inlined.fullname, self);
-					verbosePrintPass("Built \"unfair\" EFSM: " + inlined.fullname + ":\n"
-							+ graph.toDot());
+					verbosePrintPass("Built \"unfair\" EFSM: " + inlined.fullname
+							+ "@" + self + ":\n" + graph.toDot());
 				}
 			}
 		}

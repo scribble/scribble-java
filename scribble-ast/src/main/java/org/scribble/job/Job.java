@@ -108,6 +108,26 @@ public class Job
 		return new JobContext(this, parsed);
 	}
 	
+	// First run Visitor passes, then call toJob
+	// Base implementation: ambigname disamb pass only
+	public void runPasses() throws ScribException
+	{
+		verbosePrintPass("Starting Job passes on:");
+		for (ModuleName fullname : this.context.getFullModuleNames())
+		{
+			verbosePrintln(this.context.getModule(fullname).toString());
+		}
+		
+		// Disamb is a "leftover" aspect of parsing -- so not in core
+		// N.B. disamb is mainly w.r.t. ambignames -- e.g., doesn't fully qualify names (currently mainly done by imed translation)
+		// CHECKME: disamb also currently does checks like do-arg kind and arity -- refactor into core? -- also does, e.g., distinct roledecls, protodecls, etc.
+		runVisitorPassOnAllModules(this.config.vf.DelDecorator(this));  
+				// Currently, only for the simple name nodes "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
+				// CHECKME: refactor to construct (and set del) all uniformly via ScribTreeAdaptor, to deprecate DelDecorator? 
+		
+		runVisitorPassOnAllModules(this.config.vf.NameDisambiguator(this));  // Includes validating names used in subprotocol calls..
+	}
+	
 	// "Finalises" this Job -- initialises the Job at this point, and cannot run futher Visitor passes on Job
 	// So, typically, Job passes should be finished before calling this
 	// Core passes may subsequently mutate Core(Context) though
@@ -214,25 +234,6 @@ public class Job
 		return res;
 				// CHECKME: (interleaved) ordering between proto and nonproto (Module) imports -- order by original Global import order?
 	}
-	
-	// First run Visitor passes, then call toJob
-	// Base implementation: ambigname disamb pass only
-	public void runPasses() throws ScribException
-	{
-		verbosePrintPass("Starting Job passes on:");
-		for (ModuleName fullname : this.context.getFullModuleNames())
-		{
-			verbosePrintln(this.context.getModule(fullname).toString());
-		}
-		
-		// Disamb is a "leftover" aspect of parsing -- so not in core
-		// N.B. disamb is mainly w.r.t. ambignames -- e.g., doesn't fully qualify names (currently mainly done by imed translation)
-		// CHECKME: disamb also currently does checks like do-arg kind and arity -- refactor into core? -- also does, e.g., distinct roledecls, protodecls, etc.
-		runVisitorPassOnAllModules(this.config.vf.DelDecorator(this));  
-				// Currently, only for the simple name nodes "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] 
-				// CHECKME: refactor to construct (and set del) all uniformly via ScribTreeAdaptor, to deprecate DelDecorator? 
-		runVisitorPassOnAllModules(this.config.vf.NameDisambiguator(this));  // Includes validating names used in subprotocol calls..
-	}
 
 	public void runVisitorPassOnAllModules(AstVisitor v) throws ScribException
 	{
@@ -262,6 +263,11 @@ public class Job
 		this.context.replaceModule(visited);
 	}
 	
+	public JobContext getContext()
+	{
+		return this.context;
+	}
+	
 	public boolean isVerbose()
 	{
 		return this.config.args.get(CoreArgs.VERBOSE);
@@ -283,10 +289,5 @@ public class Job
 	public void warningPrintln(String s)
 	{
 		System.err.println("[Warning] " + s);
-	}
-	
-	public JobContext getContext()
-	{
-		return this.context;
 	}
 }

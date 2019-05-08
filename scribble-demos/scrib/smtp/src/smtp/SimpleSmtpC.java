@@ -12,7 +12,7 @@
  * the License.
  */
 
-//$ java -cp scribble-runtime/target/classes/';'scribble-core/target/classes';'scribble-demos/target/classes smtp.SimpleSmtpC
+//$ java -cp scribble-runtime/target/classes/:scribble-core/target/classes:scribble-demos/target/classes smtp.SimpleSmtpC
 
 
 package smtp;
@@ -78,8 +78,8 @@ public class SimpleSmtpC
 		int port = 25;
 
 		String ehlo = "user.testing.com";
-		String mail = "rhu@doc.ic.ac.uk";  // Sender
-		String rcpt = mail;
+		String mailFrom = "rhu@doc.ic.ac.uk";  // Sender
+		String rcptTo = mailFrom;
 		String subj = "test";
 		String body = "body";
 
@@ -95,14 +95,14 @@ public class SimpleSmtpC
 								doEhlo(new Smtp_C_1(se).async(S, _220), ehlo)
 							)
 						, ehlo))
-					.send(S, new Mail(mail))
+					.send(S, new Mail(mailFrom))
 					.branch(S);
 			switch (cases.getOp())
 			{
 				case _250:
 				{
 					cases.receive(_250)                       
-						.send(S, new Rcpt(rcpt)).async(S, _250) 
+						.send(S, new Rcpt(rcptTo)).async(S, _250) 
 						.send(S, new Data()).async(S, _354)     
 						.send(S, new Subject(subj))             
 						.send(S, new DataLine(body))            

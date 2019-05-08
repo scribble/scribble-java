@@ -13,6 +13,7 @@
  */
 package org.scribble.parser;
 
+import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.scribble.ast.AuxMod;
@@ -41,6 +42,7 @@ import org.scribble.ast.UnaryPayElem;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDelegPayElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
@@ -89,7 +91,12 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 		switch (t.getType())
 		{
 			case ScribbleParser.ID: n = new IdNode(t); break;
-			case ScribbleParser.EXTID: n = new ExtIdNode(t); break;
+			case ScribbleParser.EXTID:
+				t = new CommonToken(t);
+				String text = t.getText();
+				t.setText(text.substring(1, text.length()-1));  // N.B. remove surrounding quotes "..."
+				n = new ExtIdNode(t);
+				break;
 			
 			// Simple names "constructed directly" by parser, e.g., t=ID -> ID<...Node>[$t] -- N.B. DelDecorator pass needed for them (CHECKME: also do those here instead? to deprecate DelDecorator)
 
@@ -129,6 +136,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			case ScribbleParser.SIG_LIT: n = new SigLitNode(t); break;
 			case ScribbleParser.PAYELEM_LIST: n = new PayElemList(t); break;
 			case ScribbleParser.UNARY_PAYELEM: n = new UnaryPayElem<>(t); break;
+			case ScribbleParser.GDELEG_PAYELEM: n = new GDelegPayElem(t); break;
 
 			case ScribbleParser.GMSGTRANSFER: n = new GMsgTransfer(t); break;
 			case ScribbleParser.GCONNECT: n = new GConnect(t); break;
@@ -155,6 +163,7 @@ public class ScribTreeAdaptor extends CommonTreeAdaptor
 			}
 		}
 		n.decorateDel(this.df);
+		
 		return n;
 	}
 }

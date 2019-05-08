@@ -15,6 +15,7 @@ package org.scribble.ast.name.simple;
 
 import org.antlr.runtime.Token;
 
+// N.B. without surrounding quotes "..." -- cf. ScribTreeAdaptor.create
 // N.B. no del attached, so not currently visited
 public class ExtIdNode extends IdNode  // CHECKME: e.g., toName gives Id
 {

@@ -79,7 +79,7 @@ public class GDelegPayElem extends ScribNodeBase implements PayElem<Local>
 	public GDelegPayElem reconstruct(GProtoNameNode proto, RoleNode role)
 	{
 		GDelegPayElem dup = dupNode();
-		addScribChildren(proto, role);
+		dup.addScribChildren(proto, role);
 		dup.setDel(del());  // No copy
 		return dup;
 	}

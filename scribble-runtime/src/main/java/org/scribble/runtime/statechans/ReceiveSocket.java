@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.session.Session;
 import org.scribble.runtime.session.SessionEndpoint;
@@ -32,7 +32,7 @@ public abstract class ReceiveSocket<S extends Session, R extends Role> extends L
 		super(se);
 	}
 
-	protected ScribMessage readScribMessage(Role peer) throws ClassNotFoundException, IOException, ScribbleRuntimeException
+	protected ScribMessage readScribMessage(Role peer) throws ClassNotFoundException, IOException, ScribRuntimeException
 	{
 		try
 		{
@@ -60,7 +60,7 @@ public abstract class ReceiveSocket<S extends Session, R extends Role> extends L
 		return (this.fut == null) || (this.fut.isDone());
 	}
 	
-	protected CompletableFuture<ScribMessage> getFuture(Role peer) throws ScribbleRuntimeException
+	protected CompletableFuture<ScribMessage> getFuture(Role peer) throws ScribRuntimeException
 	{
 		use();
 		//this.fut = this.ep.getInputQueues().getFuture(peer);

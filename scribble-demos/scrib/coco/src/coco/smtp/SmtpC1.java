@@ -22,23 +22,23 @@ import static coco.smtp.Smtp.Smtp.Smtp._220;
 import static coco.smtp.Smtp.Smtp.Smtp._250;
 import static coco.smtp.Smtp.Smtp.Smtp._250d;
 
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.scribsock.LinearSocket;
-import org.scribble.runtime.net.session.MPSTEndpoint;
-import org.scribble.runtime.net.session.SSLSocketChannelWrapper;
-import org.scribble.runtime.net.session.SocketChannelEndpoint;
+import org.scribble.runtime.net.SSLSocketChannelWrapper;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.session.MPSTEndpoint;
+import org.scribble.runtime.statechans.LinearSocket;
+import org.scribble.runtime.util.Buf;
 
 import coco.smtp.Smtp.Smtp.Smtp;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_2;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Cases;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_6;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_7;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_7_Cases;
-import coco.smtp.Smtp.Smtp.channels.C.Smtp_C_8;
 import coco.smtp.Smtp.Smtp.roles.C;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_1;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_2;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_3;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_3_Cases;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_4;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_6;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_7;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_7_Cases;
+import coco.smtp.Smtp.Smtp.statechans.C.Smtp_C_8;
 import coco.smtp.message.SmtpMessageFormatter;
 import coco.smtp.message.client.Ehlo;
 import coco.smtp.message.client.Quit;
@@ -64,9 +64,9 @@ public class SmtpC1
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter()))
-		{
-			se.connect(S, SocketChannelEndpoint::new, host, port);
+		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, C,
+				new SmtpMessageFormatter())) {
+			se.request(S, SocketChannelEndpoint::new, host, port);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			doInit(

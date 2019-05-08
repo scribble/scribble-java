@@ -71,7 +71,8 @@ public class IOInterfacesGenerator extends ApiGen
 	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
 	private final Map<String, List<EAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
 	
-	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribException, ScribException
+	public IOInterfacesGenerator(StateChannelApiGenerator apigen,
+			boolean subtypes) throws RuntimeScribException, ScribException
 	{
 		super(apigen.getJob(), apigen.getGProtocolName());
 		this.apigen = apigen;
@@ -84,12 +85,11 @@ public class IOInterfacesGenerator extends ApiGen
 		EState init = this.job.config.args.get(CoreArgs.MIN_EFSM)
 				? corec.getMinimisedEGraph(fullname, self).init
 				: corec.getEGraph(fullname, self).init;
-		
 		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
 			// FIXME: factor out with skipIOInterfacesGeneration
 			Set<EAction> as = init.getReachableActions();
-			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+			if (as.stream().anyMatch(a -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 			{
 				throw new RuntimeScribException(
 						"[TODO] I/O Interface generation not supported for: "
@@ -149,13 +149,13 @@ public class IOInterfacesGenerator extends ApiGen
 					// Overriding every Successor I/f to methods in the I/O State I/f, even if unnecessary
 					if (!cast.getReturn().equals("EndSocket"))
 					{
-						MethodBuilder mb = addEndSocketToCastMethod(endsock, cast.getReturn(), "throw new RuntimeScribbleException(\"Invalid cast of EndSocket: \" + cast);");
+						MethodBuilder mb = addEndSocketToCastMethod(endsock, cast.getReturn(), "throw new RuntimeScribException(\"Invalid cast of EndSocket: \" + cast);");
 						if (mb != null)
 
 						{
 							mb.addModifiers(JavaBuilder.PUBLIC);
 							mb.addAnnotations("@Override");
-							endsock.addImports("org.scribble.main.RuntimeScribbleException");
+							endsock.addImports("org.scribble.util.RuntimeScribException");
 						}
 					}
 				}
@@ -904,8 +904,8 @@ public class IOInterfacesGenerator extends ApiGen
 		}
 		else
 		{
-			ib.addImports("org.scribble.main.RuntimeScribbleException");
-			mb.addBodyLine("throw new RuntimeScribbleException(\"Invalid cast to EndSocket: \" + cast);");
+			ib.addImports("org.scribble.util.RuntimeScribException");
+			mb.addBodyLine("throw new RuntimeScribException(\"Invalid cast to EndSocket: \" + cast);");
 		}
 		return mb;
 	}

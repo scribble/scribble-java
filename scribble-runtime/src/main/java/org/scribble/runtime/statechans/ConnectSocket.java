@@ -18,7 +18,7 @@ import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.net.BinaryChannelEndpoint;
 import org.scribble.runtime.session.MPSTEndpoint;
 import org.scribble.runtime.session.Session;
@@ -38,7 +38,7 @@ public abstract class ConnectSocket<S extends Session, R extends Role> extends L
 		this.ep.register(role, new SocketWrapper(s));
 	}*/
 
-	protected void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	protected void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribRuntimeException, UnknownHostException, IOException
 	{
 		use();
 		//this.se.connect(role, cons, host, port);

@@ -7,9 +7,6 @@
  * (2) Build Endpoint FSM for C: 
  * $ ./scribblec.sh scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -fsm Adder C
  * 
- * (3) Generate "Session API" for Adder: 
- * $ ./scribblec.sh -d scribble-demos/scrib/betty16/src/ scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -session Adder
- * 
  * (3) Generate Endpoint API ("Session API" and "State Channel API") for C: 
  * $ ./scribblec.sh -d scribble-demos/scrib/betty16/src/ scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder.scr -api Adder C
  * 

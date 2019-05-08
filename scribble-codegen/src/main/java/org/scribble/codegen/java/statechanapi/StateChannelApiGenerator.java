@@ -41,7 +41,7 @@ import org.scribble.util.ScribException;
 public class StateChannelApiGenerator extends ApiGen
 {
 	public static final String SCRIBMESSAGE_CLASS = "org.scribble.runtime.message.ScribMessage";
-	public static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribbleRuntimeException";
+	public static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribRuntimeException";
 	public static final String RECEIVE_OP_PARAM = "op";
 	public static final String SCRIBMESSAGE_OP_FIELD = "op";
 

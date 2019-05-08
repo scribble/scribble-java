@@ -16,23 +16,23 @@ package org.scribble.runtime.session;
 import java.io.IOException;
 
 import org.scribble.core.type.name.Role;
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.message.ScribMessageFormatter;
 
 public class ExplicitEndpoint<S extends Session, R extends Role> extends SessionEndpoint<S, R>
 {
-	public ExplicitEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
+	public ExplicitEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribRuntimeException
 	{
 		super(sess, self, smf);
 	}
 	
 	// FIXME HACK: "init" really only for MPSTEndpoint?  Then refactor into there only
 	@Override
-	public void init() throws ScribbleRuntimeException
+	public void init() throws ScribRuntimeException
 	{
 		if (this.init)
 		{
-			throw new ScribbleRuntimeException("Session endpoint already initialised.");
+			throw new ScribRuntimeException("Session endpoint already initialised.");
 		}
 	}
 }
