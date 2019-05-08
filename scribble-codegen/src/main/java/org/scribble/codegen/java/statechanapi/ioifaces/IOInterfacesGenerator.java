@@ -149,13 +149,13 @@ public class IOInterfacesGenerator extends ApiGen
 					// Overriding every Successor I/f to methods in the I/O State I/f, even if unnecessary
 					if (!cast.getReturn().equals("EndSocket"))
 					{
-						MethodBuilder mb = addEndSocketToCastMethod(endsock, cast.getReturn(), "throw new RuntimeScribbleException(\"Invalid cast of EndSocket: \" + cast);");
+						MethodBuilder mb = addEndSocketToCastMethod(endsock, cast.getReturn(), "throw new RuntimeScribException(\"Invalid cast of EndSocket: \" + cast);");
 						if (mb != null)
 
 						{
 							mb.addModifiers(JavaBuilder.PUBLIC);
 							mb.addAnnotations("@Override");
-							endsock.addImports("org.scribble.main.RuntimeScribbleException");
+							endsock.addImports("org.scribble.util.RuntimeScribException");
 						}
 					}
 				}
@@ -904,8 +904,8 @@ public class IOInterfacesGenerator extends ApiGen
 		}
 		else
 		{
-			ib.addImports("org.scribble.main.RuntimeScribbleException");
-			mb.addBodyLine("throw new RuntimeScribbleException(\"Invalid cast to EndSocket: \" + cast);");
+			ib.addImports("org.scribble.util.RuntimeScribException");
+			mb.addBodyLine("throw new RuntimeScribException(\"Invalid cast to EndSocket: \" + cast);");
 		}
 		return mb;
 	}

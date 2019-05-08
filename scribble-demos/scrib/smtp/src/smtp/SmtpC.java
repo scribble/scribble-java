@@ -12,7 +12,7 @@
  * the License.
  */
 
-//$ java -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/target/classes smtp.SmtpC smtp.cc.ic.ac.uk recipient@foo.com sender@bar.com subj body
+//$ java -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/target/classes smtp.SmtpC smtp.cc.ic.ac.uk sender@bar.com recipient@foo.com subj body
 
 
 package smtp;
@@ -71,16 +71,16 @@ public class SmtpC
 	private static final int PORT = 25;
 
 	private final String server;    // e.g., smtp.cc.ic.ac.uk;
-	private final String mailTo;    // recipient@foo.com
-	private final String rcptFrom;  // sender@bar.com
+	private final String mailFrom;  // sender@bar.com
+	private final String rcptTo;    // recipient@foo.com
 	private final String subj;
 	private final String body;
 	
-	public SmtpC(String server, String mailTo, String rcptFrom, String subj, String body) throws Exception
+	public SmtpC(String server, String mailFrom, String rcptTo, String subj, String body) throws Exception
 	{
 		this.server = server;
-		this.mailTo = mailTo;
-		this.rcptFrom = rcptFrom;
+		this.mailFrom = mailFrom;
+		this.rcptTo = rcptTo;
 		this.subj = subj;
 		this.body = body;
 
@@ -111,7 +111,7 @@ public class SmtpC
 					)));
 
 			Smtp_C_11_Cases s11cases =
-					s10.send(S, new Mail(this.mailTo))
+					s10.send(S, new Mail(this.mailFrom))
 					   .branch(S);
 			switch (s11cases.op)
 			{
@@ -216,7 +216,7 @@ public class SmtpC
 	private EndSocket sendMail(Smtp_C_12 s12) throws Exception
 	{
 		return
-			s12.send(S, new Rcpt(this.rcptFrom))
+			s12.send(S, new Rcpt(this.rcptTo))
 				 .async(S, _250)
 				 .send(S, new Data()) 
 				 .async(S, _354)

@@ -270,7 +270,7 @@ public class CBEndpointApiGenerator3
 		endpointClass.setSuperClass("org.scribble.runtime.session.CBEndpoint<" + sessClassName + ", " + getRolesPackage() + "." + this.self + ", D>");
 		ConstructorBuilder cb = endpointClass.newConstructor(sessClassName + " sess", getRolesPackage() + "." + this.self + " self", "org.scribble.runtime.message.ScribMessageFormatter smf", "D data");
 		cb.addModifiers("public");
-		cb.addExceptions("java.io.IOException", "org.scribble.main.ScribbleRuntimeException");
+		cb.addExceptions("java.io.IOException", "org.scribble.main.ScribRuntimeException");
 		cb.addBodyLine("super(sess, self, smf, " + initStateName + ".id, data);");
 		for (EState s : states)
 		{
@@ -281,7 +281,7 @@ public class CBEndpointApiGenerator3
 		MethodBuilder mb = endpointClass.newMethod("run");
 		mb.addModifiers("public");
 		mb.setReturn("java.util.concurrent.Future<Void>");
-		mb.addExceptions("org.scribble.main.ScribbleRuntimeException");
+		mb.addExceptions("org.scribble.main.ScribRuntimeException");
 		mb.addAnnotations("@Override");
 		mb.addBodyLine("java.util.Set<Object> states = java.util.stream.Stream.of("
 				+ states.stream().filter(s -> s.getStateKind() != EStateKind.TERMINAL)
@@ -292,7 +292,7 @@ public class CBEndpointApiGenerator3
 		mb.addBodyLine("regd.addAll(this.outputs.keySet());");
 		mb.addBodyLine("if (!states.equals(regd)) {");
 		mb.addBodyLine("states.removeAll(regd);");
-		mb.addBodyLine("throw new org.scribble.main.ScribbleRuntimeException(\"Missing state registrations: \" + states);");
+		mb.addBodyLine("throw new org.scribble.main.ScribRuntimeException(\"Missing state registrations: \" + states);");
 		mb.addBodyLine("}");
 		mb.addBodyLine("return super.run();");
 		for (EState s : states)
@@ -622,12 +622,12 @@ public class CBEndpointApiGenerator3
 					MethodBuilder getPeer = opClass.newMethod("getPeer");
 					getPeer.addModifiers("public");
 					getPeer.addAnnotations("@Override");
-					getPeer.setReturn("org.scribble.type.name.Role");
+					getPeer.setReturn("org.scribble.core.type.name.Role");
 					getPeer.addBodyLine("return " + getRolesPackage() + "." + a.peer + "." + a.peer + ";");
 					MethodBuilder getOp = opClass.newMethod("getOp");
 					getOp.addModifiers("public");
 					getOp.addAnnotations("@Override");
-					getOp.setReturn("org.scribble.type.name.Op");
+					getOp.setReturn("org.scribble.core.type.name.Op");
 					getOp.addBodyLine("return " + getOpsPackage() + "." + SessionApiGenerator.getOpClassName(a.mid) + "." + SessionApiGenerator.getOpClassName(a.mid) + ";");
 					MethodBuilder getPayload = opClass.newMethod("getPayload");
 					getPayload.addModifiers("public");
