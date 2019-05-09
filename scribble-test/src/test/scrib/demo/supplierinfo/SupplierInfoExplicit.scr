@@ -14,6 +14,7 @@ type <xsd> "..." from "...xsd" as usercontext;
 type <xsd> "..." from "...xsd" as filters;
 
 
+// Needs -fair -- cf. SupplierInfoNoFair
 explicit global protocol InfoAuth
 (
 	role Client,

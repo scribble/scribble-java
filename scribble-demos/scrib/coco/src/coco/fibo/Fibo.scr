@@ -4,7 +4,7 @@
 module coco.fibo.Fibo;
 
 
-type <java> "java.lang.Long" from "rt.jar" as Long;
+data <java> "java.lang.Long" from "rt.jar" as Long;
 
 
 global protocol Fibonacci(role A, role B)

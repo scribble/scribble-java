@@ -4,7 +4,7 @@
 
 module bettybook.math.scrib.Math;
 
-type <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 // N.B. calling this Math will clash with java.lang.Math

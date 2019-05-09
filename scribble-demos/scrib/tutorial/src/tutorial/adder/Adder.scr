@@ -16,7 +16,7 @@
 module tutorial.adder.Adder;
 
 
-type <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 global protocol Adder(role C, role S) {
