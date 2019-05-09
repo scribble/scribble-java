@@ -14,7 +14,6 @@
 package org.scribble.core.model.endpoint;
 
 import org.scribble.core.model.MPrettyPrint;
-import org.scribble.core.type.name.Role;
 
 public class EGraph implements MPrettyPrint
 {
