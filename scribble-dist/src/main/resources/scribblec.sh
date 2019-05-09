@@ -52,9 +52,6 @@ Options:
 
   -ip <path>                 Scribble module import path$
 
-  -oldwf                     Use the simpler syntactic protocol well-formedness
-
-
   -project <simple global protocol name> <role>  Project protocol
 
   -fsm <simple global protocol name> <role>      Generate default Endpoint FSM
