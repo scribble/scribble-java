@@ -78,11 +78,6 @@ module tmp.Test;
 	// add exp conn checks to model validation, maybe just as estatevisitor?  (cf. prev syntactic connection checks) -- now done as global syntax visitor
 	// ...refactor -spin as an ext -- dropped -spin from master
 
-		// Outstanding:
-			// ...disallow/check for reserved __ -- do in gtype translation? is mainly for codegen though? maybe also inlining?
-			// FIXME: qualifed sig name as non-role do-arg
-			// CHECKME: duplicate proto mods (unit tests)
-
 // parser/ast re-refactoring
 	// split mf to global/local subcomps, make protected constrs -- done
 	// check G/LType casts vs. SType<Global/Local, ...> (favour latter) -- done: simplified Seq elems, removed Do.proto N param
@@ -98,6 +93,13 @@ module tmp.Test;
 	// fix self in ast locals, astfactory -- done: "self" rolenode is just a constant instance, only LSelfDecl is a special subclass
 	// wrap base class, more global base classes (maybe in del's) -- done: just wrap base classes -- TODO: further factoring, e.g., LDirectedInteraction getSelf/Peer
 	// Job Module projection, projected imports/nonprotodecls -- locals import globals for nonprotos? (better for "projects" clause?) -- done: basic, but nonprotos "copied" from globals -- TODO: import global?
+
+		// Outstanding:
+			// refactor Core pass printing on pass entry
+			// test self comm
+			// ...disallow/check for reserved __ -- do in gtype translation? is mainly for codegen though? maybe also inlining?
+			// FIXME: qualifed sig name as non-role do-arg
+			// CHECKME: duplicate proto mods (unit tests)
 
 	// refactor Set<SState> to Map<Integer, SState> -- Map<CoreArgs, Boolean> to Set<CoreArgs> (HashSet is just a HashMap anyway)
 	// fully refactor imed/module projection to Job: old style subproto visitor for imed-projection do-pruning -- move imed-projs from Core to Job ?
@@ -130,7 +132,7 @@ module tmp.Test;
 data <java> "..." from "..." as T;
 
 
-//*
+/*
 global protocol Proto1(role A, role B)
 {
 	1(T) from A to B;
