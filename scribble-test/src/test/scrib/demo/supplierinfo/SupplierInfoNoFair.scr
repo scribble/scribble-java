@@ -4,14 +4,14 @@
 module src.SupplierInfoNoFair;
 
 
-type <xsd> "UserName" from "AUTH.xsd" as username;
-type <xsd> "Password" from "AUTH.xsd" as password;
-type <xsd> "UUID" from "AUTH.xsd" as uuid;
-type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
-type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
+data <xsd> "UserName" from "AUTH.xsd" as username;
+data <xsd> "Password" from "AUTH.xsd" as password;
+data <xsd> "UUID" from "AUTH.xsd" as uuid;
+data <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
+data <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
 
-type <xsd> "..." from "...xsd" as usercontext;
-type <xsd> "..." from "...xsd" as filters;
+data <xsd> "..." from "...xsd" as usercontext;
+data <xsd> "..." from "...xsd" as filters;
 
 
 explicit global protocol InfoAuth
@@ -29,7 +29,7 @@ explicit global protocol InfoAuth
 	choice at LoginSvc
 	{
 		loginfailure() from LoginSvc to Client;
-		//disconnect Client and LoginSvc;
+		//disconnect Client and LoginSvc;  // Increases state space somewhat
 	}
 	or
 	{

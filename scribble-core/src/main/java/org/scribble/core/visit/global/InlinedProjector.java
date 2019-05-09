@@ -44,7 +44,7 @@ import org.scribble.core.type.session.local.LType;
 import org.scribble.core.type.session.local.LTypeFactory;
 import org.scribble.core.visit.STypeAggNoThrow;
 
-// Pre: use on inlined (i.e., Do inlined, roles pruned)
+// Pre: use on inlined (i.e., "do" inlined, roles pruned)
 public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 {
 	//protected final Set<RecVar> unguarded;  
@@ -148,8 +148,8 @@ public class InlinedProjector extends STypeAggNoThrow<Global, GSeq, LType>
 				// CHECKME: already checked?
 		}*/
 		LTypeFactory lf = this.core.config.tf.local;
-		return (n.left.equals(self)) ? lf.LDisconnect(null, n.right)
-				: (n.right.equals(self)) ? lf.LDisconnect(null, n.left)
+		return n.left.equals(self) ? lf.LDisconnect(null, n.right)
+				: n.right.equals(self) ? lf.LDisconnect(null, n.left)
 				: LSkip.SKIP;
 	}
 

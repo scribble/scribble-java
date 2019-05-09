@@ -5,9 +5,9 @@
 module threebuyer.ThreeBuyer;
 
 
-type <java> "java.lang.Integer" from "rt.jar" as Int;
-type <java> "java.lang.String" from "rt.jar" as String;
-type <java> "test.twobuyer.Date" from "test/twobuyer/Date.java" as Date;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "test.twobuyer.Date" from "test/twobuyer/Date.java" as Date;
 
 
 // 1 = B, 2 = A, 3 = S

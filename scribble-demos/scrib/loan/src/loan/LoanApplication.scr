@@ -3,16 +3,16 @@
 
 module loan.LoanApplication;
 
-/*type <xsd> "CustomerName" from "CustomerName.xsd" as CustomerName;
-type <xsd> "DateOfBirth" from "DateOfBirth.xsd" as DateOfBirth;
-type <xsd> "AnnualSalary" from "AnnualSalary.xsd" as AnnualSalary;
-type <xsd> "CreditRating" from "CreditRating.xsd" as CreditRating;
-type <xsd> "LoanAmount" from "LoanAmount.xsd" as LoanAmount;
-type <xsd> "Approval" from "Approval.xsd" as Approval;*/
+/*data <xsd> "CustomerName" from "CustomerName.xsd" as CustomerName;
+data <xsd> "DateOfBirth" from "DateOfBirth.xsd" as DateOfBirth;
+data <xsd> "AnnualSalary" from "AnnualSalary.xsd" as AnnualSalary;
+data <xsd> "CreditRating" from "CreditRating.xsd" as CreditRating;
+data <xsd> "LoanAmount" from "LoanAmount.xsd" as LoanAmount;
+data <xsd> "Approval" from "Approval.xsd" as Approval;*/
 
-type <java> "java.lang.Integer" from "rt.jar" as Int;
-type <java> "java.lang.String" from "rt.jar" as String;
-type <java> "java.lang.Boolean" from "rt.jar" as Bool;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
  
 global protocol BuyerBrokerSupplier(role Applicant, role ApplicationPortal, role ProcessingDept, role FinanceDept)
 {

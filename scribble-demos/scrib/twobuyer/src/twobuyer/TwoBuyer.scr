@@ -1,10 +1,10 @@
 module twobuyer.TwoBuyer;
 
 
-type <java> "java.lang.Integer" from "rt.jar" as int;
-type <java> "java.lang.String" from "rt.jar" as String;
-type <java> "test.twobuyer.Address" from "test/twobuyer/Address.java" as Address;
-type <java> "test.twobuyer.Date" from "test/twobuyer/Date.java" as Date;
+data <java> "java.lang.Integer" from "rt.jar" as int;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "test.twobuyer.Address" from "test/twobuyer/Address.java" as Address;
+data <java> "test.twobuyer.Date" from "test/twobuyer/Date.java" as Date;
 
 
 global protocol TwoBuyer(role A, role B, role S)

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
@@ -32,7 +31,6 @@ import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.model.visit.local.EStateVisitor;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 
@@ -239,87 +237,6 @@ public class EState extends MPrettyState<RecVar, EAction, EState, Local>
 						// Idea is to bypass succ clone (for non-det, edges>1) but in general this will be cloned again before returning to it, so bypass doesn't work -- to solve this more generally probably need to keep a record of all clones to bypass future clones
 			}
 		}
-	}
-	
-	public String toPml(Role r)
-	{
-		Map<Integer, String> seen = new HashMap<>();
-		return 
-				  "active proctype " + r + "() {\n"
-				+ toPml(seen, r) + "\n"
-				+ "}\n";
-	}
-	
-	protected String toPml(Map<Integer, String> seen, Role r)
-	{
-		if (seen.containsKey(this.id))
-		{
-			//return "goto " + getLabel(seen, this.id, r) + "\n";
-			return "";
-		}
-
-		String lab = getLabel(seen, this, r);
-		Map<Integer, String> tmp = new HashMap<>(seen);
-		tmp.put(this.id, lab);
-
-		String res = lab + ":\n";
-		EStateKind kind = getStateKind();
-		List<EAction> as = getDetActions();
-		if (kind == EStateKind.OUTPUT)
-		{
-			if (as.stream().anyMatch(a -> !a.isSend()))
-			{
-				throw new RuntimeException("TODO: " + as);
-			}
-			
-			res += //"lab" + this.id + ":\n"
-					  "if\n"
-					+ as.stream().map(a ->
-							  "::\n"
-							+ "skip ->\n"
-							+ "s_" + r + "_" + a.peer + "!" + a.mid + ";\n"
-							+ "goto " + getLabel(seen, getDetSuccessor(a), r) + "\n"
-						)
-						.collect(Collectors.joining(""))
-					+ "fi\n";
-		}
-		else if (kind == EStateKind.UNARY_RECEIVE || kind == EStateKind.POLY_RECIEVE)
-		{
-			res +=
-					  "if\n"
-					+ as.stream().map(a ->
-							  "::\n"
-							+ "r_" + a.peer + "_" + r + "?[" + a.mid + "] ->\n"
-							+ "r_" + a.peer + "_" + r + "?" + a.mid + ";\n"
-							+ "goto " + getLabel(seen, getDetSuccessor(a), r) + "\n"
-						)
-						.collect(Collectors.joining("")) 
-					+ "fi\n";
-		}
-		else if (kind == EStateKind.TERMINAL)
-		{
-			res += "skip\n";
-		}
-		else
-		{
-			throw new RuntimeException("TODO: " + kind);
-		}
-
-		res += as.stream().map(x -> "\n" + getDetSuccessor(x).toPml(tmp, r))
-				.collect(Collectors.joining(""));
-
-		return res;
-	}
-	
-	private static String getLabel(Map<Integer, String> seen, EState s, Role r)
-	{
-		if (seen.containsKey(s.id))
-		{
-			return seen.get(s.id);
-		}
-		String lab = (s.isTerminal() ? "end" : "label") + r + s.id;
-		seen.put(s.id, lab);
-		return lab;
 	}
 	
 	// CHECKME: make an isSync in IOAction ?

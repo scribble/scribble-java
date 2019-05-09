@@ -5,7 +5,7 @@
 module fase16.adder.Adder;
 
 
-type <java> "java.lang.Integer" from "rt.jar" as Integer;
+data <java> "java.lang.Integer" from "rt.jar" as Integer;
 
 
 global protocol Adder(role C, role S)
