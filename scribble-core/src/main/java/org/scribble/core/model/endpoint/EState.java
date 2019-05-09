@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.scribble.core.model.MPrettyState;
 import org.scribble.core.model.MState;
@@ -32,7 +31,6 @@ import org.scribble.core.model.endpoint.actions.EAction;
 import org.scribble.core.model.visit.local.EStateVisitor;
 import org.scribble.core.type.kind.Local;
 import org.scribble.core.type.name.RecVar;
-import org.scribble.core.type.name.Role;
 import org.scribble.util.Pair;
 import org.scribble.util.ScribException;
 
