@@ -22,7 +22,7 @@ public enum CoreArgs
 	NO_PROGRESS,  // TODO: deprecate
 	MIN_EFSM,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 
-	OLD_WF,
+	OLD_WF,  // TODO: deprecate
 	NO_LCHOICE_SUBJ_CHECK,  // For debugging only?
 	NO_ACC_CORRELATION_CHECK,  // Currently unused
 	;

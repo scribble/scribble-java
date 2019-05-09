@@ -174,7 +174,7 @@ public class CommandLine
 				outputSGraph(job, task.right, true, true);
 				break;
 				
-			// CHECKME: -unfair needs to be barrier-ed on syntactic WF? (unfair-transform graph building may crash, e.g., bad.wfchoice.enabling.threeparty.Test02)
+			// CHECKME: -unfair needs to be barrier-ed on syntactic WF? (o/w unfair-transform graph building may crash, e.g., bad.wfchoice.enabling.threeparty.Test02)
 			// Currently, "construction-on-demand" CoreContext getters will still cause these to be attempted even if syntactic WF fails
 			case CLFlags.VALIDATION_EFSM_FLAG:
 				outputEGraph(job, task.right, false, true, false);

@@ -13,7 +13,8 @@
  */
 package org.scribble.main;
 
-// Note: not a runtime ScribbleException
+// Note: not a run-time ScribbleException
+// CHECKME: relocate?
 public class ScribRuntimeException extends Exception
 {
 	private static final long serialVersionUID = 1L;
