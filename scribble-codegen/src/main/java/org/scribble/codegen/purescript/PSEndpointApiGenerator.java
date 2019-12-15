@@ -314,7 +314,7 @@ public class PSEndpointApiGenerator
         StringBuilder sb = new StringBuilder();
 		sb.append("import Scribble.FSM\n");
 //        sb.append("import Scribble.Type.SList (type (:::), SLProxy(..), SNil, symbols)\n");
-		sb.append("import Type.Row (Cons, Nil)\n");
+		sb.append("import Prim.RowList (Cons, Nil)\n");
 		sb.append("import Data.Void (Void)\n");
         sb.append("import Data.Tuple (Tuple)\n");
         return sb.toString();
