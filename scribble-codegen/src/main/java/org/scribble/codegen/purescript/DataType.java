@@ -58,9 +58,9 @@ public class DataType {
             if (kind.equals(KIND_TYPE)) {
                 sb.append("derive instance generic" + name + " :: Generic " + name + " _\n");
                 sb.append("instance encodeJson" + name + " :: EncodeJson " + name + " where\n");
-                sb.append("  encodeJson = genericEncodeJson\n");
+                sb.append("  encodeJson = genericEncodeJsonWith jsonEncoding\n");
                 sb.append("instance decodeJson" + name + " :: DecodeJson " + name + " where\n");
-                sb.append("  decodeJson = genericDecodeJson\n");
+                sb.append("  decodeJson = genericDecodeJsonWith jsonEncoding\n");
             }
             return sb.toString();
         }

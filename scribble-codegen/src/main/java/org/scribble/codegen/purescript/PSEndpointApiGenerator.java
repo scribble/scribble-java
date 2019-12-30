@@ -255,6 +255,9 @@ public class PSEndpointApiGenerator
         // Foreign imports
         sections.add(ForeignType.generateImports(new HashSet<>(foreignImports.values())));
 
+        // TODO: Maybe this should be refactored out?
+        sections.add(jsonEncoding());
+
         // Message data types
         StringBuilder dt = new StringBuilder();
         for (String type : datatypes.keySet()) {
@@ -328,8 +331,22 @@ public class PSEndpointApiGenerator
         sb.append("import Data.Argonaut.Core (Json) -- From purescript-argonaut-core\n");
         sb.append("import Data.Generic.Rep (class Generic) -- From purescript-generics-rep\n");
         sb.append("-- From purescript-argonaut-generic\n");
-        sb.append("import Data.Argonaut.Decode.Generic.Rep (genericDecodeJson)\n");
-        sb.append("import Data.Argonaut.Encode.Generic.Rep (genericEncodeJson)\n");
+        sb.append("import Data.Argonaut.Decode.Generic.Rep (genericDecodeJsonWith)\n");
+        sb.append("import Data.Argonaut.Encode.Generic.Rep (genericEncodeJsonWith)\n");
+        sb.append("import Data.Argonaut.Types.Generic.Rep (Encoding)\n");
+
+        return sb.toString();
+    }
+
+    private static String jsonEncoding() {
+	    StringBuilder sb = new StringBuilder();
+        sb.append("jsonEncoding :: Encoding\n");
+        sb.append("jsonEncoding =\n");
+        sb.append("  { tagKey: \"tag\"\n");
+        sb.append("  , valuesKey: \"values\"\n");
+        sb.append("  , unwrapSingleArguments: true\n");
+        sb.append("  }\n");
+
         return sb.toString();
     }
 
