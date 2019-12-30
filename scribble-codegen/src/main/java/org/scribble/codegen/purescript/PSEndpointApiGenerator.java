@@ -32,6 +32,8 @@ import org.scribble.type.name.PayloadElemType;
 import org.scribble.type.name.Role;
 import org.scribble.util.Pair;
 
+import static java.util.stream.Collectors.joining;
+
 public class PSEndpointApiGenerator
 {
     public static final String PURESCRIPT_SCHEMA = "purescript";
@@ -170,15 +172,11 @@ public class PSEndpointApiGenerator
                                 EAction action = s.getAllActions().get(0);
                                 String to = action.obj.toString();
 
-                                String end = "Nil";
-                                StringBuilder labels = new StringBuilder();
-                                for (Pair<String, String> option : choices) {
-                                    labels.append("(Cons \"" + option.left + "\" " + option.right + " ");
-                                    end += ")";
-                                }
-                                labels.append(end);
+                                String branches = choices.stream()
+                                        .map(option -> "\"" + option.left + "\" :: " + option.right)
+                                        .collect(joining(", ", "(", ")"));
 
-                                instances.add(new TypeClassInstance("select" + curr, "Select", new String[] {to, curr, labels.toString()}));
+                                instances.add(new TypeClassInstance("select" + curr, "Select", new String[] {to, curr, branches}));
                             }
                         }
         					break;
@@ -213,15 +211,11 @@ public class PSEndpointApiGenerator
                                 // All messages must be to the same role, so we can pick the first one
                                 String choosing = s.getAllActions().get(0).obj.toString();
 
-                                String end = "Nil";
-                                StringBuilder labels = new StringBuilder();
-                                for (Pair<String, String> option : choices) {
-                                    labels.append("(Cons \"" + option.left + "\" " + option.right + " ");
-                                    end += ")";
-                                }
-                                labels.append(end);
+                                String branches = choices.stream()
+                                        .map(option -> "\"" + option.left + "\" :: " + option.right)
+                                        .collect(joining(", ", "(", ")"));
 
-                                instances.add(new TypeClassInstance("branch" + curr, "Branch", new String[] {role.name, choosing, curr, labels.toString()}));
+                                instances.add(new TypeClassInstance("branch" + curr, "Branch", new String[] {role.name, choosing, curr, branches}));
                         }
         					break;
         				case TERMINAL:
@@ -317,7 +311,6 @@ public class PSEndpointApiGenerator
         StringBuilder sb = new StringBuilder();
 		sb.append("import Scribble.FSM\n");
 //        sb.append("import Scribble.Type.SList (type (:::), SLProxy(..), SNil, symbols)\n");
-		sb.append("import Prim.RowList (Cons, Nil)\n");
 		sb.append("import Data.Void (Void)\n");
         sb.append("import Data.Tuple (Tuple)\n");
         return sb.toString();
