@@ -67,7 +67,7 @@ Options:
 
 
   -model <simple global protocol name>          Generate global model
-  -modelpng <simple global protocol name> <role> <output file>
+  -modelpng <simple global protocol name> <output file>
           Draw global model as png (requires dot)
   -fair                                         Assume fair output choices
   -umodel, -umodelpng (with appropriate args)   "Unfair" variant
@@ -98,22 +98,22 @@ fixpath() {
 
 ARGS=
 
-CLASSPATH=$DIR'/scribble-cli/target/classes/'
-CLASSPATH=$CLASSPATH':'$DIR'/scribble-core/target/classes'
-CLASSPATH=$CLASSPATH':'$DIR'/scribble-lang/target/classes'
-CLASSPATH=$CLASSPATH':'$DIR'/scribble-parser/target/classes'
+CLASSPATH=$DIR'/scribble-ast/target/classes'
+CLASSPATH=$CLASSPATH':'$DIR'/scribble-cli/target/classes'
 CLASSPATH=$CLASSPATH':'$DIR'/scribble-codegen/target/classes'
+CLASSPATH=$CLASSPATH':'$DIR'/scribble-core/target/classes'
 CLASSPATH=$CLASSPATH':'$DIR'/scribble-main/target/classes'
+CLASSPATH=$CLASSPATH':'$DIR'/scribble-parser/target/classes'
 CLASSPATH=$CLASSPATH':'$ANTLR
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr-runtime.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/commons-io.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-core.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-lang.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-parser.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-codegen.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-main.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-ast.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-cli.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-codegen.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-core.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-main.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-parser.jar'
 CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/stringtemplate.jar'
 CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 
