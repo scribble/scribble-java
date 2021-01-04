@@ -15,6 +15,7 @@ package org.scribble.core.job;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -86,8 +87,9 @@ public class CoreContext
 	{
 		this.core = core;
 		//this.modcs = Collections.unmodifiableMap(modcs);
-		this.imeds = imeds.stream()
-				.collect(Collectors.toMap(x -> x.fullname, x -> x));
+		Map<ProtoName<Global>, GProtocol> tmp = new LinkedHashMap<>();
+		imeds.stream().forEach(x -> tmp.put(x.fullname, x));
+		this.imeds = tmp;
 	}
 	
 	// Used by Core for pass running
