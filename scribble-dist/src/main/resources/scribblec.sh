@@ -17,34 +17,38 @@
 ##
 #  Config notes:
 #
-#  - ANTLR:
-#    Set $ANTLR (below) to the location of the ANTLR 3 runtime jar,
-#    or add the jar to  $DIR/$LIB  assuming $DIR is the scribble-java root directory. 
-#    (This script looks for ANTLR in those locations.)
+# - SCRIBBLE_HOME:
+#   Set this to the `scribble-java` root directory.
+#   i.e., the directory of the `parent` mvn module (that contains the
+#   `scribble-ast`, etc. mvn submodules),
+#   or the directory that contains the `lib` directory containing the generated
+#   distribution jars.
 #
+# - $ANTLR_RUNTIME_JAR:
+#   Set this to the location of the ANTLR 3 runtime jar,
+#   or place the jar in: $SCRIBHOME/lib
+#   (This script looks for the ANTLR jar in those locations.)
+##
 
+if [ -z "${SCRIBBLE_HOME}" ]; then 
+    SCRIBHOME=`dirname "$0"`
+else
+    SCRIBHOME=${SCRIBBLE_HOME}
+fi
 
-# ANTLR 3 runtime location (if no lib jar)
-ANTLR='scribble-parser/lib/antlr-3.5.2-complete.jar'
+# ANTLR 3 runtime jar location (if unavailable, will look in $SCRIBHOME/lib instead)
+ANTLR_RUNTIME_JAR=$SCRIBHOME:'scribble-parser/lib/antlr-3.5.2-complete.jar'
   # e.g., '~/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
-  # or    '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
-  # (i.e., the Maven install location)
-
-DIR=`dirname "$0"`   # Default (script is in scribble-java rootdir)
-#DIR=`dirname "$0"`/.. # (E.g., script is in rootdir/bin)
-
-#PRG=`basename "$0"`
-
-# Directory containing Scribble jars
-LIB=lib
+  #    or '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
+  #        (i.e., the Maven install location)
 
 
 usage() {
   echo Usage:  'scribblec.sh [option]... <SCRFILE> [option]...'
   cat <<EOF
-  
- <SCRFILE>     Source Scribble module (.scr file) 
-  
+
+ <SCRFILE>     Source Scribble module (.scr file)
+
 Options:
   -h, --help                 Show this info and exit$
   -V                         Scribble debug info$
@@ -81,68 +85,52 @@ Options:
 EOF
 }
 
+
 fixpath() {
-  windows=0
+    windows=0
 
-  if [ `uname | grep -c CYGWIN` -ne 0 ]; then
-    windows=1
-  fi
+    if [ `uname | grep -c CYGWIN` -ne 0 ]; then
+        windows=1
+    fi
 
-  cp="$1"
-  if [ "$windows" = 1 ]; then
-      cygpath -pw "$cp"
-  else
-      echo "$cp"
-  fi
+    cp="$1"
+    if [ "$windows" = 1 ]; then
+        cygpath -pw "$cp"
+    else
+        echo "$cp"
+    fi
 }
 
-ARGS=
-
-CLASSPATH=$DIR'/scribble-ast/target/classes'
-CLASSPATH=$CLASSPATH':'$DIR'/scribble-cli/target/classes'
-CLASSPATH=$CLASSPATH':'$DIR'/scribble-codegen/target/classes'
-CLASSPATH=$CLASSPATH':'$DIR'/scribble-core/target/classes'
-CLASSPATH=$CLASSPATH':'$DIR'/scribble-main/target/classes'
-CLASSPATH=$CLASSPATH':'$DIR'/scribble-parser/target/classes'
-CLASSPATH=$CLASSPATH':'$ANTLR
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr-runtime.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/commons-io.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-ast.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-cli.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-codegen.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-core.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-main.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-parser.jar'
-CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/stringtemplate.jar'
+CLASSPATH=$SCRIBHOME'/scribble-ast/target/classes'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-cli/target/classes'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-codegen/target/classes'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-core/target/classes'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-main/target/classes'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-parser/target/classes'
+if test -f "$ANTLR_RUNTIME_JAR"; then
+    CLASSPATH=$CLASSPATH':'$ANTLR_RUNTIME_JAR
+fi
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/antlr.jar'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/antlr-runtime.jar'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/commons-io.jar'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-ast.jar'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-cli.jar'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-codegen.jar'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-core.jar'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-main.jar'
+CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-parser.jar'
+#CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/stringtemplate.jar'
 CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 
 usage=0
 verbose=0
-dot=0
-nondot=0
+ARGS=
 
 while true; do
     case "$1" in
         "")
             break
             ;;
-        #-dot)
-        #    # Should not be used in conjunction with other flags..
-        #    # ..that output to stdout
-        #    ARGS="$ARGS '-fsm'"
-        #    shift
-        #    ARGS="$ARGS '$1'"
-        #    shift
-        #    ARGS="$ARGS '$1'"
-        #    shift
-        #    dot=$1
-        #    if [ "$dot" == '' ]; then
-        #      echo '-dot missing output file name argument'
-        #      exit 1
-        #    fi
-        #    shift
-        #    ;;
         -h)
             usage=1
             break
@@ -155,23 +143,6 @@ while true; do
             verbose=1
             shift
             ;;
-        #-ip)
-        #    ARGS="$ARGS '$1'"
-        #    shift
-        #    ;;
-        #-d)
-        #    ARGS="$ARGS '$1'"
-        #    shift
-        #    ;;
-        #-subtypes)
-        #    ARGS="$ARGS '$1'"
-        #    shift
-        #    ;;
-        #-*)
-        #    nondot=1
-        #    ARGS="$ARGS '$1'"
-        #    shift
-        #    ;;
         *)
             ARGS="$ARGS '$1'"
             shift
@@ -179,31 +150,20 @@ while true; do
     esac
 done
 
-#if [ "$dot" != 0 ]; then
-#  if [ $nondot == 1 ]; then
-#    echo '-dot cannot be used in conjunction with other flags that output to stdout: ' $ARGS
-#    exit 1
-#  fi
-#  ARGS="$ARGS |"
-#  ARGS="$ARGS dot"
-#  ARGS="$ARGS '-Tpng'"
-#  ARGS="$ARGS '-o'"
-#  ARGS="$ARGS '$dot'"
-#fi
 
 if [ "$usage" = 1 ]; then
-  usage
-  exit 0
+    usage
+    exit 0
 fi
 
 CMD='java -cp '$CLASSPATH' org.scribble.cli.CommandLine'
 
 scribblec() {
-  eval $CMD "$@"
+    eval $CMD "$@"
 }
 
 if [ "$verbose" = 1 ]; then
-  echo $CMD "$ARGS"
+    echo $CMD "$ARGS"
 fi
 
 scribblec "$ARGS"
