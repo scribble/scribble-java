@@ -55,13 +55,13 @@ public class MyC
 			while (true)
 			{
 				Proto1 P1 = new Proto1();
-				try (Proto1_C<Void> b = new Proto1_C<>(P1, C, new ObjectStreamFormatter(), null))
+				try (Proto1_C<Void> cep = new Proto1_C<>(P1, C, new ObjectStreamFormatter(), null))
 				{
-					b.accept(ss, B);
+					cep.accept(ss, B);
 
-					b.icallback(Proto1_C_1.id, new MyHandler());
+					cep.icallback(Proto1_C_1.id, new MyHandler());
 
-					Future<Void> f = b.run();
+					Future<Void> f = cep.run();
 					f.get();
 					
 					System.out.println("(C) end");

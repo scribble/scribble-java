@@ -11,16 +11,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.scribble</groupId>
-		<artifactId>parent</artifactId>
-		<version>0.4.4-SNAPSHOT</version>
-	</parent>
 
 	<artifactId>scribble-dist</artifactId>
 	<packaging>pom</packaging>
-	<name>scribble-dist</name>
-	<description>Scribble distribution.</description>
 
 	<dependencies>
 		<dependency>
@@ -50,6 +43,14 @@
 		</dependency>
 	</dependencies>
 
+	<parent>
+		<groupId>org.scribble</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.5.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+
 	<build>
 		<plugins>
 			<plugin>
@@ -72,4 +73,9 @@
 			</plugin>
 		</plugins>
 	</build>
+
+
+	<name>scribble-dist</name>
+	<description>Scribble distribution.</description>
+
 </project>

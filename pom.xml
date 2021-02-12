@@ -1,86 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--  mvn [clean] install [-Dmaven.test.skip=true] [-Dlicense.skip]  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- mvn [clean] install [-Dmaven.test.skip=true] [-Dlicense.skip] -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.4.4-SNAPSHOT</version>
+	<version>0.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>scribble-java</name>
-	<url>http://www.scribble.org</url>
-	<description>
-		Scribble
-	</description>
-
-
-	<scm>
-		<url>https://github.com/scribble/scribble-java</url>
-		<connection>scm:git:https://github.com/scribble/scribble-java.git</connection>
-		<developerConnection>scm:git:https://github.com/scribble/scribble-java.git</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
-
-	<licenses>
-		<license>
-			<name>Apache 2</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-			<comments>Apache License V2</comments>
-		</license>
-	</licenses>
-
-	<developers>
-		<developer>
-			<name>Gary Brown</name>
-			<id>objectiser</id>
-			<email>gary.pi4tech@gmail.com</email>
-			<organization>Scribble.org</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-	</developers>
-
-	<inceptionYear>2008</inceptionYear>
-
-	<organization>
-		<name>Scribble</name>
-		<url>http://www.scribble.org</url>
-	</organization>
-
-	<properties>
-		<antlr.version>3.4</antlr.version>
-		<log4j.version>1.2.14</log4j.version>
-		<jackson.version>1.9.9</jackson.version>
-		<junit.version>4.11</junit.version>
-
-		<version.commons-io>2.4</version.commons-io>
-
-		<!-- maven-compiler-plugin -->
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
-
-		<version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
-		<version.maven-release-plugin>2.5.3</version.maven-release-plugin>
-		<version.maven-source-plugin>3.0.1</version.maven-source-plugin>
-		<version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
-		<version.io.takari-maven>0.3.4</version.io.takari-maven>
-		<version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
-	</properties>
-
-	<modules>
-		<module>scribble-core</module>
-		<module>scribble-runtime</module>
-    <module>scribble-ast</module>
-		<module>scribble-parser</module>
-		<module>scribble-codegen</module>
-    <module>scribble-main</module>
-		<module>scribble-cli</module>
-		<module>scribble-test</module>
-		<module>scribble-dist</module>
-		<module>scribble-demos</module>
-  </modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -142,7 +70,7 @@
 				<artifactId>commons-io</artifactId>
 				<version>${version.commons-io}</version>
 			</dependency>
-			<dependency>
+			<!--<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
 				<version>${jackson.version}</version>
@@ -156,17 +84,93 @@
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>${log4j.version}</version>
-			</dependency>
+			</dependency>-->
 		</dependencies>
 	</dependencyManagement>
 
+	<modules>
+		<module>scribble-core</module>
+		<module>scribble-runtime</module>
+		<module>scribble-ast</module>
+		<module>scribble-parser</module>
+		<module>scribble-codegen</module>
+		<module>scribble-main</module>
+		<module>scribble-cli</module>
+		<module>scribble-test</module>
+		<module>scribble-dist</module>
+		<module>scribble-demos</module>
+	</modules>
+
+	<properties>
+		<antlr.version>3.4</antlr.version>
+			<!--<log4j.version>1.2.14</log4j.version>-->
+				<!--<jackson.version>1.9.9</jackson.version>-->
+		<junit.version>4.13.1</junit.version>
+
+		<version.commons-io>2.4</version.commons-io>
+
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+
+		<version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
+		<version.maven-release-plugin>2.5.3</version.maven-release-plugin>
+		<version.maven-source-plugin>3.0.1</version.maven-source-plugin>
+		<version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
+		<version.io.takari-maven>0.3.4</version.io.takari-maven>
+		<version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
+	</properties>
+
+
+	<name>scribble-java</name>
+	<description>Scribble</description>
+	<url>http://www.scribble.org</url>
+	<inceptionYear>2008</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>Apache License V2</comments>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Scribble</name>
+		<url>http://www.scribble.org</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>Gary Brown</name>
+			<id>objectiser</id>
+			<email>gary.pi4tech@gmail.com</email>
+			<organization>Scribble.org</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>+0</timezone>
+		</developer>
+		<developer>
+			<name>Raymond Hu</name>
+			<id>rhu1</id>
+			<email>r.z.h.hu@herts.ac.uk</email>
+			<organization>University of Hertfordshire</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>+0</timezone>
+		</developer>
+	</developers>
+
+
 	<build>
-		<!-- This section defines the default plugin settings inherited by child 
-			projects. -->
+		<!-- This section defines the default plugin settings inherited by child projects. -->
 		<pluginManagement>
 			<plugins>
-				<!-- Fixes how test resources of a project can be used in projects dependent 
-					on it -->
+				<!-- Fixes how test resources of a project can be used in projects dependent on it -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -206,6 +210,7 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
 		<plugins>
 			<!-- Specify the compiler options and settings -->
 			<plugin>
@@ -286,12 +291,13 @@
 						<exclude>mvnw.cmd</exclude>
 						<exclude>travis/publish.sh</exclude>
 						<exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
+						<exclude>**/*.versionsBackup</exclude>
 						<exclude>**/Scribble-0.3.original</exclude>
-						<exclude>**/IGNORE</exclude>
 						<exclude>bin/*.sh</exclude>
 						<exclude>scribblec.sh</exclude>
 						<exclude>**/*.swp</exclude>
 						<exclude>scribble-test/**/*.*</exclude>  <!-- CHECKME: not working; doing inside child module pom works though -->
+						<exclude>**/IGNORE</exclude>
 						<!-- FIXME: "extension" module excludes -->
 						<exclude>scribble-f17/**/*</exclude>
 					</excludes>
@@ -336,6 +342,14 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+
+	<scm>
+		<url>https://github.com/scribble/scribble-java</url>
+		<connection>scm:git:https://github.com/scribble/scribble-java.git</connection>
+		<developerConnection>scm:git:https://github.com/scribble/scribble-java.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
 	<distributionManagement>
 		<repository>
