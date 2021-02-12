@@ -37,7 +37,7 @@ else
 fi
 
 # ANTLR 3 runtime jar location (if unavailable, will look in $SCRIBHOME/lib instead)
-ANTLR_RUNTIME_JAR=$SCRIBHOME:'scribble-parser/lib/antlr-3.5.2-complete.jar'
+ANTLR_RUNTIME_JAR=$SCRIBHOME'/scribble-parser/lib/antlr-3.5.2-complete.jar'
   # e.g., '~/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
   #    or '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
   #        (i.e., the Maven install location)
