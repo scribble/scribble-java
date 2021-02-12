@@ -15,19 +15,14 @@
 
 
 ##
-#  Config notes:
+# Config:
 #
-# - SCRIBBLE_HOME:
+# $SCRIBBLE_HOME
 #   Set this to the `scribble-java` root directory.
 #   i.e., the directory of the `parent` mvn module (that contains the
-#   `scribble-ast`, etc. mvn submodules),
+#   `scribble-ast`, `scribble-cli`, etc. mvn submodules),
 #   or the directory that contains the `lib` directory containing the generated
 #   distribution jars.
-#
-# - $ANTLR_RUNTIME_JAR:
-#   Set this to the location of the ANTLR 3 runtime jar,
-#   or place the jar in: $SCRIBHOME/lib
-#   (This script looks for the ANTLR jar in those locations.)
 ##
 
 if [ -z "${SCRIBBLE_HOME}" ]; then 
@@ -36,7 +31,9 @@ else
     SCRIBHOME=${SCRIBBLE_HOME}
 fi
 
-# ANTLR 3 runtime jar location (if unavailable, will look in $SCRIBHOME/lib instead)
+# ANTLR 3 runtime jar location.
+# Set this to the location of the ANTLR 3 runtime jar, or place the jar in:
+# `$SCRIBHOME/lib`.  (This script looks for the ANTLR jar in those locations.)
 ANTLR_RUNTIME_JAR=$SCRIBHOME'/scribble-parser/lib/antlr-3.5.2-complete.jar'
   # e.g., '~/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
   #    or '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
