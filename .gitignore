@@ -9,6 +9,7 @@ tools/eclipse/plugins/org.scribble.*/bin/
 *~
 *.swp
 *.bak
+*.versionsBackup
 
 javadoc
 

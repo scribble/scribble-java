@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--  mvn [clean] install [-Dmaven.test.skip=true] [-Dlicense.skip]  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--  mvn [clean] install [-Dmaven.test.skip=true] [-Dlicense.skip] -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.4.4-SNAPSHOT</version>
+	<version>0.4.4</version>
 	<packaging>pom</packaging>
 	<name>scribble-java</name>
 	<url>http://www.scribble.org</url>
 	<description>
 		Scribble
 	</description>
-
 
 	<scm>
 		<url>https://github.com/scribble/scribble-java</url>
@@ -72,15 +72,15 @@
 	<modules>
 		<module>scribble-core</module>
 		<module>scribble-runtime</module>
-    <module>scribble-ast</module>
+		<module>scribble-ast</module>
 		<module>scribble-parser</module>
 		<module>scribble-codegen</module>
-    <module>scribble-main</module>
+		<module>scribble-main</module>
 		<module>scribble-cli</module>
 		<module>scribble-test</module>
 		<module>scribble-dist</module>
 		<module>scribble-demos</module>
-  </modules>
+	</modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -161,12 +161,10 @@
 	</dependencyManagement>
 
 	<build>
-		<!-- This section defines the default plugin settings inherited by child 
-			projects. -->
+		<!-- This section defines the default plugin settings inherited by child projects. -->
 		<pluginManagement>
 			<plugins>
-				<!-- Fixes how test resources of a project can be used in projects dependent 
-					on it -->
+				<!-- Fixes how test resources of a project can be used in projects dependent on it -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -286,12 +284,13 @@
 						<exclude>mvnw.cmd</exclude>
 						<exclude>travis/publish.sh</exclude>
 						<exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
+						<exclude>**/*.versionsBackup</exclude>
 						<exclude>**/Scribble-0.3.original</exclude>
-						<exclude>**/IGNORE</exclude>
 						<exclude>bin/*.sh</exclude>
 						<exclude>scribblec.sh</exclude>
 						<exclude>**/*.swp</exclude>
 						<exclude>scribble-test/**/*.*</exclude>  <!-- CHECKME: not working; doing inside child module pom works though -->
+						<exclude>**/IGNORE</exclude>
 						<!-- FIXME: "extension" module excludes -->
 						<exclude>scribble-f17/**/*</exclude>
 					</excludes>
