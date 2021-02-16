@@ -30,7 +30,7 @@ public class CLFlags
 	public static final String JUNIT_FLAG = "-junit";  // For internal use (JUnit test harness)
 	public static final String IMPORT_PATH_FLAG = "-ip";
 	public static final String API_OUTPUT_DIR_FLAG = "-d";
-	public static final String VERBOSE_FLAG = "-V";
+	public static final String VERBOSE_FLAG = "-v";
 	public static final String STATECHAN_SUBTYPES_FLAG = "-subtypes";
 	public static final String OLD_WF_FLAG = "-oldwf";
 	public static final String NO_PROGRESS_FLAG = "-noprogress";
