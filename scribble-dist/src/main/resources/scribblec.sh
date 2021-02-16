@@ -48,7 +48,7 @@ usage() {
 
 Options:
   -h, --help                 Show this info and exit$
-  -V                         Scribble debug info$
+  -v                         Scribble debug info$
   --verbose                  Echo the java command$
 
   -ip <path>                 Scribble module import path$
