@@ -117,7 +117,7 @@ CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-core.jar'
 CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-main.jar'
 CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-parser.jar'
 #CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/stringtemplate.jar'
-CLASSPATH="$(fixpath "$CLASSPATH")"
+CLASSPATH=\'"$(fixpath "$CLASSPATH")"\'
 
 usage=0
 verbose=0
