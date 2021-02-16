@@ -47,11 +47,11 @@ usage() {
  <SCRFILE>     Source Scribble module (.scr file)
 
 Options:
-  -h, --help                 Show this info and exit$
-  -v                         Scribble debug info$
-  --verbose                  Echo the java command$
+  -h, --help                 Show this info and exit
+  -v                         Scribble debug info
+  --verbose                  Echo the java command
 
-  -ip <path>                 Scribble module import path$
+  -ip <path>                 Scribble module import path
 
   -project <simple global protocol name> <role>  Project protocol
 
