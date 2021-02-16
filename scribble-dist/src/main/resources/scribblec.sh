@@ -86,7 +86,7 @@ EOF
 fixpath() {
     windows=0
 
-    if [ `uname | grep -c CYGWIN` -ne 0 ]; then
+    if [ $(uname | grep -c CYGWIN) -ne 0 ]; then
         windows=1
     fi
 
@@ -156,11 +156,11 @@ fi
 CMD='java -cp '$CLASSPATH' org.scribble.cli.CommandLine'
 
 scribblec() {
-    eval $CMD "$@"
+    eval "$CMD" "$@"
 }
 
 if [ "$verbose" = 1 ]; then
-    echo $CMD "$ARGS"
+    echo "$CMD" "$ARGS"
 fi
 
 scribblec "$ARGS"

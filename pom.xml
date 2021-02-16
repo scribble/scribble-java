@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- mvn [clean] install [-B] [-Dstyle.color=never] [-Dmaven.test.skip=true] [-Dlicense.skip] -->
+<!-- mvn [clean] install [-pl '!scribble-demos'] [-B] [-Dstyle.color=never] [-Dmaven.test.skip=true] [-Dlicense.skip] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -98,15 +98,14 @@
 		<module>scribble-cli</module>
 		<module>scribble-test</module>
 		<module>scribble-dist</module>
-		<module>scribble-demos</module>
+		<!--<module>scribble-demos</module>-->
 	</modules>
 
 	<properties>
 		<antlr.version>3.4</antlr.version>
+		<junit.version>4.13.1</junit.version>
 			<!--<log4j.version>1.2.14</log4j.version>-->
 				<!--<jackson.version>1.9.9</jackson.version>-->
-		<junit.version>4.13.1</junit.version>
-
 		<version.commons-io>2.4</version.commons-io>
 
 		<!-- maven-compiler-plugin -->
@@ -116,10 +115,13 @@
 
 		<version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
 		<version.maven-release-plugin>2.5.3</version.maven-release-plugin>
-		<version.maven-source-plugin>3.0.1</version.maven-source-plugin>
-		<version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
+		<version.maven-source-plugin>3.2.1</version.maven-source-plugin>
+		<!--<version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>-->
+		<version.maven-javadoc-plugin>2.9</version.maven-javadoc-plugin>
 		<version.io.takari-maven>0.3.4</version.io.takari-maven>
 		<version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 
@@ -179,7 +181,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.9</version>
+					<version>${version.maven-javadoc-plugin}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -222,6 +224,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>${version.maven-source-plugin}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -246,7 +249,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.6</version>
@@ -260,6 +263,7 @@
 				<dependencies>
 					<dependency>
 						<groupId>org.scribble</groupId>
+						<!- - target not found? - ->
 						<artifactId>build</artifactId>
 						<version>${project.version}</version>
 					</dependency>
@@ -273,7 +277,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
