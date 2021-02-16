@@ -11,6 +11,9 @@ tools/eclipse/plugins/org.scribble.*/bin/
 *.bak
 *.versionsBackup
 
+.idea
+**/*.iml
+
 javadoc
 
 #scribble-demos/scrib
