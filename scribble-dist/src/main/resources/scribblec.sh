@@ -26,7 +26,7 @@
 ##
 
 if [ -z "${SCRIBBLE_HOME}" ]; then 
-    SCRIBHOME=`dirname "$0"`
+    SCRIBHOME=$(dirname "$0")
 else
     SCRIBHOME=${SCRIBBLE_HOME}
 fi
@@ -86,7 +86,7 @@ EOF
 fixpath() {
     windows=0
 
-    if [ `uname | grep -c CYGWIN` -ne 0 ]; then
+    if [ "$(uname | grep -c CYGWIN)" -ne 0 ]; then
         windows=1
     fi
 
@@ -117,7 +117,7 @@ CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-core.jar'
 CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-main.jar'
 CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-parser.jar'
 #CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/stringtemplate.jar'
-CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
+CLASSPATH=\'"$(fixpath "$CLASSPATH")"\'
 
 usage=0
 verbose=0
@@ -156,11 +156,11 @@ fi
 CMD='java -cp '$CLASSPATH' org.scribble.cli.CommandLine'
 
 scribblec() {
-    eval $CMD "$@"
+    eval "$CMD" "$@"
 }
 
 if [ "$verbose" = 1 ]; then
-    echo $CMD "$ARGS"
+    echo "$CMD" "$ARGS"
 fi
 
 scribblec "$ARGS"

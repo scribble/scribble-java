@@ -20,10 +20,6 @@
 		<version>0.5.1-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 
 	<name>scribble-ast</name>
 

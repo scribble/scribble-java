@@ -41,16 +41,12 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 
 	<build>
 		<!-- This section defines the default plugin settings inherited by child projects. -->
-		<pluginManagement>
+		<!--<pluginManagement>
 			<plugins>
-				<!-- Fixes how test resources of a project can be used in projects dependent on it -->
+				<!- - Fixes how test resources of a project can be used in projects dependent on it - ->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -64,7 +60,7 @@
 					</executions>
 				</plugin>
 			</plugins>
-		</pluginManagement>
+		</pluginManagement>-->
 
 		<plugins>
 			<plugin>
