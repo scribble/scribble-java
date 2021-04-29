@@ -139,12 +139,12 @@ public class OutputSockGen extends ScribSockGen
 		if (hasConnect)
 		{
 			this.cb.addImports("java.util.concurrent.Callable");
-			this.cb.addImports("org.scribble.runtime.net.session.BinaryChannelEndpoint");
+			this.cb.addImports("org.scribble.runtime.net.BinaryChannelEndpoint");
 		}
 		if (hasWrap)
 		{
 			this.cb.addImports("java.util.concurrent.Callable");
-			this.cb.addImports("org.scribble.runtime.net.session.BinaryChannelWrapper");
+			this.cb.addImports("org.scribble.runtime.net.BinaryChannelWrapper");
 		}
 	}
 

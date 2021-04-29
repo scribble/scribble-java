@@ -218,7 +218,7 @@ public class IOInterfacesGenerator extends ApiGen
 		{
 			if (!a.isSend() && !a.isReceive())  // TODO (connect/disconnect)
 			{
-				throw new RuntimeException("TODO: " + a);
+				throw new RuntimeScribException("TODO: " + a);
 			}
 
 			if (!this.actions.containsKey(a))

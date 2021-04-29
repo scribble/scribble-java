@@ -25,7 +25,7 @@
 #   distribution jars.
 ##
 
-if [ -z "${SCRIBBLE_HOME}" ]; then 
+if [ -z "${SCRIBBLE_HOME}" ]; then
     SCRIBHOME=$(dirname "$0")
 else
     SCRIBHOME=${SCRIBBLE_HOME}
