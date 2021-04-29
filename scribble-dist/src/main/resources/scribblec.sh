@@ -38,9 +38,9 @@ ANTLR_RUNTIME_JAR=$SCRIBHOME'/scribble-parser/lib/antlr-3.5.2-complete.jar'
   #        (i.e., the Maven install location)
 
 # Local env.
-JAVA='java' # Java executable
-WSL=0       # Set to 1 for ';' classpath separator and wslpath formatting
-CYGWIN=0    # Set to 1 for ';' classpath separator and cygpath formatting
+JAVA='java'  # Java executable
+WSL=0        # Set to 1 for ';' classpath separator and wslpath formatting
+CYGWIN=0     # Set to 1 for ';' classpath separator and cygpath formatting
 
 #if [ "$(uname | grep -c CYGWIN)" -ne 0 ]; then
 #    CYGWIN=1
@@ -110,34 +110,34 @@ fixpath() {
 CLASSPATH=
 # If first module dir present, assume all are...
 if [ -d "$SCRIBHOME"'/scribble-ast/target/classes' ]; then
-    CLASSPATH=$(fixpath $SCRIBHOME'/scribble-ast/target/classes')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-cli/target/classes')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-codegen/target/classes')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-core/target/classes')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-main/target/classes')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-parser/target/classes')
+    CLASSPATH=$(fixpath "$SCRIBHOME"'/scribble-ast/target/classes')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/scribble-cli/target/classes')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/scribble-codegen/target/classes')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/scribble-core/target/classes')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/scribble-main/target/classes')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/scribble-parser/target/classes')
 fi
 # If first module jar present, assume all are...
-if [ -f $SCRIBHOME'/lib/scribble-ast.jar' ]; then
+if [ -f "$SCRIBHOME"'/lib/scribble-ast.jar' ]; then
     if [ ! -z "$CLASSPATH" ]; then
-      CLASSPATH="$CLASSPATH"$SEP
+      CLASSPATH="$CLASSPATH$SEP"
     fi
-    CLASSPATH=$CLASSPATH$(fixpath $SCRIBHOME'/lib/scribble-ast.jar')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-cli.jar')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-codegen.jar')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-core.jar')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-main.jar')
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-parser.jar')
+    CLASSPATH="$CLASSPATH"$(fixpath "$SCRIBHOME"'/lib/scribble-ast.jar')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/lib/scribble-cli.jar')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/lib/scribble-codegen.jar')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/lib/scribble-core.jar')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/lib/scribble-main.jar')
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/lib/scribble-parser.jar')
 fi
 # Below assumes CLASSPATH non-empty
 if [ -f "$ANTLR_RUNTIME_JAR" ]; then
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $ANTLR_RUNTIME_JAR)
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$ANTLR_RUNTIME_JAR")
 fi
-if [ -f $SCRIBHOME'/lib/antlr.jar' ]; then
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/antlr.jar')
+if [ -f "$SCRIBHOME"'/lib/antlr.jar' ]; then
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/lib/antlr.jar')
 fi
-if [ -f $SCRIBHOME'/lib/antlr-runtime.jar' ]; then
-    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/antlr-runtime.jar')
+if [ -f "$SCRIBHOME"'/lib/antlr-runtime.jar' ]; then
+    CLASSPATH="$CLASSPATH$SEP"$(fixpath "$SCRIBHOME"'/lib/antlr-runtime.jar')
 fi
 #if [ -f '/lib/commons-io.jar' ]; then
 #    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/commons-io.jar')
@@ -180,7 +180,7 @@ if [ "$usage" = 1 ]; then
 fi
 
 
-CMD="$JAVA"' -cp '\'$CLASSPATH\'' org.scribble.cli.CommandLine'
+CMD="$JAVA"' -cp '\'"$CLASSPATH"\'' org.scribble.cli.CommandLine'
 
 scribblec() {
     eval "$CMD" "$@"
