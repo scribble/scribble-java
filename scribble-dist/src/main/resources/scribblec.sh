@@ -23,8 +23,6 @@
 #   `scribble-ast`, `scribble-cli`, etc. mvn submodules),
 #   or the directory that contains the `lib` directory containing the generated
 #   distribution jars.
-##
-
 if [ -z "${SCRIBBLE_HOME}" ]; then
     SCRIBHOME=$(dirname "$0")
 else
@@ -38,6 +36,17 @@ ANTLR_RUNTIME_JAR=$SCRIBHOME'/scribble-parser/lib/antlr-3.5.2-complete.jar'
   # e.g., '~/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
   #    or '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar'
   #        (i.e., the Maven install location)
+
+# Local env.
+JAVA='java' # Java executable
+WSL=0       # Set to 1 for ';' classpath separator and wslpath formatting
+CYGWIN=0    # Set to 1 for ';' classpath separator and cygpath formatting
+
+#if [ "$(uname | grep -c CYGWIN)" -ne 0 ]; then
+#    CYGWIN=1
+#fi
+#
+##
 
 
 usage() {
@@ -83,41 +92,59 @@ EOF
 }
 
 
+SEP=':'  # Classpath separator
+if [ "$WSL" = 1 ] || [ "$CYGWIN" = 1 ]; then
+  SEP=';'
+fi
+
 fixpath() {
-    windows=0
-
-    if [ "$(uname | grep -c CYGWIN)" -ne 0 ]; then
-        windows=1
+    p="$1"
+    if [ "$WSL" = 1 ]; then
+        p=$(wslpath -w "$p" | sed 's/\\/\\\\/g')
+    elif [ "$CYGWIN" = 1 ]; then
+        p=$(cygpath -pw "$p")
     fi
-
-    cp="$1"
-    if [ "$windows" = 1 ]; then
-        cygpath -pw "$cp"
-    else
-        echo "$cp"
-    fi
+    printf "%s" "$p"
 }
 
-CLASSPATH=$SCRIBHOME'/scribble-ast/target/classes'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-cli/target/classes'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-codegen/target/classes'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-core/target/classes'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-main/target/classes'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/scribble-parser/target/classes'
-if test -f "$ANTLR_RUNTIME_JAR"; then
-    CLASSPATH=$CLASSPATH':'$ANTLR_RUNTIME_JAR
+CLASSPATH=
+# If first module dir present, assume all are...
+if [ -d "$SCRIBHOME"'/scribble-ast/target/classes' ]; then
+    CLASSPATH=$(fixpath $SCRIBHOME'/scribble-ast/target/classes')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-cli/target/classes')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-codegen/target/classes')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-core/target/classes')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-main/target/classes')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/scribble-parser/target/classes')
 fi
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/antlr.jar'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/antlr-runtime.jar'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/commons-io.jar'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-ast.jar'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-cli.jar'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-codegen.jar'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-core.jar'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-main.jar'
-CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/scribble-parser.jar'
+# If first module jar present, assume all are...
+if [ -f $SCRIBHOME'/lib/scribble-ast.jar' ]; then
+    if [ ! -z "$CLASSPATH" ]; then
+      CLASSPATH="$CLASSPATH"$SEP
+    fi
+    CLASSPATH=$CLASSPATH$(fixpath $SCRIBHOME'/lib/scribble-ast.jar')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-cli.jar')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-codegen.jar')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-core.jar')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-main.jar')
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/scribble-parser.jar')
+fi
+# Below assumes CLASSPATH non-empty
+if [ -f "$ANTLR_RUNTIME_JAR" ]; then
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $ANTLR_RUNTIME_JAR)
+fi
+if [ -f $SCRIBHOME'/lib/antlr.jar' ]; then
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/antlr.jar')
+fi
+if [ -f $SCRIBHOME'/lib/antlr-runtime.jar' ]; then
+    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/antlr-runtime.jar')
+fi
+#if [ -f '/lib/commons-io.jar' ]; then
+#    CLASSPATH=$CLASSPATH$SEP$(fixpath $SCRIBHOME'/lib/commons-io.jar')
+#fi
 #CLASSPATH=$CLASSPATH':'$SCRIBHOME'/lib/stringtemplate.jar'
-CLASSPATH=\'"$(fixpath "$CLASSPATH")"\'
+##CLASSPATH=\'"$(fixpath "$CLASSPATH")"\'
+
 
 usage=0
 verbose=0
@@ -147,13 +174,13 @@ while true; do
     esac
 done
 
-
 if [ "$usage" = 1 ]; then
     usage
     exit 0
 fi
 
-CMD='java -cp '$CLASSPATH' org.scribble.cli.CommandLine'
+
+CMD="$JAVA"' -cp '\'$CLASSPATH\'' org.scribble.cli.CommandLine'
 
 scribblec() {
     eval "$CMD" "$@"
