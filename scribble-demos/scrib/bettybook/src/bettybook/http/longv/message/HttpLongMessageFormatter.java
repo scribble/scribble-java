@@ -192,7 +192,11 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 					case HttpLongMessage.VARY: return new Vary(value);
 					case HttpLongMessage.CONTENT_TYPE: return new ContentType(value);
 					case HttpLongMessage.VIA: return new Via(value);
-					default: throw new RuntimeException("Cannot parse header field: " + line);
+					default: {
+						//throw new RuntimeException("Cannot parse header field: " + line);
+						System.err.println("Cannot parse header field, attempting to skip: " + line);
+						return fromBytes(bb);
+					}
 				}
 			}
 			else

@@ -22,14 +22,18 @@ import static demo.fase17.travel2.TravelAgent2.TravelAgent2.TravelAgent2.quote;
 import static demo.fase17.travel2.TravelAgent2.TravelAgent2.TravelAgent2.accpt;
 import static demo.fase17.travel2.TravelAgent2.TravelAgent2.TravelAgent2.port;
 
-import org.scribble.net.Buf;
-import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.ExplicitEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.SocketChannelEndpoint;
+import org.scribble.runtime.util.Buf;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.ExplicitEndpoint;
 
 import demo.fase17.travel2.TravelAgent2.TravelAgent2.TravelAgent2;
-import demo.fase17.travel2.TravelAgent2.TravelAgent2.channels.C.TravelAgent2_C_1;
-import demo.fase17.travel2.TravelAgent2.TravelAgent2.channels.C.TravelAgent2_C_2;
+import demo.fase17.travel2.TravelAgent2.TravelAgent2.statechans.C.TravelAgent2_C_1;
+import demo.fase17.travel2.TravelAgent2.TravelAgent2.statechans.C.TravelAgent2_C_2;
 import demo.fase17.travel2.TravelAgent2.TravelAgent2.roles.C;
 
 public class Travel2C
@@ -43,7 +47,7 @@ public class Travel2C
 		{	
 			Buf<Integer> b = new Buf<>();
 			TravelAgent2_C_2 C2 = new TravelAgent2_C_1(se)
-				.connect(A, SocketChannelEndpoint::new, "localhost", 8888);
+				.request(A, SocketChannelEndpoint::new, "localhost", 8888);
 
 			for (int i = 0; i < queries.length; i++)
 			{
@@ -52,7 +56,7 @@ public class Travel2C
 
 			C2.send(A, accpt)
 				.receive(A, port, b)
-				.connect(S, SocketChannelEndpoint::new, "localhost", (Integer) b.val)  // FIXME: connect message
+				.request(S, SocketChannelEndpoint::new, "localhost", (Integer) b.val)  // FIXME: connect message
 				.receive(S, confirm, b);
 			
 			System.out.println("(C) confirm: " + b.val);

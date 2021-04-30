@@ -18,7 +18,7 @@ import static betty16.lec1.httplong.HttpLong.Http.Http.ACCEPTE;
 import static betty16.lec1.httplong.HttpLong.Http.Http.ACCEPTL;
 import static betty16.lec1.httplong.HttpLong.Http.Http.BODY;
 import static betty16.lec1.httplong.HttpLong.Http.Http.C;
-import static betty16.lec1.httplong.HttpLong.Http.Http.CONNECTION;
+import static betty16.lec1.httplong.HttpLong.Http.Http.CONN;
 import static betty16.lec1.httplong.HttpLong.Http.Http.COOKIE;
 import static betty16.lec1.httplong.HttpLong.Http.Http.DNT;
 import static betty16.lec1.httplong.HttpLong.Http.Http.HOST;
@@ -26,9 +26,12 @@ import static betty16.lec1.httplong.HttpLong.Http.Http.REQUESTL;
 import static betty16.lec1.httplong.HttpLong.Http.Http.S;
 import static betty16.lec1.httplong.HttpLong.Http.Http.UPGRADEIR;
 import static betty16.lec1.httplong.HttpLong.Http.Http.USERA;
+import static betty16.lec1.httplong.HttpLong.Http.Http.PRAGMA;
+//import static betty16.lec1.httplong.HttpLong.Http.Http.CACHEC;
 
 import java.io.IOException;
 
+import betty16.lec1.httplong.HttpLong.Http.ops.CACHEC;
 import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.net.SocketChannelServer;
@@ -101,12 +104,15 @@ public class HttpLongS
 							.send(C, new ContentLength(body.length()))
 							.send(C, new Body(body));
 				}
-				case CONNECTION: s2 = cases.receive(CONNECTION, buf); break;
-				case DNT:        s2 = cases.receive(DNT, buf); break;
-				case UPGRADEIR:  s2 = cases.receive(UPGRADEIR, buf); break;
-				case COOKIE:     s2 = cases.receive(COOKIE, buf); break;
-				case HOST:       s2 = cases.receive(HOST, buf); break;
-				case USERA:      s2 = cases.receive(USERA, buf); break;
+				case CONN:      s2 = cases.receive(CONN, buf); break;
+				case DNT:       s2 = cases.receive(DNT, buf); break;
+				case UPGRADEIR: s2 = cases.receive(UPGRADEIR, buf); break;
+				case COOKIE:    s2 = cases.receive(COOKIE, buf); break;
+				case HOST:      s2 = cases.receive(HOST, buf); break;
+				case USERA:     s2 = cases.receive(USERA, buf); break;
+				case PRAGMA:    s2 = cases.receive(PRAGMA, buf); break;
+				//case CACHEC:    s2 = cases.receive(CACHEC, buf); break;
+				default: throw new RuntimeException("Missing field case: " + cases.op);
 			}
 		}
 	}

@@ -11,8 +11,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-//$ java -cp modules/core/target/classes/ -Djava.security.policy=file:/C:/cygwin/home/Raymond/code/scribble/github-rhu1/scribble-java/modules/demos/scrib/bettybook/src/bettybook/math/rmi/server.policy bettybook.math.rmi.RMIMathS
-//$ java -cp modules/core/target/classes/ -Djava.rmi.server.codebase=file:/C:/cygwin/home/Raymond/code/scribble/github-rhu1/scribble-java/modules/demos/scrib/bettybook/target/classes/ -Djava.security.policy=file:/C:/cygwin/home/Raymond/code/scribble/github-rhu1/scribble-java/modules/core/src/test/scrib/demo/bettybook/math/rmi/server.policy bettybook.math.rmi.RMIMathS -- codebase arg not working
+
+//$ java -cp scribble-demos/target/test-classes -Djava.security.policy=file:/C:/Users/..FIXME../github.com/scribble/scribble-java/scribble-demos/scrib/bettybook/src/bettybook/math/rmi/server.policy bettybook.math.rmi.RMIMathS
+//$ java -cp scribble-demos/target/test-classes -Djava.rmi.server.codebase=file:/C:/cygwin/home/..FIXME../scribble-java/modules/demos/scrib/bettybook/target/classes/ -Djava.security.policy=file:/C:/cygwin/home/Raymond/code/scribble/github-rhu1/scribble-java/modules/core/src/test/scrib/demo/bettybook/math/rmi/server.policy bettybook.math.rmi.RMIMathS -- FIXME: codebase arg not working
 
 package bettybook.math.rmi;
 
@@ -60,8 +61,8 @@ public class RMIMathS implements RMIMath
 
 
 
-		//System.setProperty("java.security.policy","file:/C:/cygwin64/home/rhu/code/eclipse/scribble/github.com/rhu1/scribble-java/scribble-demos/scrib/bettybook/src/bettybook/math/rmi/server.policy");
+		//System.setProperty("java.security.policy","file:/C:/cygwin64/home/.../scribble-java/scribble-demos/scrib/bettybook/src/bettybook/math/rmi/server.policy");
 		//if (System.getSecurityManager() == null) { System.setSecurityManager(new SecurityManager()); }
 
-		/*-Djava.rmi.server.codebase=file:/C:\cygwin64\home\rhu\code\eclipse\scribble\github.com\rhu1\scribble-java\scribble-demos\bettybook\target\classes/
+		/*-Djava.security.policy=file:/C:/Users/..../github.com/scribble/scribble-java/scribble-demos/scrib/bettybook/src/bettybook/math/rmi/server.policy
 		Registry registry = LocateRegistry.getRegistry(8888);*/

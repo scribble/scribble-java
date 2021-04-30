@@ -149,7 +149,10 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 					case Req.DO_NOT_TRACK: dnt = msg.substring(i+1, j).trim(); break;     
 					case Req.CONNECTION: connection = msg.substring(i+1, j).trim(); break;
 					case Req.UPGRADE_INSECURE_REQUESTS: upgradeIR = msg.substring(i+1, j).trim(); break;
-					default: throw new RuntimeException("Cannot parse header field: " + msg.substring(0, j));
+					default: {
+						//throw new RuntimeException("Cannot parse header field: " + msg.substring(0, j));
+						System.err.println("Cannot parse header field, attempting to skip: " + msg.substring(0, j));
+					}
 				}
 				msg = msg.substring(j+2);
 			}

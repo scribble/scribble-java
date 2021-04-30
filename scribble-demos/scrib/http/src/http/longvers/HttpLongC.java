@@ -77,8 +77,7 @@ public class HttpLongC
 		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C,
 				new HttpLongMessageFormatter())) {
 			
-			String host = "www.doc.ic.ac.uk";  int port = 80;  String file = "/~rhu/";
-			//String host = "example.com";  int port = 80;  String file = "/~rhu/";
+			String host = "example.com";  int port = 80;  String file = "/~rhu/";
 			//String host = "localhost"; int port = 8080;  String file = "/";
 		
 			client.request(S, SocketChannelEndpoint::new, host, port);

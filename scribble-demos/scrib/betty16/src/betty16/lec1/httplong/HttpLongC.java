@@ -48,19 +48,13 @@ import betty16.lec1.httplong.message.client.Host;
 import betty16.lec1.httplong.message.client.RequestLine;
 
 
-/** TODO
- * Cannot parse header field: Cache-Control: max-age=604800
- *     at betty16.lec1.httplong.message.HttpLongMessageFormatter.fromBytes(HttpLongMessageFormatter.java:197) 
- */
-
 public class HttpLongC {
 
 	public static void main(String[] args) throws Exception {
 		Http http = new Http();
 		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C,
 				new HttpLongMessageFormatter())) {
-			String host = "www.doc.ic.ac.uk";  int port = 80;  String file = "/~rhu/";
-			//String host = "example.com";  int port = 80;  String file = "/";
+			String host = "example.com";  int port = 80;  String file = "/";
 			//String host = "localhost";  int port = 8080;  String file = "/";
 		
 			client.request(S, SocketChannelEndpoint::new, host, port);

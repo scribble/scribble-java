@@ -23,6 +23,7 @@ public abstract class HttpLongMessage extends ScribMessage
 {
 	private static final long serialVersionUID = 1L;
 
+	// TODO: make case-insensitive
 	// " " after ops done by HeaderField
 	public static final String GET = "GET";
 	public static final String HTTP = "HTTP";
@@ -36,6 +37,8 @@ public abstract class HttpLongMessage extends ScribMessage
 	public static final String CONNECTION = "Connection";
 	public static final String UPGRADE_INSECURE_REQUESTS = "Upgrade-Insecure-Requests";
 	public static final String COOKIE = "Cookie";
+	public static final String PRAGMA = "Pragma";
+	//public static final String CACHE_CONTROL = "Cache-Control";
 
 	public static final String DATE = "Date";
 	public static final String CONTENT_TYPE = "Content-Type";

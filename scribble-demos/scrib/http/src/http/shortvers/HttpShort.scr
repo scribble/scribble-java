@@ -1,5 +1,5 @@
 //$ ./scribblec.sh -ip scribble-demos/scrib/http/src -d scribble-demos/scrib/http/src scribble-demos/scrib/http/src/http/shortvers/HttpShort.scr -api Http C
-//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/http/src/ scribble-demos/scrib/http/src/http/shortvers/*.java -subpackages http.longvers.HttpShort.Http -d scribble-demos/scrib/http/javadoc/shortvers
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/http/src/ scribble-demos/scrib/http/src/http/shortvers/*.java -subpackages http.shortvers.HttpShort.Http -d scribble-demos/scrib/http/javadoc/shortvers
 
 module http.shortvers.HttpShort;
 

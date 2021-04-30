@@ -22,17 +22,18 @@ import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.reject;
 
 import java.io.IOException;
 
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.runtime.net.Buf;
-import org.scribble.runtime.net.ObjectStreamFormatter;
-import org.scribble.runtime.net.scribsock.ScribServerSocket;
-import org.scribble.runtime.net.scribsock.SocketChannelServer;
-import org.scribble.runtime.net.session.ExplicitEndpoint;
+import org.scribble.main.ScribRuntimeException;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.util.Buf;
+import org.scribble.runtime.message.ObjectStreamFormatter;
+import org.scribble.runtime.net.ScribServerSocket;
+import org.scribble.runtime.net.SocketChannelServer;
+import org.scribble.runtime.session.ExplicitEndpoint;
 
 import demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent;
-import demo.fase17.travel.TravelAgent.TravelAgent.channels.A.EndSocket;
-import demo.fase17.travel.TravelAgent.TravelAgent.channels.A.TravelAgent_A_1;
-import demo.fase17.travel.TravelAgent.TravelAgent.channels.A.TravelAgent_A_2_Cases;
+import demo.fase17.travel.TravelAgent.TravelAgent.statechans.A.EndSocket;
+import demo.fase17.travel.TravelAgent.TravelAgent.statechans.A.TravelAgent_A_1;
+import demo.fase17.travel.TravelAgent.TravelAgent.statechans.A.TravelAgent_A_2_Cases;
 import demo.fase17.travel.TravelAgent.TravelAgent.roles.A;
 
 public class TravelA
@@ -51,7 +52,7 @@ public class TravelA
 							.accept(C, ss)
 							.branch(C));
 				}
-				catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
+				catch (ScribRuntimeException | IOException | ClassNotFoundException e)
 				{
 					e.printStackTrace();
 				}

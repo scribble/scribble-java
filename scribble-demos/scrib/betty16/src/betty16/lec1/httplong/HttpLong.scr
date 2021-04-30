@@ -2,6 +2,9 @@
  * Assuming scribblec.sh in scribble-java root directory:
  * 
  * ./scribblec.sh -d scribble-demos/scrib/betty16/src scribble-demos/scrib/betty16/src/betty16/lec1/httplong/HttpLong.scr -api Http C
+ *
+ * $ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-demos/scrib/betty16/src -subpackages betty16.lec1.httplong.HttpLong.Http -d scribble-demos/scrib/betty16/javadoc/httplong
+ *
  */
 
 
@@ -42,7 +45,7 @@ sig <java> "betty16.lec1.httplong.message.client.DoNotTrack"
 
 sig <java> "betty16.lec1.httplong.message.client.Connection"
 		from "betty16/lec1/httplong/message/Connection.java"
-		as CONNECTION;  // Connection: keep-alive
+		as CONN;  // Connection: keep-alive
 
 sig <java> "betty16.lec1.httplong.message.client.UpgradeInsecureRequests"
 		from "betty16/lec1/httplong/message/UpgradeInsecureRequests.java"
@@ -51,7 +54,15 @@ sig <java> "betty16.lec1.httplong.message.client.UpgradeInsecureRequests"
 sig <java> "betty16.lec1.httplong.message.client.Cookie"
 		from "betty16/lec1/httplong/message/Cookie.java"
 		as COOKIE;  // Cookie: __utma=111872281.1372348290.1498163262.1498163262.1498163262.1; __utmz=111872281.1498163262.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
-		
+
+sig <java> "betty16.lec1.httplong.message.client.Pragma"
+		from "betty16/lec1/httplong/message/Pragma.java"
+		as PRAGMA;  // Pragma: no-cache
+
+/*sig <java> "betty16.lec1.httplong.message.client.CacheControl"
+		from "betty16/lec1/httplong/message/CacheControl.java"
+		as CACHEC;  // Cache-Control: max-age=0*/
+
 		
 sig <java> "betty16.lec1.httplong.message.server.HttpVersion"
 		from "betty16/lec1/httplong/message/HttpVersion.java"
@@ -103,7 +114,7 @@ sig <java> "betty16.lec1.httplong.message.server.ContentType"
 
 sig <java> "betty16.lec1.httplong.message.server.Via"
 		from "betty16/lec1/httplong/message/Via.java"
-		as VIA;  // Via: 1.1 www.doc.ic.ac.uk	
+		as VIA;  // Via: 1.1 www.doc.ic.ac.uk
 
 
 global protocol Http(role C, role S) {
@@ -134,7 +145,7 @@ aux global protocol Request(role C, role S) {
 				DNT from C to S;  // DNT: 1
 				continue X;
 			} or {
-				CONNECTION from C to S;  // Connection: keep-alive
+				CONN from C to S;  // Connection: keep-alive
 				continue X;
 			} or {
 				UPGRADEIR from C to S;  // Upgrade-Insecure-Requests: 1 
@@ -142,7 +153,13 @@ aux global protocol Request(role C, role S) {
 			} or {
 				COOKIE from C to S;  // Cookie: __utma=111872281.1372348290.1498163262.1498163262.1498163262.1; __utmz=111872281.1498163262.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
 				continue X;
-			} or {
+            } or {
+                PRAGMA from C to S;  // Pragma: no-cache
+                continue X;
+            /*} or {
+                CACHEC from C to S;  // Cache-Control: max-age=0
+                continue X;
+			*/} or {
 				BODY from C to S;
 			}
 		}

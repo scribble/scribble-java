@@ -1,5 +1,5 @@
-//$ bin/scribblec.sh scribble-core/src/test/scrib/demo/fase17/travel/TravelAgent.scr -ip scribble-core/src/test/scrib/ -d scribble-core/src/test/scrib -api TravelAgent C -V
-//$ javadoc -cp scribble-cli/target/classes/';'scribble-core/target/classes';'scribble-parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'scribble-core/src/test/scrib -subpackages demo.fase17.travel.TravelAgent.TravelAgent -d test/doc/fase17/travel
+//$ bin/scribblec.sh scribble-test/src/test/scrib/demo/fase17/travel/TravelAgent.scr -ip scribble-test/src/test/scrib/ -d scribble-test/src/test/scrib -api TravelAgent C -v
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-test/src/test/scrib -subpackages demo.fase17.travel.TravelAgent.TravelAgent -d scribble-test/javadoc/fase17/travel
 
 
 module demo.fase17.travel.TravelAgent;

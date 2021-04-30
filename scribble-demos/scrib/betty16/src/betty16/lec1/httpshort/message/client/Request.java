@@ -20,6 +20,7 @@ public class Request extends HttpShortMessage {
 
 	private static final long serialVersionUID = 1L;
 
+	// TODO: make case-insensitive
 	public static final String HOST = "Host";
 	public static final String USER_AGENT = "User-Agent";
 	public static final String ACCEPT = "Accept";
@@ -29,6 +30,8 @@ public class Request extends HttpShortMessage {
 	public static final String CONNECTION = "Connection";
 	public static final String UPGRADE_INSECURE_REQUESTS = "Upgrade-Insecure-Requests";
 	public static final String COOKIE = "Cookie";
+	public static final String REFERER = "Referer";
+	public static final String CACHECONTROL = "Cache-Control";
 
 	public Request(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection, String upgradeIR, String cookie) {
 		super(Http.Request, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection, upgradeIR, cookie));

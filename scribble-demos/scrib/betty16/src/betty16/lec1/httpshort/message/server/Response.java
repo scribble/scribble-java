@@ -20,6 +20,7 @@ public class Response extends HttpShortMessage
 {
 	private static final long serialVersionUID = 1L;
 
+	// TODO: make case-insensitive
 	public static final String DATE = "Date";
 	public static final String CONTENT_TYPE = "Content-Type";
 	public static final String _404 = "404";

@@ -33,7 +33,6 @@ import http.shortvers.message.HttpShortMessageFormatter;
 import http.shortvers.message.client.Request;
 import http.shortvers.message.server.Response;
 
-// FIXME: (Firefox) Cannot parse header field: Cookie: __utma=111872281.1372348290.1498163262.1498163262.1498163262.1; __utmz=111872281.1498163262.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none) 
 public class HttpShortS
 {
 	public HttpShortS()

@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -75,7 +76,7 @@ public class ObjectStreamFormatter implements ScribMessageFormatter
 	public ScribMessage fromBytes(ByteBuffer bb) throws IOException, ClassNotFoundException
 	{
 		// Pre: bb:put
-		bb.flip();
+		((Buffer) bb).flip();  // Cast -- cf. https://stackoverflow.com/questions/61267495/exception-in-thread-main-java-lang-nosuchmethoderror-java-nio-bytebuffer-flip
 		if (bb.remaining() <= 4)
 		{
 			bb.compact();

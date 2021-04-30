@@ -19,32 +19,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
+import betty16.lec1.httplong.message.client.*;
+import betty16.lec1.httplong.message.server.*;
 import org.scribble.runtime.message.ScribMessage;
 import org.scribble.runtime.message.ScribMessageFormatter;
-
-import betty16.lec1.httplong.message.client.Accept;
-import betty16.lec1.httplong.message.client.AcceptEncoding;
-import betty16.lec1.httplong.message.client.AcceptLanguage;
-import betty16.lec1.httplong.message.client.Connection;
-import betty16.lec1.httplong.message.client.DoNotTrack;
-import betty16.lec1.httplong.message.client.Host;
-import betty16.lec1.httplong.message.client.RequestLine;
-import betty16.lec1.httplong.message.client.UpgradeInsecureRequests;
-import betty16.lec1.httplong.message.client.Cookie;
-import betty16.lec1.httplong.message.client.UserAgent;
-import betty16.lec1.httplong.message.server.AcceptRanges;
-import betty16.lec1.httplong.message.server.ContentLength;
-import betty16.lec1.httplong.message.server.ContentType;
-import betty16.lec1.httplong.message.server.Date;
-import betty16.lec1.httplong.message.server.ETag;
-import betty16.lec1.httplong.message.server.HttpVersion;
-import betty16.lec1.httplong.message.server.LastModified;
-import betty16.lec1.httplong.message.server.Server;
-import betty16.lec1.httplong.message.server.StrictTransportSecurity;
-import betty16.lec1.httplong.message.server.Vary;
-import betty16.lec1.httplong.message.server.Via;
-import betty16.lec1.httplong.message.server._200;
-import betty16.lec1.httplong.message.server._404;
 
 public class HttpLongMessageFormatter implements ScribMessageFormatter
 {
@@ -91,7 +69,7 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 			//String body = readLine(dis) + HttpMessage.CRLF;  // HACK: assumes at least 1 CRLF
 			StringBuffer sb = new StringBuffer();
 			//for (int i = body.length(); i < this.len; i++)
-			for (int i = 0; i < this.len; i++)
+			for (int i = 0; i < this.len; i++)  // CHECKME: Client-side len out by 1? e.g., example.com
 			{
 				sb.append((char) bb.get());
 			}
@@ -170,7 +148,7 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 				String value = line.substring(colon + 1).trim();  // Whitespace already built into the message classes
 				switch (name)
 				{
-					case HttpLongMessage.HOST: return new Host("value");
+					case HttpLongMessage.HOST: return new Host(value);
 					case HttpLongMessage.USER_AGENT: return new UserAgent(value);
 					case HttpLongMessage.ACCEPT: return new Accept(value);
 					case HttpLongMessage.ACCEPT_LANGUAGE: return new AcceptLanguage(value);
@@ -179,7 +157,9 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 					case HttpLongMessage.CONNECTION: return new Connection(value);
 					case HttpLongMessage.UPGRADE_INSECURE_REQUESTS: return new UpgradeInsecureRequests(Integer.parseInt(value));
 					case HttpLongMessage.COOKIE: return new Cookie(value);
-					
+					case HttpLongMessage.PRAGMA: return new Pragma(value);
+					//case HttpLongMessage.CACHE_CONTROL: return new CacheControl(value);
+
 					case HttpLongMessage.DATE: return new Date(value);
 					case HttpLongMessage.SERVER: return new Server(value);
 					case HttpLongMessage.STRICT_TRANSPORT_SECURITY: return new StrictTransportSecurity(value);
@@ -194,7 +174,11 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 					case HttpLongMessage.VARY: return new Vary(value);
 					case HttpLongMessage.CONTENT_TYPE: return new ContentType(value);
 					case HttpLongMessage.VIA: return new Via(value);
-					default: throw new RuntimeException("Cannot parse header field: " + line);
+					default: {
+						//throw new RuntimeException("Cannot parse header field: " + line);
+						System.err.println("Cannot parse header field, attempting to skip: " + line);
+						return fromBytes(bb);
+					}
 				}
 			}
 			else
@@ -271,6 +255,13 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 		}
 		return Integer.parseInt(code);
 	}
+
+
+
+
+
+
+
 
 
 

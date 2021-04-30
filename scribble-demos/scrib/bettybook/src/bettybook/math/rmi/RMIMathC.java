@@ -11,9 +11,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-//$ java -cp modules/core/target/classes/ -Djava.security.policy=file:/C:/cygwin/home/Raymond/code/scribble/github-rhu1/scribble-java/modules/demos/scrib/bettybook/src/bettybook/math/rmi/server.policy bettybook.math.rmi.RMIMathC
+
+//$ java -cp scribble-demos/target/test-classes/ -Djava.security.policy=file:/C:/Users/..FIXME../github.com/scribble/scribble-java/scribble-demos/scrib/bettybook/src/bettybook/math/rmi/server.policy bettybook.math.rmi.RMIMathC
+
 
 package bettybook.math.rmi;
+
+import bettybook.math.rmi.RMIMath;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -22,9 +26,6 @@ public class RMIMathC
 {
 	public static void main(String[] args) throws Exception
 	{
-		//System.setProperty("java.security.policy", "file:/C:/cygwin/home/Raymond/code/scribble/github-rhu1/scribble-java/modules/demos/scrib/bettybook/src/bettybook/math/rmi/server.policy");
-		//if (System.getSecurityManager() == null) { System.setSecurityManager(new SecurityManager()); }
-
 		Registry registry = LocateRegistry.getRegistry(8888);
 		RMIMath mathS = (RMIMath) registry.lookup("MathService");
 

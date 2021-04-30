@@ -58,7 +58,7 @@ public class SmtpC3
 
 	public void run() throws Exception
 	{
-		String host = "smtp.cc.ic.ac.uk";
+		String host = "...smtp server...";
 		int port = 25;
 
 		Smtp smtp = new Smtp();

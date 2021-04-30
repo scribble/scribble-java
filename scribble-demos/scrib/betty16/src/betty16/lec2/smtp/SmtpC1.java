@@ -45,7 +45,7 @@ import betty16.lec2.smtp.message.client.StartTls;
 public class SmtpC1
 {
 	public static void main(String[] args) throws Exception {
-		String host = "smtp.cc.ic.ac.uk";
+		String host = "...smtp server...";
 		int port = 25;
 
 		Smtp smtp = new Smtp();
