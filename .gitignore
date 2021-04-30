@@ -39,24 +39,24 @@ scribble-demos/scrib/tutorial/src/tutorial/adder/Adder/
 
 #scribble-core/src/test/scrib
 
-scribble-core/src/test/scrib/exercise/calculator/EProtocol/
-scribble-core/src/test/scrib/exercise/voting/EProtocol/
+scribble-test/src/test/scrib/exercise/calculator/EProtocol/
+scribble-test/src/test/scrib/exercise/voting/EProtocol/
 
-scribble-core/src/test/scrib/demo/fase17/travel/TravelAgent/
-scribble-core/src/test/scrib/demo/fase17/travel2/TravelAgent2/
+scribble-test/src/test/scrib/demo/fase17/travel/TravelAgent/
+scribble-test/src/test/scrib/demo/fase17/travel2/TravelAgent2/
 
-scribble-core/src/test/scrib/scratch/scratch1/
-scribble-core/src/test/scrib/scratch/scratch2/
-scribble-core/src/test/scrib/test/foo/Foo/
-scribble-core/src/test/scrib/test/test1/
-scribble-core/src/test/scrib/test/test2/
-scribble-core/src/test/scrib/test/test3/
-scribble-core/src/test/scrib/test/test4/
-scribble-core/src/test/scrib/test/test5/
-scribble-core/src/test/scrib/test/test6/
-scribble-core/src/test/scrib/test/test7/
-scribble-core/src/test/scrib/test/test8/
-scribble-core/src/test/scrib/test/test9/
+scribble-test/src/test/scrib/scratch/scratch1/
+scribble-test/src/test/scrib/scratch/scratch2/
+scribble-test/src/test/scrib/test/foo/Foo/
+scribble-test/src/test/scrib/test/test1/
+scribble-test/src/test/scrib/test/test2/
+scribble-test/src/test/scrib/test/test3/
+scribble-test/src/test/scrib/test/test4/
+scribble-test/src/test/scrib/test/test5/
+scribble-test/src/test/scrib/test/test6/
+scribble-test/src/test/scrib/test/test7/
+scribble-test/src/test/scrib/test/test8/
+scribble-test/src/test/scrib/test/test9/
 
 scribble-test/src/test/scrib/test/test2/Test2/
 scribble-test/src/test/scrib/test/test3/Test3/
