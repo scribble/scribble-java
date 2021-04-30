@@ -194,19 +194,19 @@ fase17:
 	@$(call scribc_ko,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/intro/FirstL.scr)
 	@$(call scribc_ok,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/intro/FirstL.scr,-fair)
 	@$(call scribc_ko,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/overview/P1.scr)
-	@$(call scribc_apigen3,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelAgent.scr,TravelAgent,A,C,S)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelA.java)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelC.java)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelS.java)
-	@$(call scribc_apigen3,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/TravelAgent2.scr,TravelAgent2,A,C,S)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/Travel2A.java)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/Travel2C.java)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/Travel2S.java)
+	@$(call scribc_apigen3,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelAgent.scr,TravelAgent,A,C,S)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelA.java)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelC.java)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelS.java)
+	@$(call scribc_apigen3,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/TravelAgent2.scr,TravelAgent2,A,C,S)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2A.java)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2C.java)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2S.java)
 
 .PHONY: clean-fase17
 clean-fase17:
-	$(call rm_apigen,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelAgent,TravelAgent)
-	$(call rm_apigen,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/TravelAgent2,TravelAgent2)
+	$(call rm_apigen,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelAgent,TravelAgent)
+	$(call rm_apigen,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/TravelAgent2,TravelAgent2)
 
 .PHONY: supplierinfo
 supplierinfo:
