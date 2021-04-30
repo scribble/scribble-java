@@ -1,6 +1,6 @@
 
 SCRIBHOME ?= ../..
-SCRIBC ?= $(SCRIBHOME)/bin/scribblec.sh
+SCRIBC ?= $(SCRIBHOME)/scribblec.sh
 
 .PHONY: help
 help:
