@@ -31,7 +31,6 @@ import static betty16.lec1.httplong.HttpLong.Http.Http.PRAGMA;
 
 import java.io.IOException;
 
-import betty16.lec1.httplong.HttpLong.Http.ops.CACHEC;
 import org.scribble.main.ScribRuntimeException;
 import org.scribble.runtime.net.ScribServerSocket;
 import org.scribble.runtime.net.SocketChannelServer;

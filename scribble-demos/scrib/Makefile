@@ -1,0 +1,264 @@
+
+SCRIBHOME ?= ../..
+SCRIBC ?= $(SCRIBHOME)/bin/scribblec.sh
+
+.PHONY: help
+help:
+	@echo "Set SCRIBC to scribblec.sh"
+	@echo "Example usages"
+	@echo "    make tutorial"
+	@echo "    make clean-tutorial"
+	@echo "    make all"
+	@echo "    make clean-all"
+
+.PHONY: all
+all: betty16 bettybook coco fase16 fib game http loan nego rpc smtp threebuyer travel tutorial twobuyer fase17 supplierinfo
+
+.PHONY: clean-all
+clean-all: clean-betty16 clean-bettybook clean-coco clean-fase16 clean-fib clean-http clean-loan clean-smtp clean-travel clean-tutorial clean-fase17
+
+.PHONY: betty16
+betty16:
+	@$(call scribc_apigen2,betty16/src,betty16/lec1/httplong/HttpLong.scr,Http,C,S)
+	@$(call javac,betty16/src,betty16/lec1/httplong/HttpLongC.java)
+	@$(call javac,betty16/src,betty16/lec1/httplong/HttpLongS.java)
+	@$(call scribc_apigen2,betty16/src,betty16/lec1/httpshort/HttpShort.scr,Http,C,S)
+	@$(call javac,betty16/src,betty16/lec1/httpshort/HttpShortC.java)
+	@$(call javac,betty16/src,betty16/lec1/httpshort/HttpShortS.java)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/Choice1.scr)
+	@$(call scribc_ok,betty16/src/betty16/lec1/misc/Choice2.scr)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/Choice3.scr)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/Choice4.scr)
+	@$(call scribc_ok,betty16/src/betty16/lec1/misc/LocatedChoice.scr)
+	@$(call scribc_ok,betty16/src/betty16/lec1/misc/LocatedChoice2.scr)
+	@$(call scribc_ok,betty16/src/betty16/lec1/misc/Messaging.scr)
+	@$(call scribc_ok,betty16/src/betty16/lec1/misc/Protocol1a.scr)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/Protocol1b.scr)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/Protocol1c.scr)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/Protocol2.scr)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/Recursion1.scr)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/Recursion2.scr)
+	@$(call scribc_ok,betty16/src/betty16/lec1/misc/Recursion3.scr)
+	@$(call scribc_ko,betty16/src/betty16/lec1/misc/RoleEnabling.scr)
+	@$(call scribc_ok,betty16/src/betty16/lec1/nego/Negotiate.scr)
+
+.PHONY: clean-betty16
+clean-betty16:
+	$(call rm_apigen,betty16/src,betty16/lec1/httplong/HttpLong,Http)
+	$(call rm_apigen,betty16/src,betty16/lec1/httpshort/HttpShort,Http)
+
+.PHONY: bettybook
+bettybook:
+	@$(call scribc_apigen2,bettybook/src,bettybook/http/longv/HttpLong.scr,Http,C,S)
+	@$(call javac,bettybook/src,bettybook/http/longv/HttpLongC.java)
+	@$(call javac,bettybook/src,bettybook/http/longv/HttpLongS.java)
+	@$(call scribc_apigen2,bettybook/src,bettybook/http/shortv/HttpShort.scr,Http,C,S)
+	@$(call javac,bettybook/src,bettybook/http/shortv/HttpShortC.java)
+	@$(call javac,bettybook/src,bettybook/http/shortv/HttpShortS.java)
+	@$(call scribc_apigen2,bettybook/src,bettybook/math/scrib/Math.scr,MathService,C,S)
+	@$(call javac,bettybook/src,bettybook/math/scrib/MathC.java)
+	@$(call javac,bettybook/src,bettybook/math/scrib/MathS1.java)
+	@$(call javac,bettybook/src,bettybook/math/scrib/MathS2.java)
+
+.PHONY: clean-bettybook
+clean-bettybook:
+	$(call rm_apigen,bettybook/src,bettybook/http/longv/HttpLong,Http)
+	$(call rm_apigen,bettybook/src,bettybook/http/shortv/HttpShort,Http)
+	$(call rm_apigen,bettybook/src,bettybook/math/scrib/Math,MathService)
+
+.PHONY: coco
+coco:
+	@$(call scribc_apigen2,coco/src,coco/fibo/Fibo.scr,Fibonacci,A,B)
+	@$(call javac,coco/src,coco/fibo/FiboMain.java)
+	@$(call scribc_apigen2,coco/src,coco/smtp/Smtp.scr,Smtp,C,S)
+	@$(call javac,coco/src,coco/smtp/SmtpC1.java)
+	@$(call javac,coco/src,coco/smtp/SmtpC2.java)
+	@$(call javac,coco/src,coco/smtp/SmtpC3.java)
+
+.PHONY: clean-coco
+clean-coco:
+	$(call rm_apigen,coco/src,coco/fibo/Fibo,Fibonacci)
+	$(call rm_apigen,coco/src,coco/smtp/Smtp,Smtp)
+
+.PHONY: fase16
+fase16:
+	@$(call scribc_apigen2,fase16/src,fase16/adder/Adder.scr,Adder,C,S)
+	@$(call javac,fase16/src,fase16/adder/AdderC.java)
+	@$(call javac,fase16/src,fase16/adder/AdderS.java)
+	@$(call scribc_apigen2,fase16/src,fase16/smtp/Smtp.scr,Smtp,C,S)
+	@$(call javac,fase16/src,fase16/smtp/SmtpC.java)
+
+.PHONY: clean-fase16
+clean-fase16:
+	$(call rm_apigen,fase16/src,fase16/adder/Adder,Adder)
+	$(call rm_apigen,fase16/src,fase16/smtp/Smtp,Smtp)
+
+.PHONY: fib
+fib:
+	@$(call scribc_apigen2,fib/src,fib/Fib.scr,Adder,C,S)
+	@$(call javac,fib/src,fib/AdderClient.java)
+	@$(call javac,fib/src,fib/AdderServer.java)
+	@$(call javac,fib/src,fib/FibClient.java)
+	@$(call scribc_apigen2,fib/src,fib/Fib.scr,Fibonacci,A,B)
+	@$(call javac,fib/src,fib/Fibo.java)
+
+.PHONY: clean-fib
+clean-fib:
+#$(call rm_apigen,fib/src,fib/Fib,Adder)
+	rm -rf fib/src/fib/Fib/Adder  # HACK
+	$(call rm_apigen,fib/src,fib/Fib,Fibonacci)
+
+.PHONY: game
+game:
+	@$(call scribc_ok,game/src/game/Game1.scr)
+	@$(call scribc_ok,game/src/game/Game2.scr)
+
+.PHONY: http
+http:
+	@$(call scribc_apigen2,http/src,http/longvers/HttpLong.scr,Http,C,S)
+	@$(call javac,http/src,http/longvers/HttpLongC.java)
+	@$(call javac,http/src,http/longvers/HttpLongS.java)
+	@$(call scribc_apigen2,http/src,http/shortvers/HttpShort.scr,Http,C,S)
+	@$(call javac,http/src,http/shortvers/HttpShortC.java)
+	@$(call javac,http/src,http/shortvers/HttpShortS.java)
+
+.PHONY: clean-http
+clean-http:
+	$(call rm_apigen,http/src,http/longvers/HttpLong,Http)
+	$(call rm_apigen,http/src,http/shortvers/HttpShort,Http)
+
+.PHONY: loan
+loan:
+	@$(call scribc_apigen4,loan/src,loan/LoanApplication.scr,BuyerBrokerSupplier,Applicant,ApplicationPortal,ProcessingDept,FinanceDept)
+	@$(call javac,loan/src,loan/LoanApplicant.java)
+	@$(call javac,loan/src,loan/LoanApplicationPortal.java)
+	@$(call javac,loan/src,loan/LoanFinanceDept.java)
+	@$(call javac,loan/src,loan/LoanProcessingDept.java)
+
+.PHONY: clean-loan
+clean-loan:
+	$(call rm_apigen,loan/src,loan/LoanApplication,BuyerBrokerSupplier)
+
+.PHONY: nego
+nego:
+	@$(call scribc_ok,nego/src/nego/Nego1.scr)
+	@$(call scribc_ok,nego/src/nego/Nego2.scr)
+	@$(call scribc_ok,nego/src/nego/Nego3.scr)
+
+.PHONY: rpc
+rpc:
+	@$(call scribc_ok,rpc/src/rpc/RPC.scr)
+
+.PHONY: smtp
+smtp:
+	@$(call scribc_apigen2,smtp/src,smtp/Smtp.scr,Smtp,C,S,-subtypes)
+	@$(call javac,smtp/src,smtp/SimpleSmtpC.java)
+	@$(call javac,smtp/src,smtp/SmtpC.java)
+
+.PHONY: clean-smtp
+clean-smtp:
+	$(call rm_apigen,smtp/src,smtp/Smtp,Smtp)
+
+.PHONY: threebuyer
+threebuyer:
+	@$(call scribc_ok,threebuyer/src/threebuyer/ThreeBuyer.scr)
+	@$(call scribc_ok,threebuyer/src/threebuyer/ThreeBuyer2.scr)
+
+.PHONY: travel
+travel:
+	@$(call scribc_apigen3,travel/src,travel/Travel.scr,Booking,A,C,S)
+	@$(call javac,travel/src,travel/BookingA.java)
+	@$(call javac,travel/src,travel/BookingC.java)
+	@$(call javac,travel/src,travel/BookingS.java)
+
+.PHONY: clean-travel
+clean-travel:
+	$(call rm_apigen,travel/src,travel/Travel,Booking)
+
+.PHONY: tutorial
+tutorial:
+	@$(call scribc_apigen2,tutorial/src,tutorial/adder/Adder.scr,Adder,C,S)
+	@$(call javac,tutorial/src,tutorial/adder/AdderC.java)
+	@$(call javac,tutorial/src,tutorial/adder/AdderS.java)
+
+.PHONY: clean-tutorial
+clean-tutorial:
+	$(call rm_apigen,tutorial/src,tutorial/adder/Adder,Adder)
+
+.PHONY: twobuyer
+twobuyer:
+	@$(call scribc_ok,twobuyer/src/twobuyer/TwoBuyer.scr)
+
+.PHONY: fase17
+fase17:
+	@$(call scribc_ko,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/intro/FirstL.scr)
+	@$(call scribc_ok,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/intro/FirstL.scr,-fair)
+	@$(call scribc_ko,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/overview/P1.scr)
+	@$(call scribc_apigen3,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelAgent.scr,TravelAgent,A,C,S)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelA.java)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelC.java)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelS.java)
+	@$(call scribc_apigen3,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/TravelAgent2.scr,TravelAgent2,A,C,S)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/Travel2A.java)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/Travel2C.java)
+	@$(call javac,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/Travel2S.java)
+
+.PHONY: clean-fase17
+clean-fase17:
+	$(call rm_apigen,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel/TravelAgent,TravelAgent)
+	$(call rm_apigen,$(SCRIBHOME)/scribble-test/src,test/scrib/demo/fase17/travel2/TravelAgent2,TravelAgent2)
+
+.PHONY: supplierinfo
+supplierinfo:
+	@$(call scribc_ok,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/supplierinfo/SupplierInfoExplicit.scr,-fair)
+	@$(call scribc_ok,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/supplierinfo/SupplierInfoNoFair.scr)
+
+
+# filename, extra
+define scribc_ok
+	echo "Validate OK: "$(1); \
+	$(SCRIBC) $(1) $(2)
+endef
+
+# filename
+define scribc_ko
+	echo "Validate KO: "$(1); \
+	$(SCRIBC) $(1) 2> /dev/null; \
+	EXIT=$$?; if [ $$EXIT -eq 0 ]; then \
+		echo "Expected protocol validation error, but none occurred."; \
+		exit 1; \
+	fi;
+endef
+
+# dir, filename, proto, role1, role2, extra
+define scribc_apigen2
+	echo "API gen: "$(1)"/"$(2)", "$(3)" @ "$(4)", "$(5); \
+	$(SCRIBC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) $(6)
+endef
+
+# dir, filename, proto, role1, role2, role3
+define scribc_apigen3
+	echo "API gen: "$(1)"/"$(2)", "$(3)" @ "$(4)", "$(5)", "$(6); \
+	$(SCRIBC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) -api $(3) $(6)
+endef
+
+# dir, filename, proto, role1, role2, role3, role4
+define scribc_apigen4
+	echo "API gen: "$(1)"/"$(2)", "$(3)" @ "$(4)", "$(5)", "$(6)", "$(7); \
+	$(SCRIBC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) -api $(3) $(6) -api $(3) $(7)
+endef
+
+# dir, dir, proto
+define rm_apigen
+	echo "Deleting: "$(1)/$(2)/$(3); \
+	rm -rf $(1)/$(2)/$(3); \
+	rm -fd $(1)/$(2)
+endef
+
+# dir, filename
+define javac
+	echo "Compiling: "$(1)/$(2); \
+	javac -cp $(SCRIBHOME)/scribble-ast/target/classes:$(SCRIBHOME)/scribble-cli/target/classes:$(SCRIBHOME)/scribble-codegen/target/classes:$(SCRIBHOME)/scribble-core/target/classes:$(SCRIBHOME)/scribble-main/target/classes:$(SCRIBHOME)/scribble-parser/target/classes:$(SCRIBHOME)/scribble-parser/lib/antlr-3.5.2-complete.jar:$(SCRIBHOME)/scribble-runtime/target/classes:$(1) \
+	$(1)/$(2) -d $(SCRIBHOME)/scribble-demos/target/test-classes
+endef
+
