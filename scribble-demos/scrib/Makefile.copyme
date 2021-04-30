@@ -5,7 +5,7 @@ SCRIBC ?= $(SCRIBHOME)/scribblec.sh
 .PHONY: help
 help:
 	@echo "Set SCRIBC to scribblec.sh"
-	@echo "Example usages"
+	@echo "Example usages:"
 	@echo "    make tutorial"
 	@echo "    make clean-tutorial"
 	@echo "    make all"
