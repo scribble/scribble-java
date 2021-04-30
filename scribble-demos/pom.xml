@@ -47,6 +47,8 @@
 						<exclude>**/script.js</exclude>
 						<exclude>**/package-list</exclude>
 						<exclude>**/*.versionsBackup</exclude>
+						<exclude>**/Makefile.copyme</exclude>
+						<exclude>**/Makefile</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

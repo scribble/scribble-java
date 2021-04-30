@@ -16,8 +16,12 @@ tools/eclipse/plugins/org.scribble.*/bin/
 
 javadoc
 
+
+##
 #scribble-demos/scrib
 
+scribble-demos/scrib/Makefile
+scribble-demos/scrib/tutorial/src/tutorial/adder/Adder/
 scribble-demos/scrib/betty16/src/betty16/lec1/httplong/HttpLong/
 scribble-demos/scrib/betty16/src/betty16/lec1/httpshort/HttpShort/
 scribble-demos/scrib/betty16/src/betty16/lec2/adder/Adder/
@@ -37,7 +41,9 @@ scribble-demos/scrib/smtp/src/smtp/Smtp/
 scribble-demos/scrib/travel/src/travel/Travel/
 scribble-demos/scrib/tutorial/src/tutorial/adder/Adder/
 
-#scribble-core/src/test/scrib
+
+##
+#scribble-test/src/test/scrib
 
 scribble-test/src/test/scrib/exercise/calculator/EProtocol/
 scribble-test/src/test/scrib/exercise/voting/EProtocol/
