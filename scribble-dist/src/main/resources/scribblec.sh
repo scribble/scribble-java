@@ -50,9 +50,9 @@ CYGWIN=0     # Set to 1 for ';' classpath separator and cygpath formatting
 
 
 usage() {
-  echo 'Set $SCRIBBLE_HOME to the Scribble base directory (default: current directory).'
+  echo 'Set $SCRIBBLE_HOME to the scribble-java root directory (default: current dir).'
   cat <<EOF
-i.e., the directory that contains the Scribble modules and/or lib directory.
+i.e., the directory that contains the scribble-java modules and/or lib directory.
 Look inside the script for other settings.
 
 Usage:  'scribblec.sh [option]... <SCRFILE> [option]...'
