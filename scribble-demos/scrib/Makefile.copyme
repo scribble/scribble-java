@@ -12,12 +12,13 @@
 # the License.
 #
 
-SCRIBHOME ?= ../..
-SCRIBC ?= $(SCRIBHOME)/scribblec.sh
+SCRIBBLE_HOME ?= ../..
+SCRIBBLEC ?= $(SCRIBBLE_HOME)/scribblec.sh
+JAVAC = javac
 
 .PHONY: help
 help:
-	@echo "Set SCRIBC to scribblec.sh"
+	@echo "Set \$$SCRIBBLE_HOME (as for scribblec.sh), and \$$SCRIBBLEC to scribblec.sh."
 	@echo "Example usages:"
 	@echo "    make tutorial"
 	@echo "    make clean-tutorial"
@@ -57,8 +58,8 @@ betty16:
 
 .PHONY: clean-betty16
 clean-betty16:
-	$(call rm_apigen,betty16/src,betty16/lec1/httplong/HttpLong,Http)
-	$(call rm_apigen,betty16/src,betty16/lec1/httpshort/HttpShort,Http)
+	@$(call rm_apigen,betty16/src,betty16/lec1/httplong/HttpLong,Http)
+	@$(call rm_apigen,betty16/src,betty16/lec1/httpshort/HttpShort,Http)
 
 .PHONY: bettybook
 bettybook:
@@ -75,9 +76,9 @@ bettybook:
 
 .PHONY: clean-bettybook
 clean-bettybook:
-	$(call rm_apigen,bettybook/src,bettybook/http/longv/HttpLong,Http)
-	$(call rm_apigen,bettybook/src,bettybook/http/shortv/HttpShort,Http)
-	$(call rm_apigen,bettybook/src,bettybook/math/scrib/Math,MathService)
+	@$(call rm_apigen,bettybook/src,bettybook/http/longv/HttpLong,Http)
+	@$(call rm_apigen,bettybook/src,bettybook/http/shortv/HttpShort,Http)
+	@$(call rm_apigen,bettybook/src,bettybook/math/scrib/Math,MathService)
 
 .PHONY: coco
 coco:
@@ -90,8 +91,8 @@ coco:
 
 .PHONY: clean-coco
 clean-coco:
-	$(call rm_apigen,coco/src,coco/fibo/Fibo,Fibonacci)
-	$(call rm_apigen,coco/src,coco/smtp/Smtp,Smtp)
+	@$(call rm_apigen,coco/src,coco/fibo/Fibo,Fibonacci)
+	@$(call rm_apigen,coco/src,coco/smtp/Smtp,Smtp)
 
 .PHONY: fase16
 fase16:
@@ -103,8 +104,8 @@ fase16:
 
 .PHONY: clean-fase16
 clean-fase16:
-	$(call rm_apigen,fase16/src,fase16/adder/Adder,Adder)
-	$(call rm_apigen,fase16/src,fase16/smtp/Smtp,Smtp)
+	@$(call rm_apigen,fase16/src,fase16/adder/Adder,Adder)
+	@$(call rm_apigen,fase16/src,fase16/smtp/Smtp,Smtp)
 
 .PHONY: fib
 fib:
@@ -118,8 +119,8 @@ fib:
 .PHONY: clean-fib
 clean-fib:
 #$(call rm_apigen,fib/src,fib/Fib,Adder)
-	rm -rf fib/src/fib/Fib/Adder  # HACK
-	$(call rm_apigen,fib/src,fib/Fib,Fibonacci)
+	@rm -rf fib/src/fib/Fib/Adder  # HACK
+	@$(call rm_apigen,fib/src,fib/Fib,Fibonacci)
 
 .PHONY: game
 game:
@@ -137,8 +138,8 @@ http:
 
 .PHONY: clean-http
 clean-http:
-	$(call rm_apigen,http/src,http/longvers/HttpLong,Http)
-	$(call rm_apigen,http/src,http/shortvers/HttpShort,Http)
+	@$(call rm_apigen,http/src,http/longvers/HttpLong,Http)
+	@$(call rm_apigen,http/src,http/shortvers/HttpShort,Http)
 
 .PHONY: loan
 loan:
@@ -150,7 +151,7 @@ loan:
 
 .PHONY: clean-loan
 clean-loan:
-	$(call rm_apigen,loan/src,loan/LoanApplication,BuyerBrokerSupplier)
+	@$(call rm_apigen,loan/src,loan/LoanApplication,BuyerBrokerSupplier)
 
 .PHONY: nego
 nego:
@@ -170,7 +171,7 @@ smtp:
 
 .PHONY: clean-smtp
 clean-smtp:
-	$(call rm_apigen,smtp/src,smtp/Smtp,Smtp)
+	@$(call rm_apigen,smtp/src,smtp/Smtp,Smtp)
 
 .PHONY: threebuyer
 threebuyer:
@@ -186,7 +187,7 @@ travel:
 
 .PHONY: clean-travel
 clean-travel:
-	$(call rm_apigen,travel/src,travel/Travel,Booking)
+	@$(call rm_apigen,travel/src,travel/Travel,Booking)
 
 .PHONY: tutorial
 tutorial:
@@ -196,7 +197,7 @@ tutorial:
 
 .PHONY: clean-tutorial
 clean-tutorial:
-	$(call rm_apigen,tutorial/src,tutorial/adder/Adder,Adder)
+	@$(call rm_apigen,tutorial/src,tutorial/adder/Adder,Adder)
 
 .PHONY: twobuyer
 twobuyer:
@@ -204,39 +205,39 @@ twobuyer:
 
 .PHONY: fase17
 fase17:
-	@$(call scribc_ko,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/intro/FirstL.scr)
-	@$(call scribc_ok,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/intro/FirstL.scr,-fair)
-	@$(call scribc_ko,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/fase17/overview/P1.scr)
-	@$(call scribc_apigen3,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelAgent.scr,TravelAgent,A,C,S)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelA.java)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelC.java)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelS.java)
-	@$(call scribc_apigen3,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/TravelAgent2.scr,TravelAgent2,A,C,S)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2A.java)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2C.java)
-	@$(call javac,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2S.java)
+	@$(call scribc_ko,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/fase17/intro/FirstL.scr)
+	@$(call scribc_ok,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/fase17/intro/FirstL.scr,-fair)
+	@$(call scribc_ko,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/fase17/overview/P1.scr)
+	@$(call scribc_apigen3,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelAgent.scr,TravelAgent,A,C,S)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelA.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelC.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelS.java)
+	@$(call scribc_apigen3,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel2/TravelAgent2.scr,TravelAgent2,A,C,S)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2A.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2C.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel2/Travel2S.java)
 
 .PHONY: clean-fase17
 clean-fase17:
-	$(call rm_apigen,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelAgent,TravelAgent)
-	$(call rm_apigen,$(SCRIBHOME)/scribble-test/src/test/scrib,demo/fase17/travel2/TravelAgent2,TravelAgent2)
+	@$(call rm_apigen,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel/TravelAgent,TravelAgent)
+	@$(call rm_apigen,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib,demo/fase17/travel2/TravelAgent2,TravelAgent2)
 
 .PHONY: supplierinfo
 supplierinfo:
-	@$(call scribc_ok,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/supplierinfo/SupplierInfoExplicit.scr,-fair)
-	@$(call scribc_ok,$(SCRIBHOME)/scribble-test/src/test/scrib/demo/supplierinfo/SupplierInfoNoFair.scr)
+	@$(call scribc_ok,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/supplierinfo/SupplierInfoExplicit.scr,-fair)
+	@$(call scribc_ok,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/supplierinfo/SupplierInfoNoFair.scr)
 
 
 # filename, extra
 define scribc_ok
 	echo "Validate OK: "$(1); \
-	$(SCRIBC) $(1) $(2)
+	$(SCRIBBLEC) $(1) $(2)
 endef
 
 # filename
 define scribc_ko
 	echo "Validate KO: "$(1); \
-	$(SCRIBC) $(1) 2> /dev/null; \
+	$(SCRIBBLEC) $(1) 2> /dev/null; \
 	EXIT=$$?; if [ $$EXIT -eq 0 ]; then \
 		echo "Expected protocol validation error, but none occurred."; \
 		exit 1; \
@@ -246,19 +247,19 @@ endef
 # dir, filename, proto, role1, role2, extra
 define scribc_apigen2
 	echo "API gen: "$(1)"/"$(2)", "$(3)" @ "$(4)", "$(5); \
-	$(SCRIBC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) $(6)
+	$(SCRIBBLEC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) $(6)
 endef
 
 # dir, filename, proto, role1, role2, role3
 define scribc_apigen3
 	echo "API gen: "$(1)"/"$(2)", "$(3)" @ "$(4)", "$(5)", "$(6); \
-	$(SCRIBC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) -api $(3) $(6)
+	$(SCRIBBLEC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) -api $(3) $(6)
 endef
 
 # dir, filename, proto, role1, role2, role3, role4
 define scribc_apigen4
 	echo "API gen: "$(1)"/"$(2)", "$(3)" @ "$(4)", "$(5)", "$(6)", "$(7); \
-	$(SCRIBC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) -api $(3) $(6) -api $(3) $(7)
+	$(SCRIBBLEC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) -api $(3) $(6) -api $(3) $(7)
 endef
 
 # dir, dir, proto
@@ -271,7 +272,8 @@ endef
 # dir, filename
 define javac
 	echo "Compiling: "$(1)/$(2); \
-	javac -cp $(SCRIBHOME)/scribble-ast/target/classes:$(SCRIBHOME)/scribble-cli/target/classes:$(SCRIBHOME)/scribble-codegen/target/classes:$(SCRIBHOME)/scribble-core/target/classes:$(SCRIBHOME)/scribble-main/target/classes:$(SCRIBHOME)/scribble-parser/target/classes:$(SCRIBHOME)/scribble-parser/lib/antlr-3.5.2-complete.jar:$(SCRIBHOME)/scribble-runtime/target/classes:$(1) \
-	$(1)/$(2) -d $(SCRIBHOME)/scribble-demos/target/test-classes
+	mkdir -p $(SCRIBBLE_HOME)/scribble-demos/target/test-classes; \
+	javac -cp $(SCRIBBLE_HOME)/scribble-ast/target/classes:$(SCRIBBLE_HOME)/scribble-cli/target/classes:$(SCRIBBLE_HOME)/scribble-codegen/target/classes:$(SCRIBBLE_HOME)/scribble-core/target/classes:$(SCRIBBLE_HOME)/scribble-main/target/classes:$(SCRIBBLE_HOME)/scribble-parser/target/classes:$(SCRIBBLE_HOME)/scribble-parser/lib/antlr-3.5.2-complete.jar:$(SCRIBBLE_HOME)/scribble-runtime/target/classes:$(1) \
+	$(1)/$(2) -d $(SCRIBBLE_HOME)/scribble-demos/target/test-classes
 endef
 

@@ -50,8 +50,12 @@ CYGWIN=0     # Set to 1 for ';' classpath separator and cygpath formatting
 
 
 usage() {
-  echo Usage:  'scribblec.sh [option]... <SCRFILE> [option]...'
+  echo 'Set $SCRIBBLE_HOME to the Scribble base directory (default: current directory).'
   cat <<EOF
+i.e., the directory that contains the Scribble modules and/or lib directory.
+Look inside the script for other settings.
+
+Usage:  'scribblec.sh [option]... <SCRFILE> [option]...'
 
  <SCRFILE>     Source Scribble module (.scr file)
 
@@ -174,7 +178,8 @@ while true; do
     esac
 done
 
-if [ "$usage" = 1 ]; then
+if [ "$usage" = 1 ] || [ -z "$ARGS" ]; then
+
     usage
     exit 0
 fi
