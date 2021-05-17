@@ -106,7 +106,7 @@
 		<junit.version>4.13.1</junit.version>
 			<!--<log4j.version>1.2.14</log4j.version>-->
 				<!--<jackson.version>1.9.9</jackson.version>-->
-		<version.commons-io>2.4</version.commons-io>
+		<version.commons-io>2.7</version.commons-io>
 
 		<!-- maven-compiler-plugin -->
 		<maven.compiler.source>1.8</maven.compiler.source>
