@@ -40,8 +40,8 @@ public class MyA {
         HighLow proto = new HighLow();
 
         try (HighLow_A<Void> c = new HighLow_A<>(proto, A, new ObjectStreamFormatter(), null)) {
-            c.icallback(HighLow_A_1.id, (data) -> new HighLow_A_1.B.start(42));
-            c.icallback(HighLow_A_2.id, (data) -> new HighLow_A_2.B.limit(5));
+            c.icallback(HighLow_A_1.id, (data) -> new HighLow_A_1.B.secret(42));
+            c.icallback(HighLow_A_2.id, (data) -> new HighLow_A_2.B.tries(5));
             c.icallback(HighLow_A_3.id, new MyHandlerA());
 
             c.request(B, SocketChannelEndpoint::new, "localhost", 8888);

@@ -15,6 +15,7 @@
 package highlow;
 
 import highlow.HighLow.HighLow.HighLow;
+import highlow.HighLow.HighLow.ops.secret;
 import highlow.HighLow.HighLow.roles.A;
 import highlow.HighLow.HighLow.statechans.A.EndSocket;
 import highlow.HighLow.HighLow.statechans.A.HighLow_A_1;
@@ -42,7 +43,7 @@ public class HighLowA {
     }
 
     private EndSocket highLow(HighLow_A_1 a1) throws Exception {
-        return aux(a1.send(B, start, 42).send(B, limit, 5));
+        return aux(a1.send(B, secret, 42).send(B, tries, 5));
     }
 
     private EndSocket aux(HighLow_A_3 a3) throws Exception {

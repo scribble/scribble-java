@@ -21,8 +21,8 @@ import highlow.HighLow.HighLow.callbacks.B.HighLow_B_2_Branch;
 import highlow.HighLow.HighLow.callbacks.B.HighLow_B_3_Branch;
 import highlow.HighLow.HighLow.callbacks.B.states.*;
 import highlow.HighLow.HighLow.ops.guess;
-import highlow.HighLow.HighLow.ops.limit;
-import highlow.HighLow.HighLow.ops.start;
+import highlow.HighLow.HighLow.ops.secret;
+import highlow.HighLow.HighLow.ops.tries;
 import highlow.HighLow.HighLow.roles.A;
 import highlow.HighLow.HighLow.roles.C;
 import org.scribble.main.ScribRuntimeException;
@@ -90,14 +90,14 @@ class MyStateB {
 
 class MyHandlerB1 extends HighLow_B_1_Branch<MyStateB> {
     @Override
-    public void receive(MyStateB data, A peer, start op, Integer arg1) {
+    public void receive(MyStateB data, A peer, secret op, Integer arg1) {
         data.secret = arg1;
     }
 }
 
 class MyHandlerB2 extends HighLow_B_2_Branch<MyStateB> {
     @Override
-    public void receive(MyStateB data, A peer, limit op, Integer arg1) {
+    public void receive(MyStateB data, A peer, tries op, Integer arg1) {
         data.tries = arg1;
     }
 }

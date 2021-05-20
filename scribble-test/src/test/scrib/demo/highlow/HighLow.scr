@@ -1,18 +1,18 @@
-//$ bin/scribblec.sh scribble-test/src/test/scrib/demo/highlow/HighLow.scr -d scribble-test/src/test/scrib/demo -api HighLow A
+//$ bin/scribblec.sh scribble-test/src/test/scrib/demo/highlow/HighLow.scr -d scribble-test/src/test/scrib/demo -cbapi HighLow A
 
 module highlow.HighLow;
 
 type <java> "java.lang.Integer" from "runtime.jar" as int;
 
 global protocol HighLow(role A, role B, role C) {
-  start(int) from A to B;  //@'0<=n0 && n0<100'
-  limit(int) from A to B;  //@'0<t0'
-  do Aux(A, B, C);         //@'B[n0, t0]'
+  secret(int) from A to B;  //@'0<=n0 && n0<100'
+  tries(int) from A to B;   //@'0<t0'
+  do Aux(A, B, C);          //@'B[n0, t0]'
 }
 
 aux global protocol Aux(role A, role B, role C)
-            //@'B[n: int = 0, t: int = 1] (0<=n && n<100) && 0<t'
-            {
+        //@'B[n: int = 0, t: int = 1] (0<=n && n<100) && 0<t'
+        {
   guess(int) from C to B;  //@'0<=x && x<100'
   choice at B {
     win() from B to C;     //@'n=x'
@@ -26,8 +26,7 @@ aux global protocol Aux(role A, role B, role C)
     lower() from B to A;
     do Aux(A, B, C);       //@'B[n, t-1]'
   } or {
-    lose() from B to C;    //@'(!(n1=x)) && t1=1'  // FIXME: !-precedence, and !-dot-output
-                           //@'((n<x || n>x) && t=1)'
+    lose() from B to C;    //@'!(n1=x) && t1=1'
     win() from B to A;
   }
 }
