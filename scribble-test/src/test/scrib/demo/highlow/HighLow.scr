@@ -1,3 +1,4 @@
+//$ bin/scribblec.sh scribble-test/src/test/scrib/demo/highlow/HighLow.scr -d scribble-test/src/test/scrib/demo -api HighLow A
 //$ bin/scribblec.sh scribble-test/src/test/scrib/demo/highlow/HighLow.scr -d scribble-test/src/test/scrib/demo -cbapi HighLow A
 
 module highlow.HighLow;

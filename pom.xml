@@ -114,7 +114,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
 
-        <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
+        <!--<version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>-->
         <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
         <version.maven-source-plugin>3.2.1</version.maven-source-plugin>
         <!--<version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>-->
@@ -362,18 +362,18 @@
         <tag>HEAD</tag>
     </scm>
 
+    <!--
     <distributionManagement>
-        <repository>
-            <id>bintray</id>
-            <url>https://api.bintray.com/maven/scribble/maven/scribble-java/;publish=1</url>
-        </repository>
-        <!--
-            <snapshotRepository>
-                <id>jfrog-snapshots</id>
-                <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
-            </snapshotRepository>
-        -->
+    <repository>
+        <id>bintray</id>
+        <url>https://api.bintray.com/maven/scribble/maven/scribble-java/;publish=1</url>
+    </repository>
+        <snapshotRepository>
+            <id>jfrog-snapshots</id>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </snapshotRepository>
     </distributionManagement>
+    -->
 
     <profiles>
         <profile>
