@@ -50,6 +50,7 @@ scribble-test/src/test/scrib/exercise/voting/EProtocol/
 
 scribble-test/src/test/scrib/demo/fase17/travel/TravelAgent/
 scribble-test/src/test/scrib/demo/fase17/travel2/TravelAgent2/
+scribble-test/src/test/scrib/demo/highlow/HighLow/
 
 scribble-test/src/test/scrib/scratch/scratch1/
 scribble-test/src/test/scrib/scratch/scratch2/
@@ -70,7 +71,6 @@ scribble-test/src/test/scrib/test/test4/Test4/
 scribble-test/src/test/scrib/test/test5/Test5/
 scribble-test/src/test/scrib/test/test6/Test6/
 scribble-test/src/test/scrib/test/test7/Test7/
-
 
 
 bin/scribblec.sh

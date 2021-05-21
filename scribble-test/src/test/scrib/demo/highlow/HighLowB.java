@@ -53,7 +53,7 @@ public class HighLowB {
     private EndSocket highLow(HighLow_B_1 b1) throws Exception {
         Buf<Integer> s = new Buf<>();
         Buf<Integer> l = new Buf<>();
-        return aux(b1.receive(A, start, s).receive(A, limit, l), s.val, l.val);
+        return aux(b1.receive(A, secret, s).receive(A, tries, l), s.val, l.val);
     }
 
     private EndSocket aux(HighLow_B_3 b3, int secret, int tries) throws Exception {

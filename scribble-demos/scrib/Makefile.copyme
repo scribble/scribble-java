@@ -26,10 +26,10 @@ help:
 	@echo "    make clean-all"
 
 .PHONY: all
-all: betty16 bettybook coco fase16 fib game http loan nego rpc smtp threebuyer travel tutorial twobuyer fase17 supplierinfo
+all: betty16 bettybook coco fase16 fib game http loan nego rpc smtp threebuyer travel tutorial twobuyer fase17 supplierinfo highlow
 
 .PHONY: clean-all
-clean-all: clean-betty16 clean-bettybook clean-coco clean-fase16 clean-fib clean-http clean-loan clean-smtp clean-travel clean-tutorial clean-fase17
+clean-all: clean-betty16 clean-bettybook clean-coco clean-fase16 clean-fib clean-http clean-loan clean-smtp clean-travel clean-tutorial clean-fase17 clean-highlow
 
 .PHONY: betty16
 betty16:
@@ -227,6 +227,21 @@ supplierinfo:
 	@$(call scribc_ok,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/supplierinfo/SupplierInfoExplicit.scr,-fair)
 	@$(call scribc_ok,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/supplierinfo/SupplierInfoNoFair.scr)
 
+.PHONY: highlow
+highlow:
+	@$(call scribc_apigen3,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/,highlow/HighLow.scr,HighLow,A,B,C)
+	@$(call scribc_cbapigen3,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/,highlow/HighLow.scr,HighLow,A,B,C)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo,highlow/HighLowA.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo,highlow/HighLowB.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo,highlow/HighLowC.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo,highlow/cb/MyA.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo,highlow/cb/MyB.java)
+	@$(call javac,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo,highlow/cb/MyC.java)
+
+.PHONY: clean-highlow
+clean-highlow:
+	@$(call rm_apigen,$(SCRIBBLE_HOME)/scribble-test/src/test/scrib/demo/,highlow/HighLow,HighLow)
+
 
 # filename, extra
 define scribc_ok
@@ -254,6 +269,12 @@ endef
 define scribc_apigen3
 	echo "API gen: "$(1)"/"$(2)", "$(3)" @ "$(4)", "$(5)", "$(6); \
 	$(SCRIBBLEC) -d $(1) $(1)/$(2) -api $(3) $(4) -api $(3) $(5) -api $(3) $(6)
+endef
+
+# dir, filename, proto, role1, role2, role3
+define scribc_cbapigen3
+echo "CB API gen: "$(1)"/"$(2)", "$(3)" @ "$(4)", "$(5)", "$(6); \
+	$(SCRIBBLEC) -d $(1) $(1)/$(2) -cbapi $(3) $(4) -cbapi $(3) $(5) -cbapi $(3) $(6)
 endef
 
 # dir, filename, proto, role1, role2, role3, role4
