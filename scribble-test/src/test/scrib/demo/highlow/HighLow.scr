@@ -1,5 +1,6 @@
 //$ bin/scribblec.sh scribble-test/src/test/scrib/demo/highlow/HighLow.scr -d scribble-test/src/test/scrib/demo -api HighLow A
 //$ bin/scribblec.sh scribble-test/src/test/scrib/demo/highlow/HighLow.scr -d scribble-test/src/test/scrib/demo -cbapi HighLow A
+//$ javadoc -cp scribble-core/target/classes:scribble-runtime/target/classes:scribble-test/src/test/scrib/demo -subpackages highlow.HighLow.HighLow -d scribble-test/javadoc/highlow
 
 module highlow.HighLow;
 
