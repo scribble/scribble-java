@@ -137,7 +137,7 @@ public class Job
 		if (this.core == null)
 		{
 			Map<ModuleName, Module> parsed = this.context.getParsed();
-			Set<GProtocol> imeds = new HashSet<>();
+			Set<GProtocol> imeds = new LinkedHashSet<>();
 			for (ModuleName fullname : parsed.keySet())
 			{
 				GTypeTranslator t = this.config.vf.GTypeTranslator(this, fullname,
